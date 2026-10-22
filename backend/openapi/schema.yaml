@@ -1,0 +1,31 @@
+openapi: 3.0.3
+info:
+  title: Raff API
+  version: 1.0.0
+paths:
+  /api/v1/health/:
+    get:
+      operationId: health
+      tags:
+      - health
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: ''
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+        database:
+          type: string
+      required:
+      - database
+      - status
