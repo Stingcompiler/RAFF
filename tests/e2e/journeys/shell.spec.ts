@@ -1,0 +1,64 @@
+import { expect, test } from "@playwright/test";
+
+test.describe("app shell", () => {
+  test("marketing landing follows the URL locale and direction", async ({ page }) => {
+    await page.goto("/ar");
+    await expect(page.locator("html")).toHaveAttribute("lang", "ar");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
+
+    await page.goto("/en");
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Raff");
+  });
+
+  test("unknown locale is a 404", async ({ page }) => {
+    const response = await page.goto("/fr");
+    expect(response?.status()).toBe(404);
+  });
+
+  for (const [path, heading] of [
+    ["/", "رَفّ"],
+    ["/login", "الدخول"],
+    ["/dashboard", "المتابعة"],
+  ] as const) {
+    test(`route group placeholder ${path} renders in Arabic by default`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(heading);
+    });
+  }
+
+  test("user locale and theme come from cookies", async ({ page, context, baseURL }) => {
+    await context.addCookies([
+      { name: "NEXT_LOCALE", value: "en", url: baseURL! },
+      { name: "raff-theme", value: "dark", url: baseURL! },
+    ]);
+    await page.goto("/dashboard");
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Overview");
+  });
+
+  test("fonts are self-hosted, nothing loads from Google", async ({ page }) => {
+    const external: string[] = [];
+    page.on("request", (r) => {
+      if (!r.url().startsWith("http://localhost:3000")) external.push(r.url());
+    });
+    await page.goto("/ar");
+    await page.evaluate(() => document.fonts.ready);
+    const families = await page.evaluate(() =>
+      [...document.fonts].filter((f) => f.status === "loaded").map((f) => f.family),
+    );
+    expect(families.join(",")).toContain("IBM Plex Sans Arabic");
+    expect(external).toEqual([]);
+  });
+
+  test("API health is reachable through the frontend origin", async ({ request }) => {
+    const response = await request.get("/api/v1/health/");
+    expect(response.ok()).toBe(true);
+    expect(await response.json()).toEqual({ status: "ok", database: "ok" });
+  });
+});
