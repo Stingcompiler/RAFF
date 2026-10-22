@@ -52,9 +52,16 @@ class OperationSerializer(serializers.Serializer[Any]):
     status = serializers.ChoiceField(choices=["approved", "verifying", "to_inspect"])
 
 
+class StoreTodaySerializer(serializers.Serializer[Any]):
+    new = serializers.IntegerField()
+    confirmed = serializers.IntegerField()
+    completed = serializers.IntegerField()
+
+
 class OverviewSerializer(serializers.Serializer[Any]):
     needs_action = NeedsActionSerializer()
     near_expiry_days = serializers.IntegerField()
+    store_today = StoreTodaySerializer()
     sales_today = serializers.DecimalField(max_digits=18, decimal_places=4)
     sales_count = serializers.IntegerField()
     cash_today = serializers.DecimalField(max_digits=18, decimal_places=4)

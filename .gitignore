@@ -29,3 +29,6 @@ blob-report/
 
 # macOS copy of the reference shots for local visual runs
 design/handoff/reference-local/
+
+# Uploaded storefront images (local dev)
+backend/media/

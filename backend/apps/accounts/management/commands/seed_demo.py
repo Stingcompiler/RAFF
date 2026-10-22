@@ -242,6 +242,7 @@ class Command(BaseCommand):
                 self._catalog()
                 self._purchasing(Branch.objects.get(code="KRT"))
                 self._customers()
+                self._storefront()
         self.stdout.write("sample data ready")
 
     def _catalog(self) -> None:
@@ -376,3 +377,84 @@ class Command(BaseCommand):
                 ],
                 user=owner,
             )
+
+    def _storefront(self) -> None:
+        """The design's sample storefront. Sample listings are published without images to
+        show the 'no image' state; real publishing goes through update_listing, which
+        requires an image (BACKLOG #60)."""
+        from apps.storefront.models import Listing
+        from apps.storefront.services.listings import listing_for, storefront_settings
+
+        store = storefront_settings()
+        if not store.name_ar:
+            store.enabled = True
+            store.branch = Branch.objects.get(code="KRT")
+            store.name_ar = "صيدلية الشفاء"
+            store.name_en = "Al-Shifa Pharmacy"
+            store.hero_title_ar = "دواؤك قريب، وصيدلي يراجع طلبك."
+            store.hero_title_en = "Your medicine is close, and a pharmacist reviews your order."
+            store.hero_lead_ar = (
+                "تصفّح ما تعرضه الصيدلية، أرسل طلب مراجعة، وتؤكده معك على واتساب. "
+                "تستلم من الصيدلية وتدفع عند الاستلام."
+            )
+            store.hero_lead_en = (
+                "Browse what the pharmacy offers, send a review request, and confirm it "
+                "together on WhatsApp. Pick up at the pharmacy and pay on pickup."
+            )
+            store.address_ar = "أم درمان — شارع الأربعين"
+            store.address_en = "Omdurman — Al-Arbaeen St"
+            store.hours = "08:00 \u2013 22:00"  # en dash, as in the design
+            store.whatsapp = "249902929451"
+            store.about_ar = (
+                "نص تعريفي تجريبي. تضع الصيدلية هنا قصتها وفريقها بموافقتهم، "
+                "وما يميّز خدمتها. لا شهادات ولا أرقام عملاء."
+            )
+            store.about_en = (
+                "Sample introduction. The pharmacy tells its story here, introduces its team "
+                "(with their consent) and what sets its service apart."
+            )
+            store.save()
+        for code, ar, en in STOREFRONT:
+            item = Item.objects.get(code=code)
+            listing = listing_for(item)
+            if not listing.published:
+                Listing.objects.filter(pk=listing.pk).update(
+                    published=True, description_ar=ar, description_en=en
+                )
+
+
+# Items the sample storefront publishes, with the design's descriptions.
+STOREFRONT = [
+    (
+        "PAR-500",
+        "يخفف الألم ويخفض الحرارة. اقرأ النشرة الداخلية قبل الاستعمال.",
+        "Relieves pain and lowers fever. Read the leaflet before use.",
+    ),
+    (
+        "OME-20",
+        "لخفض حموضة المعدة. يُستعمل حسب إرشاد الصيدلي أو الطبيب.",
+        "Reduces stomach acid. Use as advised by a pharmacist or doctor.",
+    ),
+    (
+        "ORS-1",
+        "لتعويض السوائل والأملاح عند الإسهال. يُذاب في الماء النظيف.",
+        "Replaces fluids and salts during diarrhoea. Dissolve in clean water.",
+    ),
+    (
+        "VTC-1000",
+        "مكمّل غذائي. لا يغني عن نظام غذائي متوازن.",
+        "Dietary supplement. Not a substitute for a balanced diet.",
+    ),
+    (
+        "AMX-500",
+        "مضاد حيوي لا يُصرف إلا بوصفة. يراجعها الصيدلي قبل التأكيد.",
+        "Antibiotic dispensed only with a prescription, reviewed by a pharmacist.",
+    ),
+    (
+        "CSY-100",
+        "للسعال عند الأطفال حسب العمر المكتوب على العبوة.",
+        "For children's cough, by the age printed on the pack.",
+    ),
+    ("BPM-1", "جهاز رقمي للذراع. يأتي مع كفّ وبطاريات.", "Digital upper-arm monitor."),
+    ("BND-20", "ضمادات للجروح الصغيرة.", "Bandages for small cuts."),
+]

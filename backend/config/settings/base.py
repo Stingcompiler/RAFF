@@ -129,6 +129,11 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# Storefront listing images. Served by Caddy in production (WO-10), by Django when DEBUG.
+MEDIA_URL = "/media/"
+MEDIA_ROOT = Path(env("RAFF_MEDIA_ROOT", str(BASE_DIR / "media")))
+# Outbound order alerts; unset means badge only.
+RAFF_TELEGRAM_BOT_TOKEN = env("RAFF_TELEGRAM_BOT_TOKEN", "")
 
 # Sessions and CSRF (CLAUDE.md rule 17).
 SESSION_COOKIE_HTTPONLY = True
@@ -149,6 +154,12 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "COERCE_DECIMAL_TO_STRING": True,
+    # Public storefront endpoints (no session) are rate limited per client address.
+    "DEFAULT_THROTTLE_RATES": {
+        "storefront": env("RAFF_THROTTLE_STOREFRONT", "120/min"),
+        "orders": env("RAFF_THROTTLE_ORDERS", "20/hour"),
+        "track": env("RAFF_THROTTLE_TRACK", "10/min"),
+    },
 }
 
 SPECTACULAR_SETTINGS = {
@@ -165,6 +176,16 @@ SPECTACULAR_SETTINGS = {
         "LicenseStateEnum": ["valid", "missing", "invalid"],
         "LocaleEnum": [("ar", "ar"), ("en", "en")],
         "RefundMethodEnum": "apps.returns.models.SaleReturn.Refund",
+        "OrderStatusEnum": [
+            "new",
+            "needs_contact",
+            "confirmed",
+            "preparing",
+            "ready",
+            "out_for_delivery",
+            "completed",
+            "cancelled",
+        ],
     },
 }
 

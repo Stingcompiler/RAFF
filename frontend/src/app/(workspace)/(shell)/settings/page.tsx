@@ -1,6 +1,9 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
+import Link from "next/link";
+
 import { PageHeader } from "@/components/shell/PageHeader";
+import { buttonClasses } from "@/components/ui/Button";
 import {
   AuditPanel,
   DevicesPanel,
@@ -11,6 +14,7 @@ import {
 import { UsersPanel } from "@/features/users/UsersPanel";
 import { serverGet } from "@/lib/api/server";
 import type { Branch, Device, DeviceInfo, Role, Schemas, User } from "@/lib/api/types";
+import { cn } from "@/lib/cn";
 import { requireMe } from "@/lib/session";
 
 export default async function SettingsPage() {
@@ -30,7 +34,27 @@ export default async function SettingsPage() {
   ]);
   return (
     <>
-      <PageHeader title={t("settings.title")} />
+      <PageHeader
+        title={t("settings.title")}
+        actions={
+          me.permissions.includes("storefront.manage") && (
+            <>
+              <Link
+                href="/storefront/settings"
+                className={cn(buttonClasses({ variant: "outline" }), "no-underline")}
+              >
+                {t("settings.storefront")}
+              </Link>
+              <Link
+                href="/storefront/catalog"
+                className={cn(buttonClasses({ variant: "outline" }), "no-underline")}
+              >
+                {t("settings.published")}
+              </Link>
+            </>
+          )
+        }
+      />
       <SystemTiles />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-7 grid min-w-0 gap-[16px] max-[1180px]:col-span-12">

@@ -35,3 +35,11 @@ export function cleanAmount(text: string): string {
   const [whole = "", ...rest] = text.replace(/[^\d.]/g, "").split(".");
   return rest.length ? `${whole}.${rest.join("").slice(0, SCALE)}` : whole;
 }
+
+export function multiply(value: string | number, quantity: number): string {
+  return fromUnits(toUnits(value) * BigInt(quantity));
+}
+
+export function sum(values: (string | number)[]): string {
+  return fromUnits(values.reduce<bigint>((acc, v) => acc + toUnits(v), 0n));
+}

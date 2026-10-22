@@ -11,7 +11,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Same-origin API in development and tests; Caddy routes /api in production.
   async rewrites() {
-    return [{ source: "/api/:path*", destination: `${apiOrigin}/api/:path*/` }];
+    return [
+      { source: "/api/:path*", destination: `${apiOrigin}/api/:path*/` },
+      { source: "/media/:path*", destination: `${apiOrigin}/media/:path*` },
+    ];
   },
   skipTrailingSlashRedirect: true,
   // `next dev` must not write files into the (bind-mounted) source tree.
