@@ -5,6 +5,9 @@ import { RootDocument } from "@/components/RootDocument";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
 import { getTheme } from "@/lib/theme/config";
 
+// Rendered per request so every page carries its CSP nonce (src/proxy.ts).
+export const dynamic = "force-dynamic";
+
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
   return (

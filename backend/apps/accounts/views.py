@@ -13,6 +13,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 
 from apps.accounts.drf import requires
@@ -90,6 +91,8 @@ class DeviceInfoView(APIView):
 class LoginView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "login"
 
     @extend_schema(operation_id="auth_login", request=LoginSerializer, responses=MeSerializer)
     def post(self, request: Request) -> Response:
@@ -99,6 +102,8 @@ class LoginView(APIView):
             user = session.sign_in(request._request, **data.validated_data)
         except session.InvalidCredentials:
             raise ValidationError({"detail": "invalid_credentials"}) from None
+        except session.AccountLocked:
+            return Response({"detail": "account_locked"}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         session.default_context(
             request._request,
             user,

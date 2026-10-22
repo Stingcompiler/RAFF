@@ -36,4 +36,10 @@ class Command(BaseCommand):
                 detail=options["detail"][:300],
             )
             record(f"{run.kind}_{run.status}", "backup", run.pk, actor=None, file=run.file)
+        if run.status == BackupRun.Status.FAILED:
+            from apps.notifications.services.notify import ops_alert
+
+            ops_alert(
+                "backup_failed", f"Raff: {run.kind} failed — {run.detail or 'see the server log'}"
+            )
         self.stdout.write(str(run.pk))

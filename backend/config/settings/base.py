@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "config.middleware.RequestIdMiddleware",
     "django.middleware.security.SecurityMiddleware",
     # Before sessions/auth so the user lookup already runs inside the org context.
     "apps.tenancy.middleware.OrgContextMiddleware",
@@ -162,6 +163,7 @@ REST_FRAMEWORK = {
         "storefront": env("RAFF_THROTTLE_STOREFRONT", "120/min"),
         "orders": env("RAFF_THROTTLE_ORDERS", "20/hour"),
         "track": env("RAFF_THROTTLE_TRACK", "10/min"),
+        "login": env("RAFF_THROTTLE_LOGIN", "30/min"),
     },
 }
 
@@ -195,6 +197,32 @@ SPECTACULAR_SETTINGS = {
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "filters": {"request_id": {"()": "config.middleware.RequestIdFilter"}},
+    "formatters": {
+        "plain": {"format": "%(asctime)s %(levelname)s [%(request_id)s] %(name)s: %(message)s"}
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "filters": ["request_id"],
+            "formatter": "plain",
+        }
+    },
     "root": {"handlers": ["console"], "level": "INFO"},
 }
+
+# Throttles and login lockout need one shared store across Gunicorn workers in production
+# (RAFF_CACHE=db uses the database table created at start-up).
+CACHES = {
+    "default": (
+        {"BACKEND": "django.core.cache.backends.db.DatabaseCache", "LOCATION": "raff_cache"}
+        if env("RAFF_CACHE", "local") == "db"
+        else {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    )
+}
+
+# Sign-in protection: failures per username before a temporary lock, and its length.
+RAFF_LOGIN_MAX_FAILURES = int(env("RAFF_LOGIN_MAX_FAILURES", "5"))
+RAFF_LOGIN_LOCK_MINUTES = int(env("RAFF_LOGIN_LOCK_MINUTES", "15"))
+# Alert staff (Telegram, when configured) after this many server errors in 10 minutes.
+RAFF_ALERT_ERRORS = int(env("RAFF_ALERT_ERRORS", "20"))

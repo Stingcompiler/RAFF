@@ -52,3 +52,24 @@ def mark_read(order_id: uuid.UUID) -> None:
     Notification.objects.filter(object_id=order_id, read_at__isnull=True).update(
         read_at=timezone.now()
     )
+
+
+def ops_alert(kind: str, text: str) -> None:
+    """Operations alert (backup failed, errors piling up): badge record + Telegram if set.
+    Never raises: alerting must not break the caller."""
+    try:
+        from apps.storefront.models import StorefrontSettings
+        from apps.tenancy.context import org_context, resolve_org_id
+
+        org_id = resolve_org_id()
+        if org_id is None:
+            return
+        with org_context(org_id):
+            note = Notification.objects.create(
+                kind=kind, object_id=org_id, channel=Notification.Channel.BADGE, text=text[:500]
+            )
+            chat = (StorefrontSettings.objects.first() or StorefrontSettings()).telegram_chat_id
+            if settings.RAFF_TELEGRAM_BOT_TOKEN and chat:
+                _telegram(note.pk, chat, text)
+    except Exception as exc:
+        log.warning("ops alert failed: %s", exc)
