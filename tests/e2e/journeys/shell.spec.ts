@@ -64,4 +64,26 @@ test.describe("app shell", () => {
     expect(response.ok()).toBe(true);
     expect(await response.json()).toEqual({ status: "ok", database: "ok", version: "dev" });
   });
+
+  test("pages carry a nonce CSP and load without violations", async ({ page }) => {
+    const violations: string[] = [];
+    page.on("console", (m) => {
+      if (m.type() === "error" && /Content Security Policy|CSP/i.test(m.text()))
+        violations.push(m.text());
+    });
+    const res = await page.goto("/login");
+    const csp = res?.headers()["content-security-policy"] ?? "";
+    expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(csp).not.toMatch(/script-src[^;]*'unsafe-inline'/);
+    expect(csp).toContain("frame-ancestors 'none'");
+    await expect(page.getByRole("button", { name: "دخول" })).toBeEnabled();
+    for (const path of ["/", "/store", "/ar"]) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    }
+    await signIn(page, "admin");
+    await page.goto("/dashboard");
+    await expect(page.getByRole("heading", { name: "نظرة عامة" })).toBeVisible();
+    expect(violations).toEqual([]);
+  });
 });

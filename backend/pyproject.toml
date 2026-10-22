@@ -29,7 +29,8 @@ package = false
 DJANGO_SETTINGS_MODULE = "config.settings.test"
 testpaths = ["tests", "apps"]
 python_files = ["test_*.py"]
-addopts = "--strict-markers -p no:cacheprovider"
+addopts = "--strict-markers -p no:cacheprovider -m 'not perf'"
+markers = ["perf: performance targets on generated data (make perf)"]
 
 [tool.ruff]
 line-length = 100

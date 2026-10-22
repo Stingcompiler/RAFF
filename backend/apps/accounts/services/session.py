@@ -5,7 +5,9 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.core.cache import cache
 from django.http import HttpRequest
 
 from apps.accounts.models import User
@@ -19,6 +21,10 @@ class InvalidCredentials(Exception):
     pass
 
 
+class AccountLocked(Exception):
+    pass
+
+
 class ContextNotAllowed(Exception):
     pass
 
@@ -29,10 +35,33 @@ class WorkContext:
     device: Device | None
 
 
+def _keys(username: str) -> tuple[str, str]:
+    from apps.tenancy.context import get_current_org_id
+
+    who = f"{get_current_org_id()}:{username.strip().casefold()}"
+    return f"raff:login-fail:{who}", f"raff:login-lock:{who}"
+
+
 def sign_in(request: HttpRequest, username: str, password: str) -> User:
+    """Authenticate; after RAFF_LOGIN_MAX_FAILURES wrong passwords the username is locked
+    for RAFF_LOGIN_LOCK_MINUTES (the right password does not unlock it early)."""
+    failures_key, lock_key = _keys(username)
+    if cache.get(lock_key):
+        raise AccountLocked
     user = authenticate(request, username=username, password=password)
     if not isinstance(user, User):
+        window = settings.RAFF_LOGIN_LOCK_MINUTES * 60
+        cache.add(failures_key, 0, timeout=window)
+        if cache.incr(failures_key) >= settings.RAFF_LOGIN_MAX_FAILURES:
+            cache.set(lock_key, True, timeout=window)
+            cache.delete(failures_key)
+            from apps.audit.services.log import record
+            from apps.tenancy.context import get_current_org_id
+
+            record("locked", "login", get_current_org_id(), actor=None, username=username[:60])
+            raise AccountLocked
         raise InvalidCredentials
+    cache.delete(failures_key)
     login(request, user)  # rotates the session key and CSRF token
     return user
 

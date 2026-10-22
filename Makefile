@@ -21,7 +21,7 @@ export HOST_GID := $(shell id -g)
 
 MANAGE := uv run --directory backend python manage.py
 
-.PHONY: install dev demo down test e2e visual lint typecheck openapi openapi-check reference check
+.PHONY: install dev demo down test perf e2e visual lint typecheck openapi openapi-check reference check
 
 install:
 	uv sync --directory backend
@@ -43,6 +43,10 @@ down:
 
 test:
 	cd backend && uv run pytest
+
+# Performance targets on generated data (search p95 <= 1 s, approval p95 <= 2 s; 50k movements).
+perf:
+	cd backend && uv run pytest -m perf -s tests/test_performance.py
 
 # Build (with /api pointed at the Playwright backend, port 8100) and run the browser tests.
 # The same pnpm scripts run in CI, inside the Playwright image (which has no make).

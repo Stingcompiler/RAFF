@@ -45,7 +45,13 @@ export function LoginScreen({ device, initialMe, next }: Props) {
     const res = await apiSend<Me>("POST", "/auth/login/", { username, password });
     setBusy(null);
     if (!res.ok) {
-      setError(res.status === 0 || res.status >= 500 ? t("unreachable") : t("invalid"));
+      setError(
+        res.status === 429
+          ? t("locked")
+          : res.status === 0 || res.status >= 500
+            ? t("unreachable")
+            : t("invalid"),
+      );
       return;
     }
     setMe(res.data);

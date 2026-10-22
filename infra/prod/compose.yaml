@@ -27,7 +27,7 @@ services:
         RAFF_VERSION: ${RAFF_VERSION:-dev}
     restart: unless-stopped
     command: >-
-      sh -c "python manage.py migrate --noinput &&
+      sh -c "python manage.py migrate --noinput && python manage.py createcachetable &&
       gunicorn config.wsgi --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-3}
       --timeout 60 --access-logfile -"
     environment:
@@ -43,6 +43,7 @@ services:
       RAFF_LICENSE_FILE: /license/LICENSE.json
       RAFF_LICENSE_PUBLIC_KEY: ${RAFF_LICENSE_PUBLIC_KEY:-}
       RAFF_MEDIA_ROOT: /media
+      RAFF_CACHE: db
       RAFF_TELEGRAM_BOT_TOKEN: ${RAFF_TELEGRAM_BOT_TOKEN:-}
       RAFF_DEMO_PASSWORD: ${RAFF_DEMO_PASSWORD:-}
     volumes:

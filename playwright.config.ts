@@ -21,6 +21,8 @@ const backendEnv = {
   // The design's "today": expiry statuses and dates match the reference shots.
   RAFF_FIXED_TODAY: process.env.RAFF_FIXED_TODAY ?? "2026-10-22",
   RAFF_DEMO_PASSWORD: DEMO_PASSWORD,
+  // Every journey signs in from 127.0.0.1; the production rate (30/min) would throttle them.
+  RAFF_THROTTLE_LOGIN: "10000/min",
 };
 
 export default defineConfig({

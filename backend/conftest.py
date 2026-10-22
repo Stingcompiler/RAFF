@@ -34,3 +34,13 @@ def other_org_branch(world: World) -> Branch:
     with org_context(other.id):
         branch: Branch = Branch.objects.create(code="KRT", name_ar="فرع", name_en="Other")
     return branch
+
+
+@pytest.fixture(autouse=True)
+def _fresh_cache() -> Iterator[None]:
+    """Throttles and login lockouts live in the cache; no test inherits another's counts."""
+    from django.core.cache import cache
+
+    cache.clear()
+    yield
+    cache.clear()

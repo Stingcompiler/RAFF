@@ -199,7 +199,8 @@
     "continue": "Continue",
     "continuing": "Continuing…",
     "signInFirst": "Sign in first.",
-    "notAllowed": "✕ You have no role in this branch."
+    "notAllowed": "✕ You have no role in this branch.",
+    "locked": "Sign-in is paused after repeated wrong passwords. Try again in 15 minutes or ask the owner."
   },
   "users": {
     "title": "Users & roles",
