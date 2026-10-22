@@ -20,7 +20,13 @@ import { chromium } from "@playwright/test";
 
 const require = createRequire(import.meta.url);
 const HANDOFF_DIR = path.dirname(fileURLToPath(import.meta.url));
-const OUT_DIR = path.join(HANDOFF_DIR, "reference");
+// `reference/` is canonical (generated on Linux in CI's Playwright image, see
+// .github/workflows/references.yml). `--local` writes a macOS copy to the gitignored
+// `reference-local/` so local visual runs compare like with like.
+const OUT_DIR = path.join(
+  HANDOFF_DIR,
+  process.argv.includes("--local") ? "reference-local" : "reference",
+);
 
 // ---------------------------------------------------------------------------
 // Local server

@@ -1,11 +1,16 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { expect, type Page, type TestInfo } from "@playwright/test";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 
-const REFERENCE_DIR = path.resolve(__dirname, "../../../design/handoff/reference");
+const HANDOFF = path.resolve(__dirname, "../../../design/handoff");
+// CI (Linux) compares with the canonical Linux shots; on macOS use the local copy
+// made by `node design/handoff/generate-reference.mjs --local` when it exists.
+const LOCAL = path.join(HANDOFF, "reference-local");
+const REFERENCE_DIR =
+  process.platform === "darwin" && existsSync(LOCAL) ? LOCAL : path.join(HANDOFF, "reference");
 
 export type Rect = { x: number; y: number; width: number; height: number };
 

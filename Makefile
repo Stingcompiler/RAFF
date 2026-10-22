@@ -72,7 +72,9 @@ openapi-check: openapi
 	@test -z "$$(git ls-files --others --exclude-standard -- backend/openapi frontend/src/lib/api)" \
 		|| (echo "Untracked OpenAPI output; commit it." && exit 1)
 
+# Canonical references come from CI (.github/workflows/references.yml, Linux).
+# Locally this makes the macOS copy used by `make visual` on a Mac.
 reference:
-	node design/handoff/generate-reference.mjs
+	node design/handoff/generate-reference.mjs --local
 
 check: lint typecheck test openapi-check e2e visual
