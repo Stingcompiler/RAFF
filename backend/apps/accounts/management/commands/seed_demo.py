@@ -5,6 +5,7 @@ Everything it creates is labelled as sample data. Idempotent.
 
 from __future__ import annotations
 
+import datetime as dt
 import os
 from decimal import Decimal
 from typing import Any
@@ -16,6 +17,8 @@ from apps.accounts.models import Role, User
 from apps.accounts.services.users import create_user, ensure_default_roles
 from apps.catalog.models import Category, Item, PriceList
 from apps.catalog.services.items import UnitSpec, create_item, ensure_default_price_lists, set_price
+from apps.purchasing.models import GoodsReceipt, Supplier
+from apps.purchasing.services.receiving import LineInput, post_receipt, save_draft
 from apps.tenancy.context import org_context, resolve_org_id
 from apps.tenancy.models import Branch, Device, Organization
 
@@ -237,6 +240,7 @@ class Command(BaseCommand):
                     )
             with org_context(org_id):
                 self._catalog()
+                self._purchasing(Branch.objects.get(code="KRT"))
         self.stdout.write("sample data ready")
 
     def _catalog(self) -> None:
@@ -272,3 +276,79 @@ class Command(BaseCommand):
             sale = item.units.get(is_default_sale=True)
             set_price(sale, Decimal(price))
             set_price(sale, Decimal(price) * Decimal("0.9"), price_list=wholesale)
+
+    def _purchasing(self, branch: Branch) -> None:
+        """Two sample suppliers, one posted receipt (stock on hand) and one draft (the design's)."""
+        nada, _ = Supplier.objects.get_or_create(
+            code="NADA",
+            defaults={
+                "name_ar": "شركة الندى للأدوية (تجريبي)",
+                "name_en": "Al-Nada Pharma (sample)",
+                "payment_terms_days": 30,
+            },
+        )
+        Supplier.objects.get_or_create(
+            code="SHIFA",
+            defaults={"name_ar": "مستودع الشفاء (تجريبي)", "name_en": "Al-Shifa Store (sample)"},
+        )
+        owner = User.objects.get(username="admin")
+
+        def line(
+            code: str,
+            unit: str,
+            qty: int,
+            bonus: int,
+            cost: str,
+            batch: str,
+            expiry: dt.date | None,
+        ) -> LineInput:
+            item = Item.objects.get(code=code)
+            return LineInput(
+                item.pk,
+                item.units.get(code=unit).pk,
+                qty,
+                bonus,
+                Decimal(cost),
+                Decimal(0),
+                batch,
+                expiry,
+            )
+
+        if not GoodsReceipt.objects.filter(supplier=nada, supplier_invoice_no="INV-20398").exists():
+            stock = save_draft(
+                receipt=None,
+                branch=branch,
+                supplier=nada,
+                supplier_invoice_no="INV-20398",
+                invoice_date=dt.date(2026, 10, 1),
+                payment_terms_days=30,
+                notes="",
+                lines=[
+                    line("AUG-625", "box", 30, 4, "9800", "B-2301", dt.date(2026, 12, 2)),
+                    line("AUG-625", "box", 20, 0, "9800", "B-2310", dt.date(2027, 3, 31)),
+                    line("PAR-500", "strip", 200, 10, "600", "B-9120", dt.date(2027, 1, 15)),
+                    line("OME-20", "strip", 18, 0, "1800", "B-4401", dt.date(2026, 12, 2)),
+                    line("ORS-1", "sachet", 96, 0, "200", "B-7001", dt.date(2027, 9, 10)),
+                    line("CSY-100", "bottle", 7, 0, "2100", "B-3301", dt.date(2027, 9, 30)),
+                    line("VTC-1000", "box", 10, 0, "3800", "B-5501", dt.date(2027, 6, 30)),
+                    line("AMX-500", "box", 12, 0, "3000", "B-6601", dt.date(2027, 5, 31)),
+                ],
+                user=owner,
+            )
+            post_receipt(stock.pk, idempotency_key=f"seed-{stock.pk}", user=owner)
+        if not GoodsReceipt.objects.filter(supplier=nada, supplier_invoice_no="INV-20431").exists():
+            save_draft(
+                receipt=None,
+                branch=branch,
+                supplier=nada,
+                supplier_invoice_no="INV-20431",
+                invoice_date=dt.date(2026, 10, 21),
+                payment_terms_days=30,
+                notes="",
+                lines=[
+                    line("AUG-625", "box", 40, 4, "9800", "B-2330", dt.date(2027, 11, 30)),
+                    line("PAR-500", "strip", 200, 0, "600", "B-9121", dt.date(2027, 8, 1)),
+                    line("OME-20", "strip", 60, 6, "1800", "B-4407", None),
+                ],
+                user=owner,
+            )
