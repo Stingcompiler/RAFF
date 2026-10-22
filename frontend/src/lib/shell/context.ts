@@ -1,8 +1,9 @@
 import "server-only";
 
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import type { ShellContext } from "@/components/shell/types";
+import type { Me } from "@/lib/api/types";
 
 const apiOrigin = process.env.RAFF_API_ORIGIN ?? "http://localhost:8000";
 
@@ -18,19 +19,24 @@ async function serverReachable(): Promise<boolean> {
   }
 }
 
-/**
- * Shell data for the signed-in user. Branch, user and device arrive with
- * authentication (WO-02); until then only the server state is real.
- */
-export async function getShellContext(): Promise<ShellContext> {
-  const t = await getTranslations("connection");
+/** Shell data for the signed-in user and the branch/counter of this session. */
+export async function getShellContext(
+  me: Me & { branch: NonNullable<Me["branch"]> },
+): Promise<ShellContext> {
+  const t = await getTranslations();
+  const ar = (await getLocale()) === "ar";
+  const pick = (o: { name_ar: string; name_en: string }) => (ar ? o.name_ar : o.name_en);
   const online = await serverReachable();
+  const name = ar ? me.user.display_name_ar : me.user.display_name_en;
   return {
-    branchLine: "",
+    branchLine: pick(me.branch),
     connection: online
-      ? { status: "online", text: t("chipOnline") }
-      : { status: "unavailable", text: t("chipUnavailable") },
-    user: { name: "", initial: "" },
-    deviceLine: "",
+      ? { status: "online", text: t("connection.chipOnline") }
+      : { status: "unavailable", text: t("connection.chipUnavailable") },
+    user: {
+      name: me.role ? `${name} (${pick(me.role)})` : name,
+      initial: name.slice(0, 1),
+    },
+    deviceLine: me.device ? t("shell.deviceLine", { device: pick(me.device) }) : "",
   };
 }

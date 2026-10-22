@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+import { signIn } from "../support/auth";
+
 test.describe("workspace shell", () => {
+  test.beforeEach(async ({ page }) => {
+    await signIn(page, "mazin");
+  });
+
   test("sidebar navigates and marks the current screen", async ({ page }) => {
     await page.goto("/dashboard");
     const nav = page.getByRole("navigation");

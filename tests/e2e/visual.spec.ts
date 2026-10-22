@@ -1,6 +1,8 @@
 // Screens compared against design/handoff/reference/ (CLAUDE.md rule 23, 2% tolerance).
 import { test } from "@playwright/test";
 
+import { DEMO_PASSWORD } from "../../playwright.config";
+import { registerCounter } from "./support/auth";
 import { expectMatchesReference } from "./support/reference";
 
 const VARIANTS = [
@@ -56,6 +58,36 @@ test.describe("Workspace shell → /dev/shell (Raff Screens)", () => {
             { x: barX, y: 0, width: 1440 - SIDEBAR, height: TOPBAR },
           ],
         },
+      );
+    });
+  }
+});
+
+test.describe("Sign-in → /login (Raff Screens › الدخول)", () => {
+  // Both variants register the same counter; registering rotates its token.
+  test.describe.configure({ mode: "serial" });
+  for (const { locale, theme } of [
+    { locale: "ar", theme: "light" },
+    { locale: "en", theme: "dark" },
+  ] as const) {
+    test(`${locale}-${theme}-1440`, async ({ page, context, baseURL }, testInfo) => {
+      await registerCounter(page);
+      await context.addCookies([
+        { name: "NEXT_LOCALE", value: locale, url: baseURL! },
+        { name: "raff-theme", value: theme, url: baseURL! },
+      ]);
+      await page.setViewportSize({ width: 1440, height: 860 });
+      await page.goto("/login");
+      await page.locator("input[name=username]").fill("salma");
+      await page.locator("input[name=password]").fill(DEMO_PASSWORD);
+      await page.locator("form button[type=submit]").first().click();
+      await page.locator("select[name=counter]:not([disabled])").waitFor();
+      await page.mouse.move(0, 0);
+      await expectMatchesReference(
+        page,
+        testInfo,
+        { file: "raff-screens", state: "login", locale, theme, width: 1440 },
+        { fullPage: false, regions: [{ x: 0, y: 0, width: 1440, height: 860 }] },
       );
     });
   }

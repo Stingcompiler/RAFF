@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { signIn } from "../support/auth";
+
 test.describe("app shell", () => {
   test("marketing landing follows the URL locale and direction", async ({ page }) => {
     await page.goto("/ar");
@@ -18,20 +20,19 @@ test.describe("app shell", () => {
     expect(response?.status()).toBe(404);
   });
 
-  for (const [path, heading] of [
-    ["/", "رَفّ"],
-    ["/login", "الدخول"],
-    ["/dashboard", "المتابعة"],
-  ] as const) {
-    test(`route group placeholder ${path} renders in Arabic by default`, async ({ page }) => {
-      await page.goto(path);
-      await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-      await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText(heading);
-    });
-  }
+  test("storefront and workspace render in Arabic by default", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
+    await signIn(page, "salma");
+    await page.goto("/dashboard");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("المتابعة");
+  });
 
   test("user locale and theme come from cookies", async ({ page, context, baseURL }) => {
+    await signIn(page, "salma");
     await context.addCookies([
       { name: "NEXT_LOCALE", value: "en", url: baseURL! },
       { name: "raff-theme", value: "dark", url: baseURL! },

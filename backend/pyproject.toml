@@ -8,6 +8,7 @@ dependencies = [
     "drf-spectacular==0.30.0",
     "psycopg[binary]==3.3.6",
     "gunicorn==26.2.0",
+    "cryptography==50.0.2",
 ]
 
 [dependency-groups]
@@ -36,11 +37,12 @@ extend-exclude = ["apps/*/migrations"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "SIM", "RUF"]
-ignore = ["S101"]
+# RUF012: Django Meta options and DRF view attributes are class-level lists by design.
+ignore = ["S101", "RUF012"]
 
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*" = ["F405"]
-"**/tests/**" = ["DJ008", "RUF012", "S105", "S106"]
+"**/tests/**" = ["DJ008", "S105", "S106"]
 
 [tool.mypy]
 strict = true
