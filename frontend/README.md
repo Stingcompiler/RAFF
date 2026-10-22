@@ -12,3 +12,6 @@ pnpm --dir frontend openapi    # يولّد src/lib/api/schema.d.ts من backend
 - الألوان في `src/styles/tokens.css` وحده، ومربوطة في `@theme`. لوحة Tailwind الافتراضية محذوفة.
 - النصوص في `messages/ar.json` و`messages/en.json`. اللغة من المسار في `(marketing)/[locale]`، ومن ملف تعريف الارتباط `NEXT_LOCALE` في بقية المسارات، والافتراضي العربية. الثيم من `raff-theme`.
 - قواعد الفحص المخصصة في `lint-rules/`، واختباراتها السلبية في `lint-tests/`.
+- مكوّنات التصميم في `src/components/ui/` (ملف لكل مكوّن)، ومكوّنات المتجر في `src/components/storefront/`، والقشرة في `src/components/shell/`.
+- صفحات المراجعة: `/dev/components` (كل مكوّن بحالاته بالثيمين)، `/dev/shell`، `/dev/dialog`. متاحة في `next dev`، أو مع `RAFF_DEV_ROUTES=1`.
+- بلا Tailwind preflight، وقيم التصميم تُنقل كما هي: راجع `docs/spec/decisions/0002-browser-defaults-no-preflight.md`.
