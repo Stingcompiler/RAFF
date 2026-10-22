@@ -74,13 +74,15 @@ test.describe("users & roles", () => {
     const username = `user${Date.now() % 100000}`;
     await dialog.getByLabel("اسم المستخدم").fill(username);
     await dialog.getByLabel("كلمة المرور").fill("counter-pass-55");
-    await dialog.getByLabel("الاسم بالعربية").fill("نهى");
+    await dialog.getByLabel("الاسم بالعربية").fill(`نهى ${username}`);
     await dialog.getByLabel("الاسم بالإنجليزية").fill("Noha");
     await dialog.getByLabel("الدور").selectOption({ label: "كاشير" });
     await dialog.getByLabel("الفرع").selectOption({ label: "فرع الخرطوم (تجريبي)" });
     await dialog.getByRole("button", { name: "إنشاء" }).click();
     await expect(page.getByRole("status").filter({ hasText: "تم إنشاء المستخدم" })).toBeVisible();
-    await expect(page.getByRole("row", { name: /نهى/ })).toContainText("كاشير");
+    await expect(page.getByRole("row", { name: new RegExp(`نهى ${username}`) })).toContainText(
+      "كاشير",
+    );
 
     await page.context().clearCookies();
     await signIn(page, username, "counter-pass-55");
