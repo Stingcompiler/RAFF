@@ -62,6 +62,6 @@ test.describe("app shell", () => {
   test("API health is reachable through the frontend origin", async ({ request }) => {
     const response = await request.get("/api/v1/health/");
     expect(response.ok()).toBe(true);
-    expect(await response.json()).toEqual({ status: "ok", database: "ok" });
+    expect(await response.json()).toEqual({ status: "ok", database: "ok", version: "dev" });
   });
 });
