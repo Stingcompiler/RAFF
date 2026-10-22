@@ -109,3 +109,43 @@ test.describe("stocktake", () => {
     await expect(page.getByRole("table", { name: "عمليات الجرد" })).toContainText("معتمد");
   });
 });
+
+test.describe("shifts & cash (Counter 2)", () => {
+  test("confirm a bank transfer, close the shift short, then settle it", async ({ page }) => {
+    // A bank sale on Counter 2 (the returns journeys above already opened its shift).
+    await registerCounter(page, "Counter 2");
+    await signIn(page, "admin");
+    const headers = { "x-csrftoken": await csrf(page) };
+    await page.request.post("/api/v1/shifts/", { data: { opening_cash: "50000" }, headers });
+    const [ors] = await (await page.request.get("/api/v1/pos/items/?q=ORS")).json();
+    const sale = await page.request.post("/api/v1/sales/", {
+      data: {
+        lines: [{ item_id: ors.id, unit_id: ors.unit.id, quantity: 1 }],
+        payments: [{ method: "bank", amount: "300", bank_reference: "BK-E2E-1" }],
+      },
+      headers: { ...headers, "idempotency-key": crypto.randomUUID() },
+    });
+    expect(sale.ok(), await sale.text()).toBe(true);
+
+    await page.goto("/shifts");
+    const transfers = page.getByRole("table", { name: "التحويلات البنكية" });
+    const row = transfers.getByRole("row", { name: /BK-E2E-1/ });
+    await expect(row).toContainText("بانتظار التحقق");
+    await row.getByRole("button", { name: "تأكيد الوصول" }).click();
+    await expect(page.getByText("تأكد وصول التحويل")).toBeVisible();
+    await expect(row).toHaveCount(0);
+
+    await page.getByRole("button", { name: "إغلاق الوردية" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByLabel("النقد المعدود").fill("1");
+    await expect(dialog).toContainText("عجز نقدي");
+    await dialog.getByRole("button", { name: "إغلاق الوردية" }).click();
+    await expect(page.getByText("أُغلقت الوردية")).toBeVisible();
+    const log = page.getByRole("table", { name: "سجل الورديات" });
+    const closed = log.getByRole("row", { name: /كاونتر 2/ }).first();
+    await expect(closed).toContainText("غير مسوّاة");
+    await closed.getByRole("button", { name: "تسوية" }).click();
+    await expect(page.getByText("سُوّيت الوردية")).toBeVisible();
+    await expect(closed).toContainText("مسوّاة");
+  });
+});

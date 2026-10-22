@@ -115,3 +115,34 @@ class PartyLedgerEntry(OrgScopedModel):
 
     def __str__(self) -> str:
         return f"{self.party_type}:{self.party_id} {self.amount}"
+
+
+class PartyPayment(OrgScopedModel):
+    """Money received from a customer (collection) or paid to a supplier."""
+
+    class Method(models.TextChoices):
+        CASH = "cash", "Cash"
+        BANK = "bank", "Bank transfer"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    number = models.CharField(max_length=20)
+    branch = models.ForeignKey(Branch, on_delete=models.PROTECT, related_name="+")
+    party_type = models.CharField(max_length=10, choices=PartyLedgerEntry.Party.choices)
+    party_id = models.UUIDField()
+    method = models.CharField(max_length=10, choices=Method.choices)
+    amount = MoneyField()
+    reference = models.CharField(max_length=60, blank=True)
+    note = models.CharField(max_length=200, blank=True)
+    idempotency_key = models.CharField(max_length=100)
+    created_by = models.ForeignKey("accounts.User", on_delete=models.PROTECT, related_name="+")
+    posted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-posted_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["organization", "number"], name="party_payment_number"),
+            models.CheckConstraint(condition=models.Q(amount__gt=0), name="party_payment_positive"),
+        ]
+
+    def __str__(self) -> str:
+        return self.number

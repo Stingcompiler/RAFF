@@ -3,6 +3,36 @@ info:
   title: Raff API
   version: 1.0.0
 paths:
+  /api/v1/audit/events/:
+    get:
+      operationId: audit_events
+      description: Who did what, newest first (append-only).
+      parameters:
+      - in: query
+        name: action
+        schema:
+          type: string
+      - in: query
+        name: limit
+        schema:
+          type: integer
+      - in: query
+        name: object_type
+        schema:
+          type: string
+      tags:
+      - audit
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditEvent'
+          description: ''
   /api/v1/auth/context/:
     post:
       operationId: auth_context
@@ -449,6 +479,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Customer'
           description: ''
+  /api/v1/dashboard/:
+    get:
+      operationId: dashboard
+      description: Dashboard figures for the session's branch, or every branch the
+        user may see.
+      parameters:
+      - in: query
+        name: scope
+        schema:
+          type: string
+          enum:
+          - all
+          - branch
+      tags:
+      - dashboard
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Overview'
+          description: ''
   /api/v1/devices/:
     get:
       operationId: devices_list
@@ -506,6 +560,133 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Device'
+          description: ''
+  /api/v1/finance/bank-transfers/:
+    get:
+      operationId: finance_bank_transfers
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - all
+          - pending
+      tags:
+      - finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BankTransfer'
+          description: ''
+  /api/v1/finance/bank-transfers/{id}/verify/:
+    post:
+      operationId: finance_bank_transfer_verify
+      description: '''Confirm arrival'': the transfer reached the bank account.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+          description: ''
+  /api/v1/finance/ledger/:
+    get:
+      operationId: finance_ledger
+      parameters:
+      - in: query
+        name: party
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - customer
+          - supplier
+        required: true
+      tags:
+      - finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LedgerRow'
+          description: ''
+  /api/v1/finance/parties/:
+    get:
+      operationId: finance_parties
+      parameters:
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - customer
+          - supplier
+      tags:
+      - finance
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Party'
+          description: ''
+  /api/v1/finance/payments/:
+    post:
+      operationId: finance_payment
+      description: Record a collection from a customer or a payment to a supplier.
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - finance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartyPaymentIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartyPaymentResult'
           description: ''
   /api/v1/health/:
     get:
@@ -931,6 +1112,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/QuarantineEntry'
           description: ''
+  /api/v1/reports/{name}/:
+    get:
+      operationId: reports_run
+      description: One of the seven reports as JSON, or as CSV (UTF-8 with BOM) with
+        ?format=csv.
+      parameters:
+      - in: query
+        name: days
+        schema:
+          type: integer
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+      - in: query
+        name: from
+        schema:
+          type: string
+        description: YYYY-MM-DD
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - ar
+          - en
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: to
+        schema:
+          type: string
+        description: YYYY-MM-DD
+      tags:
+      - reports
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+            text/csv:
+              schema:
+                type: string
+          description: ''
   /api/v1/returns/:
     get:
       operationId: returns_list
@@ -1274,6 +1507,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/CloseResult'
           description: ''
+  /api/v1/shifts/{id}/settle/:
+    post:
+      operationId: shifts_settle
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - shifts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
   /api/v1/shifts/current/:
     get:
       operationId: shifts_current
@@ -1287,6 +1541,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ShiftSummary'
+          description: ''
+  /api/v1/shifts/history/:
+    get:
+      operationId: shifts_history
+      description: The branch's shifts, newest first, with their figures (shift log).
+      tags:
+      - shifts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShiftLog'
           description: ''
   /api/v1/stocktakes/:
     get:
@@ -1429,6 +1700,120 @@ paths:
               schema:
                 $ref: '#/components/schemas/Supplier'
           description: ''
+  /api/v1/transfers/:
+    get:
+      operationId: transfers_list
+      tags:
+      - transfers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transfer'
+          description: ''
+    post:
+      operationId: transfers_create
+      tags:
+      - transfers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetail'
+          description: ''
+  /api/v1/transfers/{id}/:
+    get:
+      operationId: transfers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - transfers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetail'
+          description: ''
+  /api/v1/transfers/{id}/receive/:
+    post:
+      operationId: transfers_receive
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - transfers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiveIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetail'
+          description: ''
+  /api/v1/transfers/{id}/send/:
+    post:
+      operationId: transfers_send
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - transfers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferDetail'
+          description: ''
   /api/v1/users/:
     get:
       operationId: users_list
@@ -1504,6 +1889,75 @@ components:
           nullable: true
       required:
       - role_id
+    AuditEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        action:
+          type: string
+          maxLength: 40
+        object_type:
+          type: string
+          maxLength: 30
+        object_id:
+          type: string
+          format: uuid
+        branch_code:
+          type: string
+          readOnly: true
+          nullable: true
+        actor_name_ar:
+          type: string
+          readOnly: true
+        actor_name_en:
+          type: string
+          readOnly: true
+        data: {}
+      required:
+      - action
+      - actor_name_ar
+      - actor_name_en
+      - branch_code
+      - created_at
+      - id
+      - object_id
+      - object_type
+    BankTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sale_number:
+          type: string
+        posted_at:
+          type: string
+          format: date-time
+        bank_reference:
+          type: string
+        bank_account:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        verification:
+          type: string
+      required:
+      - amount
+      - bank_account
+      - bank_reference
+      - id
+      - posted_at
+      - sale_number
+      - verification
     BarcodeLookup:
       type: object
       properties:
@@ -1582,6 +2036,23 @@ components:
           maxLength: 80
         receipt_locale:
           $ref: '#/components/schemas/LocaleEnum'
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
+    BranchRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
       required:
       - code
       - id
@@ -1727,6 +2198,19 @@ components:
       - id
       - name_ar
       - name_en
+    DayTotal:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - date
+      - total
     Decision:
       type: object
       properties:
@@ -2064,26 +2548,41 @@ components:
       - name_en
       - price
       - sale_unit
-    KindEnum:
-      enum:
-      - receipt
-      - sale
-      - return
-      - release
-      - adjustment
-      - transfer_out
-      - transfer_in
-      - quarantine
-      type: string
-      description: |-
-        * `receipt` - Goods receipt
-        * `sale` - Sale
-        * `return` - Customer return
-        * `release` - Released from review
-        * `adjustment` - Adjustment
-        * `transfer_out` - Transfer out
-        * `transfer_in` - Transfer in
-        * `quarantine` - Quarantine
+    LedgerRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date-time
+        document_type:
+          type: string
+        document_number:
+          type: string
+        debit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - balance
+      - credit
+      - date
+      - debit
+      - document_number
+      - document_type
+      - id
     LicenseStateEnum:
       enum:
       - valid
@@ -2251,16 +2750,6 @@ components:
       - display_name_en
       - id
       - username
-    MethodEnum:
-      enum:
-      - cash
-      - bank
-      - credit
-      type: string
-      description: |-
-        * `cash` - Cash
-        * `bank` - Bank transfer
-        * `credit` - Customer credit
     MissingItem:
       type: object
       properties:
@@ -2277,7 +2766,7 @@ components:
           format: uuid
           readOnly: true
         kind:
-          $ref: '#/components/schemas/KindEnum'
+          $ref: '#/components/schemas/MovementKindEnum'
         quantity_base:
           type: integer
           maximum: 2147483647
@@ -2310,6 +2799,51 @@ components:
       - location
       - quantity_base
       - unit_cost
+    MovementKindEnum:
+      enum:
+      - receipt
+      - sale
+      - return
+      - release
+      - adjustment
+      - transfer_out
+      - transfer_in
+      - quarantine
+      type: string
+      description: |-
+        * `receipt` - Goods receipt
+        * `sale` - Sale
+        * `return` - Customer return
+        * `release` - Released from review
+        * `adjustment` - Adjustment
+        * `transfer_out` - Transfer out
+        * `transfer_in` - Transfer in
+        * `quarantine` - Quarantine
+    NeedsAction:
+      type: object
+      properties:
+        expiring:
+          type: integer
+        below_reorder:
+          type: integer
+        receivables:
+          type: integer
+        unsettled_shifts:
+          type: integer
+        transfers_awaiting:
+          type: integer
+        store_orders:
+          type: integer
+        pending_sync:
+          type: integer
+      required:
+      - below_reorder
+      - expiring
+      - pending_sync
+      - receivables
+      - store_orders
+      - transfers_awaiting
+      - unsettled_shifts
     OpenShift:
       type: object
       properties:
@@ -2319,6 +2853,201 @@ components:
           pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
       required:
       - opening_cash
+    Operation:
+      type: object
+      properties:
+        at:
+          type: string
+          format: date-time
+        kind:
+          $ref: '#/components/schemas/OperationKindEnum'
+        number:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        status:
+          $ref: '#/components/schemas/OperationStatusEnum'
+      required:
+      - amount
+      - at
+      - kind
+      - number
+      - status
+    OperationKindEnum:
+      enum:
+      - sale
+      - return
+      type: string
+      description: |-
+        * `sale` - sale
+        * `return` - return
+    OperationStatusEnum:
+      enum:
+      - approved
+      - verifying
+      - to_inspect
+      type: string
+      description: |-
+        * `approved` - approved
+        * `verifying` - verifying
+        * `to_inspect` - to_inspect
+    Overview:
+      type: object
+      properties:
+        needs_action:
+          $ref: '#/components/schemas/NeedsAction'
+        near_expiry_days:
+          type: integer
+        sales_today:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        sales_count:
+          type: integer
+        cash_today:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        bank_today:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        open_shift:
+          allOf:
+          - $ref: '#/components/schemas/OverviewShift'
+          nullable: true
+        week:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayTotal'
+        latest:
+          type: array
+          items:
+            $ref: '#/components/schemas/Operation'
+      required:
+      - bank_today
+      - cash_today
+      - latest
+      - near_expiry_days
+      - needs_action
+      - open_shift
+      - sales_count
+      - sales_today
+      - week
+    OverviewShift:
+      type: object
+      properties:
+        number:
+          type: integer
+        opened_at:
+          type: string
+          format: date-time
+        user_ar:
+          type: string
+        user_en:
+          type: string
+      required:
+      - number
+      - opened_at
+      - user_ar
+      - user_en
+    Party:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        phone:
+          type: string
+        balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        credit_limit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        last_activity:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - balance
+      - code
+      - credit_limit
+      - id
+      - last_activity
+      - name_ar
+      - name_en
+      - phone
+    PartyPaymentIn:
+      type: object
+      properties:
+        party_type:
+          $ref: '#/components/schemas/PartyTypeEnum'
+        party_id:
+          type: string
+          format: uuid
+        method:
+          $ref: '#/components/schemas/PartyPaymentInMethodEnum'
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        reference:
+          type: string
+          default: ''
+          maxLength: 60
+        note:
+          type: string
+          default: ''
+          maxLength: 200
+      required:
+      - amount
+      - method
+      - party_id
+      - party_type
+    PartyPaymentInMethodEnum:
+      enum:
+      - cash
+      - bank
+      type: string
+      description: |-
+        * `cash` - Cash
+        * `bank` - Bank transfer
+    PartyPaymentResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - amount
+      - id
+      - number
+    PartyTypeEnum:
+      enum:
+      - customer
+      - supplier
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `supplier` - Supplier
     PatchedCountsIn:
       type: object
       properties:
@@ -2372,7 +3101,7 @@ components:
       type: object
       properties:
         method:
-          $ref: '#/components/schemas/MethodEnum'
+          $ref: '#/components/schemas/PaymentInMethodEnum'
         amount:
           type: string
           format: decimal
@@ -2393,6 +3122,16 @@ components:
       required:
       - amount
       - method
+    PaymentInMethodEnum:
+      enum:
+      - cash
+      - bank
+      - credit
+      type: string
+      description: |-
+        * `cash` - Cash
+        * `bank` - Bank transfer
+        * `credit` - Customer credit
     PosItem:
       type: object
       properties:
@@ -2926,6 +3665,28 @@ components:
       description: |-
         * `draft` - Draft
         * `posted` - Posted
+    ReceiveIn:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceivedLine'
+      required:
+      - lines
+    ReceivedLine:
+      type: object
+      properties:
+        line_id:
+          type: string
+          format: uuid
+        received:
+          type: integer
+          minimum: 0
+          description: In the item's default sale unit
+      required:
+      - line_id
+      - received
     RefundMethodEnum:
       enum:
       - cash
@@ -2942,6 +3703,55 @@ components:
           format: date
       required:
       - expiry_date
+    Report:
+      type: object
+      properties:
+        name:
+          type: string
+        start:
+          type: string
+          format: date
+        end:
+          type: string
+          format: date
+        days:
+          type: integer
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportColumn'
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        totals:
+          type: object
+          additionalProperties: {}
+      required:
+      - columns
+      - days
+      - end
+      - name
+      - rows
+      - start
+      - totals
+    ReportColumn:
+      type: object
+      properties:
+        key:
+          type: string
+        label_ar:
+          type: string
+        label_en:
+          type: string
+        kind:
+          type: string
+      required:
+      - key
+      - kind
+      - label_ar
+      - label_en
     ReturnIn:
       type: object
       properties:
@@ -3377,6 +4187,64 @@ components:
       - number
       - opened_at
       - opening_cash
+    ShiftLog:
+      type: object
+      properties:
+        shift:
+          allOf:
+          - $ref: '#/components/schemas/Shift'
+          nullable: true
+        sales_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        sales_count:
+          type: integer
+          nullable: true
+        cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        bank:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        expected_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        device_ar:
+          type: string
+        device_en:
+          type: string
+        opened_by_ar:
+          type: string
+        opened_by_en:
+          type: string
+        settled:
+          type: boolean
+      required:
+      - bank
+      - cash
+      - credit
+      - device_ar
+      - device_en
+      - expected_cash
+      - opened_by_ar
+      - opened_by_en
+      - sales_count
+      - sales_total
+      - settled
+      - shift
     ShiftStatusEnum:
       enum:
       - open
@@ -3753,6 +4621,183 @@ components:
       - id
       - name_ar
       - name_en
+    Transfer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        from_branch:
+          $ref: '#/components/schemas/BranchRef'
+        to_branch:
+          $ref: '#/components/schemas/BranchRef'
+        status:
+          type: string
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        sent_at:
+          type: string
+          format: date-time
+          nullable: true
+        received_at:
+          type: string
+          format: date-time
+          nullable: true
+        lines_count:
+          type: integer
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - created_at
+      - from_branch
+      - id
+      - lines_count
+      - note
+      - number
+      - received_at
+      - sent_at
+      - status
+      - to_branch
+      - value
+    TransferDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        from_branch:
+          $ref: '#/components/schemas/BranchRef'
+        to_branch:
+          $ref: '#/components/schemas/BranchRef'
+        status:
+          type: string
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        sent_at:
+          type: string
+          format: date-time
+          nullable: true
+        received_at:
+          type: string
+          format: date-time
+          nullable: true
+        lines_count:
+          type: integer
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferLine'
+      required:
+      - created_at
+      - from_branch
+      - id
+      - lines
+      - lines_count
+      - note
+      - number
+      - received_at
+      - sent_at
+      - status
+      - to_branch
+      - value
+    TransferIn:
+      type: object
+      properties:
+        to_branch_id:
+          type: string
+          format: uuid
+        note:
+          type: string
+          default: ''
+          maxLength: 200
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransferLineIn'
+      required:
+      - lines
+      - to_branch_id
+    TransferLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        batch_id:
+          type: string
+          format: uuid
+        batch_no:
+          type: string
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+        quantity_base:
+          type: integer
+        received_base:
+          type: integer
+          nullable: true
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        factor:
+          type: integer
+      required:
+      - batch_id
+      - batch_no
+      - code
+      - expiry_date
+      - factor
+      - id
+      - item_id
+      - name_ar
+      - name_en
+      - quantity_base
+      - received_base
+      - strength
+      - unit_ar
+      - unit_en
+    TransferLineIn:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+          description: In the item's default sale unit
+      required:
+      - batch_id
+      - quantity
     Unit:
       type: object
       properties:
@@ -3898,6 +4943,17 @@ components:
       - display_name_en
       - password
       - username
+    VerifyResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        verification:
+          type: string
+      required:
+      - id
+      - verification
   securitySchemes:
     cookieAuth:
       type: apiKey

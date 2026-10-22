@@ -16,6 +16,8 @@ urlpatterns: list[URLPattern | URLResolver] = [
     path("sales/<uuid:pk>/print/", views.SalePrintView.as_view()),
     path("shifts/current/", views.CurrentShiftView.as_view()),
     path("shifts/", views.ShiftOpenView.as_view()),
+    path("shifts/history/", views.ShiftHistoryView.as_view()),
+    path("shifts/<uuid:pk>/settle/", views.ShiftSettleView.as_view()),
     path("shifts/<uuid:pk>/close/", views.ShiftCloseView.as_view()),
     path("customers/", views.CustomerListView.as_view()),
 ]

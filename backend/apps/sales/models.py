@@ -34,6 +34,11 @@ class Shift(OrgScopedModel):
     counted_cash = MoneyField(null=True, blank=True)
     variance = MoneyField(null=True, blank=True)
 
+    settled_by = models.ForeignKey(
+        "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
+    )
+    settled_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

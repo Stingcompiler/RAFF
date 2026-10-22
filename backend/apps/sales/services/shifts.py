@@ -130,3 +130,24 @@ def close_shift(
         {"shift": str(shift_id), "counted": str(counted)},
         lambda: _close(shift, counted, user),
     )
+
+
+@transaction.atomic
+def settle(shift_id: uuid.UUID, user: User) -> Shift:
+    """A manager reviews a closed shift's cash variance and marks it settled."""
+    shift: Shift = Shift.objects.select_for_update().get(pk=shift_id)
+    if shift.status != Shift.Status.CLOSED:
+        raise ShiftError("shift_open")
+    if shift.settled_at is None:
+        shift.settled_by = user
+        shift.settled_at = timezone.now()
+        shift.save(update_fields=["settled_by", "settled_at"])
+        record(
+            "settle",
+            "shift",
+            shift.pk,
+            actor=user,
+            branch=shift.branch,
+            variance=str(shift.variance),
+        )
+    return shift

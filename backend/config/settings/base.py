@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "apps.storefront",
     "apps.orders",
     "apps.notifications",
+    "apps.reports",
     "apps.audit",
     "apps.sync",
     "apps.backup",

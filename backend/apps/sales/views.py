@@ -36,6 +36,7 @@ from apps.sales.serializers import (
     SaleReceiptSerializer,
     SaleResultSerializer,
     SaleSerializer,
+    ShiftLogSerializer,
     ShiftSerializer,
     ShiftSummarySerializer,
 )
@@ -310,6 +311,52 @@ class ShiftOpenView(APIView):
         except shifts.ShiftError as exc:
             raise _bad(exc.code) from None
         return Response(ShiftSerializer(shift).data, status=status.HTTP_201_CREATED)
+
+
+class ShiftHistoryView(APIView):
+    """The branch's shifts, newest first, with their figures (shift log)."""
+
+    permission_classes = [requires("shifts.manage")]
+
+    @extend_schema(operation_id="shifts_history", responses=ShiftLogSerializer(many=True))
+    def get(self, request: Request) -> Response:
+        rows = (
+            Shift.objects.filter(branch=current_branch(request))
+            .select_related("device", "opened_by")
+            .order_by("-opened_at")[:30]
+        )
+        return Response(
+            ShiftLogSerializer(
+                [
+                    {
+                        "shift": s,
+                        "device_ar": s.device.name_ar,
+                        "device_en": s.device.name_en,
+                        "opened_by_ar": s.opened_by.display_name_ar,
+                        "opened_by_en": s.opened_by.display_name_en,
+                        "settled": s.settled_at is not None,
+                        **shifts.summary(s),
+                    }
+                    for s in rows
+                ],
+                many=True,
+            ).data
+        )
+
+
+class ShiftSettleView(APIView):
+    permission_classes = [requires("finance.manage")]
+
+    @extend_schema(operation_id="shifts_settle", request=None, responses=ShiftSerializer)
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
+        if not Shift.objects.filter(pk=pk, branch=current_branch(request)).exists():
+            raise NotFound
+        assert isinstance(request.user, User)
+        try:
+            shift = shifts.settle(pk, request.user)
+        except shifts.ShiftError as exc:
+            raise _bad(exc.code) from None
+        return Response(ShiftSerializer(shift).data)
 
 
 class ShiftCloseView(APIView):

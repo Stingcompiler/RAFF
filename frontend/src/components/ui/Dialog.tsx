@@ -33,18 +33,27 @@ export function Dialog({
   initialFocus,
 }: DialogProps) {
   const ref = useRef<HTMLDivElement>(null);
+  // Parents pass a new onClose on every render; reading it through a ref keeps the effect
+  // below tied to `open` only, so a background re-render never moves focus mid-typing.
+  const closeRef = useRef(onClose);
+  const focusRef = useRef(initialFocus);
+  useEffect(() => {
+    closeRef.current = onClose;
+    focusRef.current = initialFocus;
+  });
 
   useEffect(() => {
     if (!open) return;
     const opener = document.activeElement as HTMLElement | null;
     const node = ref.current;
     const focusables = () => [...(node?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
-    (initialFocus?.current ?? focusables()[0] ?? node)?.focus();
+    (focusRef.current?.current ?? focusables()[0] ?? node)?.focus();
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && onClose) {
+      const close = closeRef.current;
+      if (e.key === "Escape" && close) {
         e.stopPropagation();
-        onClose();
+        close();
         return;
       }
       if (e.key !== "Tab") return;
@@ -65,7 +74,7 @@ export function Dialog({
       document.removeEventListener("keydown", onKey, true);
       opener?.focus?.();
     };
-  }, [open, onClose, initialFocus]);
+  }, [open]);
 
   if (!open) return null;
   return (
