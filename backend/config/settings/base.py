@@ -35,6 +35,9 @@ RAFF_BONUS_COST_POLICY = env("RAFF_BONUS_COST_POLICY", "distribute")
 RAFF_MAX_LINE_DISCOUNT_PCT = int(env("RAFF_MAX_LINE_DISCOUNT_PCT", "20"))
 # A batch is "near expiry" within this many days.
 RAFF_NEAR_EXPIRY_DAYS = int(env("RAFF_NEAR_EXPIRY_DAYS", "90"))
+# A stocktake variance needs a written reason when it is at least this share of the system
+# quantity (in percent), or whenever the system quantity is zero.
+RAFF_STOCKTAKE_REASON_PCT = int(env("RAFF_STOCKTAKE_REASON_PCT", "10"))
 
 # Signed license (apps/licensing); missing or invalid never blocks selling.
 RAFF_LICENSE_FILE = env("RAFF_LICENSE_FILE", str(BASE_DIR / "LICENSE.json"))
@@ -160,6 +163,7 @@ SPECTACULAR_SETTINGS = {
         "ReceiptStatusEnum": "apps.purchasing.models.GoodsReceipt.Status",
         "LicenseStateEnum": ["valid", "missing", "invalid"],
         "LocaleEnum": [("ar", "ar"), ("en", "en")],
+        "RefundMethodEnum": "apps.returns.models.SaleReturn.Refund",
     },
 }
 

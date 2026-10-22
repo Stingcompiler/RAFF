@@ -846,6 +846,176 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostResult'
           description: ''
+  /api/v1/quarantine/:
+    get:
+      operationId: quarantine_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - decided
+          - pending
+      tags:
+      - quarantine
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuarantineEntry'
+          description: ''
+  /api/v1/quarantine/{id}/decide/:
+    post:
+      operationId: quarantine_decide
+      description: Restock, destroy or return to supplier — the responsible pharmacist's
+        decision.
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - quarantine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Decision'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarantineEntry'
+          description: ''
+  /api/v1/quarantine/recall/:
+    post:
+      operationId: quarantine_recall
+      description: 'Hold a whole batch (recall): shelf and review stock move to quarantine.'
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - quarantine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recall'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarantineEntry'
+          description: ''
+  /api/v1/returns/:
+    get:
+      operationId: returns_list
+      tags:
+      - returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReturnList'
+          description: ''
+    post:
+      operationId: returns_post
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnResult'
+          description: ''
+  /api/v1/returns/lookup/:
+    get:
+      operationId: returns_lookup
+      description: Find a sale of this branch by its invoice number, with what can
+        still be returned.
+      parameters:
+      - in: query
+        name: number
+        schema:
+          type: string
+        required: true
+      tags:
+      - returns
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnableSale'
+          description: ''
+  /api/v1/returns/quote/:
+    post:
+      operationId: returns_quote
+      description: The refund for these lines, priced by the server (shown before
+        approval).
+      tags:
+      - returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnQuoteIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnQuote'
+          description: ''
   /api/v1/roles/:
     get:
       operationId: roles_list
@@ -1118,6 +1288,112 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShiftSummary'
           description: ''
+  /api/v1/stocktakes/:
+    get:
+      operationId: stocktakes_list
+      tags:
+      - stocktakes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stocktake'
+          description: ''
+    post:
+      operationId: stocktakes_start
+      tags:
+      - stocktakes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StocktakeStart'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocktakeDetail'
+          description: ''
+  /api/v1/stocktakes/{id}/:
+    get:
+      operationId: stocktakes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - stocktakes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocktakeDetail'
+          description: ''
+    patch:
+      operationId: stocktakes_count
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - stocktakes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCountsIn'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocktakeDetail'
+          description: ''
+  /api/v1/stocktakes/{id}/approve/:
+    post:
+      operationId: stocktakes_approve
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - stocktakes
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocktakeApproveResult'
+          description: ''
   /api/v1/suppliers/:
     get:
       operationId: suppliers_list
@@ -1372,6 +1648,16 @@ components:
           pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
       required:
       - counted_cash
+    ConditionEnum:
+      enum:
+      - sealed
+      - opened
+      - damaged
+      type: string
+      description: |-
+        * `sealed` - Sealed
+        * `opened` - Opened
+        * `damaged` - Damaged
     Context:
       type: object
       properties:
@@ -1384,6 +1670,27 @@ components:
           nullable: true
       required:
       - branch_id
+    CountIn:
+      type: object
+      properties:
+        line_id:
+          type: string
+          format: uuid
+        counted_units:
+          type: integer
+          minimum: 0
+          nullable: true
+        loose_base:
+          type: integer
+          minimum: 0
+          default: 0
+        reason:
+          type: string
+          default: ''
+          maxLength: 200
+      required:
+      - counted_units
+      - line_id
     Customer:
       type: object
       properties:
@@ -1420,6 +1727,27 @@ components:
       - id
       - name_ar
       - name_en
+    Decision:
+      type: object
+      properties:
+        decision:
+          $ref: '#/components/schemas/DecisionEnum'
+        note:
+          type: string
+          default: ''
+          maxLength: 200
+      required:
+      - decision
+    DecisionEnum:
+      enum:
+      - restock
+      - destroy
+      - return
+      type: string
+      description: |-
+        * `restock` - restock
+        * `destroy` - destroy
+        * `return` - return
     Device:
       type: object
       properties:
@@ -1991,6 +2319,13 @@ components:
           pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
       required:
       - opening_cash
+    PatchedCountsIn:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountIn'
     PatchedItemUpdate:
       type: object
       properties:
@@ -2210,6 +2545,86 @@ components:
       - id
       - name_ar
       - name_en
+    QuarantineEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        item_code:
+          type: string
+          readOnly: true
+        item_name_ar:
+          type: string
+          readOnly: true
+        item_name_en:
+          type: string
+          readOnly: true
+        strength:
+          type: string
+          readOnly: true
+        batch_no:
+          type: string
+          readOnly: true
+        expiry_date:
+          type: string
+          format: date
+          readOnly: true
+        expired:
+          type: boolean
+          readOnly: true
+        unit:
+          allOf:
+          - $ref: '#/components/schemas/UnitNames'
+          readOnly: true
+        quantity_base:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        source:
+          $ref: '#/components/schemas/SourceEnum'
+        reason:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/QuarantineEntryStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        decided_at:
+          type: string
+          format: date-time
+          nullable: true
+        decision_note:
+          type: string
+          maxLength: 200
+      required:
+      - batch_no
+      - created_at
+      - expired
+      - expiry_date
+      - id
+      - item_code
+      - item_name_ar
+      - item_name_en
+      - quantity_base
+      - source
+      - strength
+      - unit
+    QuarantineEntryStatusEnum:
+      enum:
+      - pending
+      - restocked
+      - destroyed
+      - returned
+      type: string
+      description: |-
+        * `pending` - Awaiting decision
+        * `restocked` - Back on the shelf
+        * `destroyed` - Destroyed
+        * `returned` - Returned to supplier
     Quote:
       type: object
       properties:
@@ -2276,6 +2691,32 @@ components:
       - line_subtotal
       - line_total
       - unit_price
+    ReasonEnum:
+      enum:
+      - damaged
+      - wrong_item
+      - expired
+      - not_needed
+      - other
+      type: string
+      description: |-
+        * `damaged` - Damaged pack
+        * `wrong_item` - Wrong item
+        * `expired` - Expired
+        * `not_needed` - No longer needed
+        * `other` - Other
+    Recall:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          maxLength: 200
+      required:
+      - batch_id
+      - reason
     Receipt:
       type: object
       properties:
@@ -2485,6 +2926,14 @@ components:
       description: |-
         * `draft` - Draft
         * `posted` - Posted
+    RefundMethodEnum:
+      enum:
+      - cash
+      - account
+      type: string
+      description: |-
+        * `cash` - Cash from the drawer
+        * `account` - Credit to the customer's account
     Release:
       type: object
       properties:
@@ -2493,6 +2942,195 @@ components:
           format: date
       required:
       - expiry_date
+    ReturnIn:
+      type: object
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+        refund_method:
+          $ref: '#/components/schemas/RefundMethodEnum'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnLineIn'
+      required:
+      - lines
+      - refund_method
+      - sale_id
+    ReturnLineIn:
+      type: object
+      properties:
+        sale_line_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        reason:
+          $ref: '#/components/schemas/ReasonEnum'
+        condition:
+          $ref: '#/components/schemas/ConditionEnum'
+      required:
+      - condition
+      - quantity
+      - reason
+      - sale_line_id
+    ReturnList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: string
+          maxLength: 20
+        sale_number:
+          type: string
+          readOnly: true
+        refund_method:
+          $ref: '#/components/schemas/RefundMethodEnum'
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        posted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        lines_count:
+          type: integer
+          readOnly: true
+      required:
+      - id
+      - lines_count
+      - number
+      - posted_at
+      - refund_method
+      - sale_number
+      - total
+    ReturnQuote:
+      type: object
+      properties:
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - total
+    ReturnQuoteIn:
+      type: object
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnLineIn'
+      required:
+      - lines
+      - sale_id
+    ReturnResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - id
+      - number
+      - total
+    ReturnableLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        line_no:
+          type: integer
+        item_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        quantity:
+          type: integer
+        returned:
+          type: integer
+        returnable:
+          type: integer
+        line_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - code
+      - id
+      - item_id
+      - line_no
+      - line_total
+      - name_ar
+      - name_en
+      - quantity
+      - returnable
+      - returned
+      - strength
+      - unit_ar
+      - unit_en
+    ReturnableSale:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        posted_at:
+          type: string
+          format: date-time
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        customer_name_ar:
+          type: string
+          nullable: true
+        customer_name_en:
+          type: string
+          nullable: true
+        default_refund:
+          $ref: '#/components/schemas/RefundMethodEnum'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnableLine'
+      required:
+      - customer_name_ar
+      - customer_name_en
+      - default_refund
+      - id
+      - lines
+      - number
+      - posted_at
+      - total
     Role:
       type: object
       properties:
@@ -2790,6 +3428,14 @@ components:
       - sales_count
       - sales_total
       - shift
+    SourceEnum:
+      enum:
+      - return
+      - recall
+      type: string
+      description: |-
+        * `return` - Customer return
+        * `recall` - Batch recall
     Stock:
       type: object
       properties:
@@ -2900,6 +3546,183 @@ components:
         * `low` - low
         * `out` - out
         * `expired` - expired
+    Stocktake:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        scope:
+          type: string
+        category_name_ar:
+          type: string
+          nullable: true
+        category_name_en:
+          type: string
+          nullable: true
+        status:
+          type: string
+        snapshot_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        impact:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        counted:
+          type: integer
+        total:
+          type: integer
+      required:
+      - approved_at
+      - category_name_ar
+      - category_name_en
+      - counted
+      - id
+      - impact
+      - number
+      - scope
+      - snapshot_at
+      - status
+      - total
+    StocktakeApproveResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        impact:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        adjusted_items:
+          type: integer
+      required:
+      - adjusted_items
+      - id
+      - impact
+    StocktakeDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        scope:
+          type: string
+        category_name_ar:
+          type: string
+          nullable: true
+        category_name_en:
+          type: string
+          nullable: true
+        status:
+          type: string
+        snapshot_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+          nullable: true
+        impact:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        counted:
+          type: integer
+        total:
+          type: integer
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/StocktakeLine'
+      required:
+      - approved_at
+      - category_name_ar
+      - category_name_en
+      - counted
+      - id
+      - impact
+      - lines
+      - number
+      - scope
+      - snapshot_at
+      - status
+      - total
+    StocktakeLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        factor:
+          type: integer
+        system_base:
+          type: integer
+        counted_base:
+          type: integer
+          nullable: true
+        variance_base:
+          type: integer
+          nullable: true
+        applied_base:
+          type: integer
+        reason:
+          type: string
+        reason_required:
+          type: boolean
+        value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+      required:
+      - applied_base
+      - code
+      - counted_base
+      - factor
+      - id
+      - item_id
+      - name_ar
+      - name_en
+      - reason
+      - reason_required
+      - strength
+      - system_base
+      - unit_ar
+      - unit_en
+      - value
+      - variance_base
+    StocktakeStart:
+      type: object
+      properties:
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
     Supplier:
       type: object
       properties:
@@ -2995,6 +3818,25 @@ components:
             maxLength: 64
       required:
       - code
+      - factor
+      - name_ar
+      - name_en
+    UnitNames:
+      type: object
+      properties:
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        factor:
+          type: integer
+        base_ar:
+          type: string
+        base_en:
+          type: string
+      required:
+      - base_ar
+      - base_en
       - factor
       - name_ar
       - name_en

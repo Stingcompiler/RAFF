@@ -57,10 +57,16 @@ def open_shift(device: Device, user: User, opening_cash: Decimal) -> Shift:
 
 
 def cash_taken(shift: Shift) -> Decimal:
+    """Cash sales less cash refunds paid from this shift's drawer."""
     total = Payment.objects.filter(sale__shift=shift, method=Payment.Method.CASH).aggregate(
         s=Sum("amount")
     )["s"]
-    return money(total or 0)
+    from apps.returns.models import SaleReturn  # returns depend on sales, not the reverse
+
+    refunds = SaleReturn.objects.filter(
+        shift=shift, refund_method=SaleReturn.Refund.CASH
+    ).aggregate(s=Sum("total"))["s"]
+    return money((total or 0) - (refunds or 0))
 
 
 def summary(shift: Shift) -> dict[str, Any]:
