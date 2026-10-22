@@ -26,11 +26,16 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 # The one organization this deployment serves (CLAUDE.md rule 3).
 SINGLE_ORG_ID = os.environ.get("SINGLE_ORG_ID") or None
 
+# Signed license (apps/licensing); missing or invalid never blocks selling.
+RAFF_LICENSE_FILE = env("RAFF_LICENSE_FILE", str(BASE_DIR / "LICENSE.json"))
+RAFF_LICENSE_PUBLIC_KEY = env("RAFF_LICENSE_PUBLIC_KEY", "")
+
 INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
     "rest_framework",
     "drf_spectacular",
     "apps.tenancy",
@@ -53,12 +58,27 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # Before sessions/auth so the user lookup already runs inside the org context.
+    "apps.tenancy.middleware.OrgContextMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "apps.tenancy.middleware.OrgContextMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+AUTH_USER_MODEL = "accounts.User"
+# Usernames are unique per organization, so authentication is org-aware.
+AUTHENTICATION_BACKENDS = ["apps.accounts.backends.OrgUserBackend"]
+# username is unique per organization (UniqueConstraint), not globally; the backend
+# above resolves it within the org in context.
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -100,6 +120,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_AGE = 12 * 60 * 60  # one working day
+DEVICE_COOKIE_NAME = "raff_device"
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS", "")

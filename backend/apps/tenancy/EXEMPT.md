@@ -10,6 +10,5 @@ exemption.
 | `tenancy.Organization` | It is the tenant itself. |
 | `contenttypes.ContentType` | Django framework metadata, global by design. |
 | `auth.Permission` | Django framework metadata, global by design. |
-| `auth.Group` | Django default; unused. Roles arrive org-scoped in `accounts` (WO-02). |
-| `auth.User` | Django default; replaced by an org-scoped `accounts.User` in WO-02. |
+| `auth.Group` | Django default; unused. Roles are org-scoped in `accounts.Role`. |
 | `sessions.Session` | Framework session store; rows are keyed by random session key and hold no business data. |

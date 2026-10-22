@@ -1,3 +1,8 @@
-from django.urls import URLPattern, URLResolver
+from django.urls import URLPattern, URLResolver, path
 
-urlpatterns: list[URLPattern | URLResolver] = []
+from apps.tenancy import views
+
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("devices/", views.DeviceListView.as_view()),
+    path("devices/<uuid:pk>/register/", views.DeviceRegisterView.as_view()),
+]
