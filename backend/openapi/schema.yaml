@@ -710,6 +710,23 @@ paths:
                 items:
                   $ref: '#/components/schemas/PosItem'
           description: ''
+  /api/v1/pos/missing/:
+    post:
+      operationId: pos_missing
+      description: Log an item a customer asked for that the pharmacy does not stock.
+      tags:
+      - pos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MissingItem'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          description: No response body
   /api/v1/purchasing/receipts/:
     get:
       operationId: receipts_list
@@ -1484,6 +1501,10 @@ components:
           format: date-time
           readOnly: true
         cart: {}
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
         created_by_name_ar:
           type: string
           readOnly: true
@@ -1907,6 +1928,14 @@ components:
         * `cash` - Cash
         * `bank` - Bank transfer
         * `credit` - Customer credit
+    MissingItem:
+      type: object
+      properties:
+        query:
+          type: string
+          maxLength: 120
+      required:
+      - query
     Movement:
       type: object
       properties:

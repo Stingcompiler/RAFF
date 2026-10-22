@@ -185,7 +185,7 @@ class HeldSaleSerializer(serializers.ModelSerializer[HeldSale]):
 
     class Meta:
         model = HeldSale
-        fields = ["id", "created_at", "cart", "created_by_name_ar", "created_by_name_en"]
+        fields = ["id", "created_at", "cart", "total", "created_by_name_ar", "created_by_name_en"]
         read_only_fields = ["id", "created_at"]
 
 
@@ -203,3 +203,7 @@ class CustomerSerializer(serializers.ModelSerializer[Customer]):
             "is_active",
         ]
         read_only_fields = ["balance"]
+
+
+class MissingItemSerializer(serializers.Serializer[None]):
+    query = serializers.CharField(max_length=120)

@@ -26,6 +26,7 @@ from apps.sales.serializers import (
     CloseShiftSerializer,
     CustomerSerializer,
     HeldSaleSerializer,
+    MissingItemSerializer,
     OpenShiftSerializer,
     PosItemSerializer,
     QuoteInSerializer,
@@ -352,7 +353,11 @@ class HeldListView(APIView):
             {k: str(v) if v is not None and k != "quantity" else v for k, v in line.items()}
             for line in data.validated_data["lines"]
         ]
-        held = held_service.hold(current_device(request), request.user, cart)
+        try:
+            total = quote(_lines(data.validated_data["lines"]), can_discount=True).total
+        except PricingError as exc:
+            raise _bad(exc.code, line=exc.line) from None
+        held = held_service.hold(current_device(request), request.user, cart, total)
         return Response(HeldSaleSerializer(held).data, status=status.HTTP_201_CREATED)
 
 
@@ -371,6 +376,28 @@ class HeldResumeView(APIView):
         body = HeldSaleSerializer(held).data
         held_service.resume(held)
         return Response(body)
+
+
+class MissingItemView(APIView):
+    """Log an item a customer asked for that the pharmacy does not stock."""
+
+    permission_classes = [requires("pos.sell")]
+
+    @extend_schema(operation_id="pos_missing", request=MissingItemSerializer, responses={201: None})
+    def post(self, request: Request) -> Response:
+        data = MissingItemSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        branch = current_branch(request)
+        assert isinstance(request.user, User)
+        record(
+            "missing_item",
+            "branch",
+            branch.pk,
+            actor=request.user,
+            branch=branch,
+            query=data.validated_data["query"],
+        )
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class CustomerListView(APIView):

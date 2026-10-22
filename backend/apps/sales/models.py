@@ -175,6 +175,7 @@ class HeldSale(OrgScopedModel):
     created_by = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="+")
     created_at = models.DateTimeField(auto_now_add=True)
     cart = models.JSONField()
+    total = MoneyField(default=0)
 
     class Meta:
         ordering = ["created_at"]

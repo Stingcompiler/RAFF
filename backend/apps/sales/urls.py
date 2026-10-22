@@ -5,6 +5,7 @@ from apps.sales import views
 urlpatterns: list[URLPattern | URLResolver] = [
     path("pos/items/", views.PosItemsView.as_view()),
     path("pos/barcode/", views.PosBarcodeView.as_view()),
+    path("pos/missing/", views.MissingItemView.as_view()),
     path("sales/quote/", views.QuoteView.as_view()),
     path("sales/", views.SaleListView.as_view()),
     path("sales/by-key/<str:key>/", views.SaleByKeyView.as_view()),
