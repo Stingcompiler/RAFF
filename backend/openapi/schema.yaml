@@ -3458,6 +3458,8 @@ components:
           $ref: '#/components/schemas/NeedsAction'
         near_expiry_days:
           type: integer
+        store_today:
+          $ref: '#/components/schemas/StoreToday'
         sales_today:
           type: string
           format: decimal
@@ -3493,6 +3495,7 @@ components:
       - open_shift
       - sales_count
       - sales_today
+      - store_today
       - week
     OverviewShift:
       type: object
@@ -5696,6 +5699,19 @@ components:
           type: string
           format: uuid
           nullable: true
+    StoreToday:
+      type: object
+      properties:
+        new:
+          type: integer
+        confirmed:
+          type: integer
+        completed:
+          type: integer
+      required:
+      - completed
+      - confirmed
+      - new
     Supplier:
       type: object
       properties:

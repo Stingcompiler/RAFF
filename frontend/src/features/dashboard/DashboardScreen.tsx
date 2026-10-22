@@ -155,9 +155,9 @@ export function DashboardScreen({ initial, canAll }: Props) {
             label={t("storeToday")}
             note={t("storeNote")}
             trio={[
-              { value: "0", label: t("new") },
-              { value: "0", label: t("confirmed") },
-              { value: "0", label: t("completed") },
+              { value: String(data.store_today.new), label: t("new") },
+              { value: String(data.store_today.confirmed), label: t("confirmed") },
+              { value: String(data.store_today.completed), label: t("completed") },
             ]}
           />
         </section>

@@ -1967,6 +1967,7 @@ export interface components {
     Overview: {
       needs_action: components["schemas"]["NeedsAction"];
       near_expiry_days: number;
+      store_today: components["schemas"]["StoreToday"];
       /** Format: decimal */
       sales_today: string;
       sales_count: number;
@@ -2832,6 +2833,11 @@ export interface components {
     StocktakeStart: {
       /** Format: uuid */
       category_id?: string | null;
+    };
+    StoreToday: {
+      new: number;
+      confirmed: number;
+      completed: number;
     };
     Supplier: {
       /** Format: uuid */

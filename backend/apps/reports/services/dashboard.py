@@ -66,6 +66,19 @@ def overview(branches: list[Branch]) -> dict[str, Any]:
     )
     awaiting = Transfer.objects.filter(to_branch__in=branches, status=Transfer.Status.SENT).count()
 
+    from apps.orders.models import Order
+
+    store_new = Order.objects.filter(branch__in=branches, status=Order.Status.NEW).count()
+    orders_today = Order.objects.filter(
+        branch__in=branches, created_at__gte=start, created_at__lt=end
+    )
+    trio = {
+        "new": orders_today.filter(status=Order.Status.NEW).count(),
+        "confirmed": orders_today.filter(
+            status__in=[Order.Status.CONFIRMED, Order.Status.PREPARING, Order.Status.READY]
+        ).count(),
+        "completed": orders_today.filter(status=Order.Status.COMPLETED).count(),
+    }
     sales_today = Sale.objects.filter(in_scope, posted_at__gte=start, posted_at__lt=end)
     totals = sales_today.aggregate(total=Sum("total"), count=Count("id"))
     by_method = {
@@ -126,10 +139,11 @@ def overview(branches: list[Branch]) -> dict[str, Any]:
             "receivables": receivables,
             "unsettled_shifts": unsettled,
             "transfers_awaiting": awaiting,
-            "store_orders": 0,
+            "store_orders": store_new,
             "pending_sync": 0,
         },
         "near_expiry_days": settings.RAFF_NEAR_EXPIRY_DAYS,
+        "store_today": trio,
         "sales_today": money(totals["total"] or 0),
         "sales_count": totals["count"],
         "cash_today": money((by_method.get("cash") or 0) - refunds),

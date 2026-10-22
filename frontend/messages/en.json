@@ -1001,5 +1001,362 @@
     "colAction": "Action",
     "colObject": "Document",
     "noAudit": "No events."
+  },
+  "store": {
+    "nav": {
+      "home": "Home",
+      "store": "Store",
+      "about": "About",
+      "contact": "Contact",
+      "track": "Track order",
+      "menu": "Menu"
+    },
+    "searchPh": "Search medicines or supplies",
+    "cart": "Cart",
+    "cartCount": "Cart ({count})",
+    "browse": "Browse the store",
+    "contactUs": "Contact us",
+    "imgPh": "Photo",
+    "noImg": "No image",
+    "noImgL": "No image for this item",
+    "featured": "Featured items",
+    "searchResults": "Search results",
+    "storeTitle": "Store",
+    "published": "{count} published items",
+    "results": "{count} results",
+    "viewAll": "View all published items",
+    "allCategories": "All",
+    "availability": "Availability",
+    "all": "All",
+    "sort": "Sort",
+    "byName": "Name",
+    "byPrice": "Price",
+    "avail": {
+      "available": "● Available",
+      "confirm": "▲ Needs pharmacy confirmation",
+      "unavailable": "■ Currently unavailable",
+      "availableShort": "Available",
+      "confirmShort": "Needs confirmation"
+    },
+    "updated": "Updated",
+    "noPrice": "No price",
+    "rxShort": "Prescription required — pharmacist review",
+    "rxLong": "Prescription required — reviewed by a pharmacist before confirmation",
+    "add": "Add to cart",
+    "details": "Details",
+    "requestReview": "Request pharmacist review",
+    "added": "Added to cart",
+    "unavailableToast": "This item is currently unavailable",
+    "noRes": "No results",
+    "noResB": "Try another name or the generic name, or ask the pharmacy for a missing item.",
+    "msgPh": "Message the pharmacy",
+    "loadError": "The store cannot be shown right now.",
+    "retry": "Retry",
+    "howWork": "How we work with you",
+    "features": [
+      {
+        "t": "Prices with dates",
+        "d": "Every price shows when it was last updated."
+      },
+      {
+        "t": "Honest availability",
+        "d": "Available, needs confirmation, or unavailable. We never show stock numbers."
+      },
+      {
+        "t": "A pharmacist reviews it",
+        "d": "No order is confirmed before review."
+      },
+      {
+        "t": "Confirmed on WhatsApp",
+        "d": "We message the number you give us."
+      },
+      {
+        "t": "Pickup at the pharmacy",
+        "d": "You pay on pickup."
+      },
+      {
+        "t": "Privacy",
+        "d": "We never ask for health information."
+      }
+    ],
+    "howOrder": "How to order",
+    "steps": [
+      {
+        "t": "Choose",
+        "d": "Add items to your cart."
+      },
+      {
+        "t": "Send the order",
+        "d": "Enter your name and number."
+      },
+      {
+        "t": "We confirm with you",
+        "d": "The pharmacy messages you on WhatsApp."
+      }
+    ],
+    "howNote": "Sending an order does not guarantee final availability — the pharmacy confirms with you first.",
+    "faqT": "Frequently asked questions",
+    "faq": [
+      {
+        "q": "Can I pay online?",
+        "a": "No — you pay on pickup at the pharmacy."
+      },
+      {
+        "q": "Is my order confirmed once sent?",
+        "a": "No. The pharmacy reviews it and confirms with you on WhatsApp."
+      },
+      {
+        "q": "Do you deliver?",
+        "a": "Pickup at the pharmacy only, for now."
+      },
+      {
+        "q": "What about prescription medicines?",
+        "a": "They have no price and no cart. Send a review request and a pharmacist reviews it."
+      },
+      {
+        "q": "Why is the price an estimate?",
+        "a": "Prices can change before confirmation. The total is confirmed with you."
+      },
+      {
+        "q": "Do you show stock levels?",
+        "a": "We show availability only, never numbers."
+      },
+      {
+        "q": "Do you keep my health data?",
+        "a": "We do not ask for it. Please do not write it in notes."
+      }
+    ],
+    "backStore": "← Back to store",
+    "unitL": "Order unit: ",
+    "decrease": "Decrease",
+    "increase": "Increase",
+    "qty": "Quantity",
+    "emptyT": "Your cart is empty",
+    "emptyB": "Add items from the store to begin.",
+    "est": "Estimated total",
+    "cartNote": "▲ Prices and availability are reviewed on confirmation; the total is confirmed with you.",
+    "send": "Send order",
+    "del": "Remove",
+    "pharmacistReview": "Pharmacist review",
+    "nameL": "Name",
+    "phoneL": "Phone number",
+    "phoneErr": "✕ Enter a valid Sudanese number, e.g. 0912345678",
+    "pickupL": "Pickup method",
+    "pickup": "Pickup at the pharmacy",
+    "payPickup": "Pay on pickup",
+    "noteL": "Note (optional)",
+    "notePh": "e.g. I prefer to pick up in the evening",
+    "noHealth": "Do not write health information here.",
+    "agree": "I agree to the ",
+    "policy": "Privacy & order policy",
+    "sending": "Sending…",
+    "failMsg": "✕ Could not send your order. Your details are kept on this page — try again.",
+    "toMsg": "■ Checking that your order arrived… please do not send it again.",
+    "reqL": "Request ID:",
+    "rateLimited": "✕ Too many orders. Try again in an hour or message the pharmacy.",
+    "storeClosed": "✕ The store is not taking orders right now.",
+    "summary": "Order summary",
+    "sumNote": "Confirmed on review. Prescription items have no price until a pharmacist reviews them.",
+    "arrived": "Your order reached the pharmacy",
+    "orderNo": "Order number",
+    "orderInfo": "The pharmacy will contact you on WhatsApp during opening hours to confirm. Your order is not confirmed until the pharmacy reviews it.",
+    "openWa": "Open pharmacy WhatsApp",
+    "status": {
+      "new": "New",
+      "needs_contact": "Needs contact",
+      "confirmed": "Confirmed",
+      "preparing": "Preparing",
+      "ready": "Ready for pickup",
+      "out_for_delivery": "Out for delivery",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "statusNote": {
+      "new": "Order received",
+      "confirmed": "The pharmacy confirms with you",
+      "needs_contact": "The pharmacy will message you about details",
+      "cancelled": "The order was cancelled"
+    },
+    "trackT": "Track an order",
+    "trackB": "Enter the order number and the phone number you used.",
+    "trackBtn": "Show order",
+    "trackErr": "✕ No order matches these details.",
+    "aboutNote": "▲ Placeholder content — replaced with the pharmacy’s own text before launch.",
+    "addrL": "Address",
+    "hoursL": "Hours",
+    "waL": "WhatsApp",
+    "waLong": "Message the pharmacy on WhatsApp",
+    "policies": [
+      {
+        "t": "What we collect",
+        "d": "Your name, phone number and note — only to complete your order."
+      },
+      {
+        "t": "What we never ask for",
+        "d": "Health information. Please do not include it in notes."
+      },
+      {
+        "t": "Sending is not confirmation",
+        "d": "The pharmacy reviews your order and confirms on WhatsApp."
+      },
+      {
+        "t": "Prices and availability",
+        "d": "Estimates that may change before confirmation; every price shows its update date."
+      },
+      {
+        "t": "Pickup and payment",
+        "d": "Pickup at the pharmacy and payment on pickup only."
+      }
+    ],
+    "polNote": "▲ Sample text — reviewed by the pharmacy before launch.",
+    "footNote": "Sample data: name, address, hours and items.",
+    "closed": "The store is not open right now.",
+    "closedB": "You can contact the pharmacy directly."
+  },
+  "orders": {
+    "title": "Orders",
+    "count": "{count} orders",
+    "search": "Number, name or phone",
+    "today": "Today",
+    "week": "7 days",
+    "all": "All",
+    "allStatuses": "All statuses",
+    "hNo": "No.",
+    "hTime": "Time",
+    "hCust": "Customer",
+    "hPhone": "Phone",
+    "hTotal": "Estimated total",
+    "hStatus": "Status",
+    "hOwner": "Owner",
+    "none": "No orders yet.",
+    "status": {
+      "new": "New — awaiting review",
+      "needs_contact": "Needs contact",
+      "confirmed": "Confirmed",
+      "preparing": "Preparing",
+      "ready": "Ready for pickup",
+      "out_for_delivery": "Out for delivery",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "back": "← Orders",
+    "hItem": "Item",
+    "pub": "Published price",
+    "cur": "Current price",
+    "avail": "Available now",
+    "qty": "Qty",
+    "finalT": "Estimated total",
+    "rxNote": "Prescription — pharmacist review",
+    "to": {
+      "needs_contact": "Needs contact",
+      "confirmed": "Confirm order",
+      "preparing": "Start preparing",
+      "ready": "Ready for pickup",
+      "cancelled": "Cancel"
+    },
+    "reasonL": "Reason (sent to the customer on WhatsApp)",
+    "transitionTitle": "{to} — {number}",
+    "transitionBody": "The change is recorded under your name in the order log.",
+    "confirm": "Confirm",
+    "cancel": "Back",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "editTitle": "Edit quantities",
+    "consentL": "Customer consent (required)",
+    "consentPh": "e.g. customer agreed on WhatsApp at 14:20",
+    "editSave": "Save change",
+    "edit": "Edit quantities",
+    "waT": "WhatsApp message",
+    "tpl": {
+      "confirm": "Confirm",
+      "contact": "Needs contact",
+      "ready": "Ready"
+    },
+    "openWa": "Open WhatsApp",
+    "copy": "Copy message",
+    "copied": "Copied",
+    "waTpl": {
+      "confirm": "Hello {name}, your order {number} at {store} is confirmed. Total {total}. We will tell you when it is ready.",
+      "contact": "Hello {name}, about your order {number} at {store}: {reason}",
+      "ready": "Hello {name}, your order {number} is ready for pickup at {store}. Pay on pickup."
+    },
+    "timeline": "Order log",
+    "customer": "Customer",
+    "internal": "Internal notes — never shown to the customer",
+    "internalSave": "Save note",
+    "customerNote": "Customer note",
+    "linked": "Linked to invoice",
+    "readyNote": "Turn the order into an invoice at the point of sale on pickup.",
+    "errors": {
+      "transition_not_allowed": "Transition not allowed",
+      "reason_required": "Write the reason",
+      "consent_required": "Record the customer's consent",
+      "not_editable": "Cannot edit in this status",
+      "failed": "Could not save"
+    }
+  },
+  "storeAdmin": {
+    "catT": "Published catalog",
+    "setT": "Storefront settings",
+    "search": "Search items",
+    "hItem": "Item",
+    "cls": "Class",
+    "missing": "Missing",
+    "published": "Published",
+    "classes": {
+      "otc": "OTC",
+      "rx": "Rx"
+    },
+    "miss": {
+      "image": "image",
+      "description": "description",
+      "price": "price",
+      "category": "category"
+    },
+    "complete": "Complete",
+    "preview": "Card preview",
+    "noImg": "No image",
+    "noStock": "Customers never see stock numbers.",
+    "pick": "Choose an item to edit its listing.",
+    "descAr": "Description (Arabic)",
+    "descEn": "Description (English)",
+    "slug": "Link",
+    "image": "Item image",
+    "upload": "Upload image",
+    "save": "Save",
+    "saved": "Saved",
+    "publish": "Published in the store",
+    "publishHint": "Enabled once complete",
+    "enable": "Enable the storefront",
+    "enableD": "When off, no orders are taken and no items are shown.",
+    "branch": "Pickup branch",
+    "brandC": "Brand colour",
+    "nameAr": "Pharmacy name (Arabic)",
+    "nameEn": "Pharmacy name (English)",
+    "heroAr": "Hero title (Arabic)",
+    "heroEn": "Hero title (English)",
+    "leadAr": "Hero text (Arabic)",
+    "leadEn": "Hero text (English)",
+    "addrAr": "Address (Arabic)",
+    "addrEn": "Address (English)",
+    "hours": "Opening hours",
+    "wa": "Orders WhatsApp",
+    "aboutAr": "About (Arabic)",
+    "aboutEn": "About (English)",
+    "limits": "Limits & blocking",
+    "perHour": "Max orders per number per hour",
+    "blocked": "Blocked numbers (one per line)",
+    "telegram": "Telegram chat ID for alerts",
+    "errors": {
+      "incomplete": "Complete the listing before publishing",
+      "slug_taken": "Link already used",
+      "image_type": "Image must be JPG, PNG or WebP",
+      "image_too_large": "Image is larger than 2MB",
+      "branch_required": "Choose the pickup branch before enabling",
+      "failed": "Could not save"
+    },
+    "chip": "Storefront: {state} · {count} new orders",
+    "on": "on",
+    "off": "off"
   }
 }

@@ -1,0 +1,81 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { type FormEvent, useState } from "react";
+
+import { apiSend } from "@/lib/api/browser";
+
+const FIELD =
+  "h-[52px] rounded-[10px] border border-line-strong bg-surface px-[14px] text-start text-[17px] text-ink outline-none focus:border-brand focus:shadow-[0_0_0_3px_var(--color-focus)]";
+
+/** Order number + phone → the order page (the number alone never opens an order). */
+export function TrackScreen() {
+  const t = useTranslations("store");
+  const router = useRouter();
+  const [number, setNumber] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const res = await apiSend<{ token: string }>("POST", "/public/orders/track/", {
+      number,
+      phone,
+    });
+    setBusy(false);
+    if (res.ok) router.push(`/orders/${res.data.token}`);
+    else setError(true);
+  };
+  return (
+    <section className="grid max-w-[480px] gap-[16px] px-[20px] pt-[32px] pb-[48px]">
+      <h1 className="m-0 text-[30px] font-semibold">{t("trackT")}</h1>
+      <p className="m-0 text-ink-soft">{t("trackB")}</p>
+      <form onSubmit={submit} className="grid gap-[16px]">
+        <label className="grid gap-[4px] text-[14px] font-semibold text-muted">
+          {t("orderNo")}
+          <input
+            dir="ltr"
+            placeholder="O-0000"
+            value={number}
+            onChange={(e) => {
+              setNumber(e.target.value);
+              setError(false);
+            }}
+            className={FIELD}
+          />
+        </label>
+        <label className="grid gap-[4px] text-[14px] font-semibold text-muted">
+          {t("phoneL")}
+          <input
+            dir="ltr"
+            inputMode="tel"
+            placeholder="09XXXXXXXX"
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setError(false);
+            }}
+            className={FIELD}
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={busy || !number || !phone}
+          className="min-h-[52px] cursor-pointer rounded-[12px] border-0 bg-brand text-[16px] font-semibold text-brand-ink disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
+        >
+          {t("trackBtn")}
+        </button>
+      </form>
+      {error && (
+        <div
+          role="alert"
+          className="rounded-[10px] bg-danger-bg px-[14px] py-[12px] font-medium text-danger"
+        >
+          {t("trackErr")}
+        </div>
+      )}
+    </section>
+  );
+}
