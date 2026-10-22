@@ -196,3 +196,13 @@ export function BrandMark({ size = 24, ...props }: IconProps) {
     </svg>
   );
 }
+
+// POS banners (Raff POS).
+export const WarningIcon = stroke(<path d="M12 3 2 21h20L12 3zM12 10v5M12 18h.01" />);
+export const CircleXIcon = stroke(
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="m9 9 6 6M15 9l-6 6" />
+  </>,
+);
+export const ChevronDownIcon = stroke(<path d="m6 9 6 6 6-6" />);

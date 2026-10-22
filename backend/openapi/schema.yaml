@@ -409,6 +409,46 @@ paths:
                 items:
                   $ref: '#/components/schemas/PriceList'
           description: ''
+  /api/v1/customers/:
+    get:
+      operationId: customers_list
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - customers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+          description: ''
+    post:
+      operationId: customers_create
+      tags:
+      - customers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+          description: ''
   /api/v1/devices/:
     get:
       operationId: devices_list
@@ -627,6 +667,71 @@ paths:
               schema:
                 $ref: '#/components/schemas/LicenseStatus'
           description: ''
+  /api/v1/pos/barcode/:
+    get:
+      operationId: pos_barcode
+      description: Exact barcode → the item row and the scanned unit (added to the
+        cart at once).
+      parameters:
+      - in: query
+        name: code
+        schema:
+          type: string
+        required: true
+      tags:
+      - pos
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PosItem'
+          description: ''
+  /api/v1/pos/items/:
+    get:
+      operationId: pos_items
+      parameters:
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated item ids
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - pos
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PosItem'
+          description: ''
+  /api/v1/pos/missing/:
+    post:
+      operationId: pos_missing
+      description: Log an item a customer asked for that the pharmacy does not stock.
+      tags:
+      - pos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MissingItem'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          description: No response body
   /api/v1/purchasing/receipts/:
     get:
       operationId: receipts_list
@@ -756,6 +861,262 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Role'
+          description: ''
+  /api/v1/sales/:
+    post:
+      operationId: sales_post
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - sales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleResult'
+          description: ''
+  /api/v1/sales/{id}/:
+    get:
+      operationId: sales_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sale'
+          description: ''
+  /api/v1/sales/{id}/print/:
+    post:
+      operationId: sales_print
+      description: Record a (re)print; the receipt is printed from the counter (80mm,
+        always light).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleReceipt'
+          description: ''
+  /api/v1/sales/{id}/receipt/:
+    get:
+      operationId: sales_receipt
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleReceipt'
+          description: ''
+  /api/v1/sales/by-key/{key}/:
+    get:
+      operationId: sales_by_key
+      description: 'After a timeout: did the sale with this Idempotency-Key get recorded?'
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleResult'
+          description: ''
+  /api/v1/sales/held/:
+    get:
+      operationId: held_list
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HeldSale'
+          description: ''
+    post:
+      operationId: held_create
+      tags:
+      - sales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeldSale'
+          description: ''
+  /api/v1/sales/held/{id}/resume/:
+    post:
+      operationId: held_resume
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - sales
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeldSale'
+          description: ''
+  /api/v1/sales/quote/:
+    post:
+      operationId: sales_quote
+      description: Price a cart on the server (the POS shows these totals; it never
+        computes them).
+      tags:
+      - sales
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+          description: ''
+  /api/v1/shifts/:
+    post:
+      operationId: shifts_open
+      tags:
+      - shifts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenShift'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shift'
+          description: ''
+  /api/v1/shifts/{id}/close/:
+    post:
+      operationId: shifts_close
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - shifts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseShift'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloseResult'
+          description: ''
+  /api/v1/shifts/current/:
+    get:
+      operationId: shifts_current
+      tags:
+      - shifts
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShiftSummary'
           description: ''
   /api/v1/suppliers/:
     get:
@@ -944,7 +1305,7 @@ components:
           type: string
           maxLength: 80
         receipt_locale:
-          $ref: '#/components/schemas/ReceiptLocaleEnum'
+          $ref: '#/components/schemas/LocaleEnum'
       required:
       - code
       - id
@@ -979,6 +1340,38 @@ components:
       description: |-
         * `otc` - Over the counter
         * `rx` - Prescription
+    CloseResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        expected_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        counted_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        variance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - counted_cash
+      - expected_cash
+      - id
+      - variance
+    CloseShift:
+      type: object
+      properties:
+        counted_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - counted_cash
     Context:
       type: object
       properties:
@@ -991,6 +1384,42 @@ components:
           nullable: true
       required:
       - branch_id
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 40
+        credit_limit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        balance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          readOnly: true
+        is_active:
+          type: boolean
+      required:
+      - balance
+      - code
+      - id
+      - name_ar
+      - name_en
     Device:
       type: object
       properties:
@@ -1065,6 +1494,34 @@ components:
       required:
       - database
       - status
+    HeldSale:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        cart: {}
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        created_by_name_ar:
+          type: string
+          readOnly: true
+        created_by_name_en:
+          type: string
+          readOnly: true
+      required:
+      - cart
+      - created_at
+      - created_by_name_ar
+      - created_by_name_en
+      - id
     ImportBatch:
       type: object
       properties:
@@ -1328,6 +1785,32 @@ components:
       - issued
       - organization
       - state
+    LineIn:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        unit_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          maximum: 9999
+          minimum: 1
+        discount_pct:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+          default: '0.00'
+        batch_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - item_id
+      - quantity
+      - unit_id
     LineInput:
       type: object
       properties:
@@ -1366,6 +1849,14 @@ components:
       - quantity
       - unit_cost
       - unit_id
+    LocaleEnum:
+      enum:
+      - ar
+      - en
+      type: string
+      description: |-
+        * `ar` - ar
+        * `en` - en
     Login:
       type: object
       properties:
@@ -1432,6 +1923,24 @@ components:
       - display_name_en
       - id
       - username
+    MethodEnum:
+      enum:
+      - cash
+      - bank
+      - credit
+      type: string
+      description: |-
+        * `cash` - Cash
+        * `bank` - Bank transfer
+        * `credit` - Customer credit
+    MissingItem:
+      type: object
+      properties:
+        query:
+          type: string
+          maxLength: 120
+      required:
+      - query
     Movement:
       type: object
       properties:
@@ -1473,6 +1982,15 @@ components:
       - location
       - quantity_base
       - unit_cost
+    OpenShift:
+      type: object
+      properties:
+        opening_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - opening_cash
     PatchedItemUpdate:
       type: object
       properties:
@@ -1515,6 +2033,92 @@ components:
           type: string
           maxLength: 200
           minLength: 8
+    PaymentIn:
+      type: object
+      properties:
+        method:
+          $ref: '#/components/schemas/MethodEnum'
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        tendered:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        bank_reference:
+          type: string
+          default: ''
+          maxLength: 60
+        bank_account:
+          type: string
+          default: ''
+          maxLength: 60
+      required:
+      - amount
+      - method
+    PosItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        generic_name:
+          type: string
+        strength:
+          type: string
+        dosage_form:
+          type: string
+        rx:
+          type: boolean
+        unit:
+          allOf:
+          - $ref: '#/components/schemas/Unit'
+          nullable: true
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/Unit'
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        sellable_base:
+          type: integer
+        nearest_expiry:
+          type: string
+          format: date
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StockStatusEnum'
+        barcodes:
+          type: array
+          items:
+            type: string
+      required:
+      - barcodes
+      - code
+      - dosage_form
+      - generic_name
+      - id
+      - name_ar
+      - name_en
+      - nearest_expiry
+      - price
+      - rx
+      - sellable_base
+      - status
+      - strength
+      - unit
+      - units
     PostResult:
       type: object
       properties:
@@ -1606,6 +2210,72 @@ components:
       - id
       - name_ar
       - name_en
+    Quote:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuoteLine'
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - discount_total
+      - lines
+      - subtotal
+      - total
+    QuoteIn:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineIn'
+      required:
+      - lines
+    QuoteLine:
+      type: object
+      properties:
+        line_no:
+          type: integer
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        line_subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        line_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        available_base:
+          type: integer
+        base_quantity:
+          type: integer
+      required:
+      - available_base
+      - base_quantity
+      - discount
+      - line_no
+      - line_subtotal
+      - line_total
+      - unit_price
     Receipt:
       type: object
       properties:
@@ -1807,14 +2477,6 @@ components:
       - line_count
       - supplier
       - supplier_invoice_no
-    ReceiptLocaleEnum:
-      enum:
-      - ar
-      - en
-      type: string
-      description: |-
-        * `ar` - ar
-        * `en` - en
     ReceiptStatusEnum:
       enum:
       - draft
@@ -1857,6 +2519,277 @@ components:
       - id
       - name_ar
       - name_en
+    Sale:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: string
+          maxLength: 20
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        posted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        reprints:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleLineOut'
+      required:
+      - discount_total
+      - id
+      - lines
+      - number
+      - posted_at
+      - subtotal
+      - total
+    SaleIn:
+      type: object
+      properties:
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineIn'
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentIn'
+        customer_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - lines
+      - payments
+    SaleLineOut:
+      type: object
+      properties:
+        line_no:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        item:
+          type: string
+          format: uuid
+        unit:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount_pct:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        line_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - item
+      - line_no
+      - line_total
+      - quantity
+      - unit
+      - unit_price
+    SaleReceipt:
+      type: object
+      properties:
+        locale:
+          $ref: '#/components/schemas/LocaleEnum'
+        shop:
+          type: string
+        branch:
+          type: string
+        number:
+          type: string
+        issuedAt:
+          type: string
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleReceiptLine'
+        totalLabel:
+          type: string
+        total:
+          type: string
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/SaleReceiptPayment'
+        footer:
+          type: string
+      required:
+      - branch
+      - footer
+      - issuedAt
+      - lines
+      - locale
+      - number
+      - payments
+      - shop
+      - total
+      - totalLabel
+    SaleReceiptLine:
+      type: object
+      properties:
+        name:
+          type: string
+        total:
+          type: string
+      required:
+      - name
+      - total
+    SaleReceiptPayment:
+      type: object
+      properties:
+        label:
+          type: string
+        amount:
+          type: string
+      required:
+      - amount
+      - label
+    SaleResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        change:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - change
+      - id
+      - number
+      - total
+    Shift:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        status:
+          $ref: '#/components/schemas/ShiftStatusEnum'
+        opened_at:
+          type: string
+          format: date-time
+          readOnly: true
+        opening_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        expected_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        counted_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        variance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+      required:
+      - id
+      - number
+      - opened_at
+      - opening_cash
+    ShiftStatusEnum:
+      enum:
+      - open
+      - closed
+      type: string
+      description: |-
+        * `open` - Open
+        * `closed` - Closed
+    ShiftSummary:
+      type: object
+      properties:
+        shift:
+          allOf:
+          - $ref: '#/components/schemas/Shift'
+          nullable: true
+        sales_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        sales_count:
+          type: integer
+          nullable: true
+        cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        bank:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        credit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        expected_cash:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+      required:
+      - bank
+      - cash
+      - credit
+      - expected_cash
+      - sales_count
+      - sales_total
+      - shift
     Stock:
       type: object
       properties:

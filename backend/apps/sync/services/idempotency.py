@@ -50,14 +50,18 @@ def run_once(
         if existing.request_hash != digest:
             raise KeyConflict
         return dict(existing.response)
-    result = action()
+    # Claim the key before doing any work: a concurrent duplicate blocks on this insert
+    # until we commit, then fails and replays our result (KeyRace).
     try:
         with transaction.atomic():
-            IdempotencyRecord.objects.create(
-                scope=scope, key=key, request_hash=digest, response=result
+            record = IdempotencyRecord.objects.create(
+                scope=scope, key=key, request_hash=digest, response={}
             )
     except IntegrityError:
         raise KeyRace from None
+    result = action()
+    record.response = result
+    record.save(update_fields=["response"])
     return result
 
 

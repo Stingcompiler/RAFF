@@ -21,7 +21,7 @@ test.describe("sign-in", () => {
     await expect(page.getByLabel("اسم المستخدم")).toHaveValue("salma");
   });
 
-  test("cashier signs in, keeps the registered counter and lands in the workspace", async ({
+  test("cashier signs in, keeps the registered counter and lands at the point of sale", async ({
     page,
   }) => {
     await registerCounter(page);
@@ -36,10 +36,10 @@ test.describe("sign-in", () => {
     );
     await expect(page.getByLabel("الكاونتر").locator("option:checked")).toHaveText("كاونتر 1");
     await page.getByRole("button", { name: "متابعة" }).click();
-    await expect(page).toHaveURL(/\/dashboard$/);
+    await expect(page).toHaveURL(/\/pos$/);
     await expect(page.getByRole("banner")).toContainText("فرع الخرطوم (تجريبي)");
+    await expect(page.getByRole("banner")).toContainText("كاونتر 1");
     await expect(page.getByRole("banner")).toContainText("سلمى (كاشير)");
-    await expect(page.getByRole("navigation")).toContainText("الجهاز مسجَّل باسم: كاونتر 1");
   });
 
   test("owner with two branches chooses one", async ({ page }) => {

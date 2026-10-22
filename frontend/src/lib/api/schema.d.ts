@@ -295,6 +295,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/customers/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["customers_list"];
+    put?: never;
+    post: operations["customers_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/devices/": {
     parameters: {
       query?: never;
@@ -443,6 +459,56 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/pos/barcode/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Exact barcode → the item row and the scanned unit (added to the cart at once). */
+    get: operations["pos_barcode"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/pos/items/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["pos_items"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/pos/missing/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Log an item a customer asked for that the pharmacy does not stock. */
+    post: operations["pos_missing"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/purchasing/receipts/": {
     parameters: {
       query?: never;
@@ -500,6 +566,185 @@ export interface paths {
       cookie?: never;
     };
     get: operations["roles_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["sales_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["sales_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/{id}/print/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Record a (re)print; the receipt is printed from the counter (80mm, always light). */
+    post: operations["sales_print"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/{id}/receipt/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["sales_receipt"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/by-key/{key}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description After a timeout: did the sale with this Idempotency-Key get recorded? */
+    get: operations["sales_by_key"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/held/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["held_list"];
+    put?: never;
+    post: operations["held_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/held/{id}/resume/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["held_resume"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sales/quote/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Price a cart on the server (the POS shows these totals; it never computes them). */
+    post: operations["sales_quote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/shifts/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["shifts_open"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/shifts/{id}/close/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["shifts_close"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/shifts/current/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["shifts_current"];
     put?: never;
     post?: never;
     delete?: never;
@@ -599,7 +844,7 @@ export interface components {
       name_en: string;
       city_ar?: string;
       city_en?: string;
-      receipt_locale?: components["schemas"]["ReceiptLocaleEnum"];
+      receipt_locale?: components["schemas"]["LocaleEnum"];
     };
     Category: {
       /** Format: uuid */
@@ -614,11 +859,38 @@ export interface components {
      * @enum {string}
      */
     ClassificationEnum: "otc" | "rx";
+    CloseResult: {
+      /** Format: uuid */
+      id: string;
+      /** Format: decimal */
+      expected_cash: string;
+      /** Format: decimal */
+      counted_cash: string;
+      /** Format: decimal */
+      variance: string;
+    };
+    CloseShift: {
+      /** Format: decimal */
+      counted_cash: string;
+    };
     Context: {
       /** Format: uuid */
       branch_id: string;
       /** Format: uuid */
       device_id?: string | null;
+    };
+    Customer: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      phone?: string;
+      /** Format: decimal */
+      credit_limit?: string;
+      /** Format: decimal */
+      readonly balance: string;
+      is_active?: boolean;
     };
     Device: {
       /** Format: uuid */
@@ -645,6 +917,17 @@ export interface components {
     Health: {
       status: string;
       database: string;
+    };
+    HeldSale: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      cart: unknown;
+      /** Format: decimal */
+      total?: string;
+      readonly created_by_name_ar: string;
+      readonly created_by_name_en: string;
     };
     ImportBatch: {
       /** Format: uuid */
@@ -758,6 +1041,20 @@ export interface components {
       branches: number | null;
       issued: string | null;
     };
+    LineIn: {
+      /** Format: uuid */
+      item_id: string;
+      /** Format: uuid */
+      unit_id: string;
+      quantity: number;
+      /**
+       * Format: decimal
+       * @default 0.00
+       */
+      discount_pct: string;
+      /** Format: uuid */
+      batch_id?: string | null;
+    };
     LineInput: {
       /** Format: uuid */
       item_id: string;
@@ -777,6 +1074,12 @@ export interface components {
       /** Format: date */
       expiry_date?: string | null;
     };
+    /**
+     * @description * `ar` - ar
+     *     * `en` - en
+     * @enum {string}
+     */
+    LocaleEnum: "ar" | "en";
     Login: {
       username: string;
       password: string;
@@ -797,6 +1100,16 @@ export interface components {
       display_name_ar: string;
       display_name_en: string;
     };
+    /**
+     * @description * `cash` - Cash
+     *     * `bank` - Bank transfer
+     *     * `credit` - Customer credit
+     * @enum {string}
+     */
+    MethodEnum: "cash" | "bank" | "credit";
+    MissingItem: {
+      query: string;
+    };
     Movement: {
       /** Format: uuid */
       readonly id: string;
@@ -811,6 +1124,10 @@ export interface components {
       document_id: string;
       /** Format: date-time */
       readonly created_at: string;
+    };
+    OpenShift: {
+      /** Format: decimal */
+      opening_cash: string;
     };
     PatchedItemUpdate: {
       name_ar?: string;
@@ -828,6 +1145,37 @@ export interface components {
       is_active?: boolean;
       assignments?: components["schemas"]["Assignment"][];
       password?: string;
+    };
+    PaymentIn: {
+      method: components["schemas"]["MethodEnum"];
+      /** Format: decimal */
+      amount: string;
+      /** Format: decimal */
+      tendered?: string | null;
+      /** @default  */
+      bank_reference: string;
+      /** @default  */
+      bank_account: string;
+    };
+    PosItem: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      generic_name: string;
+      strength: string;
+      dosage_form: string;
+      rx: boolean;
+      unit: components["schemas"]["Unit"] | null;
+      units: components["schemas"]["Unit"][];
+      /** Format: decimal */
+      price: string | null;
+      sellable_base: number;
+      /** Format: date */
+      nearest_expiry: string | null;
+      status: components["schemas"]["StockStatusEnum"];
+      barcodes: string[];
     };
     PostResult: {
       /** Format: uuid */
@@ -866,6 +1214,31 @@ export interface components {
       name_ar: string;
       name_en: string;
       is_default?: boolean;
+    };
+    Quote: {
+      lines: components["schemas"]["QuoteLine"][];
+      /** Format: decimal */
+      subtotal: string;
+      /** Format: decimal */
+      discount_total: string;
+      /** Format: decimal */
+      total: string;
+    };
+    QuoteIn: {
+      lines: components["schemas"]["LineIn"][];
+    };
+    QuoteLine: {
+      line_no: number;
+      /** Format: decimal */
+      unit_price: string;
+      /** Format: decimal */
+      line_subtotal: string;
+      /** Format: decimal */
+      discount: string;
+      /** Format: decimal */
+      line_total: string;
+      available_base: number;
+      base_quantity: number;
     };
     Receipt: {
       /** Format: uuid */
@@ -946,12 +1319,6 @@ export interface components {
       posted_at?: string | null;
     };
     /**
-     * @description * `ar` - ar
-     *     * `en` - en
-     * @enum {string}
-     */
-    ReceiptLocaleEnum: "ar" | "en";
-    /**
      * @description * `draft` - Draft
      *     * `posted` - Posted
      * @enum {string}
@@ -968,6 +1335,108 @@ export interface components {
       name_ar: string;
       name_en: string;
       permissions?: string[];
+    };
+    Sale: {
+      /** Format: uuid */
+      readonly id: string;
+      number: string;
+      /** Format: decimal */
+      subtotal: string;
+      /** Format: decimal */
+      discount_total: string;
+      /** Format: decimal */
+      total: string;
+      /** Format: date-time */
+      readonly posted_at: string;
+      reprints?: number;
+      lines: components["schemas"]["SaleLineOut"][];
+    };
+    SaleIn: {
+      lines: components["schemas"]["LineIn"][];
+      payments: components["schemas"]["PaymentIn"][];
+      /** Format: uuid */
+      customer_id?: string | null;
+    };
+    SaleLineOut: {
+      line_no: number;
+      /** Format: uuid */
+      item: string;
+      /** Format: uuid */
+      unit: string;
+      quantity: number;
+      /** Format: decimal */
+      unit_price: string;
+      /** Format: decimal */
+      discount_pct?: string;
+      /** Format: decimal */
+      line_total: string;
+    };
+    SaleReceipt: {
+      locale: components["schemas"]["LocaleEnum"];
+      shop: string;
+      branch: string;
+      number: string;
+      issuedAt: string;
+      lines: components["schemas"]["SaleReceiptLine"][];
+      totalLabel: string;
+      total: string;
+      payments: components["schemas"]["SaleReceiptPayment"][];
+      footer: string;
+    };
+    SaleReceiptLine: {
+      name: string;
+      total: string;
+    };
+    SaleReceiptPayment: {
+      label: string;
+      amount: string;
+    };
+    SaleResult: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: decimal */
+      total: string;
+      /** Format: decimal */
+      change: string;
+    };
+    Shift: {
+      /** Format: uuid */
+      readonly id: string;
+      number: number;
+      status?: components["schemas"]["ShiftStatusEnum"];
+      /** Format: date-time */
+      readonly opened_at: string;
+      /** Format: decimal */
+      opening_cash: string;
+      /** Format: date-time */
+      closed_at?: string | null;
+      /** Format: decimal */
+      expected_cash?: string | null;
+      /** Format: decimal */
+      counted_cash?: string | null;
+      /** Format: decimal */
+      variance?: string | null;
+    };
+    /**
+     * @description * `open` - Open
+     *     * `closed` - Closed
+     * @enum {string}
+     */
+    ShiftStatusEnum: "open" | "closed";
+    ShiftSummary: {
+      shift: components["schemas"]["Shift"] | null;
+      /** Format: decimal */
+      sales_total: string | null;
+      sales_count: number | null;
+      /** Format: decimal */
+      cash: string | null;
+      /** Format: decimal */
+      bank: string | null;
+      /** Format: decimal */
+      credit: string | null;
+      /** Format: decimal */
+      expected_cash: string | null;
     };
     Stock: {
       sellable_base: number;
@@ -1513,6 +1982,50 @@ export interface operations {
       };
     };
   };
+  customers_list: {
+    parameters: {
+      query?: {
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Customer"][];
+        };
+      };
+    };
+  };
+  customers_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Customer"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Customer"];
+        };
+      };
+    };
+  };
   devices_list: {
     parameters: {
       query?: never;
@@ -1726,6 +2239,72 @@ export interface operations {
       };
     };
   };
+  pos_barcode: {
+    parameters: {
+      query: {
+        code: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PosItem"];
+        };
+      };
+    };
+  };
+  pos_items: {
+    parameters: {
+      query?: {
+        /** @description Comma-separated item ids */
+        ids?: string;
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PosItem"][];
+        };
+      };
+    };
+  };
+  pos_missing: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MissingItem"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   receipts_list: {
     parameters: {
       query?: {
@@ -1854,6 +2433,270 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Role"][];
+        };
+      };
+    };
+  };
+  sales_post: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SaleIn"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SaleResult"];
+        };
+      };
+    };
+  };
+  sales_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Sale"];
+        };
+      };
+    };
+  };
+  sales_print: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SaleReceipt"];
+        };
+      };
+    };
+  };
+  sales_receipt: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SaleReceipt"];
+        };
+      };
+    };
+  };
+  sales_by_key: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SaleResult"];
+        };
+      };
+    };
+  };
+  held_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HeldSale"][];
+        };
+      };
+    };
+  };
+  held_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["QuoteIn"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HeldSale"];
+        };
+      };
+    };
+  };
+  held_resume: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HeldSale"];
+        };
+      };
+    };
+  };
+  sales_quote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["QuoteIn"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Quote"];
+        };
+      };
+    };
+  };
+  shifts_open: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OpenShift"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Shift"];
+        };
+      };
+    };
+  };
+  shifts_close: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CloseShift"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CloseResult"];
+        };
+      };
+    };
+  };
+  shifts_current: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ShiftSummary"];
         };
       };
     };

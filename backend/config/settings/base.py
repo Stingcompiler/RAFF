@@ -31,6 +31,8 @@ SINGLE_ORG_ID = os.environ.get("SINGLE_ORG_ID") or None
 # units (10 + 2 at 144 → 12 each); "bonus_as_income" keeps the paid unit cost and records
 # the bonus value separately.
 RAFF_BONUS_COST_POLICY = env("RAFF_BONUS_COST_POLICY", "distribute")
+# Largest line discount a cashier with pos.discount may give, in percent.
+RAFF_MAX_LINE_DISCOUNT_PCT = int(env("RAFF_MAX_LINE_DISCOUNT_PCT", "20"))
 # A batch is "near expiry" within this many days.
 RAFF_NEAR_EXPIRY_DAYS = int(env("RAFF_NEAR_EXPIRY_DAYS", "90"))
 
@@ -157,6 +159,7 @@ SPECTACULAR_SETTINGS = {
         "ImportStatusEnum": "apps.catalog.models.ImportBatch.Status",
         "ReceiptStatusEnum": "apps.purchasing.models.GoodsReceipt.Status",
         "LicenseStateEnum": ["valid", "missing", "invalid"],
+        "LocaleEnum": [("ar", "ar"), ("en", "en")],
     },
 }
 

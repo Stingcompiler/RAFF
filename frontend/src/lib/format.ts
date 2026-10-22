@@ -17,3 +17,17 @@ export function money(value: string | number | null | undefined, locale: string)
   if (!n) return "";
   return locale === "ar" ? `${n} ج.س` : `SDG ${n}`;
 }
+
+/** Business time zone (backend TIME_ZONE); times shown at the counter use it on server and browser alike. */
+const BUSINESS_TZ = "Africa/Khartoum";
+const clock = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: BUSINESS_TZ,
+});
+
+/** ISO timestamp → "HH:MM" in the business time zone. */
+export function timeOfDay(iso: string | null | undefined): string {
+  return iso ? clock.format(new Date(iso)) : "";
+}

@@ -28,9 +28,9 @@ export async function apiSend<T>(
   method: "POST" | "PATCH" | "PUT" | "DELETE",
   path: string,
   body?: unknown,
-  options: { idempotencyKey?: string } = {},
+  options: { idempotencyKey?: string; timeoutMs?: number } = {},
 ): Promise<ApiResult<T>> {
-  return send<T>(method, path, body, options.idempotencyKey);
+  return send<T>(method, path, body, options.idempotencyKey, options.timeoutMs);
 }
 
 async function send<T>(
@@ -38,6 +38,7 @@ async function send<T>(
   path: string,
   body?: unknown,
   idempotencyKey?: string,
+  timeoutMs?: number,
 ): Promise<ApiResult<T>> {
   const headers: Record<string, string> = { accept: "application/json" };
   if (method !== "GET") {
@@ -52,8 +53,10 @@ async function send<T>(
       headers,
       credentials: "same-origin",
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal: timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined,
     });
   } catch {
+    // Network failure or timeout: the outcome is unknown (status 0).
     return { ok: false, status: 0, error: null };
   }
   const data = res.status === 204 ? null : await res.json().catch(() => null);

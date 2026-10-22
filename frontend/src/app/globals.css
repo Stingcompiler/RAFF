@@ -130,3 +130,20 @@
   font-size: inherit;
   line-height: inherit;
 }
+
+/* Counter receipts: only the 80mm receipt prints (it is portalled straight into <body>). */
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  body > :not(.raff-print) {
+    display: none;
+  }
+
+  .raff-print > * {
+    box-shadow: none;
+    width: 80mm;
+  }
+}
