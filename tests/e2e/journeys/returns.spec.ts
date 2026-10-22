@@ -8,9 +8,9 @@ async function csrf(page: Page) {
   return (await page.context().cookies()).find((c) => c.name === "csrftoken")?.value ?? "";
 }
 
-/** A cash sale of two ORS sachets at Counter 1, through the API. Returns its invoice number. */
+/** A cash sale of two ORS sachets at Counter 2 (the POS journeys use Counter 1), via the API. */
 async function sellTwoSachets(page: Page): Promise<string> {
-  await registerCounter(page);
+  await registerCounter(page, "Counter 2");
   await signIn(page, "salma");
   const headers = { "x-csrftoken": await csrf(page) };
   await page.request.post("/api/v1/shifts/", { data: { opening_cash: "50000" }, headers });
