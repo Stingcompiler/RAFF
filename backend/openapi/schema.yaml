@@ -848,6 +848,153 @@ paths:
               schema:
                 $ref: '#/components/schemas/LicenseStatus'
           description: ''
+  /api/v1/orders/:
+    get:
+      operationId: orders_list
+      parameters:
+      - in: query
+        name: period
+        schema:
+          type: string
+          enum:
+          - all
+          - today
+          - week
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StaffOrderRow'
+          description: ''
+  /api/v1/orders/{id}/:
+    get:
+      operationId: orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
+  /api/v1/orders/{id}/lines/:
+    patch:
+      operationId: orders_edit_lines
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEditLines'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
+  /api/v1/orders/{id}/note/:
+    patch:
+      operationId: orders_note
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
+  /api/v1/orders/{id}/transition/:
+    post:
+      operationId: orders_transition
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transition'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
+  /api/v1/orders/summary/:
+    get:
+      operationId: orders_summary
+      tags:
+      - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdersSummary'
+          description: ''
   /api/v1/pos/barcode/:
     get:
       operationId: pos_barcode
@@ -913,6 +1060,195 @@ paths:
       responses:
         '201':
           description: No response body
+  /api/v1/public/categories/:
+    get:
+      operationId: public_categories
+      description: No session, no CSRF cookie needed for reads; rate limited per client.
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicCategory'
+          description: ''
+  /api/v1/public/orders/:
+    post:
+      operationId: public_order_place
+      description: A guest sends the cart as a review request. Same key twice → the
+        same order.
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrder'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placed'
+          description: ''
+  /api/v1/public/orders/{token}/:
+    get:
+      operationId: public_order
+      description: Opened with the long random token from the WhatsApp link — never
+        by order number.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicOrder'
+          description: ''
+  /api/v1/public/orders/by-key/{key}/:
+    get:
+      operationId: public_order_by_key
+      description: 'After a timeout: did the order with this Idempotency-Key arrive?'
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placed'
+          description: ''
+  /api/v1/public/orders/track/:
+    post:
+      operationId: public_order_track
+      description: Order number + the phone it was sent with → the order's token.
+      tags:
+      - public
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Track'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/v1/public/products/:
+    get:
+      operationId: public_products
+      description: No session, no CSRF cookie needed for reads; rate limited per client.
+      parameters:
+      - in: query
+        name: availability
+        schema:
+          type: string
+          enum:
+          - available
+          - confirm
+      - in: query
+        name: category
+        schema:
+          type: string
+      - in: query
+        name: limit
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: sort
+        schema:
+          type: string
+          enum:
+          - name
+          - price
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicProduct'
+          description: ''
+  /api/v1/public/products/{slug}/:
+    get:
+      operationId: public_product
+      description: No session, no CSRF cookie needed for reads; rate limited per client.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicProductDetail'
+          description: ''
+  /api/v1/public/store/:
+    get:
+      operationId: public_store
+      description: No session, no CSRF cookie needed for reads; rate limited per client.
+      tags:
+      - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicStore'
+          description: ''
   /api/v1/purchasing/receipts/:
     get:
       operationId: receipts_list
@@ -1665,6 +2001,115 @@ paths:
               schema:
                 $ref: '#/components/schemas/StocktakeApproveResult'
           description: ''
+  /api/v1/storefront/listings/:
+    get:
+      operationId: storefront_listings
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - storefront
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListingRow'
+          description: ''
+  /api/v1/storefront/listings/{id}/:
+    patch:
+      operationId: storefront_listing_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - storefront
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedListingIn'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingRow'
+          description: ''
+  /api/v1/storefront/listings/{id}/image/:
+    post:
+      operationId: storefront_listing_image
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - storefront
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingRow'
+          description: ''
+  /api/v1/storefront/settings/:
+    get:
+      operationId: storefront_settings
+      tags:
+      - storefront
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+          description: ''
+    put:
+      operationId: storefront_settings_update
+      tags:
+      - storefront
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Settings'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+          description: ''
   /api/v1/suppliers/:
     get:
       operationId: suppliers_list
@@ -1929,6 +2374,16 @@ components:
       - id
       - object_id
       - object_type
+    AvailabilityEnum:
+      enum:
+      - available
+      - confirm
+      - unavailable
+      type: string
+      description: |-
+        * `available` - available
+        * `confirm` - confirm
+        * `unavailable` - unavailable
     BankTransfer:
       type: object
       properties:
@@ -2676,6 +3131,56 @@ components:
       - quantity
       - unit_cost
       - unit_id
+    ListingRow:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        classification:
+          type: string
+        slug:
+          type: string
+        published:
+          type: boolean
+        description_ar:
+          type: string
+        description_en:
+          type: string
+        image:
+          type: string
+          nullable: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        missing:
+          type: array
+          items:
+            type: string
+      required:
+      - classification
+      - code
+      - description_ar
+      - description_en
+      - image
+      - item_id
+      - missing
+      - name_ar
+      - name_en
+      - price
+      - published
+      - slug
+      - strength
     LocaleEnum:
       enum:
       - ar
@@ -2844,6 +3349,9 @@ components:
       - store_orders
       - transfers_awaiting
       - unsettled_shifts
+    NullEnum:
+      enum:
+      - null
     OpenShift:
       type: object
       properties:
@@ -2893,6 +3401,56 @@ components:
         * `approved` - approved
         * `verifying` - verifying
         * `to_inspect` - to_inspect
+    OrderLineIn:
+      type: object
+      properties:
+        slug:
+          type: string
+          maxLength: 80
+          pattern: ^[-a-zA-Z0-9_]+$
+        quantity:
+          type: integer
+          maximum: 20
+          minimum: 1
+      required:
+      - quantity
+      - slug
+    OrderStatusEnum:
+      enum:
+      - new
+      - needs_contact
+      - confirmed
+      - preparing
+      - ready
+      - out_for_delivery
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `new` - new
+        * `needs_contact` - needs_contact
+        * `confirmed` - confirmed
+        * `preparing` - preparing
+        * `ready` - ready
+        * `out_for_delivery` - out_for_delivery
+        * `completed` - completed
+        * `cancelled` - cancelled
+    OrdersSummary:
+      type: object
+      properties:
+        unread:
+          type: integer
+        new:
+          type: integer
+        confirmed:
+          type: integer
+        completed:
+          type: integer
+      required:
+      - completed
+      - confirmed
+      - new
+      - unread
     Overview:
       type: object
       properties:
@@ -3055,6 +3613,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CountIn'
+    PatchedEditLines:
+      type: object
+      properties:
+        quantities:
+          type: object
+          additionalProperties:
+            type: integer
+            maximum: 20
+            minimum: 0
+        consent:
+          type: string
+          maxLength: 300
     PatchedItemUpdate:
       type: object
       properties:
@@ -3084,6 +3654,26 @@ components:
           minimum: 0
         is_active:
           type: boolean
+    PatchedListingIn:
+      type: object
+      properties:
+        published:
+          type: boolean
+        description_ar:
+          type: string
+          maxLength: 2000
+        description_en:
+          type: string
+          maxLength: 2000
+        slug:
+          type: string
+          maxLength: 80
+    PatchedNote:
+      type: object
+      properties:
+        internal_note:
+          type: string
+          maxLength: 2000
     PatchedUserUpdate:
       type: object
       properties:
@@ -3132,6 +3722,43 @@ components:
         * `cash` - Cash
         * `bank` - Bank transfer
         * `credit` - Customer credit
+    PlaceOrder:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 20
+        note:
+          type: string
+          default: ''
+          maxLength: 500
+        agree:
+          type: boolean
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLineIn'
+      required:
+      - agree
+      - lines
+      - name
+      - phone
+    Placed:
+      type: object
+      properties:
+        number:
+          type: string
+        token:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+      required:
+      - number
+      - status
+      - token
     PosItem:
       type: object
       properties:
@@ -3284,6 +3911,248 @@ components:
       - id
       - name_ar
       - name_en
+    PublicCategory:
+      type: object
+      properties:
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        count:
+          type: integer
+      required:
+      - code
+      - count
+      - name_ar
+      - name_en
+    PublicEvent:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        at:
+          type: string
+          format: date-time
+      required:
+      - at
+      - status
+    PublicLine:
+      type: object
+      properties:
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        rx:
+          type: boolean
+      required:
+      - name_ar
+      - name_en
+      - price
+      - quantity
+      - rx
+      - strength
+      - unit_ar
+      - unit_en
+    PublicOrder:
+      type: object
+      properties:
+        number:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+        estimated_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicLine'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicEvent'
+        whatsapp:
+          type: string
+      required:
+      - created_at
+      - estimated_total
+      - events
+      - lines
+      - number
+      - status
+      - whatsapp
+    PublicProduct:
+      type: object
+      properties:
+        slug:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        category:
+          type: string
+          nullable: true
+        rx:
+          type: boolean
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        price_date:
+          type: string
+          format: date
+          nullable: true
+        availability:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AvailabilityEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        image:
+          type: string
+          nullable: true
+      required:
+      - availability
+      - category
+      - image
+      - name_ar
+      - name_en
+      - price
+      - price_date
+      - rx
+      - slug
+      - strength
+      - unit_ar
+      - unit_en
+    PublicProductDetail:
+      type: object
+      properties:
+        slug:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        category:
+          type: string
+          nullable: true
+        rx:
+          type: boolean
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        price_date:
+          type: string
+          format: date
+          nullable: true
+        availability:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AvailabilityEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        image:
+          type: string
+          nullable: true
+        description_ar:
+          type: string
+        description_en:
+          type: string
+      required:
+      - availability
+      - category
+      - description_ar
+      - description_en
+      - image
+      - name_ar
+      - name_en
+      - price
+      - price_date
+      - rx
+      - slug
+      - strength
+      - unit_ar
+      - unit_en
+    PublicStore:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        brand_color:
+          type: string
+        hero_title_ar:
+          type: string
+        hero_title_en:
+          type: string
+        hero_lead_ar:
+          type: string
+        hero_lead_en:
+          type: string
+        address_ar:
+          type: string
+        address_en:
+          type: string
+        hours:
+          type: string
+        whatsapp:
+          type: string
+        about_ar:
+          type: string
+        about_en:
+          type: string
+      required:
+      - about_ar
+      - about_en
+      - address_ar
+      - address_en
+      - brand_color
+      - enabled
+      - hero_lead_ar
+      - hero_lead_en
+      - hero_title_ar
+      - hero_title_en
+      - hours
+      - name_ar
+      - name_en
+      - whatsapp
     QuarantineEntry:
       type: object
       properties:
@@ -4142,6 +5011,60 @@ components:
       - id
       - number
       - total
+    Settings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        branch:
+          type: string
+          format: uuid
+          nullable: true
+        name_ar:
+          type: string
+          maxLength: 120
+        name_en:
+          type: string
+          maxLength: 120
+        brand_color:
+          type: string
+          maxLength: 7
+        hero_title_ar:
+          type: string
+          maxLength: 200
+        hero_title_en:
+          type: string
+          maxLength: 200
+        hero_lead_ar:
+          type: string
+        hero_lead_en:
+          type: string
+        address_ar:
+          type: string
+          maxLength: 200
+        address_en:
+          type: string
+          maxLength: 200
+        hours:
+          type: string
+          maxLength: 60
+        whatsapp:
+          type: string
+          maxLength: 20
+        about_ar:
+          type: string
+        about_en:
+          type: string
+        orders_per_hour:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        blocked_phones:
+          type: string
+          description: One phone number per line
+        telegram_chat_id:
+          type: string
+          maxLength: 40
     Shift:
       type: object
       properties:
@@ -4304,6 +5227,188 @@ components:
       description: |-
         * `return` - Customer return
         * `recall` - Batch recall
+    StaffEvent:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        at:
+          type: string
+          format: date-time
+        actor_ar:
+          type: string
+          nullable: true
+        actor_en:
+          type: string
+          nullable: true
+        note:
+          type: string
+      required:
+      - actor_ar
+      - actor_en
+      - at
+      - note
+      - status
+    StaffLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        item_id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        strength:
+          type: string
+        unit_ar:
+          type: string
+        unit_en:
+          type: string
+        factor:
+          type: integer
+        quantity:
+          type: integer
+        rx:
+          type: boolean
+        published_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        current_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        available_units:
+          type: integer
+      required:
+      - available_units
+      - code
+      - current_price
+      - factor
+      - id
+      - item_id
+      - name_ar
+      - name_en
+      - published_price
+      - quantity
+      - rx
+      - strength
+      - unit_ar
+      - unit_en
+    StaffOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        token:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+        customer_name:
+          type: string
+        phone:
+          type: string
+        note:
+          type: string
+        reason:
+          type: string
+        internal_note:
+          type: string
+        estimated_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        allowed:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderStatusEnum'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffLine'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffEvent'
+        sale_number:
+          type: string
+          nullable: true
+        whatsapp:
+          type: string
+      required:
+      - allowed
+      - created_at
+      - customer_name
+      - estimated_total
+      - events
+      - id
+      - internal_note
+      - lines
+      - note
+      - number
+      - phone
+      - reason
+      - sale_number
+      - status
+      - token
+      - whatsapp
+    StaffOrderRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        customer_name:
+          type: string
+        phone:
+          type: string
+        lines_count:
+          type: integer
+        estimated_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        assigned_ar:
+          type: string
+          nullable: true
+        assigned_en:
+          type: string
+          nullable: true
+        unread:
+          type: boolean
+      required:
+      - assigned_ar
+      - assigned_en
+      - created_at
+      - customer_name
+      - estimated_total
+      - id
+      - lines_count
+      - number
+      - phone
+      - status
+      - unread
     Stock:
       type: object
       properties:
@@ -4621,6 +5726,25 @@ components:
       - id
       - name_ar
       - name_en
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    Track:
+      type: object
+      properties:
+        number:
+          type: string
+          maxLength: 20
+        phone:
+          type: string
+          maxLength: 20
+      required:
+      - number
+      - phone
     Transfer:
       type: object
       properties:
@@ -4798,6 +5922,17 @@ components:
       required:
       - batch_id
       - quantity
+    Transition:
+      type: object
+      properties:
+        to:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        reason:
+          type: string
+          default: ''
+          maxLength: 300
+      required:
+      - to
     Unit:
       type: object
       properties:

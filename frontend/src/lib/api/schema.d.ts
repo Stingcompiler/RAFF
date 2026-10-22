@@ -575,6 +575,102 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/orders/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["orders_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["orders_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{id}/lines/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["orders_edit_lines"];
+    trace?: never;
+  };
+  "/api/v1/orders/{id}/note/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["orders_note"];
+    trace?: never;
+  };
+  "/api/v1/orders/{id}/transition/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["orders_transition"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/summary/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["orders_summary"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/pos/barcode/": {
     parameters: {
       query?: never;
@@ -619,6 +715,142 @@ export interface paths {
     put?: never;
     /** @description Log an item a customer asked for that the pharmacy does not stock. */
     post: operations["pos_missing"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/categories/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description No session, no CSRF cookie needed for reads; rate limited per client. */
+    get: operations["public_categories"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description A guest sends the cart as a review request. Same key twice → the same order. */
+    post: operations["public_order_place"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/{token}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Opened with the long random token from the WhatsApp link — never by order number. */
+    get: operations["public_order"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/by-key/{key}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description After a timeout: did the order with this Idempotency-Key arrive? */
+    get: operations["public_order_by_key"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/track/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Order number + the phone it was sent with → the order's token. */
+    post: operations["public_order_track"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/products/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description No session, no CSRF cookie needed for reads; rate limited per client. */
+    get: operations["public_products"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/products/{slug}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description No session, no CSRF cookie needed for reads; rate limited per client. */
+    get: operations["public_product"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/store/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description No session, no CSRF cookie needed for reads; rate limited per client. */
+    get: operations["public_store"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1067,6 +1299,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/storefront/listings/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["storefront_listings"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/storefront/listings/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["storefront_listing_update"];
+    trace?: never;
+  };
+  "/api/v1/storefront/listings/{id}/image/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["storefront_listing_image"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/storefront/settings/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["storefront_settings"];
+    put: operations["storefront_settings_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/suppliers/": {
     parameters: {
       query?: never;
@@ -1203,6 +1499,13 @@ export interface components {
       readonly actor_name_en: string;
       data?: unknown;
     };
+    /**
+     * @description * `available` - available
+     *     * `confirm` - confirm
+     *     * `unavailable` - unavailable
+     * @enum {string}
+     */
+    AvailabilityEnum: "available" | "confirm" | "unavailable";
     BankTransfer: {
       /** Format: uuid */
       id: string;
@@ -1513,6 +1816,23 @@ export interface components {
       /** Format: date */
       expiry_date?: string | null;
     };
+    ListingRow: {
+      /** Format: uuid */
+      item_id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      classification: string;
+      slug: string;
+      published: boolean;
+      description_ar: string;
+      description_en: string;
+      image: string | null;
+      /** Format: decimal */
+      price: string | null;
+      missing: string[];
+    };
     /**
      * @description * `ar` - ar
      *     * `en` - en
@@ -1586,6 +1906,8 @@ export interface components {
       store_orders: number;
       pending_sync: number;
     };
+    /** @enum {unknown} */
+    NullEnum: null;
     OpenShift: {
       /** Format: decimal */
       opening_cash: string;
@@ -1612,6 +1934,36 @@ export interface components {
      * @enum {string}
      */
     OperationStatusEnum: "approved" | "verifying" | "to_inspect";
+    OrderLineIn: {
+      slug: string;
+      quantity: number;
+    };
+    /**
+     * @description * `new` - new
+     *     * `needs_contact` - needs_contact
+     *     * `confirmed` - confirmed
+     *     * `preparing` - preparing
+     *     * `ready` - ready
+     *     * `out_for_delivery` - out_for_delivery
+     *     * `completed` - completed
+     *     * `cancelled` - cancelled
+     * @enum {string}
+     */
+    OrderStatusEnum:
+      | "new"
+      | "needs_contact"
+      | "confirmed"
+      | "preparing"
+      | "ready"
+      | "out_for_delivery"
+      | "completed"
+      | "cancelled";
+    OrdersSummary: {
+      unread: number;
+      new: number;
+      confirmed: number;
+      completed: number;
+    };
     Overview: {
       needs_action: components["schemas"]["NeedsAction"];
       near_expiry_days: number;
@@ -1681,6 +2033,12 @@ export interface components {
     PatchedCountsIn: {
       lines?: components["schemas"]["CountIn"][];
     };
+    PatchedEditLines: {
+      quantities?: {
+        [key: string]: number;
+      };
+      consent?: string;
+    };
     PatchedItemUpdate: {
       name_ar?: string;
       name_en?: string;
@@ -1692,6 +2050,15 @@ export interface components {
       classification?: components["schemas"]["ClassificationEnum"];
       reorder_level_base?: number;
       is_active?: boolean;
+    };
+    PatchedListingIn: {
+      published?: boolean;
+      description_ar?: string;
+      description_en?: string;
+      slug?: string;
+    };
+    PatchedNote: {
+      internal_note?: string;
     };
     PatchedUserUpdate: {
       is_active?: boolean;
@@ -1716,6 +2083,19 @@ export interface components {
      * @enum {string}
      */
     PaymentInMethodEnum: "cash" | "bank" | "credit";
+    PlaceOrder: {
+      name: string;
+      phone: string;
+      /** @default  */
+      note: string;
+      agree: boolean;
+      lines: components["schemas"]["OrderLineIn"][];
+    };
+    Placed: {
+      number: string;
+      token: string;
+      status: components["schemas"]["OrderStatusEnum"];
+    };
     PosItem: {
       /** Format: uuid */
       id: string;
@@ -1773,6 +2153,91 @@ export interface components {
       name_ar: string;
       name_en: string;
       is_default?: boolean;
+    };
+    PublicCategory: {
+      code: string;
+      name_ar: string;
+      name_en: string;
+      count: number;
+    };
+    PublicEvent: {
+      status: components["schemas"]["OrderStatusEnum"];
+      /** Format: date-time */
+      at: string;
+    };
+    PublicLine: {
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      quantity: number;
+      /** Format: decimal */
+      price: string | null;
+      rx: boolean;
+    };
+    PublicOrder: {
+      number: string;
+      status: components["schemas"]["OrderStatusEnum"];
+      /** Format: date-time */
+      created_at: string;
+      /** Format: decimal */
+      estimated_total: string;
+      lines: components["schemas"]["PublicLine"][];
+      events: components["schemas"]["PublicEvent"][];
+      whatsapp: string;
+    };
+    PublicProduct: {
+      slug: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      category: string | null;
+      rx: boolean;
+      /** Format: decimal */
+      price: string | null;
+      /** Format: date */
+      price_date: string | null;
+      availability:
+        (components["schemas"]["AvailabilityEnum"] | components["schemas"]["NullEnum"]) | null;
+      image: string | null;
+    };
+    PublicProductDetail: {
+      slug: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      category: string | null;
+      rx: boolean;
+      /** Format: decimal */
+      price: string | null;
+      /** Format: date */
+      price_date: string | null;
+      availability:
+        (components["schemas"]["AvailabilityEnum"] | components["schemas"]["NullEnum"]) | null;
+      image: string | null;
+      description_ar: string;
+      description_en: string;
+    };
+    PublicStore: {
+      enabled: boolean;
+      name_ar: string;
+      name_en: string;
+      brand_color: string;
+      hero_title_ar: string;
+      hero_title_en: string;
+      hero_lead_ar: string;
+      hero_lead_en: string;
+      address_ar: string;
+      address_en: string;
+      hours: string;
+      whatsapp: string;
+      about_ar: string;
+      about_en: string;
     };
     QuarantineEntry: {
       /** Format: uuid */
@@ -2111,6 +2576,28 @@ export interface components {
       /** Format: decimal */
       change: string;
     };
+    Settings: {
+      enabled?: boolean;
+      /** Format: uuid */
+      branch?: string | null;
+      name_ar?: string;
+      name_en?: string;
+      brand_color?: string;
+      hero_title_ar?: string;
+      hero_title_en?: string;
+      hero_lead_ar?: string;
+      hero_lead_en?: string;
+      address_ar?: string;
+      address_en?: string;
+      hours?: string;
+      whatsapp?: string;
+      about_ar?: string;
+      about_en?: string;
+      orders_per_hour?: number;
+      /** @description One phone number per line */
+      blocked_phones?: string;
+      telegram_chat_id?: string;
+    };
     Shift: {
       /** Format: uuid */
       readonly id: string;
@@ -2174,6 +2661,71 @@ export interface components {
      * @enum {string}
      */
     SourceEnum: "return" | "recall";
+    StaffEvent: {
+      status: components["schemas"]["OrderStatusEnum"];
+      /** Format: date-time */
+      at: string;
+      actor_ar: string | null;
+      actor_en: string | null;
+      note: string;
+    };
+    StaffLine: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      item_id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      factor: number;
+      quantity: number;
+      rx: boolean;
+      /** Format: decimal */
+      published_price: string | null;
+      /** Format: decimal */
+      current_price: string | null;
+      available_units: number;
+    };
+    StaffOrder: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      token: string;
+      status: components["schemas"]["OrderStatusEnum"];
+      /** Format: date-time */
+      created_at: string;
+      customer_name: string;
+      phone: string;
+      note: string;
+      reason: string;
+      internal_note: string;
+      /** Format: decimal */
+      estimated_total: string;
+      allowed: components["schemas"]["OrderStatusEnum"][];
+      lines: components["schemas"]["StaffLine"][];
+      events: components["schemas"]["StaffEvent"][];
+      sale_number: string | null;
+      whatsapp: string;
+    };
+    StaffOrderRow: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: date-time */
+      created_at: string;
+      customer_name: string;
+      phone: string;
+      lines_count: number;
+      /** Format: decimal */
+      estimated_total: string;
+      status: components["schemas"]["OrderStatusEnum"];
+      assigned_ar: string | null;
+      assigned_en: string | null;
+      unread: boolean;
+    };
     Stock: {
       sellable_base: number;
       held_base: number;
@@ -2291,6 +2843,13 @@ export interface components {
       payment_terms_days?: number;
       is_active?: boolean;
     };
+    Token: {
+      token: string;
+    };
+    Track: {
+      number: string;
+      phone: string;
+    };
     Transfer: {
       /** Format: uuid */
       id: string;
@@ -2360,6 +2919,11 @@ export interface components {
       batch_id: string;
       /** @description In the item's default sale unit */
       quantity: number;
+    };
+    Transition: {
+      to: components["schemas"]["OrderStatusEnum"];
+      /** @default  */
+      reason: string;
     };
     Unit: {
       /** Format: uuid */
@@ -3278,6 +3842,144 @@ export interface operations {
       };
     };
   };
+  orders_list: {
+    parameters: {
+      query?: {
+        period?: "all" | "today" | "week";
+        q?: string;
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrderRow"][];
+        };
+      };
+    };
+  };
+  orders_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  orders_edit_lines: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedEditLines"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  orders_note: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedNote"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  orders_transition: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Transition"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  orders_summary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrdersSummary"];
+        };
+      };
+    };
+  };
   pos_barcode: {
     parameters: {
       query: {
@@ -3341,6 +4043,180 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  public_categories: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicCategory"][];
+        };
+      };
+    };
+  };
+  public_order_place: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PlaceOrder"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Placed"];
+        };
+      };
+    };
+  };
+  public_order: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicOrder"];
+        };
+      };
+    };
+  };
+  public_order_by_key: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        key: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Placed"];
+        };
+      };
+    };
+  };
+  public_order_track: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Track"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Token"];
+        };
+      };
+    };
+  };
+  public_products: {
+    parameters: {
+      query?: {
+        availability?: "available" | "confirm";
+        category?: string;
+        limit?: number;
+        q?: string;
+        sort?: "name" | "price";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicProduct"][];
+        };
+      };
+    };
+  };
+  public_product: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicProductDetail"];
+        };
+      };
+    };
+  };
+  public_store: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicStore"];
+        };
       };
     };
   };
@@ -4078,6 +4954,122 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StocktakeApproveResult"];
+        };
+      };
+    };
+  };
+  storefront_listings: {
+    parameters: {
+      query?: {
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ListingRow"][];
+        };
+      };
+    };
+  };
+  storefront_listing_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedListingIn"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ListingRow"];
+        };
+      };
+    };
+  };
+  storefront_listing_image: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          image?: string;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ListingRow"];
+        };
+      };
+    };
+  };
+  storefront_settings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Settings"];
+        };
+      };
+    };
+  };
+  storefront_settings_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Settings"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Settings"];
         };
       };
     };
