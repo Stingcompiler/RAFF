@@ -7,9 +7,7 @@ test.describe("app shell", () => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "دواؤك قريب، وصيدلي يراجع طلبك.",
-    );
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
 
     await page.goto("/en");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
