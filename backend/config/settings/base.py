@@ -26,6 +26,14 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 # The one organization this deployment serves (CLAUDE.md rule 3).
 SINGLE_ORG_ID = os.environ.get("SINGLE_ORG_ID") or None
 
+# Open business decisions kept behind named settings (CLAUDE.md rule 28; see BACKLOG.md).
+# How bonus units affect cost: "distribute" spreads the invoice cost over paid + bonus
+# units (10 + 2 at 144 → 12 each); "bonus_as_income" keeps the paid unit cost and records
+# the bonus value separately.
+RAFF_BONUS_COST_POLICY = env("RAFF_BONUS_COST_POLICY", "distribute")
+# A batch is "near expiry" within this many days.
+RAFF_NEAR_EXPIRY_DAYS = int(env("RAFF_NEAR_EXPIRY_DAYS", "90"))
+
 # Signed license (apps/licensing); missing or invalid never blocks selling.
 RAFF_LICENSE_FILE = env("RAFF_LICENSE_FILE", str(BASE_DIR / "LICENSE.json"))
 RAFF_LICENSE_PUBLIC_KEY = env("RAFF_LICENSE_PUBLIC_KEY", "")
@@ -142,6 +150,14 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": "/api/v1",
+    # Several serializers have a `status` choice field; give each enum a stable name.
+    "ENUM_NAME_OVERRIDES": {
+        "StockStatusEnum": ["good", "near_expiry", "low", "out", "expired"],
+        "BatchStatusEnum": ["good", "near_expiry", "expired", "held", "quarantined"],
+        "ImportStatusEnum": "apps.catalog.models.ImportBatch.Status",
+        "ReceiptStatusEnum": "apps.purchasing.models.GoodsReceipt.Status",
+        "LicenseStateEnum": ["valid", "missing", "invalid"],
+    },
 }
 
 LOGGING = {

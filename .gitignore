@@ -26,3 +26,6 @@ blob-report/
 
 # OS
 .DS_Store
+
+# macOS copy of the reference shots for local visual runs
+design/handoff/reference-local/

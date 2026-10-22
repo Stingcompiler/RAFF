@@ -18,6 +18,8 @@ const backendEnv = {
   POSTGRES_USER: process.env.POSTGRES_USER ?? "raff",
   POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? "",
   SINGLE_ORG_ID: TEST_ORG_ID,
+  // The design's "today": expiry statuses and dates match the reference shots.
+  RAFF_FIXED_TODAY: process.env.RAFF_FIXED_TODAY ?? "2026-10-22",
   RAFF_DEMO_PASSWORD: DEMO_PASSWORD,
 };
 

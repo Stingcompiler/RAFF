@@ -17,3 +17,30 @@ export function itemLabel(
 
 export const strengthForm = (item: Pick<ItemRow, "strength" | "dosage_form">) =>
   [item.strength, item.dosage_form].filter(Boolean).join(" ");
+
+export type StockRow = Schemas["StockItem"];
+export type BatchRow = Schemas["BatchRow"];
+
+/** Base units shown in the item's sale unit: "34", or "34 +3" when loose base units remain. */
+export function inSaleUnit(base: number, factor: number | undefined): string {
+  const f = factor && factor > 0 ? factor : 1;
+  const whole = Math.floor(base / f);
+  const rest = base % f;
+  return rest ? `${whole} +${rest}` : String(whole);
+}
+
+export const STOCK_TONE = {
+  good: "success",
+  near_expiry: "warn",
+  low: "warn",
+  out: "info",
+  expired: "danger",
+} as const;
+
+export const BATCH_TONE = {
+  good: "success",
+  near_expiry: "warn",
+  expired: "danger",
+  held: "warn",
+  quarantined: "danger",
+} as const;

@@ -7,8 +7,8 @@
   },
   "scripts": {
     "reference": "node design/handoff/generate-reference.mjs",
-    "e2e": "pnpm build:test && playwright test --project=e2e",
-    "visual": "pnpm build:test && playwright test --project=visual",
+    "e2e": "pnpm build:test && DJANGO_SETTINGS_MODULE=config.settings.dev uv run --directory backend python manage.py reset_database --name raff_e2e && POSTGRES_DB=raff_e2e RAFF_FIXED_TODAY=2026-10-22 playwright test --project=e2e",
+    "visual": "pnpm build:test && DJANGO_SETTINGS_MODULE=config.settings.dev uv run --directory backend python manage.py reset_database --name raff_visual && POSTGRES_DB=raff_visual RAFF_FIXED_TODAY=2026-10-22 playwright test --project=visual",
     "format:check": "prettier --check \"tests/**/*.ts\" \"design/handoff/*.mjs\" playwright.config.ts",
     "build:test": "RAFF_API_ORIGIN=http://127.0.0.1:8100 pnpm --dir frontend build"
   },

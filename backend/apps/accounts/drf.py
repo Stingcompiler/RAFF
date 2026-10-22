@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from typing import Any
 
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 
 from apps.accounts.models import User
 from apps.accounts.services.session import current_context
+from apps.tenancy.models import Branch
 
 
 def has_code(request: Request, code: str) -> bool:
@@ -28,3 +30,21 @@ def requires(code: str) -> type[BasePermission]:
 
     _Requires.__name__ = f"Requires_{code.replace('.', '_')}"
     return _Requires
+
+
+def current_branch(request: Request) -> Branch:
+    """The branch chosen for this session; 403 when none is chosen yet."""
+    user = request.user
+    if not isinstance(user, User):
+        raise PermissionDenied("not_signed_in")
+    branch = current_context(request._request, user).branch
+    if branch is None:
+        raise PermissionDenied("no_branch")
+    return branch
+
+
+def idempotency_key(request: Request) -> str:
+    key = request.headers.get("Idempotency-Key", "").strip()
+    if not key:
+        raise ValidationError({"detail": "idempotency_key_required"})
+    return key

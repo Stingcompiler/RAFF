@@ -7,8 +7,10 @@
 ```bash
 pnpm install                         # مرة واحدة، من جذر المستودع
 pnpm exec playwright install chromium
-make reference                       # = node design/handoff/generate-reference.mjs
+make reference                       # نسخة macOS المحلية في reference-local/ (خارج Git)
 ```
+
+المراجع المعتمدة في `reference/` تُولَّد على Linux داخل صورة Playwright نفسها التي تشغّل اختبار `visual` في CI: workflow ‏`.github/workflows/references.yml` (يدوياً، أو بدفع فرع `ci/references`)، ثم يُنزَّل الأثر `reference` ويُثبَّت في المستودع. السبب: رسم الخطوط يختلف بين macOS وLinux، فتصل الفروق إلى 4% في صفحات المتجر الإنجليزية على 390. على Mac يقارن `make visual` مع `reference-local/` إن وُجدت.
 
 خيارات: `--only "Raff POS"` لملف واحد، `--state payment` لحالة واحدة، `--list` لطباعة القائمة دون تشغيل.
 

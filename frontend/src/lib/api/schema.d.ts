@@ -344,6 +344,89 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/inventory/batches/{id}/release/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Give a held batch its expiry date and make it sellable. */
+    post: operations["inventory_batch_release"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/inventory/items/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Items with their stock in the session's branch (Items & stock screen). */
+    get: operations["inventory_items"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/inventory/items/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description One item with its stock in the session's branch (item drawer). */
+    get: operations["inventory_item"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/inventory/items/{id}/batches/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["inventory_item_batches"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/inventory/items/{id}/movements/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["inventory_item_movements"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/licensing/status/": {
     parameters: {
       query?: never;
@@ -360,6 +443,55 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/purchasing/receipts/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["receipts_list"];
+    put?: never;
+    post: operations["receipts_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/purchasing/receipts/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["receipts_retrieve"];
+    put: operations["receipts_update"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/purchasing/receipts/{id}/post/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Post (approve) a draft receipt. Requires an Idempotency-Key header. */
+    post: operations["receipts_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/roles/": {
     parameters: {
       query?: never;
@@ -370,6 +502,22 @@ export interface paths {
     get: operations["roles_list"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/suppliers/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["suppliers_list"];
+    put?: never;
+    post: operations["suppliers_create"];
     delete?: never;
     options?: never;
     head?: never;
@@ -422,6 +570,27 @@ export interface components {
       item: components["schemas"]["ItemList"];
       unit: components["schemas"]["Unit"];
     };
+    BatchRow: {
+      /** Format: uuid */
+      batch_id: string;
+      batch_no: string;
+      /** Format: date */
+      expiry_date: string | null;
+      quantity_base: number;
+      location: string;
+      /** Format: decimal */
+      unit_cost: string;
+      status: components["schemas"]["BatchStatusEnum"];
+    };
+    /**
+     * @description * `good` - good
+     *     * `near_expiry` - near_expiry
+     *     * `expired` - expired
+     *     * `held` - held
+     *     * `quarantined` - quarantined
+     * @enum {string}
+     */
+    BatchStatusEnum: "good" | "near_expiry" | "expired" | "held" | "quarantined";
     Branch: {
       /** Format: uuid */
       readonly id: string;
@@ -481,7 +650,7 @@ export interface components {
       /** Format: uuid */
       readonly id: string;
       file_name: string;
-      status?: components["schemas"]["StatusEnum"];
+      status?: components["schemas"]["ImportStatusEnum"];
       summary?: unknown;
       rows?: unknown;
       /** Format: date-time */
@@ -489,6 +658,12 @@ export interface components {
       /** Format: date-time */
       applied_at?: string | null;
     };
+    /**
+     * @description * `preview` - Preview
+     *     * `applied` - Applied
+     * @enum {string}
+     */
+    ImportStatusEnum: "preview" | "applied";
     ImportUpload: {
       /** Format: uri */
       file: string;
@@ -550,11 +725,57 @@ export interface components {
       /** Format: decimal */
       price: string | null;
     };
+    /**
+     * @description * `receipt` - Goods receipt
+     *     * `sale` - Sale
+     *     * `return` - Customer return
+     *     * `release` - Released from review
+     *     * `adjustment` - Adjustment
+     *     * `transfer_out` - Transfer out
+     *     * `transfer_in` - Transfer in
+     *     * `quarantine` - Quarantine
+     * @enum {string}
+     */
+    KindEnum:
+      | "receipt"
+      | "sale"
+      | "return"
+      | "release"
+      | "adjustment"
+      | "transfer_out"
+      | "transfer_in"
+      | "quarantine";
+    /**
+     * @description * `valid` - valid
+     *     * `missing` - missing
+     *     * `invalid` - invalid
+     * @enum {string}
+     */
+    LicenseStateEnum: "valid" | "missing" | "invalid";
     LicenseStatus: {
-      state: components["schemas"]["StateEnum"];
+      state: components["schemas"]["LicenseStateEnum"];
       organization: string | null;
       branches: number | null;
       issued: string | null;
+    };
+    LineInput: {
+      /** Format: uuid */
+      item_id: string;
+      /** Format: uuid */
+      unit_id: string;
+      quantity: number;
+      /** @default 0 */
+      bonus_quantity: number;
+      /** Format: decimal */
+      unit_cost: string;
+      /**
+       * Format: decimal
+       * @default 0.0000
+       */
+      discount: string;
+      batch_no: string;
+      /** Format: date */
+      expiry_date?: string | null;
     };
     Login: {
       username: string;
@@ -576,6 +797,21 @@ export interface components {
       display_name_ar: string;
       display_name_en: string;
     };
+    Movement: {
+      /** Format: uuid */
+      readonly id: string;
+      kind: components["schemas"]["KindEnum"];
+      quantity_base: number;
+      /** Format: decimal */
+      unit_cost: string;
+      batch_no: string;
+      location: string;
+      document_type: string;
+      /** Format: uuid */
+      document_id: string;
+      /** Format: date-time */
+      readonly created_at: string;
+    };
     PatchedItemUpdate: {
       name_ar?: string;
       name_en?: string;
@@ -592,6 +828,14 @@ export interface components {
       is_active?: boolean;
       assignments?: components["schemas"]["Assignment"][];
       password?: string;
+    };
+    PostResult: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: decimal */
+      total: string;
+      held_lines: number;
     };
     Price: {
       /** Format: uuid */
@@ -623,12 +867,100 @@ export interface components {
       name_en: string;
       is_default?: boolean;
     };
+    Receipt: {
+      /** Format: uuid */
+      readonly id: string;
+      number?: string;
+      status?: components["schemas"]["ReceiptStatusEnum"];
+      /** Format: uuid */
+      branch: string;
+      supplier: components["schemas"]["Supplier"];
+      supplier_invoice_no: string;
+      /** Format: date */
+      invoice_date: string;
+      payment_terms_days?: number;
+      notes?: string;
+      /** Format: decimal */
+      total?: string;
+      /** Format: decimal */
+      bonus_value?: string;
+      /** Format: decimal */
+      readonly bonus_allocated: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      posted_at?: string | null;
+      lines: components["schemas"]["ReceiptLine"][];
+    };
+    ReceiptInput: {
+      /** Format: uuid */
+      supplier_id: string;
+      supplier_invoice_no: string;
+      /** Format: date */
+      invoice_date: string;
+      /** @default 0 */
+      payment_terms_days: number;
+      /** @default  */
+      notes: string;
+      lines: components["schemas"]["LineInput"][];
+    };
+    ReceiptLine: {
+      /** Format: uuid */
+      readonly id: string;
+      line_no: number;
+      /** Format: uuid */
+      item: string;
+      /** Format: uuid */
+      unit: string;
+      readonly item_name_ar: string;
+      readonly item_name_en: string;
+      readonly unit_name_ar: string;
+      readonly unit_name_en: string;
+      quantity: number;
+      bonus_quantity?: number;
+      /** Format: decimal */
+      unit_cost: string;
+      /** Format: decimal */
+      discount?: string;
+      batch_no: string;
+      /** Format: date */
+      expiry_date?: string | null;
+      base_quantity?: number;
+      /** Format: decimal */
+      cost_per_base?: string;
+      held?: boolean;
+    };
+    ReceiptList: {
+      /** Format: uuid */
+      readonly id: string;
+      number?: string;
+      status?: components["schemas"]["ReceiptStatusEnum"];
+      supplier: components["schemas"]["Supplier"];
+      supplier_invoice_no: string;
+      /** Format: date */
+      invoice_date: string;
+      /** Format: decimal */
+      total?: string;
+      line_count: number;
+      /** Format: date-time */
+      posted_at?: string | null;
+    };
     /**
      * @description * `ar` - ar
      *     * `en` - en
      * @enum {string}
      */
     ReceiptLocaleEnum: "ar" | "en";
+    /**
+     * @description * `draft` - Draft
+     *     * `posted` - Posted
+     * @enum {string}
+     */
+    ReceiptStatusEnum: "draft" | "posted";
+    Release: {
+      /** Format: date */
+      expiry_date: string;
+    };
     Role: {
       /** Format: uuid */
       readonly id: string;
@@ -637,19 +969,56 @@ export interface components {
       name_en: string;
       permissions?: string[];
     };
+    Stock: {
+      sellable_base: number;
+      held_base: number;
+      /** Format: date */
+      nearest_expiry: string | null;
+      /** Format: decimal */
+      cost_per_base: string | null;
+      /** Format: decimal */
+      cost_per_sale_unit: string | null;
+      /** Format: decimal */
+      margin_pct: string | null;
+      status: components["schemas"]["StockStatusEnum"];
+    };
+    StockItem: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      generic_name?: string;
+      strength?: string;
+      dosage_form?: string;
+      classification?: components["schemas"]["ClassificationEnum"];
+      category: components["schemas"]["Category"] | null;
+      is_active?: boolean;
+      readonly sale_unit: components["schemas"]["Unit"] | null;
+      /** Format: decimal */
+      price: string | null;
+      reorder_level_base?: number;
+      readonly stock: components["schemas"]["Stock"];
+    };
     /**
-     * @description * `valid` - valid
-     *     * `missing` - missing
-     *     * `invalid` - invalid
+     * @description * `good` - good
+     *     * `near_expiry` - near_expiry
+     *     * `low` - low
+     *     * `out` - out
+     *     * `expired` - expired
      * @enum {string}
      */
-    StateEnum: "valid" | "missing" | "invalid";
-    /**
-     * @description * `preview` - Preview
-     *     * `applied` - Applied
-     * @enum {string}
-     */
-    StatusEnum: "preview" | "applied";
+    StockStatusEnum: "good" | "near_expiry" | "low" | "out" | "expired";
+    Supplier: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      phone?: string;
+      payment_terms_days?: number;
+      is_active?: boolean;
+    };
     Unit: {
       /** Format: uuid */
       readonly id: string;
@@ -1226,6 +1595,118 @@ export interface operations {
       };
     };
   };
+  inventory_batch_release: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Release"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BatchRow"][];
+        };
+      };
+    };
+  };
+  inventory_items: {
+    parameters: {
+      query?: {
+        category?: string;
+        limit?: number;
+        offset?: number;
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockItem"][];
+        };
+      };
+    };
+  };
+  inventory_item: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StockItem"];
+        };
+      };
+    };
+  };
+  inventory_item_batches: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BatchRow"][];
+        };
+      };
+    };
+  };
+  inventory_item_movements: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Movement"][];
+        };
+      };
+    };
+  };
   licensing_status: {
     parameters: {
       query?: never;
@@ -1245,6 +1726,119 @@ export interface operations {
       };
     };
   };
+  receipts_list: {
+    parameters: {
+      query?: {
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReceiptList"][];
+        };
+      };
+    };
+  };
+  receipts_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReceiptInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Receipt"];
+        };
+      };
+    };
+  };
+  receipts_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Receipt"];
+        };
+      };
+    };
+  };
+  receipts_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReceiptInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Receipt"];
+        };
+      };
+    };
+  };
+  receipts_post: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PostResult"];
+        };
+      };
+    };
+  };
   roles_list: {
     parameters: {
       query?: never;
@@ -1260,6 +1854,48 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Role"][];
+        };
+      };
+    };
+  };
+  suppliers_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Supplier"][];
+        };
+      };
+    };
+  };
+  suppliers_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Supplier"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Supplier"];
         };
       };
     };

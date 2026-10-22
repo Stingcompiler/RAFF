@@ -5,10 +5,10 @@ import datetime as dt
 
 from django.contrib.postgres.search import TrigramWordSimilarity
 from django.db.models import OuterRef, Q, QuerySet, Subquery
-from django.utils import timezone
 
 from apps.catalog.models import Barcode, Item, ItemPrice, ItemUnit, PriceList
 from apps.catalog.search import normalize
+from apps.tenancy import clock
 
 
 def current_price_subquery(unit_ref: str, price_list: PriceList, on: dt.date) -> Subquery:
@@ -26,7 +26,7 @@ def current_price(
 ) -> ItemPrice | None:
     return (
         ItemPrice.objects.filter(
-            unit=unit, price_list=price_list, effective_from__lte=on or timezone.localdate()
+            unit=unit, price_list=price_list, effective_from__lte=on or clock.today()
         )
         .order_by("-effective_from")
         .first()
