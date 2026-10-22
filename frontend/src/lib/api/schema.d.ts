@@ -120,6 +120,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/backup/status/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Last good backup, last failure and last restore drill (Settings tiles). */
+    get: operations["backup_status"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/branches/": {
     parameters: {
       query?: never;
@@ -1523,6 +1540,20 @@ export interface components {
      * @enum {string}
      */
     AvailabilityEnum: "available" | "confirm" | "unavailable";
+    BackupRun: {
+      /** Format: date-time */
+      at: string;
+      file: string;
+      size_bytes: number;
+      offsite: boolean;
+      detail: string;
+    };
+    BackupStatus: {
+      last_ok: components["schemas"]["BackupRun"] | null;
+      last_failed: components["schemas"]["BackupRun"] | null;
+      last_restore_test: components["schemas"]["BackupRun"] | null;
+      failing: boolean;
+    };
     BankTransfer: {
       /** Format: uuid */
       id: string;
@@ -1682,6 +1713,7 @@ export interface components {
     Health: {
       status: string;
       database: string;
+      version: string;
     };
     HeldSale: {
       /** Format: uuid */
@@ -3170,6 +3202,25 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Me"];
+        };
+      };
+    };
+  };
+  backup_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BackupStatus"];
         };
       };
     };

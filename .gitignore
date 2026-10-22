@@ -32,3 +32,8 @@ design/handoff/reference-local/
 
 # Uploaded storefront images (local dev)
 backend/media/
+
+# Production secrets (written by infra/install.sh)
+infra/prod/.env
+infra/prod/backup.key
+infra/prod/license/*.json

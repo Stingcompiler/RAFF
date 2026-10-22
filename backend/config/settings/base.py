@@ -23,6 +23,9 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 DEBUG = False
 ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 
+# Release being served (set by the production image build; shown by /api/v1/health/).
+RAFF_VERSION = os.environ.get("RAFF_VERSION", "dev")
+
 # The one organization this deployment serves (CLAUDE.md rule 3).
 SINGLE_ORG_ID = os.environ.get("SINGLE_ORG_ID") or None
 

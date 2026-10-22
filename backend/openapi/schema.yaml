@@ -126,6 +126,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/Me'
           description: ''
+  /api/v1/backup/status/:
+    get:
+      operationId: backup_status
+      description: Last good backup, last failure and last restore drill (Settings
+        tiles).
+      tags:
+      - backup
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackupStatus'
+          description: ''
   /api/v1/branches/:
     get:
       operationId: branches_list
@@ -2407,6 +2423,48 @@ components:
         * `available` - available
         * `confirm` - confirm
         * `unavailable` - unavailable
+    BackupRun:
+      type: object
+      properties:
+        at:
+          type: string
+          format: date-time
+        file:
+          type: string
+        size_bytes:
+          type: integer
+        offsite:
+          type: boolean
+        detail:
+          type: string
+      required:
+      - at
+      - detail
+      - file
+      - offsite
+      - size_bytes
+    BackupStatus:
+      type: object
+      properties:
+        last_ok:
+          allOf:
+          - $ref: '#/components/schemas/BackupRun'
+          nullable: true
+        last_failed:
+          allOf:
+          - $ref: '#/components/schemas/BackupRun'
+          nullable: true
+        last_restore_test:
+          allOf:
+          - $ref: '#/components/schemas/BackupRun'
+          nullable: true
+        failing:
+          type: boolean
+      required:
+      - failing
+      - last_failed
+      - last_ok
+      - last_restore_test
     BankTransfer:
       type: object
       properties:
@@ -2781,9 +2839,12 @@ components:
           type: string
         database:
           type: string
+        version:
+          type: string
       required:
       - database
       - status
+      - version
     HeldSale:
       type: object
       properties:

@@ -1,3 +1,7 @@
-from django.urls import URLPattern, URLResolver
+from django.urls import URLPattern, URLResolver, path
 
-urlpatterns: list[URLPattern | URLResolver] = []
+from apps.backup import views
+
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("backup/status/", views.BackupStatusView.as_view()),
+]

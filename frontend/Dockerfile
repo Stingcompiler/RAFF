@@ -20,3 +20,20 @@ EXPOSE 3000
 # Start Next directly: `pnpm dev` would re-check dependencies at startup and try to
 # reinstall into the root-owned /workspace/node_modules as the unprivileged user.
 CMD ["./node_modules/.bin/next", "dev", "--port", "3000", "--hostname", "0.0.0.0"]
+
+# Production build: Next standalone server. /api and /media are routed by Caddy;
+# server components reach the API at RAFF_API_ORIGIN (runtime).
+FROM base AS build
+ENV NEXT_TELEMETRY_DISABLED=1 RAFF_API_ORIGIN=http://backend:8000
+COPY frontend frontend
+RUN pnpm --dir frontend build
+
+FROM node:24.22.1-bookworm-slim AS prod
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0
+WORKDIR /app
+COPY --from=build --chown=node:node /workspace/frontend/.next/standalone ./
+COPY --from=build --chown=node:node /workspace/frontend/.next/static ./frontend/.next/static
+USER node
+EXPOSE 3000
+CMD ["node", "frontend/server.js"]
+

@@ -1005,7 +1005,10 @@
     "colWho": "المستخدم",
     "colAction": "الإجراء",
     "colObject": "المستند",
-    "noAudit": "لا أحداث."
+    "noAudit": "لا أحداث.",
+    "backupFailed": "✕ فشلت آخر محاولة: {detail}",
+    "offsite": "نسخة خارج الخادم",
+    "localOnly": "على الخادم فقط"
   },
   "store": {
     "nav": {

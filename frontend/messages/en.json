@@ -1005,7 +1005,10 @@
     "colWho": "User",
     "colAction": "Action",
     "colObject": "Document",
-    "noAudit": "No events."
+    "noAudit": "No events.",
+    "backupFailed": "✕ Last attempt failed: {detail}",
+    "offsite": "Off-site copy",
+    "localOnly": "On this server only"
   },
   "store": {
     "nav": {

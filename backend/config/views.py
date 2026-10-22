@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.conf import settings
 from django.db import connection
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers
@@ -14,7 +15,11 @@ from rest_framework.response import Response
     responses={
         200: inline_serializer(
             "Health",
-            {"status": serializers.CharField(), "database": serializers.CharField()},
+            {
+                "status": serializers.CharField(),
+                "database": serializers.CharField(),
+                "version": serializers.CharField(),
+            },
         )
     },
 )
@@ -24,4 +29,4 @@ from rest_framework.response import Response
 def health(request: Request) -> Response:
     with connection.cursor() as cursor:
         cursor.execute("SELECT 1")
-    return Response({"status": "ok", "database": "ok"})
+    return Response({"status": "ok", "database": "ok", "version": settings.RAFF_VERSION})
