@@ -19,6 +19,7 @@ DEFAULT_LOCATIONS = [
     (Location.Kind.SELLABLE, "shelf", "الرف", "Shelf"),
     (Location.Kind.REVIEW, "review", "محجوز للمراجعة", "Held for review"),
     (Location.Kind.QUARANTINE, "quarantine", "الحجر", "Quarantine"),
+    (Location.Kind.TRANSIT, "transit", "قيد النقل", "In transit"),
 ]
 
 

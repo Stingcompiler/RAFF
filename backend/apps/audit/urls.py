@@ -1,3 +1,7 @@
-from django.urls import URLPattern, URLResolver
+from django.urls import URLPattern, URLResolver, path
 
-urlpatterns: list[URLPattern | URLResolver] = []
+from apps.audit import views
+
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("audit/events/", views.AuditEventListView.as_view()),
+]

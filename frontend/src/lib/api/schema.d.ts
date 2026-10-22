@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+  "/api/v1/audit/events/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Who did what, newest first (append-only). */
+    get: operations["audit_events"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/context/": {
     parameters: {
       query?: never;
@@ -311,6 +328,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/dashboard/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Dashboard figures for the session's branch, or every branch the user may see. */
+    get: operations["dashboard"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/devices/": {
     parameters: {
       query?: never;
@@ -338,6 +372,88 @@ export interface paths {
     put?: never;
     /** @description Register the calling browser as this counter (sets the HttpOnly device cookie). */
     post: operations["devices_register"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/bank-transfers/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["finance_bank_transfers"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/bank-transfers/{id}/verify/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description 'Confirm arrival': the transfer reached the bank account. */
+    post: operations["finance_bank_transfer_verify"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/ledger/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["finance_ledger"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/parties/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["finance_parties"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/payments/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Record a collection from a customer or a payment to a supplier. */
+    post: operations["finance_payment"];
     delete?: never;
     options?: never;
     head?: never;
@@ -608,6 +724,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/reports/{name}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description One of the seven reports as JSON, or as CSV (UTF-8 with BOM) with ?format=csv. */
+    get: operations["reports_run"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/returns/": {
     parameters: {
       query?: never;
@@ -837,6 +970,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/shifts/{id}/settle/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["shifts_settle"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/shifts/current/": {
     parameters: {
       query?: never;
@@ -845,6 +994,23 @@ export interface paths {
       cookie?: never;
     };
     get: operations["shifts_current"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/shifts/history/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description The branch's shifts, newest first, with their figures (shift log). */
+    get: operations["shifts_history"];
     put?: never;
     post?: never;
     delete?: never;
@@ -917,6 +1083,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/transfers/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["transfers_list"];
+    put?: never;
+    post: operations["transfers_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/transfers/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["transfers_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/transfers/{id}/receive/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["transfers_receive"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/transfers/{id}/send/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["transfers_send"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/users/": {
     parameters: {
       query?: never;
@@ -959,6 +1189,32 @@ export interface components {
       /** Format: uuid */
       branch_id?: string | null;
     };
+    AuditEvent: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      action: string;
+      object_type: string;
+      /** Format: uuid */
+      object_id: string;
+      readonly branch_code: string | null;
+      readonly actor_name_ar: string;
+      readonly actor_name_en: string;
+      data?: unknown;
+    };
+    BankTransfer: {
+      /** Format: uuid */
+      id: string;
+      sale_number: string;
+      /** Format: date-time */
+      posted_at: string;
+      bank_reference: string;
+      bank_account: string;
+      /** Format: decimal */
+      amount: string;
+      verification: string;
+    };
     BarcodeLookup: {
       item: components["schemas"]["ItemList"];
       unit: components["schemas"]["Unit"];
@@ -993,6 +1249,13 @@ export interface components {
       city_ar?: string;
       city_en?: string;
       receipt_locale?: components["schemas"]["LocaleEnum"];
+    };
+    BranchRef: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
     };
     Category: {
       /** Format: uuid */
@@ -1055,6 +1318,12 @@ export interface components {
       /** Format: decimal */
       readonly balance: string;
       is_active?: boolean;
+    };
+    DayTotal: {
+      /** Format: date */
+      date: string;
+      /** Format: decimal */
+      total: string;
     };
     Decision: {
       decision: components["schemas"]["DecisionEnum"];
@@ -1184,26 +1453,20 @@ export interface components {
       /** Format: decimal */
       price: string | null;
     };
-    /**
-     * @description * `receipt` - Goods receipt
-     *     * `sale` - Sale
-     *     * `return` - Customer return
-     *     * `release` - Released from review
-     *     * `adjustment` - Adjustment
-     *     * `transfer_out` - Transfer out
-     *     * `transfer_in` - Transfer in
-     *     * `quarantine` - Quarantine
-     * @enum {string}
-     */
-    KindEnum:
-      | "receipt"
-      | "sale"
-      | "return"
-      | "release"
-      | "adjustment"
-      | "transfer_out"
-      | "transfer_in"
-      | "quarantine";
+    LedgerRow: {
+      /** Format: uuid */
+      id: string;
+      /** Format: date-time */
+      date: string;
+      document_type: string;
+      document_number: string;
+      /** Format: decimal */
+      debit: string | null;
+      /** Format: decimal */
+      credit: string | null;
+      /** Format: decimal */
+      balance: string;
+    };
     /**
      * @description * `valid` - valid
      *     * `missing` - missing
@@ -1276,20 +1539,13 @@ export interface components {
       display_name_ar: string;
       display_name_en: string;
     };
-    /**
-     * @description * `cash` - Cash
-     *     * `bank` - Bank transfer
-     *     * `credit` - Customer credit
-     * @enum {string}
-     */
-    MethodEnum: "cash" | "bank" | "credit";
     MissingItem: {
       query: string;
     };
     Movement: {
       /** Format: uuid */
       readonly id: string;
-      kind: components["schemas"]["KindEnum"];
+      kind: components["schemas"]["MovementKindEnum"];
       quantity_base: number;
       /** Format: decimal */
       unit_cost: string;
@@ -1301,10 +1557,126 @@ export interface components {
       /** Format: date-time */
       readonly created_at: string;
     };
+    /**
+     * @description * `receipt` - Goods receipt
+     *     * `sale` - Sale
+     *     * `return` - Customer return
+     *     * `release` - Released from review
+     *     * `adjustment` - Adjustment
+     *     * `transfer_out` - Transfer out
+     *     * `transfer_in` - Transfer in
+     *     * `quarantine` - Quarantine
+     * @enum {string}
+     */
+    MovementKindEnum:
+      | "receipt"
+      | "sale"
+      | "return"
+      | "release"
+      | "adjustment"
+      | "transfer_out"
+      | "transfer_in"
+      | "quarantine";
+    NeedsAction: {
+      expiring: number;
+      below_reorder: number;
+      receivables: number;
+      unsettled_shifts: number;
+      transfers_awaiting: number;
+      store_orders: number;
+      pending_sync: number;
+    };
     OpenShift: {
       /** Format: decimal */
       opening_cash: string;
     };
+    Operation: {
+      /** Format: date-time */
+      at: string;
+      kind: components["schemas"]["OperationKindEnum"];
+      number: string;
+      /** Format: decimal */
+      amount: string;
+      status: components["schemas"]["OperationStatusEnum"];
+    };
+    /**
+     * @description * `sale` - sale
+     *     * `return` - return
+     * @enum {string}
+     */
+    OperationKindEnum: "sale" | "return";
+    /**
+     * @description * `approved` - approved
+     *     * `verifying` - verifying
+     *     * `to_inspect` - to_inspect
+     * @enum {string}
+     */
+    OperationStatusEnum: "approved" | "verifying" | "to_inspect";
+    Overview: {
+      needs_action: components["schemas"]["NeedsAction"];
+      /** Format: decimal */
+      sales_today: string;
+      sales_count: number;
+      /** Format: decimal */
+      cash_today: string;
+      /** Format: decimal */
+      bank_today: string;
+      open_shift: components["schemas"]["OverviewShift"] | null;
+      week: components["schemas"]["DayTotal"][];
+      latest: components["schemas"]["Operation"][];
+    };
+    OverviewShift: {
+      number: number;
+      /** Format: date-time */
+      opened_at: string;
+      user_ar: string;
+      user_en: string;
+    };
+    Party: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      phone: string;
+      /** Format: decimal */
+      balance: string;
+      /** Format: decimal */
+      credit_limit: string | null;
+      /** Format: date-time */
+      last_activity: string | null;
+    };
+    PartyPaymentIn: {
+      party_type: components["schemas"]["PartyTypeEnum"];
+      /** Format: uuid */
+      party_id: string;
+      method: components["schemas"]["PartyPaymentInMethodEnum"];
+      /** Format: decimal */
+      amount: string;
+      /** @default  */
+      reference: string;
+      /** @default  */
+      note: string;
+    };
+    /**
+     * @description * `cash` - Cash
+     *     * `bank` - Bank transfer
+     * @enum {string}
+     */
+    PartyPaymentInMethodEnum: "cash" | "bank";
+    PartyPaymentResult: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: decimal */
+      amount: string;
+    };
+    /**
+     * @description * `customer` - Customer
+     *     * `supplier` - Supplier
+     * @enum {string}
+     */
+    PartyTypeEnum: "customer" | "supplier";
     PatchedCountsIn: {
       lines?: components["schemas"]["CountIn"][];
     };
@@ -1326,7 +1698,7 @@ export interface components {
       password?: string;
     };
     PaymentIn: {
-      method: components["schemas"]["MethodEnum"];
+      method: components["schemas"]["PaymentInMethodEnum"];
       /** Format: decimal */
       amount: string;
       /** Format: decimal */
@@ -1336,6 +1708,13 @@ export interface components {
       /** @default  */
       bank_account: string;
     };
+    /**
+     * @description * `cash` - Cash
+     *     * `bank` - Bank transfer
+     *     * `credit` - Customer credit
+     * @enum {string}
+     */
+    PaymentInMethodEnum: "cash" | "bank" | "credit";
     PosItem: {
       /** Format: uuid */
       id: string;
@@ -1547,6 +1926,14 @@ export interface components {
      * @enum {string}
      */
     ReceiptStatusEnum: "draft" | "posted";
+    ReceiveIn: {
+      lines: components["schemas"]["ReceivedLine"][];
+    };
+    ReceivedLine: {
+      /** Format: uuid */
+      line_id: string;
+      received_base: number;
+    };
     /**
      * @description * `cash` - Cash from the drawer
      *     * `account` - Credit to the customer's account
@@ -1556,6 +1943,27 @@ export interface components {
     Release: {
       /** Format: date */
       expiry_date: string;
+    };
+    Report: {
+      name: string;
+      /** Format: date */
+      start: string;
+      /** Format: date */
+      end: string;
+      days: number;
+      columns: components["schemas"]["ReportColumn"][];
+      rows: {
+        [key: string]: unknown;
+      }[];
+      totals: {
+        [key: string]: unknown;
+      };
+    };
+    ReportColumn: {
+      key: string;
+      label_ar: string;
+      label_en: string;
+      kind: string;
     };
     ReturnIn: {
       /** Format: uuid */
@@ -1719,6 +2127,25 @@ export interface components {
       /** Format: decimal */
       variance?: string | null;
     };
+    ShiftLog: {
+      shift: components["schemas"]["Shift"] | null;
+      /** Format: decimal */
+      sales_total: string | null;
+      sales_count: number | null;
+      /** Format: decimal */
+      cash: string | null;
+      /** Format: decimal */
+      bank: string | null;
+      /** Format: decimal */
+      credit: string | null;
+      /** Format: decimal */
+      expected_cash: string | null;
+      device_ar: string;
+      device_en: string;
+      opened_by_ar: string;
+      opened_by_en: string;
+      settled: boolean;
+    };
     /**
      * @description * `open` - Open
      *     * `closed` - Closed
@@ -1862,6 +2289,75 @@ export interface components {
       payment_terms_days?: number;
       is_active?: boolean;
     };
+    Transfer: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      from_branch: components["schemas"]["BranchRef"];
+      to_branch: components["schemas"]["BranchRef"];
+      status: string;
+      note: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      sent_at: string | null;
+      /** Format: date-time */
+      received_at: string | null;
+      lines_count: number;
+      /** Format: decimal */
+      value: string;
+    };
+    TransferDetail: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      from_branch: components["schemas"]["BranchRef"];
+      to_branch: components["schemas"]["BranchRef"];
+      status: string;
+      note: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      sent_at: string | null;
+      /** Format: date-time */
+      received_at: string | null;
+      lines_count: number;
+      /** Format: decimal */
+      value: string;
+      lines: components["schemas"]["TransferLine"][];
+    };
+    TransferIn: {
+      /** Format: uuid */
+      to_branch_id: string;
+      /** @default  */
+      note: string;
+      lines: components["schemas"]["TransferLineIn"][];
+    };
+    TransferLine: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      item_id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      /** Format: uuid */
+      batch_id: string;
+      batch_no: string;
+      /** Format: date */
+      expiry_date: string | null;
+      quantity_base: number;
+      received_base: number | null;
+      unit_ar: string;
+      unit_en: string;
+      factor: number;
+    };
+    TransferLineIn: {
+      /** Format: uuid */
+      batch_id: string;
+      quantity_base: number;
+    };
     Unit: {
       /** Format: uuid */
       readonly id: string;
@@ -1909,6 +2405,11 @@ export interface components {
       display_name_en: string;
       assignments: components["schemas"]["Assignment"][];
     };
+    VerifyResult: {
+      /** Format: uuid */
+      id: string;
+      verification: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -1918,6 +2419,29 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  audit_events: {
+    parameters: {
+      query?: {
+        action?: string;
+        limit?: number;
+        object_type?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AuditEvent"][];
+        };
+      };
+    };
+  };
   auth_context: {
     parameters: {
       query?: never;
@@ -2407,6 +2931,27 @@ export interface operations {
       };
     };
   };
+  dashboard: {
+    parameters: {
+      query?: {
+        scope?: "all" | "branch";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Overview"];
+        };
+      };
+    };
+  };
   devices_list: {
     parameters: {
       query?: never;
@@ -2466,6 +3011,116 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Device"];
+        };
+      };
+    };
+  };
+  finance_bank_transfers: {
+    parameters: {
+      query?: {
+        status?: "all" | "pending";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BankTransfer"][];
+        };
+      };
+    };
+  };
+  finance_bank_transfer_verify: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["VerifyResult"];
+        };
+      };
+    };
+  };
+  finance_ledger: {
+    parameters: {
+      query: {
+        party: string;
+        type: "customer" | "supplier";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LedgerRow"][];
+        };
+      };
+    };
+  };
+  finance_parties: {
+    parameters: {
+      query?: {
+        type?: "customer" | "supplier";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Party"][];
+        };
+      };
+    };
+  };
+  finance_payment: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PartyPaymentIn"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PartyPaymentResult"];
         };
       };
     };
@@ -2872,6 +3527,36 @@ export interface operations {
       };
     };
   };
+  reports_run: {
+    parameters: {
+      query?: {
+        days?: number;
+        export?: "csv";
+        /** @description YYYY-MM-DD */
+        from?: string;
+        lang?: "ar" | "en";
+        /** @description YYYY-MM-DD */
+        to?: string;
+      };
+      header?: never;
+      path: {
+        name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Report"];
+          "text/csv": string;
+        };
+      };
+    };
+  };
   returns_list: {
     parameters: {
       query?: never;
@@ -3224,6 +3909,27 @@ export interface operations {
       };
     };
   };
+  shifts_settle: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Shift"];
+        };
+      };
+    };
+  };
   shifts_current: {
     parameters: {
       query?: never;
@@ -3239,6 +3945,25 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ShiftSummary"];
+        };
+      };
+    };
+  };
+  shifts_history: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ShiftLog"][];
         };
       };
     };
@@ -3392,6 +4117,119 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Supplier"];
+        };
+      };
+    };
+  };
+  transfers_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Transfer"][];
+        };
+      };
+    };
+  };
+  transfers_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TransferIn"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransferDetail"];
+        };
+      };
+    };
+  };
+  transfers_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransferDetail"];
+        };
+      };
+    };
+  };
+  transfers_receive: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReceiveIn"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransferDetail"];
+        };
+      };
+    };
+  };
+  transfers_send: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TransferDetail"];
         };
       };
     };

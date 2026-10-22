@@ -207,3 +207,11 @@ class CustomerSerializer(serializers.ModelSerializer[Customer]):
 
 class MissingItemSerializer(serializers.Serializer[None]):
     query = serializers.CharField(max_length=120)
+
+
+class ShiftLogSerializer(ShiftSummarySerializer):
+    device_ar = serializers.CharField()
+    device_en = serializers.CharField()
+    opened_by_ar = serializers.CharField()
+    opened_by_en = serializers.CharField()
+    settled = serializers.BooleanField()
