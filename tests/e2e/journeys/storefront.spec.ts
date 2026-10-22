@@ -50,7 +50,9 @@ test.describe("public storefront", () => {
     await page.getByLabel("رقم الطلب").fill(number);
     await page.getByLabel("رقم الهاتف").fill("0999999999");
     await page.getByRole("button", { name: "عرض الطلب" }).click();
-    await expect(page.getByRole("main").getByRole("alert")).toHaveText("✕ لا يوجد طلب بهذه البيانات.");
+    await expect(page.getByRole("main").getByRole("alert")).toHaveText(
+      "✕ لا يوجد طلب بهذه البيانات.",
+    );
     await page.getByLabel("رقم الهاتف").fill(PHONE);
     await page.getByRole("button", { name: "عرض الطلب" }).click();
     await expect(page).toHaveURL(orderUrl);
