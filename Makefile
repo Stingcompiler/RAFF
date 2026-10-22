@@ -15,6 +15,9 @@ POSTGRES_USER ?= raff
 POSTGRES_PASSWORD ?=
 DJANGO_SECRET_KEY ?= local-only-not-a-secret
 export POSTGRES_HOST POSTGRES_PORT POSTGRES_DB POSTGRES_USER POSTGRES_PASSWORD DJANGO_SECRET_KEY
+# The frontend dev container runs as the owner of the checkout.
+export HOST_UID := $(shell id -u)
+export HOST_GID := $(shell id -g)
 
 MANAGE := uv run --directory backend python manage.py
 
@@ -27,7 +30,7 @@ install:
 
 dev:
 	./infra/compose/init-env.sh
-	$(COMPOSE) up --detach --build --wait
+	$(COMPOSE) up --detach --build --wait --wait-timeout 300 || ($(COMPOSE) logs --tail 200 && exit 1)
 	@echo "frontend http://localhost:3000/  ·  api http://localhost:8000/api/v1/health/"
 
 down:

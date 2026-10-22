@@ -11,8 +11,10 @@ RUN pnpm install --frozen-lockfile --filter frontend
 FROM base AS dev
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY frontend frontend
-RUN mkdir -p frontend/.next && chown -R node:node /workspace/frontend
-USER node
+# Compose runs this image as the host user (it writes into the bind-mounted source),
+# so the build cache volume must be writable by any uid.
+RUN mkdir -p frontend/.next && chmod 1777 frontend/.next
+ENV HOME=/tmp
 WORKDIR /workspace/frontend
 EXPOSE 3000
 # Start Next directly: `pnpm dev` would re-check dependencies at startup and try to

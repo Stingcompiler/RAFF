@@ -24,6 +24,7 @@ env:
 jobs:
   lint:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
@@ -31,6 +32,7 @@ jobs:
 
   typecheck:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
@@ -38,6 +40,7 @@ jobs:
 
   backend-tests:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:17.11-bookworm
@@ -56,6 +59,7 @@ jobs:
 
   openapi:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
@@ -90,6 +94,7 @@ jobs:
 
   visual:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:17.11-bookworm
@@ -118,6 +123,7 @@ jobs:
   # `make dev` brings the whole stack up from scratch and both endpoints answer.
   compose:
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7.0.1
       - run: make dev

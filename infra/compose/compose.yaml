@@ -56,6 +56,8 @@ services:
       context: ../..
       dockerfile: frontend/Dockerfile
       target: dev
+    # Next dev writes next-env.d.ts into the bind-mounted source: run as its owner.
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     environment:
       RAFF_API_ORIGIN: http://backend:8000
       WATCHPACK_POLLING: "true"
@@ -75,9 +77,9 @@ services:
         - -e
         - "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
       interval: 5s
-      timeout: 10s
-      retries: 60
-      start_period: 30s
+      timeout: 5s
+      retries: 24
+      start_period: 60s
 
 volumes:
   pgdata:
