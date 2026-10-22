@@ -1,0 +1,31 @@
+name: Reference shots (Linux)
+
+# Regenerates design/handoff/reference/ inside the same Playwright image the visual
+# tests run in, so CI compares like with like. Run it after a design change, download
+# the artifact and commit it (references are only ever produced by the generator).
+on:
+  workflow_dispatch:
+  push:
+    branches: [ci/references]
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.1.0
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24.22.1"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node design/handoff/generate-reference.mjs
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: reference
+          path: design/handoff/reference/
