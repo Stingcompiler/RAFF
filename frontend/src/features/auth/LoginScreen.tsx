@@ -66,7 +66,9 @@ export function LoginScreen({ device, initialMe, next }: Props) {
       setError(t("notAllowed"));
       return;
     }
-    router.push(next);
+    // Cashiers at a counter land on the POS (BACKLOG: the design has no POS entry in the sidebar).
+    const pos = next === "/dashboard" && res.data.device && res.data.role?.code === "cashier";
+    router.push(pos ? "/pos" : next);
     router.refresh();
   }
 

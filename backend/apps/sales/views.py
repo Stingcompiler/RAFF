@@ -1,6 +1,7 @@
 # Views authorize and delegate to services/.
 from __future__ import annotations
 
+import uuid
 from typing import Any
 
 from django.db import transaction
@@ -59,11 +60,21 @@ class PosItemsView(APIView):
 
     @extend_schema(
         operation_id="pos_items",
-        parameters=[OpenApiParameter("q", str, required=False)],
+        parameters=[
+            OpenApiParameter("q", str, required=False),
+            OpenApiParameter("ids", str, required=False, description="Comma-separated item ids"),
+        ],
         responses=PosItemSerializer(many=True),
     )
     def get(self, request: Request) -> Response:
-        rows = pos_items(current_branch(request), request.query_params.get("q", ""))
+        raw = request.query_params.get("ids")
+        ids = None
+        if raw is not None:
+            try:
+                ids = [str(uuid.UUID(v)) for v in raw.split(",") if v]
+            except ValueError:
+                raise _bad("invalid_ids") from None
+        rows = pos_items(current_branch(request), request.query_params.get("q", ""), ids=ids)
         return Response(PosItemSerializer(rows, many=True).data)
 
 

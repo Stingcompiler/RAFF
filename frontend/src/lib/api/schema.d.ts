@@ -492,6 +492,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/pos/missing/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Log an item a customer asked for that the pharmacy does not stock. */
+    post: operations["pos_missing"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/purchasing/receipts/": {
     parameters: {
       query?: never;
@@ -907,6 +924,8 @@ export interface components {
       /** Format: date-time */
       readonly created_at: string;
       cart: unknown;
+      /** Format: decimal */
+      total?: string;
       readonly created_by_name_ar: string;
       readonly created_by_name_en: string;
     };
@@ -1088,6 +1107,9 @@ export interface components {
      * @enum {string}
      */
     MethodEnum: "cash" | "bank" | "credit";
+    MissingItem: {
+      query: string;
+    };
     Movement: {
       /** Format: uuid */
       readonly id: string;
@@ -2241,6 +2263,8 @@ export interface operations {
   pos_items: {
     parameters: {
       query?: {
+        /** @description Comma-separated item ids */
+        ids?: string;
         q?: string;
       };
       header?: never;
@@ -2256,6 +2280,28 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["PosItem"][];
         };
+      };
+    };
+  };
+  pos_missing: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MissingItem"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

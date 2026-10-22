@@ -10,9 +10,13 @@ from apps.inventory.selectors import stock_for_items
 from apps.tenancy.models import Branch
 
 
-def pos_items(branch: Branch, query: str, limit: int = 50) -> list[dict[str, Any]]:
+def pos_items(
+    branch: Branch, query: str, limit: int = 50, ids: list[str] | None = None
+) -> list[dict[str, Any]]:
     """Rows for the POS result list: price, stock in the sale unit, nearest expiry, state."""
     qs = search_items(query, active=True)
+    if ids is not None:
+        qs = qs.filter(pk__in=ids)
     if not query.strip():
         qs = qs.order_by("code")
     items: list[Item] = list(_with_price(qs.prefetch_related("units__barcodes"))[:limit])

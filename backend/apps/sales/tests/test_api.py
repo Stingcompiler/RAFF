@@ -37,6 +37,9 @@ def test_pos_flow_over_the_api(world: World) -> None:
     rows = client.get("/api/v1/pos/items/", {"q": "Item AUG"}).json()
     assert rows[0]["sellable_base"] == 28
     assert rows[0]["unit"]["code"] == "box"
+    by_id = client.get("/api/v1/pos/items/", {"ids": f"{item.pk},{uuid.uuid4()}"}).json()
+    assert [r["id"] for r in by_id] == [str(item.pk)]
+    assert client.get("/api/v1/pos/items/", {"ids": "nope"}).status_code == 400
 
     cart = [{"item_id": str(item.pk), "unit_id": str(box.pk), "quantity": 1}]
     quoted = client.post("/api/v1/sales/quote/", {"lines": cart}, format="json", **csrf).json()

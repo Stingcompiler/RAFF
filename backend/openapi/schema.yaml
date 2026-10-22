@@ -694,6 +694,11 @@ paths:
       operationId: pos_items
       parameters:
       - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated item ids
+      - in: query
         name: q
         schema:
           type: string

@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, type RefObject, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -18,10 +18,20 @@ type DialogProps = {
   className?: string;
   /** Absolute inside a positioned container (designs, previews) instead of fixed. */
   contained?: boolean;
+  /** Element to focus on open (default: the first focusable). */
+  initialFocus?: RefObject<HTMLElement | null>;
 };
 
 /** Modal dialog with a focus trap; restores focus to the opener on close. */
-export function Dialog({ open, onClose, labelledBy, children, className, contained }: DialogProps) {
+export function Dialog({
+  open,
+  onClose,
+  labelledBy,
+  children,
+  className,
+  contained,
+  initialFocus,
+}: DialogProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,7 +39,7 @@ export function Dialog({ open, onClose, labelledBy, children, className, contain
     const opener = document.activeElement as HTMLElement | null;
     const node = ref.current;
     const focusables = () => [...(node?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
-    (focusables()[0] ?? node)?.focus();
+    (initialFocus?.current ?? focusables()[0] ?? node)?.focus();
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && onClose) {
@@ -55,7 +65,7 @@ export function Dialog({ open, onClose, labelledBy, children, className, contain
       document.removeEventListener("keydown", onKey, true);
       opener?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open, onClose, initialFocus]);
 
   if (!open) return null;
   return (
