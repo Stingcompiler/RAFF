@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}button,input{font-family:inherit}a{color:#245C4F}a:hover{color:#172D29}
+@keyframes raffSpin{to{transform:rotate(360deg)}}
+@keyframes raffShim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@keyframes prA{from{clip-path:inset(0 0 100% 0);transform:translateY(-16px)}to{clip-path:inset(0);transform:none}}@keyframes prB{from{clip-path:inset(0 0 100% 0);transform:translateY(-16px)}to{clip-path:inset(0);transform:none}}@keyframes raffIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes raffPulse{0%,100%{opacity:1}50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</helmet>
+<div dir="{{ dir }}" style="{{ rootStyle }}">
+<div dir="ltr" style="background:#2a2f2c;color:#ddd;display:flex;gap:8px;align-items:center;padding:8px 12px;font:500 12px 'IBM Plex Sans',sans-serif;flex-wrap:wrap">
+<span style="opacity:.7">Raff components · sample data</span>
+<sc-for list="{{ switches }}" as="s" hint-placeholder-count="2"><button onClick="{{ s.go }}" style="{{ s.st }}">{{ s.label }}</button></sc-for>
+<a href="Raff Screens.dc.html" style="color:#DCEB9D;margin-inline-start:auto">Screens →</a>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(560px,100%),1fr));gap:24px;padding:24px">
+<sc-for list="{{ themes }}" as="th" hint-placeholder-count="2">
+<section style="{{ th.style }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:16px;font-weight:500">{{ th.name }}</h2><span style="font-size:12px;color:var(--muted)">{{ t.hint }}</span></div>
+
+<div style="{{ g }}"><div style="{{ cap }}">Button</div>
+<div style="display:grid;grid-template-columns:70px repeat(5,minmax(0,1fr));gap:8px;align-items:center;font-size:12px;color:var(--muted)">
+<span></span><sc-for list="{{ states }}" as="s" hint-placeholder-count="5"><span>{{ s }}</span></sc-for>
+<sc-for list="{{ btnRows }}" as="r" hint-placeholder-count="4"><span style="font-weight:500;color:var(--ink)">{{ r.name }}</span><sc-for list="{{ r.cells }}" as="b" hint-placeholder-count="5"><button style="{{ b.st }}"><span style="{{ b.spin }}"></span>{{ b.l }}</button></sc-for></sc-for>
+</div>
+<div style="display:flex;gap:8px;align-items:center"><span aria-label="{{ t.search }}" style="width:44px;height:44px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;background:var(--surface)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span><span style="font-size:12px;color:var(--muted)">IconButton · {{ t.iconNote }}</span></div></div>
+
+<div style="{{ g }}"><div style="{{ cap }}">Input · Select · Textarea · SearchField</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<sc-for list="{{ inputs }}" as="i" hint-placeholder-count="4"><label style="display:grid;gap:4px;font-size:12px;font-weight:500;color:var(--muted)">{{ i.label }}<span style="{{ i.st }}">{{ i.value }}</span><span style="{{ i.hs }}">{{ i.help }}</span></label></sc-for></div>
+<div style="display:flex;align-items:center;gap:8px;height:48px;padding-inline:14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span style="flex:1;color:var(--muted)">{{ t.ph }}</span><span dir="ltr" style="{{ kbd }}">F2</span></div></div>
+
+<div style="{{ g }}"><div style="{{ cap }}">Badge · StatusDot · KeyboardHint · ConnectionIndicator</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ badges }}" as="b" hint-placeholder-count="6"><span style="{{ b.st }}">{{ b.l }}</span></sc-for></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;font-size:13px"><sc-for list="{{ dots }}" as="d" hint-placeholder-count="3"><span style="display:flex;gap:6px;align-items:center"><span style="{{ d.st }}"></span>{{ d.l }}</span></sc-for><span style="display:flex;gap:6px"><span dir="ltr" style="{{ kbd }}">F8</span><span dir="ltr" style="{{ kbd }}">Ctrl</span>+<span dir="ltr" style="{{ kbd }}">K</span></span></div>
+<div style="display:grid;gap:8px"><sc-for list="{{ conns }}" as="c" hint-placeholder-count="3"><div style="{{ c.st }}"><span style="{{ c.dot }}"></span><span style="flex:1;font-weight:500">{{ c.l }}</span><span style="opacity:.85;font-size:12px">{{ c.d }}</span></div></sc-for></div></div>
+
+<div style="{{ g }}"><div style="{{ cap }}">Table · Tabs · Segmented</div>
+<div style="display:flex;gap:16px;border-block-end:1px solid var(--line)"><sc-for list="{{ tabs }}" as="x" hint-placeholder-count="3"><span onClick="{{ x.go }}" style="{{ x.st }}">{{ x.l }}</span></sc-for>
+<span style="margin-inline-start:auto;display:flex;gap:2px;padding:3px;background:var(--sidebar);border-radius:8px;margin-block-end:6px"><sc-for list="{{ segs }}" as="x" hint-placeholder-count="2"><span onClick="{{ x.go }}" style="{{ x.st }}">{{ x.l }}</span></sc-for></span></div>
+<div style="border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)">
+<div style="display:grid;grid-template-columns:36px 1fr 70px 90px;gap:12px;align-items:center;height:36px;padding-inline:12px;background:var(--raised);font-size:12px;font-weight:500;color:var(--muted)"><span></span><span>{{ t.item }} ↑</span><span style="text-align:end">{{ t.qty }}</span><span>{{ t.status }}</span></div>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="3"><div onClick="{{ r.go }}" style="{{ r.st }}"><span style="{{ r.box }}">{{ r.tick }}</span><span>{{ r.n }}</span><span dir="ltr" style="text-align:end;font-variant-numeric:tabular-nums">{{ r.q }}</span><span style="{{ r.b }}">{{ r.bl }}</span></div></sc-for>
+<div style="display:grid;grid-template-columns:36px 1fr 70px 90px;gap:12px;align-items:center;height:44px;padding-inline:12px;border-block-start:1px solid var(--line)"><span style="{{ sk }}width:18px;height:18px"></span><span style="{{ sk }}width:70%"></span><span style="{{ sk }}width:100%"></span><span style="{{ sk }}width:100%"></span></div>
+<div style="padding:16px;text-align:center;color:var(--muted);border-block-start:1px solid var(--line);font-size:13px">{{ t.emptyRow }}</div></div></div>
+
+<div style="{{ g }}"><div style="{{ cap }}">Dialog · Toast · EmptyState</div>
+<div style="background:rgba(15,26,23,.45);border-radius:10px;padding:20px;display:grid;place-items:center"><div role="dialog" style="width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.3);padding:20px;display:grid;gap:12px">
+<div style="font-size:16px;font-weight:500">{{ t.dTitle }}</div><div style="color:var(--muted)">{{ t.dBody }}</div>
+<div style="display:flex;justify-content:space-between;padding:10px 12px;background:var(--warn-bg);color:var(--warn);border-radius:8px;font-weight:500"><span>{{ t.impact }}</span><span dir="ltr">−{{ t.amt }}</span></div>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button style="{{ ghost }}">{{ t.cancel }}</button><button style="{{ prim }}">{{ t.approve }}</button></div></div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ toastBtns }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.go }}" style="{{ ghost }}">{{ b.l }}</button></sc-for></div>
+<div style="display:grid;gap:8px;min-height:20px"><sc-for list="{{ toasts }}" as="x" hint-placeholder-count="0"><div style="{{ x.st }}"><span>{{ x.sym }}</span><span style="flex:1;font-weight:500">{{ x.l }}</span><span style="font-size:12px;opacity:.8">REQ-{{ x.id }}</span></div></sc-for></div>
+<div style="border:1px dashed var(--line);border-radius:10px;padding:20px;text-align:center;display:grid;gap:6px;justify-items:center"><span style="font-weight:500">{{ t.emptyT }}</span><span style="color:var(--muted);font-size:13px">{{ t.emptyB }}</span><button style="{{ ghost }}">{{ t.emptyA }}</button></div></div>
+</section></sc-for>
+</div>
+
+<div style="padding:8px 24px 24px;display:grid;gap:16px"><h2 style="margin:0;font-size:16px;font-weight:500;color:#172D29">Storefront components · light-first</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:16px" dir="rtl">
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">ProductCard · حالات</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<div style="border:1px solid #E0E6D7;border-radius:14px;overflow:hidden;background:#fff"><div style="height:72px;background:#EEF1E6;color:#8a968d;display:grid;place-items:center;font-size:12px">لا صورة</div><div style="padding:12px;display:grid;gap:6px"><b>باراسيتامول 500 mg</b><div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-size:17px;font-weight:600">800 ج.س</span><span style="font-size:12px;color:#5F6D63">آخر تحديث 2026-10-21</span></div><div><span style="color:#3D765B;background:#EDF5EE;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">● متاح</span></div><button style="min-height:44px;padding-inline:16px;border-radius:10px;border:0;background:#245C4F;color:#fff;font-family:inherit;font-weight:600;cursor:pointer;white-space:nowrap">أضف إلى السلة</button></div></div>
+<div style="border:1px solid #E0E6D7;border-radius:14px;overflow:hidden;background:#fff"><div style="height:72px;background:#EEF1E6;color:#8a968d;display:grid;place-items:center;font-size:12px">لا صورة</div><div style="padding:12px;display:grid;gap:6px"><b>أوميبرازول 20 mg</b><div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-size:17px;font-weight:600">2,400 ج.س</span><span style="font-size:12px;color:#5F6D63">آخر تحديث 2026-10-21</span></div><div><span style="color:#98612A;background:#FBF1DF;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">▲ يحتاج تأكيد الصيدلية</span></div><button style="min-height:44px;padding-inline:16px;border-radius:10px;border:0;background:#245C4F;color:#fff;font-family:inherit;font-weight:600;cursor:pointer;white-space:nowrap">أضف إلى السلة</button></div></div>
+<div style="border:1px solid #E0E6D7;border-radius:14px;overflow:hidden;background:#fff"><div style="height:72px;background:#EEF1E6;color:#8a968d;display:grid;place-items:center;font-size:12px">لا صورة</div><div style="padding:12px;display:grid;gap:6px"><b>شراب سعال</b><div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-size:17px;font-weight:600">2,900 ج.س</span><span style="font-size:12px;color:#5F6D63">آخر تحديث 2026-10-21</span></div><div><span style="color:#2F5F7A;background:#E9EFF3;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">■ غير متاح حالياً</span></div><button style="min-height:44px;border-radius:10px;border:1px solid #D5DCCB;background:transparent;color:#5F6D63;font-family:inherit;font-weight:600">التفاصيل</button></div></div>
+<div style="border:1px solid #E0E6D7;border-radius:14px;overflow:hidden;background:#fff"><div style="height:72px;background:#EEF1E6;color:#8a968d;display:grid;place-items:center;font-size:12px">لا صورة</div><div style="padding:12px;display:grid;gap:6px"><b>أموكسيسيلين 500 mg</b><div style="padding:8px 10px;border-radius:8px;background:#E9EFF3;color:#2F5F7A;font-size:13px;font-weight:500">يتطلب وصفة — يراجعه الصيدلي قبل التأكيد</div><div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-size:17px;font-weight:600">بلا سعر</span><span style="font-size:12px;color:#5F6D63"></span></div><div><span style="color:#98612A;background:#FBF1DF;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">▲ يحتاج تأكيد الصيدلية</span></div><button style="min-height:44px;padding-inline:16px;border-radius:10px;border:1px solid #245C4F;background:transparent;color:#245C4F;font-family:inherit;font-weight:600;cursor:pointer;white-space:nowrap">اطلب مراجعة الصيدلي</button></div></div></div></div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">AvailabilityBadge · RxNotice · PriceWithDate</div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="color:#3D765B;background:#EDF5EE;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">● متاح</span><span style="color:#98612A;background:#FBF1DF;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">▲ يحتاج تأكيد الصيدلية</span><span style="color:#2F5F7A;background:#E9EFF3;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap">■ غير متاح حالياً</span></div><div style="padding:8px 10px;border-radius:8px;background:#E9EFF3;color:#2F5F7A;font-size:13px;font-weight:500">يتطلب وصفة — يراجعه الصيدلي قبل التأكيد</div>
+<div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:22px;font-weight:600">4,500 ج.س</span><span style="font-size:12px;color:#5F6D63">آخر تحديث 2026-10-21</span></div>
+<div style="font-size:12px;color:#98612A;font-weight:500">▲ يُؤكد عند المراجعة</div><div style="font-size:13px;color:#5F6D63">لا أرقام مخزون في أي حالة.</div></div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">PickupSelector</div><div style="display:flex;gap:12px;align-items:center;padding:14px;border:2px solid #245C4F;border-radius:12px"><b style="flex:1">استلام من الصيدلية<div style="font-weight:400;font-size:14px;color:#5F6D63">الدفع عند الاستلام</div></b><span style="color:#245C4F;font-weight:700">✓</span></div>
+<div style="display:flex;gap:12px;align-items:center;padding:14px;border:1px dashed #D5DCCB;border-radius:12px;opacity:.55"><b style="flex:1">توصيل<div style="font-weight:400;font-size:14px">غير مفعّل</div></b></div>
+<div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">StorefrontStatusChip</div><span style="display:inline-flex;gap:8px;align-items:center;justify-self:start;color:#3D765B;background:#EDF5EE;font-size:12px;font-weight:500;padding:4px 12px;border-radius:999px"><span style="width:8px;height:8px;border-radius:50%;background:currentColor"></span>المتجر: مفعّل · 3 طلبات جديدة</span></div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">OrderStatusStepper · زبون</div><div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;background:#245C4F;color:#fff">✓</span><span style="font-weight:600">جديد</span></div><div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;border:2px solid #245C4F;background:#DCEB9D"></span><span style="font-weight:600">مؤكد</span></div><div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;border:2px solid #D5DCCB;background:#fff"></span><span style="color:#5F6D63">قيد التجهيز</span></div><div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;border:2px solid #D5DCCB;background:#fff"></span><span style="color:#5F6D63">جاهز للاستلام</span></div><div style="display:flex;gap:10px;align-items:center;font-size:14px"><span style="width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;border:2px solid #D5DCCB;background:#fff"></span><span style="color:#5F6D63">مكتمل</span></div>
+<div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">OrderTimeline · موظف</div><div style="font-size:13px;display:grid;gap:4px"><div><span dir="ltr" style="color:#5F6D63">14:40</span> مؤكد · مازن</div><div><span dir="ltr" style="color:#5F6D63">14:32</span> وصل الطلب · الزبون</div></div></div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">PublishToggle</div><div style="display:flex;justify-content:space-between;align-items:center"><span>منشور في المتجر</span><span style="width:44px;height:26px;border-radius:999px;position:relative;flex:none;background:#245C4F;opacity:1;cursor:pointer;transition:background .25s"><span style="position:absolute;top:3px;inset-inline-start:21px;width:20px;height:20px;border-radius:50%;background:#fff;transition:inset-inline-start .25s"></span></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;opacity:.9"><span>منشور في المتجر</span><span style="width:44px;height:26px;border-radius:999px;position:relative;flex:none;background:#E0E6D7;opacity:0.5;cursor:not-allowed;transition:background .25s"><span style="position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:inset-inline-start .25s"></span></span></div>
+<div style="font-size:13px;display:grid;gap:2px"><span style="color:#3D765B">● السعر</span><span style="color:#3D765B">● التصنيف</span><span style="color:#98612A">▲ صورة ناقصة</span><span style="color:#98612A">▲ وصف ناقص</span></div></div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:12px;padding:16px;display:grid;gap:12px;align-content:start"><div style="font-size:12px;font-weight:600;color:#5F6D63;text-transform:uppercase;letter-spacing:.04em">WhatsAppAction</div><div style="display:flex;gap:8px"><a href="#" style="flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #245C4F;color:#245C4F;font-weight:600;text-decoration:none;white-space:nowrap">فتح واتساب</a><button style="min-height:44px;padding-inline:16px;border-radius:10px;border:1px solid #E0E6D7;background:transparent;color:#172D29;font-family:inherit;cursor:pointer;white-space:nowrap">نسخ الرسالة</button></div>
+<div style="font-size:13px;color:#5F6D63;display:grid;gap:4px"><span>قوالب: تأكيد · يحتاج تواصلاً · جاهز للاستلام</span></div></div>
+</div></div>
+<div style="padding:8px 24px 48px;display:grid;gap:16px">
+<div style="display:flex;align-items:center;gap:16px"><h2 style="margin:0;font-size:16px;font-weight:500;color:#172D29">Receipt preview · 80mm · {{ t.always }}</h2><button onClick="{{ doPrint }}" style="{{ ghostL }}">{{ t.print }}</button></div>
+<div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+<sc-for list="{{ receipts }}" as="r" hint-placeholder-count="2">
+<div dir="{{ r.dir }}" style="width:302px;background:#fff;color:#111;padding:20px 16px 28px;box-shadow:0 10px 30px rgba(0,0,0,.18);font:400 13px/1.5 {{ r.font }};animation:{{ printAnim }} 1.4s steps(28,end) both">
+<div style="text-align:center;font-weight:700;font-size:16px">{{ r.shop }}</div><div style="text-align:center;font-size:12px">{{ r.branch }}</div>
+<div style="border-block-start:1px dashed #111;margin-block:8px"></div>
+<div style="display:flex;justify-content:space-between;font-size:12px"><span>{{ r.no }}</span><span dir="ltr">2026-10-21 14:32</span></div>
+<div style="border-block-start:1px dashed #111;margin-block:8px"></div>
+<sc-for list="{{ r.lines }}" as="l" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:8px"><span>{{ l.n }}</span><span dir="ltr" style="font-variant-numeric:tabular-nums">{{ l.t }}</span></div></sc-for>
+<div style="border-block-start:1px dashed #111;margin-block:8px"></div>
+<div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px"><span>{{ r.totalL }}</span><span dir="ltr">{{ r.total }}</span></div>
+<div style="display:flex;justify-content:space-between;font-size:12px"><span>{{ r.cash }}</span><span dir="ltr">{{ r.paid }}</span></div>
+<div style="display:flex;justify-content:space-between;font-size:12px"><span>{{ r.chg }}</span><span dir="ltr">{{ r.change }}</span></div>
+<div style="border-block-start:1px dashed #111;margin-block:8px"></div>
+<div style="text-align:center;font-size:12px">{{ r.foot }}</div>
+</div></sc-for></div></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'ar', tab: 0, seg: 0, sel: [1], toasts: [], pk: 0 };
+  nid = 100;
+  renderVals() {
+    const { lang, tab, seg, sel, toasts, pk } = this.state, ar = lang === 'ar', p = (a, e) => ar ? a : e;
+    const V = {
+      Light: { bg:'#F7F8F2', surface:'#FFFFFF', raised:'#FBFCF7', sidebar:'#F0F3E9', ink:'#172D29', muted:'#5F6D63', line:'#E0E6D7', primary:'#245C4F', 'primary-ink':'#FFFFFF', accent:'#DCEB9D', success:'#3D765B', 'success-bg':'#EDF5EE', warn:'#98612A', 'warn-bg':'#FBF1DF', danger:'#B54739', 'danger-bg':'#FAEBE5', info:'#2F5F7A', 'info-bg':'#E9EFF3', focus:'#91B09C' },
+      Dark: { bg:'#0F1A17', surface:'#16221E', raised:'#1C2A25', sidebar:'#121C19', ink:'#E6ECE7', muted:'#9AA89F', line:'#273832', primary:'#5FA58F', 'primary-ink':'#0F1A17', accent:'#3A4A2A', success:'#7CC4A4', 'success-bg':'#17302A', warn:'#E0A869', 'warn-bg':'#33271A', danger:'#E8847A', 'danger-bg':'#3A1F1C', info:'#7FB3D1', 'info-bg':'#182A34', focus:'#5FA58F' }
+    };
+    const themes = Object.keys(V).map(n => { const o = {}; Object.keys(V[n]).forEach(k => o['--' + k] = V[n][k]); return { name: n, style: { ...o, background: V[n].bg, color: V[n].ink, border: '1px solid ' + V[n].line, borderRadius: 14, padding: 24, display: 'grid', gap: 24, alignContent: 'start', minWidth: 0, font: "400 14px/1.4 " + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif") } }; });
+    const tone = n => `color:var(--${n});background:var(--${n}-bg);font-size:12px;font-weight:500;padding:2px 10px;border-radius:999px;white-space:nowrap`;
+    const base = 'height:40px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;padding-inline:8px;cursor:pointer;min-width:0;white-space:nowrap;transition:background .2s,box-shadow .2s,transform .12s;';
+    const kinds = { primary: 'border:0;background:var(--primary);color:var(--primary-ink);', outline: 'border:1px solid var(--line);background:transparent;color:var(--ink);', quiet: 'border:0;background:transparent;color:var(--primary);', danger: 'border:0;background:var(--danger);color:var(--primary-ink);' };
+    const hov = { primary: 'background:color-mix(in oklab,var(--primary) 85%,var(--ink));', outline: 'background:var(--sidebar);', quiet: 'background:var(--sidebar);', danger: 'background:color-mix(in oklab,var(--danger) 85%,var(--ink));' };
+    const states = ['default', 'hover', 'focus', 'disabled', 'loading'];
+    const btnRows = Object.keys(kinds).map(k => ({ name: k, cells: states.map(s => ({
+      l: s === 'loading' ? p('جارٍ…', 'Saving…') : p('اعتماد', 'Approve'),
+      spin: s === 'loading' ? 'width:12px;height:12px;border-radius:50%;border:2px solid currentColor;border-inline-end-color:transparent;animation:raffSpin .8s linear infinite;flex:none' : 'display:none',
+      st: base + kinds[k] + (s === 'hover' ? hov[k] : '') + (s === 'focus' ? 'box-shadow:0 0 0 3px var(--focus);' : '') + (s === 'disabled' ? 'background:var(--line);color:var(--muted);border:0;cursor:not-allowed;' : '') + (s === 'loading' ? 'opacity:.85;cursor:progress;' : '') })) }));
+    const inp = 'height:44px;display:flex;align-items:center;padding-inline:12px;border-radius:8px;background:var(--bg);color:var(--ink);font-size:14px;font-weight:400;';
+    const inputs = [
+      [p('الاسم', 'Name'), p('باراسيتامول', 'Paracetamol'), inp + 'border:1px solid var(--line)', p('نص مساعد', 'Helper text'), 'color:var(--muted);font-weight:400'],
+      [p('الكمية — تركيز', 'Quantity — focus'), '12', inp + 'border:2px solid var(--primary);box-shadow:0 0 0 3px var(--focus)', '', ''],
+      [p('الكمية — خطأ', 'Quantity — error'), '120', inp + 'border:2px solid var(--danger)', p('✕ لا تتجاوز المباع (5)', '✕ Cannot exceed sold (5)'), 'color:var(--danger)'],
+      [p('معطّل', 'Disabled'), p('رقم الدفعة', 'Batch no.'), inp + 'border:1px solid var(--line);background:var(--sidebar);color:var(--muted)', '', '']
+    ].map(([label, value, st, help, hs]) => ({ label, value, st, help, hs }));
+    const badges = [['success', p('● صالح', '● Valid')], ['warn', p('▲ قرب الانتهاء', '▲ Near expiry')], ['warn', p('▲ نقص', '▲ Shortage')], ['danger', p('✕ منتهي', '✕ Expired')], ['danger', p('✕ محجور', '✕ Quarantined')], ['info', p('■ قيد النقل', '■ In transit')]].map(([t, l]) => ({ st: tone(t), l }));
+    const dots = [['success', p('متصل', 'Online')], ['warn', p('معلّق', 'Pending')], ['danger', p('خطأ', 'Error')]].map(([t, l]) => ({ l, st: `width:10px;height:10px;border-radius:50%;background:var(--${t});${t === 'warn' ? 'animation:raffPulse 1.6s ease-in-out infinite' : ''}` }));
+    const conns = [['success', p('الخادم: متصل', 'Server: online'), p('نسخة 07:30 · 0 معلّقة', 'Backup 07:30 · 0 pending')], ['warn', p('الخادم: يعيد الاتصال', 'Server: reconnecting'), p('نسخة 07:30 · 3 معلّقة', 'Backup 07:30 · 3 pending')], ['danger', p('الخادم: غير متاح', 'Server: unavailable'), p('آخر نسخة أمس · 12 معلّقة', 'Last backup yesterday · 12 pending')]].map(([t, l, d]) => ({ l, d, st: `display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;font-size:13px;color:var(--${t});background:var(--${t}-bg)`, dot: 'width:8px;height:8px;border-radius:50%;background:currentColor' }));
+    const set = o => () => this.setState(o);
+    const tabs = [p('البيانات', 'Details'), p('الدفعات', 'Batches'), p('الحركات', 'Movements')].map((l, i) => ({ l, go: set({ tab: i }), st: `padding:8px 4px;min-height:20px;font-weight:500;cursor:pointer;transition:color .2s,box-shadow .25s;color:${i === tab ? 'var(--primary)' : 'var(--muted)'};box-shadow:${i === tab ? 'inset 0 -2px 0 var(--primary)' : 'inset 0 -2px 0 transparent'}` }));
+    const segs = [p('أسبوع', 'Week'), p('شهر', 'Month')].map((l, i) => ({ l, go: set({ seg: i }), st: `padding:4px 12px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:background .25s,color .25s;${i === seg ? 'background:var(--surface);color:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.15)' : 'color:var(--muted)'}` }));
+    const rows = [[p('باراسيتامول 500', 'Paracetamol 500'), '210', 'success', p('● جيد', '● Good')], [p('أوميبرازول 20', 'Omeprazole 20'), '18', 'warn', p('▲ نقص', '▲ Low')], [p('شراب سعال', 'Cough syrup'), '7', 'danger', p('✕ منتهي', '✕ Expired')]].map(([n, q, t, bl], i) => { const on = sel.includes(i); return { n, q, bl, b: tone(t) + ';justify-self:start', tick: on ? '✓' : '',
+      go: () => this.setState({ sel: on ? sel.filter(x => x !== i) : [...sel, i] }),
+      box: `width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:12px;font-weight:700;transition:background .2s,border-color .2s;border:2px solid ${on ? 'var(--primary)' : 'var(--line)'};background:${on ? 'var(--primary)' : 'transparent'};color:var(--primary-ink)`,
+      st: `display:grid;grid-template-columns:36px 1fr 70px 90px;gap:12px;align-items:center;height:44px;padding-inline:12px;border-block-start:1px solid var(--line);cursor:pointer;transition:background .2s;background:${on ? 'var(--accent)' : 'transparent'}` }; });
+    const addToast = (tp) => () => { const id = ++this.nid; const m = { ok: ['success', '✓', p('تم اعتماد البيع', 'Sale approved')], wn: ['warn', '▲', p('الرصيد منخفض', 'Stock is low')], er: ['danger', '✕', p('فشل الاعتماد — السلة محفوظة', 'Approval failed — cart kept')] }[tp];
+      this.setState(s => ({ toasts: [...s.toasts, { id, tp, m }].slice(-3) })); setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(x => x.id !== id) })), tp === 'er' ? 8000 : 3500); };
+    const ghost = 'height:40px;padding-inline:16px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--ink);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer';
+    const T = ar ? { hint:'مثال تجريبي', search:'بحث', iconNote:'التسمية مطلوبة لكل أيقونة فعل', ph:'اسم، اسم علمي، أو باركود', item:'الصنف', qty:'الكمية', status:'الحالة', emptyRow:'لا توجد صفوف مطابقة', dTitle:'اعتماد الاستلام', dBody:'سيُضاف الرصيد إلى المخزون ولا يمكن التراجع إلا بمرتجع.', impact:'أثر مالي على المورد', amt:'1,512,000', cancel:'رجوع', approve:'اعتماد', emptyT:'السلة فارغة', emptyB:'اقرأ الباركود لبدء البيع.', emptyA:'بحث F2', always:'فاتح دائماً', print:'طباعة' }
+      : { hint:'Sample', search:'Search', iconNote:'Every action icon needs a label', ph:'Name, generic name, or barcode', item:'Item', qty:'Qty', status:'Status', emptyRow:'No matching rows', dTitle:'Approve receipt', dBody:'Stock will be added to inventory; undo only via a return.', impact:'Supplier balance impact', amt:'1,512,000', cancel:'Back', approve:'Approve', emptyT:'Cart is empty', emptyB:'Scan a barcode to start a sale.', emptyA:'Search F2', always:'always light', print:'Print' };
+    const rcpt = (a) => ({ dir: a ? 'rtl' : 'ltr', font: a ? "'IBM Plex Sans Arabic',sans-serif" : "'IBM Plex Sans',sans-serif", shop: a ? 'رَفّ — صيدلية تجريبية' : 'Raff — Sample Pharmacy', branch: a ? 'فرع الخرطوم · كاونتر 1' : 'Khartoum branch · Counter 1', no: a ? 'فاتورة #1042' : 'Invoice #1042',
+      lines: a ? [{ n: 'أموكسيسيلين/كلافولانيك 625 × 1', t: '12,500' }, { n: 'باراسيتامول 500 × 5', t: '4,000' }, { n: 'محلول الإرواء × 6', t: '1,800' }] : [{ n: 'Augmentin 625 × 1', t: '12,500' }, { n: 'Paracetamol 500 × 5', t: '4,000' }, { n: 'ORS sachet × 6', t: '1,800' }],
+      totalL: a ? 'الإجمالي' : 'Total', total: a ? '18,300 ج.س' : 'SDG 18,300', cash: a ? 'نقدي' : 'Cash', paid: a ? '20,000 ج.س' : 'SDG 20,000', chg: a ? 'الباقي' : 'Change', change: a ? '1,700 ج.س' : 'SDG 1,700', foot: a ? 'عينة تجريبية — ليست فاتورة حقيقية' : 'Sample — not a real invoice' });
+    const sw = (label, go, on) => ({ label, go, st: `border:0;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;background:${on ? '#DCEB9D' : '#444'};color:${on ? '#172D29' : '#ddd'}` });
+    return { printAnim: pk % 2 ? 'prA' : 'prB', doPrint: () => this.setState({ pk: pk + 1 }), ghostL: ghost.replace('var(--line)', '#E0E6D7').replace('var(--ink)', '#172D29'), dir: ar ? 'rtl' : 'ltr', t: T, themes, states, btnRows, inputs, badges, dots, conns, tabs, segs, rows, ghost,
+      rootStyle: { background: '#E4E7DC', minHeight: '100vh', color: '#172D29', font: "400 14px/1.4 " + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif") },
+      g: 'display:grid;gap:12px', cap: 'font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em',
+      kbd: "border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;font:500 12px 'IBM Plex Sans',sans-serif;color:var(--ink);background:var(--raised)",
+      sk: 'display:block;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--line) 25%,var(--raised) 50%,var(--line) 75%);background-size:200% 100%;animation:raffShim 1.4s linear infinite;',
+      prim: 'height:40px;padding-inline:16px;border-radius:10px;border:0;background:var(--primary);color:var(--primary-ink);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer',
+      toastBtns: [['ok', p('نجاح', 'Success')], ['wn', p('تحذير', 'Warning')], ['er', p('خطأ', 'Error')]].map(([k, l]) => ({ l, go: addToast(k) })),
+      toasts: toasts.map(x => ({ id: x.id, sym: x.m[1], l: x.m[2], st: `display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:var(--${x.m[0]});background:var(--${x.m[0]}-bg);border:1px solid var(--${x.m[0]});animation:raffIn .35s cubic-bezier(.2,.8,.2,1) both` })),
+      receipts: [rcpt(true), rcpt(false)],
+      switches: [sw('العربية', set({ lang: 'ar' }), ar), sw('English', set({ lang: 'en' }), !ar)] };
+  }
+}
+</script>
+</body>
+</html>

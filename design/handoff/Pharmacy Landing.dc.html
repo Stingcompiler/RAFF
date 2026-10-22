@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<script src="image-slot.js"></script>
+<style>
+body{margin:0;background:#F7F8F2}input,button{font-family:inherit}a{color:#245C4F}a:hover{color:#172D29}
+@keyframes pIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pDot{0%{box-shadow:0 0 0 0 rgba(61,118,91,.5)}100%{box-shadow:0 0 0 9px rgba(61,118,91,0)}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</helmet>
+<div dir="{{ dir }}" style="{{ rootStyle }}">
+<header style="max-width:1120px;margin:0 auto;padding:18px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px;white-space:nowrap;min-width:0"><span style="width:36px;height:36px;border-radius:50%;background:#245C4F;color:#fff;display:grid;place-items:center;font-size:20px;line-height:1">+</span>{{ t.name }}</div>
+<span style="margin-inline-start:auto;display:flex;align-items:center;gap:12px">
+<span style="display:flex;gap:3px;padding:3px;background:#F0F3E9;border-radius:8px"><sc-for list="{{ langs }}" as="x" hint-placeholder-count="2"><span onClick="{{ x.go }}" style="{{ x.st }}">{{ x.l }}</span></sc-for></span>
+<a href="tel:+{{ tel }}" style="display:inline-flex;align-items:center;min-height:44px;padding-inline:16px;border-radius:10px;border:1px solid #D5DCCB;color:#172D29;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s" style-hover="background:#F0F3E9"><span dir="ltr">{{ phoneShow }}</span></a></span>
+</header>
+
+<section style="max-width:1120px;margin:0 auto;padding:32px 24px 64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:40px;align-items:center">
+<div style="animation:pIn .7s cubic-bezier(.2,.8,.2,1) both">
+<div style="{{ openPill }}"><span style="{{ openDot }}"></span>{{ openText }}</div>
+<h1 style="margin:20px 0 0;font-size:54px;line-height:1.15;font-weight:600;letter-spacing:-.01em;text-wrap:balance">{{ t.h1 }}</h1>
+<p style="margin:16px 0 0;font-size:19px;line-height:1.7;color:#4a5a50;max-width:500px;text-wrap:pretty">{{ t.lead }}</p>
+<div style="display:flex;gap:12px;margin-block-start:28px;flex-wrap:wrap">
+<a href="https://wa.me/{{ wa }}" style="display:inline-flex;align-items:center;min-height:52px;padding-inline:24px;border-radius:12px;background:#245C4F;color:#fff;font-weight:600;text-decoration:none;white-space:nowrap;transition:transform .15s" style-hover="transform:translateY(-2px)" style-active="transform:scale(.97)">{{ t.wa }}</a>
+<a href="#order" style="display:inline-flex;align-items:center;min-height:52px;padding-inline:20px;border-radius:12px;border:1px solid #D5DCCB;color:#172D29;font-weight:500;text-decoration:none;background:#fff;white-space:nowrap">{{ t.order }}</a></div>
+<div style="margin-block-start:28px;color:#5F6D63;font-size:15px">{{ t.addr }}</div>
+</div>
+<div style="height:440px;animation:pIn .7s .12s cubic-bezier(.2,.8,.2,1) both"><image-slot id="front" shape="rounded" radius="20" placeholder="{{ t.ph1 }}"></image-slot></div>
+</section>
+
+<section style="background:#fff;border-block:1px solid #E0E6D7"><div style="max-width:1120px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px">
+<div><h2 style="margin:0;font-size:32px;font-weight:600">{{ t.svcH }}</h2><p style="margin:12px 0 0;color:#4a5a50;line-height:1.7;max-width:380px">{{ t.svcP }}</p></div>
+<div style="border-block-start:1px solid #E0E6D7"><sc-for list="{{ services }}" as="s" hint-placeholder-count="6"><div style="{{ s.st }}" style-hover="padding-inline-start:12px;background:#F7F8F2"><span dir="ltr" style="font-size:13px;color:#5F6D63;font-variant-numeric:tabular-nums;width:24px">{{ s.n }}</span><span style="flex:1;font-weight:500;font-size:18px">{{ s.t }}</span><span style="font-size:14px;color:#5F6D63">{{ s.d }}</span></div></sc-for></div>
+</div></section>
+
+<section id="order" style="max-width:1120px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px;align-items:start">
+<div><h2 style="margin:0;font-size:32px;font-weight:600">{{ t.ordH }}</h2><p style="margin:12px 0 0;color:#4a5a50;line-height:1.7;max-width:420px">{{ t.ordP }}</p></div>
+<div style="display:grid;gap:12px;background:#fff;border:1px solid #E0E6D7;border-radius:14px;padding:24px">
+<label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:#5F6D63">{{ t.drug }}<input value="{{ drug }}" onInput="{{ onDrug }}" style="height:48px;padding-inline:14px;border:1px solid #D5DCCB;border-radius:10px;font-size:16px;color:#172D29;outline:0;background:#F7F8F2;transition:box-shadow .2s,border-color .2s" style-focus="border-color:#245C4F;box-shadow:0 0 0 3px #91B09C"></label>
+<label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:#5F6D63">{{ t.who }}<input value="{{ who }}" onInput="{{ onWho }}" style="height:48px;padding-inline:14px;border:1px solid #D5DCCB;border-radius:10px;font-size:16px;color:#172D29;outline:0;background:#F7F8F2;transition:box-shadow .2s,border-color .2s" style-focus="border-color:#245C4F;box-shadow:0 0 0 3px #91B09C"></label>
+<a href="{{ orderHref }}" style="{{ sendSt }}">{{ t.send }}</a>
+<div style="font-size:13px;color:#5F6D63">{{ t.sendNote }}</div></div>
+</section>
+
+<section style="background:#245C4F;color:#fff"><div style="max-width:1120px;margin:0 auto;padding:64px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px;align-items:start">
+<div><h2 style="margin:0 0 20px;font-size:32px;font-weight:600">{{ t.hrsH }}</h2>
+<div style="border-block-start:1px solid rgba(255,255,255,.28)"><sc-for list="{{ hours }}" as="h" hint-placeholder-count="7"><div style="{{ h.st }}"><span>{{ h.d }}</span><span dir="ltr" style="font-variant-numeric:tabular-nums">{{ h.t }}</span></div></sc-for></div></div>
+<div style="display:grid;gap:16px"><h2 style="margin:0;font-size:32px;font-weight:600">{{ t.locH }}</h2><div style="color:#E9F0EA;font-size:17px;line-height:1.7">{{ t.addrFull }}</div>
+<div style="height:260px;border-radius:14px;overflow:hidden"><image-slot id="map" shape="rounded" radius="14" placeholder="{{ t.ph2 }}"></image-slot></div></div>
+</div></section>
+<footer style="max-width:1120px;margin:0 auto;padding:24px;font-size:13px;color:#5F6D63">{{ t.foot }}</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;name&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;صيدلية الشفاء (تجريبي)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pharmacy&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0902929451&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pharmacy&quot;},&quot;whatsapp&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;249902929451&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pharmacy&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'ar', drug: '', who: '' };
+  componentDidMount() { this.iv = setInterval(() => this.forceUpdate(), 60000); }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const { lang, drug, who } = this.state, ar = lang === 'ar', p = (a, e) => ar ? a : e;
+    const wa = String(this.props.whatsapp ?? '249900000000').replace(/\D/g, '');
+    const nm = this.props.name ?? 'صيدلية الشفاء (تجريبي)';
+    const T = ar ? { name: nm, h1: 'دواؤك قريب، وصيدلي يسمعك.', lead: 'صيدلية حي في أم درمان. نصرف الوصفات، ونوفّر ما ينقصك، ونجيب عن أسئلتك دون استعجال.', wa: 'راسلنا على واتساب', order: 'اطلب دواءً ناقصاً', addr: 'أم درمان — شارع الأربعين، بجوار مسجد النور',
+      svcH: 'ما نقدّمه', svcP: 'خدمات الصيدلية اليومية، بلا تعقيد.', ordH: 'دواء غير متوفر؟', ordP: 'اكتب اسمه ورقمك، ونراسلك فور وصوله. يُرسَل طلبك مباشرة إلى واتساب الصيدلية.',
+      drug: 'اسم الدواء', who: 'رقم هاتفك', send: 'أرسل الطلب عبر واتساب', sendNote: 'لا نحفظ بياناتك في هذه الصفحة.', hrsH: 'ساعات العمل', locH: 'الموقع', addrFull: 'أم درمان، شارع الأربعين، بجوار مسجد النور. أمام محطة المواصلات.',
+      ph1: 'اسحب صورة واجهة الصيدلية', ph2: 'اسحب صورة الموقع أو الخريطة', foot: 'معلومات هذه الصفحة تجريبية: الاسم والعنوان والأوقات والخدمات.' }
+    : { name: this.props.name ?? 'Al-Shifa Pharmacy (sample)', h1: 'Your medicine is close, and a pharmacist who listens.', lead: 'A neighbourhood pharmacy in Omdurman. We fill prescriptions, find what you are missing, and answer questions without rushing you.', wa: 'Message us on WhatsApp', order: 'Request a missing drug', addr: 'Omdurman — Al-Arbaeen St, next to Al-Nour Mosque',
+      svcH: 'What we do', svcP: 'Everyday pharmacy services, kept simple.', ordH: 'Drug not in stock?', ordP: 'Tell us the name and your number and we message you as soon as it arrives. Your request goes straight to the pharmacy on WhatsApp.',
+      drug: 'Drug name', who: 'Your phone number', send: 'Send request on WhatsApp', sendNote: 'We do not store your details on this page.', hrsH: 'Opening hours', locH: 'Find us', addrFull: 'Omdurman, Al-Arbaeen St, next to Al-Nour Mosque, opposite the bus stop.',
+      ph1: 'Drop a photo of the storefront', ph2: 'Drop a location photo or map', foot: 'Details on this page are sample data: name, address, hours and services.' };
+    const svc = [[p('صرف الوصفات الطبية', 'Prescription dispensing'), p('بمراجعة الصيدلي', 'Pharmacist-checked')], [p('توصيل للمنازل', 'Home delivery'), p('داخل أم درمان', 'Within Omdurman')], [p('قياس الضغط والسكر', 'Blood pressure & glucose'), p('بالمجان', 'Free')], [p('أدوية الأطفال', 'Children’s medicines'), p('بجرعات مكتوبة', 'Dose written out')], [p('مستلزمات طبية', 'Medical supplies'), p('ضمادات وأجهزة', 'Dressings & devices')], [p('حجر دواء ناقص', 'Reserve a missing drug'), p('نراسلك عند وصوله', 'We message you')]]
+      .map(([t, d], i) => ({ t, d, n: '0' + (i + 1), st: 'display:flex;align-items:baseline;gap:16px;min-height:64px;padding:12px 0;border-block-end:1px solid #E0E6D7;align-items:center;cursor:default;transition:padding .25s cubic-bezier(.2,.8,.2,1),background .25s' }));
+    const sched = [[6, '08:00 – 22:00'], [0, '08:00 – 22:00'], [1, '08:00 – 22:00'], [2, '08:00 – 22:00'], [3, '08:00 – 22:00'], [4, '16:00 – 22:00'], [5, '08:00 – 22:00']];
+    const dn = ar ? ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Africa/Khartoum' }));
+    const day = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
+    const [oh, ch] = day === 5 ? [16 * 60, 22 * 60] : [8 * 60, 22 * 60];
+    const open = mins >= oh && mins < ch;
+    const hours = sched.map(([d, t]) => ({ d: dn[d], t, st: `display:flex;justify-content:space-between;padding:14px 8px;border-block-end:1px solid rgba(255,255,255,.28);transition:background .2s;${d === day ? 'background:#DCEB9D;color:#172D29;font-weight:600;border-radius:6px' : ''}` }));
+    const phone = this.props.phone ?? '0900000000';
+    const set = o => () => this.setState(o);
+    const href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(ar ? `أبحث عن دواء: ${drug || '—'}\nرقمي: ${who || '—'}` : `Looking for: ${drug || '—'}\nMy number: ${who || '—'}`);
+    const ready = drug.trim().length > 1;
+    return { dir: ar ? 'rtl' : 'ltr', t: T, services: svc, hours, wa, tel: '249' + phone.replace(/^0/, ''), phoneShow: phone, drug, who, orderHref: ready ? href : '#order',
+      onDrug: e => this.setState({ drug: e.target.value }), onWho: e => this.setState({ who: e.target.value }),
+      sendSt: `display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:12px;font-weight:600;text-decoration:none;transition:background .25s,transform .12s;${ready ? 'background:#245C4F;color:#fff' : 'background:#E0E6D7;color:#5F6D63;pointer-events:none'}`,
+      openText: open ? p('مفتوحة الآن · تغلق 22:00', 'Open now · closes 22:00') : p('مغلقة الآن · تفتح ' + (mins < oh ? (day === 5 ? '16:00' : '08:00') : '08:00'), 'Closed now · opens ' + (mins < oh ? (day === 5 ? '16:00' : '08:00') : '08:00')),
+      openPill: `display:inline-flex;align-items:center;gap:10px;white-space:nowrap;font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;${open ? 'color:#3D765B;background:#EDF5EE' : 'color:#98612A;background:#FBF1DF'}`,
+      openDot: `flex:none;width:9px;height:9px;border-radius:50%;background:currentColor;${open ? 'animation:pDot 1.8s ease-out infinite' : ''}`,
+      langs: [['ar', 'العربية'], ['en', 'English']].map(([k, l]) => ({ l, go: set({ lang: k }), st: `padding:6px 12px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s;${lang === k ? 'background:#fff;color:#245C4F;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'color:#5F6D63'}` })),
+      rootStyle: { background: '#F7F8F2', color: '#172D29', minHeight: '100vh', font: '400 16px/1.5 ' + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif") } };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}button{font-family:inherit}a{color:#245C4F}a:hover{color:#172D29}
+@keyframes fIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</helmet>
+<div dir="{{ dir }}" style="{{ rootStyle }}">
+<div dir="ltr" style="background:#2a2f2c;color:#ddd;display:flex;gap:8px;align-items:center;padding:8px 12px;font:500 12px 'IBM Plex Sans',sans-serif;flex-wrap:wrap">
+<span style="opacity:.7">Raff flows · sample data</span>
+<sc-for list="{{ switches }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.go }}" style="{{ s.st }}">{{ s.label }}</button></sc-for>
+<a href="Raff Screens.dc.html" style="color:#DCEB9D;margin-inline-start:auto">Screens →</a></div>
+<div style="max-width:1180px;margin:0 auto;padding:32px 24px 64px;display:grid;gap:24px">
+<h1 style="margin:0;font-size:28px;font-weight:500">{{ t.h }}</h1>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ flowTabs }}" as="f" hint-placeholder-count="5"><button onClick="{{ f.go }}" style="{{ f.st }}">{{ f.l }}</button></sc-for></div>
+
+<div style="display:flex;align-items:center;gap:0;position:relative;padding-block:8px">
+<sc-for list="{{ nodes }}" as="n" hint-placeholder-count="5"><div onClick="{{ n.go }}" style="{{ n.box }}"><span style="{{ n.dot }}">{{ n.num }}</span><span style="font-size:13px;font-weight:500;text-align:center;line-height:1.3">{{ n.l }}</span><span style="{{ n.bar }}"></span></div></sc-for></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:24px;align-items:start">
+<div key="{{ stepKey }}" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:14px;animation:fIn .4s cubic-bezier(.2,.8,.2,1) both">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-size:12px;font-weight:600;color:var(--muted)">{{ stepNo }}</span><span style="{{ badgeSt }}">{{ badge }}</span></div>
+<h2 style="margin:0;font-size:22px;font-weight:500">{{ step.title }}</h2>
+<p style="margin:0;color:var(--muted);line-height:1.7">{{ step.desc }}</p>
+<div style="display:flex;gap:8px;margin-block-start:8px"><button onClick="{{ prev }}" style="{{ ghost }}">{{ t.prev }}</button><button onClick="{{ next }}" style="{{ prim }}">{{ t.next }}</button><button onClick="{{ play }}" style="{{ ghost }}">{{ playText }}</button></div>
+</div>
+<div key="{{ stepKey2 }}" style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;animation:fIn .4s .06s cubic-bezier(.2,.8,.2,1) both">
+<sc-if value="{{ step.banner }}" hint-placeholder-val="{{ false }}"><div style="{{ bannerSt }}">{{ step.banner }}</div></sc-if>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;padding:8px 20px;border-block-end:1px solid var(--line)"><span style="color:var(--muted)">{{ r.k }}</span><span style="{{ r.st }}">{{ r.v }}</span></div></sc-for>
+</div></div>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { lang: 'ar', theme: 'light', flow: 0, step: 0, playing: false };
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const { lang, theme, flow, step, playing } = this.state, ar = lang === 'ar', p = (a, e) => ar ? a : e;
+    const L = {
+      light: { bg:'#F7F8F2', surface:'#FFFFFF', ink:'#172D29', muted:'#5F6D63', line:'#E0E6D7', primary:'#245C4F', 'primary-ink':'#FFFFFF', accent:'#DCEB9D', success:'#3D765B', 'success-bg':'#EDF5EE', warn:'#98612A', 'warn-bg':'#FBF1DF', danger:'#B54739', 'danger-bg':'#FAEBE5', info:'#2F5F7A', 'info-bg':'#E9EFF3' },
+      dark: { bg:'#0F1A17', surface:'#16221E', ink:'#E6ECE7', muted:'#9AA89F', line:'#273832', primary:'#5FA58F', 'primary-ink':'#0F1A17', accent:'#3A4A2A', success:'#7CC4A4', 'success-bg':'#17302A', warn:'#E0A869', 'warn-bg':'#33271A', danger:'#E8847A', 'danger-bg':'#3A1F1C', info:'#7FB3D1', 'info-bg':'#182A34' }
+    }[theme];
+    const root = { minHeight: '100vh', background: L.bg, color: L.ink, transition: 'background .3s', font: '400 15px/1.5 ' + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif") };
+    Object.keys(L).forEach(k => root['--' + k] = L[k]);
+    const c = (a, e) => p(a, e);
+    const F = [
+      { n: p('بيع بالقارئ', 'Scanner sale'), steps: [
+        [p('قراءة الباركود', 'Scan barcode'), p('القارئ يضيف الصنف فوراً دون قائمة نتائج، والتركيز يبقى في حقل البحث.', 'The reader adds the item instantly with no results list; focus stays in the search field.'), 'ok', p('تلقائي', 'Auto'), '', [[p('الباركود', 'Barcode'), '6221234567890', ''], [p('الصنف', 'Item'), 'Paracetamol 500', ''], [p('الدفعة', 'Batch'), p('تلقائي FEFO · B-9120', 'Auto FEFO · B-9120'), '']]],
+        [p('إضافة سطر', 'Line added'), p('سطر جديد بكمية 1، والقراءة المتكررة تزيد الكمية.', 'New line with qty 1; repeated scans raise the quantity.'), 'ok', p('السلة', 'Cart'), '', [[p('الكمية', 'Qty'), '1 → 2', ''], [p('الإجمالي', 'Total'), c('1,600 ج.س', 'SDG 1,600'), 'b']]],
+        [p('الدفع F8', 'Pay F8'), p('يفتح حوار الدفع بالإجمالي كبيراً؛ النقدي افتراضي.', 'Opens payment with the total large; cash is the default.'), 'ok', p('حوار', 'Dialog'), '', [[p('الطريقة', 'Method'), p('نقدي', 'Cash'), ''], [p('المدفوع', 'Tendered'), c('2,000 ج.س', 'SDG 2,000'), ''], [p('الباقي', 'Change'), c('400 ج.س', 'SDG 400'), 'b']]],
+        [p('جارٍ الاعتماد…', 'Approving…'), p('الزر معطّل ولا نجاح يُعرض قبل رد الخادم.', 'Button disabled; no success is shown before the server replies.'), 'wn', p('بانتظار الخادم', 'Awaiting server'), p('▲ لم يُسجَّل شيء بعد', '▲ Nothing recorded yet'), [[p('الحالة', 'State'), p('جارٍ الاعتماد…', 'Approving…'), '']]],
+        [p('إيصال وبيع جديد', 'Receipt & new sale'), p('معاينة الإيصال مع طباعة وإعادة طباعة، وEnter لبيع جديد.', 'Receipt preview with print/reprint; Enter starts a new sale.'), 'ok', p('معتمد', 'Approved'), '', [[p('الفاتورة', 'Invoice'), '#1043', ''], [p('الإجراء', 'Next'), 'Enter', '']]]] },
+      { n: p('دفعات متعددة', 'Multiple batches'), steps: [
+        [p('صنف بثلاث دفعات', 'Item with 3 batches'), p('إضافة الصنف تنبّه أن رصيده موزع على دفعات.', 'Adding the item flags that stock is split across batches.'), 'wn', p('تنبيه', 'Notice'), '', [[p('الصنف', 'Item'), 'Augmentin 625', ''], [p('الدفعات', 'Batches'), '3', 'b']]],
+        [p('حوار اختيار الدفعة', 'Batch picker'), p('FEFO مقترحة أولاً؛ المنتهية معطّلة وسببها ظاهر.', 'FEFO suggested first; expired ones are disabled with the reason shown.'), 'wn', p('اختيار', 'Choice'), '', [[p('B-2301 · 2026-12-02', 'B-2301 · 2026-12-02'), p('▲ قريبة · 6', '▲ Near · 6'), ''], [p('B-2310 · 2027-03-31', 'B-2310 · 2027-03-31'), p('● صالحة · 20', '● Valid · 20'), ''], [p('B-2288 · 2026-09-30', 'B-2288 · 2026-09-30'), p('✕ منتهية · معطّلة', '✕ Expired · disabled'), 'd']]],
+        [p('كمية تتجاوز الدفعة', 'Quantity over batch'), p('الرصيد غير كافٍ في الدفعة: يُقترح تقسيم السطر على دفعتين.', 'Not enough in the batch: split the line across two batches.'), 'er', p('رصيد غير كافٍ', 'Insufficient'), p('✕ المطلوب 8، المتاح 6', '✕ Needs 8, 6 available'), [[p('سطر 1', 'Line 1'), 'B-2301 × 6', ''], [p('سطر 2', 'Line 2'), 'B-2310 × 2', '']]],
+        [p('سطران بدفعتين', 'Two lines, two batches'), p('السلة تعرض كل دفعة وصلاحيتها بوضوح.', 'The cart shows each batch with its expiry.'), 'ok', p('جاهز للدفع', 'Ready to pay'), '', [[p('الإجمالي', 'Total'), c('100,000 ج.س', 'SDG 100,000'), 'b']]]] },
+      { n: p('مرتجع حتى الحجر', 'Return to quarantine'), steps: [
+        [p('بحث بالفاتورة', 'Find the invoice'), p('برقم الفاتورة أو الباركود.', 'By invoice number or barcode.'), 'ok', p('بحث', 'Search'), '', [[p('الفاتورة', 'Invoice'), '#1031', ''], [p('التاريخ', 'Date'), '2026-10-19', '']]],
+        [p('اختيار السطور', 'Pick lines'), p('الكمية لا تتجاوز المباع، مع السبب وحالة الصنف.', 'Quantity cannot exceed what was sold; reason and condition required.'), 'wn', p('تحقق', 'Validation'), p('✕ المباع 3 — لا يمكن إرجاع 4', '✕ Sold 3 — cannot return 4'), [[p('الصنف', 'Item'), 'Omeprazole 20', ''], [p('السبب', 'Reason'), p('تغليف تالف', 'Damaged pack'), '']]],
+        [p('رد المبلغ', 'Refund'), p('طريقة الرد، وحوار تأكيد بالأثر المالي.', 'Refund method, then a confirm dialog with the financial impact.'), 'ok', p('تأكيد', 'Confirm'), '', [[p('المبلغ', 'Amount'), c('2,400 ج.س', 'SDG 2,400'), 'b']]],
+        [p('إلى الحجر', 'Into quarantine'), p('كل مرتجع يدخل «بانتظار الفحص» ولا يعود للبيع تلقائياً.', 'Every return enters “awaiting inspection” and never returns to sale automatically.'), 'wn', p('بانتظار الفحص', 'Awaiting inspection'), '', [[p('الحالة', 'State'), p('▲ بانتظار الفحص', '▲ Awaiting inspection'), '']]],
+        [p('قرار الصيدلي', 'Pharmacist decision'), p('إعادة للرف أو إتلاف أو إرجاع للمورد، باعتماد صلاحية.', 'Restock, destroy or return to supplier, with permission approval.'), 'ok', p('محسوم', 'Decided'), '', [[p('القرار', 'Decision'), p('إتلاف', 'Destroy'), 'b'], [p('المعتمِد', 'Approved by'), p('مازن (صيدلي)', 'Mazin (Pharmacist)'), '']]]] },
+      { n: p('إغلاق وردية', 'Close shift'), steps: [
+        [p('ملخص الوردية', 'Shift summary'), p('المبيعات والنقد المتوقع والبنكي والآجل والمصروفات.', 'Sales, expected cash, bank, credit and expenses.'), 'ok', p('عرض', 'Review'), '', [[p('النقد المتوقع', 'Expected cash'), c('351,000 ج.س', 'SDG 351,000'), 'b'], [p('البنكي', 'Bank'), c('111,300 ج.س', 'SDG 111,300'), '']]],
+        [p('عدّ النقد الفعلي', 'Count actual cash'), p('الكاشير يُدخل ما في الصندوق قبل رؤية الفرق.', 'The cashier enters the drawer total before seeing the variance.'), 'ok', p('إدخال', 'Input'), '', [[p('المعدود', 'Counted'), c('349,500 ج.س', 'SDG 349,500'), '']]],
+        [p('الفرق', 'Variance'), p('عجز يُعرض بنص وأيقونة، وسبب مطلوب.', 'A shortage is shown with text and icon; a reason is required.'), 'er', p('عجز', 'Shortage'), p('✕ عجز 1,500 ج.س', '✕ Shortage SDG 1,500'), [[p('السبب', 'Reason'), p('مطلوب', 'Required'), '']]],
+        [p('تأكيد الإغلاق', 'Confirm close'), p('حوار يُظهر الأثر المالي، ثم تُقفل الوردية.', 'A dialog shows the financial impact, then the shift locks.'), 'ok', p('مغلقة', 'Closed'), '', [[p('الحالة', 'State'), p('● مغلقة · غير مسوّاة', '● Closed · unsettled'), '']]]] },
+      { n: p('تحويل بين فرعين', 'Branch transfer'), steps: [
+        [p('إنشاء التحويل', 'Create transfer'), p('من فرع إلى فرع، وسطور بالكمية والدفعة.', 'From branch to branch, lines with quantity and batch.'), 'ok', p('مسودة', 'Draft'), '', [[p('من → إلى', 'From → To'), p('الخرطوم → أم درمان', 'Khartoum → Omdurman'), ''], [p('الأصناف', 'Lines'), '5', '']]],
+        [p('الإرسال', 'Send'), p('الرصيد ينتقل إلى «قيد النقل» ويخرج من البيع.', 'Stock moves to “in transit” and leaves sellable stock.'), 'ok', p('■ مرسَل', '■ Sent'), '', [[p('الحالة', 'State'), p('■ قيد النقل', '■ In transit'), '']]],
+        [p('الاستلام في الفرع', 'Receive at branch'), p('مطابقة الكميات سطراً سطراً وتسجيل الفرق.', 'Match quantities line by line and record differences.'), 'wn', p('فرق', 'Difference'), p('▲ مستلَم 18 من 20', '▲ Received 18 of 20'), [[p('أوميبرازول 20', 'Omeprazole 20'), '−2', 'b']]],
+        [p('إغلاق التحويل', 'Close transfer'), p('الفرق يُسجَّل مع سبب، ويُغلق التحويل.', 'The difference is logged with a reason; the transfer closes.'), 'ok', p('مغلق', 'Closed'), '', [[p('الحالة', 'State'), p('● مغلق', '● Closed'), '']]]] },
+      { n: p('زبون المتجر', 'Store customer'), steps: [
+        [p('بحث في المتجر', 'Search the store'), p('يرى التوفر بثلاث قيم فقط، وكل سعر معه تاريخه.', 'Sees availability as three values only; every price has its date.'), 'ok', p('عام', 'Public'), '', [[p('التوفر', 'Availability'), p('● متاح', '● Available'), ''], [p('السعر', 'Price'), c('800 ج.س · 2026-10-21', 'SDG 800 · 2026-10-21'), '']]],
+        [p('السلة', 'Cart'), p('إجمالي تقديري وتنبيه أن الأسعار تُراجع عند التأكيد.', 'Estimated total and a note that prices are reviewed on confirmation.'), 'wn', p('تقديري', 'Estimated'), p('▲ تُراجع الأسعار والتوفر عند التأكيد', '▲ Prices and availability are reviewed'), [[p('الإجمالي التقديري', 'Estimated total'), c('1,900 ج.س', 'SDG 1,900'), 'b']]],
+        [p('الإرسال', 'Submit'), p('الاسم ورقم سوداني صحيح والموافقة؛ الزر معطّل أثناء الإرسال.', 'Name, a valid Sudanese number and consent; button disabled while sending.'), 'ok', p('جارٍ الإرسال', 'Sending'), '', [[p('الاستلام', 'Pickup'), p('من الصيدلية · الدفع عند الاستلام', 'At pharmacy · pay on pickup'), '']]],
+        [p('وصل الطلب', 'Order received'), p('رقم الطلب والخط الزمني؛ لا يُعدّ مؤكداً بعد.', 'Order number and timeline; not confirmed yet.'), 'ok', p('جديد', 'New'), '', [[p('الطلب', 'Order'), 'O-1043', 'b']]],
+        [p('تأكيد على واتساب', 'Confirmed on WhatsApp'), p('تراسله الصيدلية بقالب التأكيد.', 'The pharmacy messages the confirmation template.'), 'ok', p('مؤكد', 'Confirmed'), '', [[p('القناة', 'Channel'), 'WhatsApp', '']]]] },
+      { n: p('موظف: طلب ← فاتورة', 'Staff: order → invoice'), steps: [
+        [p('طلب جديد', 'New order'), p('شارة في التنقل وصف مميز في جدول الطلبات.', 'Nav badge and a highlighted row in Orders.'), 'ok', p('جديد', 'New'), '', [[p('الطلب', 'Order'), 'O-1042', 'b']]],
+        [p('مراجعة الأسطر', 'Review lines'), p('السعر المنشور مقابل الحالي، والمتاح الآن بالأرقام.', 'Published vs current price, and stock on hand in numbers.'), 'wn', p('فرق سعر', 'Price change'), p('▲ أوميبرازول: 2,400 ← 2,600', '▲ Omeprazole: 2,400 → 2,600'), [[p('المتاح', 'In stock'), '18', '']]],
+        [p('تأكيد وحجز', 'Confirm & reserve'), p('حوار يعرض ما سيُحجز، وزر واتساب بقالب التأكيد.', 'Dialog shows what will be reserved, plus a WhatsApp template.'), 'ok', p('مؤكد', 'Confirmed'), '', [[p('محجوز', 'Reserved'), '3 ' + p('أسطر', 'lines'), '']]],
+        [p('تجهيز واستلام', 'Prepare & pick up'), p('قيد التجهيز ← جاهز للاستلام ← مكتمل.', 'Preparing → Ready → Completed.'), 'ok', p('مكتمل', 'Completed'), '', [[p('المسؤول', 'Owner'), p('مازن', 'Mazin'), '']]],
+        [p('فاتورة في نقطة البيع', 'Invoice in POS'), p('السلة محمّلة والدفعات مقفلة؛ الاعتماد يستهلك الحجز ويربط المرجع.', 'Cart preloaded, batches locked; approval consumes the reservation and links the reference.'), 'ok', p('مربوط', 'Linked'), '', [[p('الفاتورة', 'Invoice'), 'INV-1044', 'b']]]] }
+    ];
+    const cur = F[flow], sIdx = Math.min(step, cur.steps.length - 1), S = cur.steps[sIdx];
+    const tn = { ok: ['success', ''], wn: ['warn', ''], er: ['danger', ''] }[S[2]];
+    const set = o => () => this.setState(o);
+    const go = (d) => () => this.setState(s => ({ step: Math.max(0, Math.min(F[s.flow].steps.length - 1, s.step + d)) }));
+    const sw = (label, g, on) => ({ label, go: g, st: `border:0;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;background:${on ? '#DCEB9D' : '#444'};color:${on ? '#172D29' : '#ddd'}` });
+    const btn = `height:44px;padding-inline:18px;border-radius:10px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:transform .12s,background .2s;`;
+    return { dir: ar ? 'rtl' : 'ltr', rootStyle: root, t: ar ? { h:'تدفقات المستخدم', prev:'السابق', next:'التالي' } : { h:'User flows', prev:'Back', next:'Next' },
+      flowTabs: F.map((f, i) => ({ l: f.n, go: set({ flow: i, step: 0 }), st: `min-height:44px;padding-inline:16px;border-radius:999px;font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s,border-color .25s;border:1px solid ${i === flow ? 'var(--primary)' : 'var(--line)'};background:${i === flow ? 'var(--primary)' : 'transparent'};color:${i === flow ? 'var(--primary-ink)' : 'var(--ink)'}` })),
+      nodes: cur.steps.map((s, i) => ({ l: s[0], num: i + 1, go: set({ step: i }),
+        box: `flex:1;display:grid;justify-items:center;gap:8px;cursor:pointer;position:relative;min-width:0;padding-inline:4px;min-height:44px`,
+        dot: `width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:600;transition:background .3s,color .3s,transform .3s;border:2px solid var(--primary);${i <= sIdx ? 'background:var(--primary);color:var(--primary-ink)' : 'background:var(--surface);color:var(--primary)'};${i === sIdx ? 'transform:scale(1.15)' : ''}`,
+        bar: `position:absolute;top:15px;inset-inline-start:calc(50% + 20px);width:calc(100% - 40px);height:2px;background:${i < sIdx ? 'var(--primary)' : 'var(--line)'};transition:background .4s;display:${i === cur.steps.length - 1 ? 'none' : 'block'}` })),
+      step: { title: S[0], desc: S[1], banner: S[4] }, stepNo: (ar ? 'الخطوة ' : 'Step ') + (sIdx + 1) + ' / ' + cur.steps.length, stepKey: flow + '-' + sIdx, stepKey2: flow + '-' + sIdx + 'b',
+      badge: S[3], badgeSt: `color:var(--${tn[0]});background:var(--${tn[0]}-bg);font-size:12px;font-weight:600;padding:3px 12px;border-radius:999px`,
+      bannerSt: `padding:12px 20px;font-weight:500;color:var(--${tn[0]});background:var(--${tn[0]}-bg);border-block-end:1px solid var(--line)`,
+      rows: S[5].map(([k, v, f]) => ({ k, v, st: `font-variant-numeric:tabular-nums;unicode-bidi:isolate;font-weight:${f === 'b' ? 600 : 500};${f === 'd' ? 'color:var(--muted);opacity:.7' : ''}` })),
+      prev: go(-1), next: go(1), ghost: btn + 'border:1px solid var(--line);background:transparent;color:var(--ink)', prim: btn + 'border:0;background:var(--primary);color:var(--primary-ink)',
+      playText: playing ? p('إيقاف', 'Pause') : p('تشغيل', 'Play'),
+      play: () => { if (this.state.playing) { clearInterval(this.iv); this.setState({ playing: false }); } else { this.setState({ playing: true }); this.iv = setInterval(() => this.setState(s => { const n = F[s.flow].steps.length; return { step: (s.step + 1) % n }; }), 2200); } },
+      switches: [sw('العربية', set({ lang: 'ar' }), ar), sw('English', set({ lang: 'en' }), !ar), sw('Light', set({ theme: 'light' }), theme === 'light'), sw('Dark', set({ theme: 'dark' }), theme === 'dark')] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>body{margin:0}a{color:#245C4F}a:hover{color:#172D29}</style>
+</helmet>
+<div style="padding:32px;background:#e9ebe4;font:400 14px/1.4 'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;display:grid;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><h1 style="margin:0;flex:1;white-space:nowrap;font-size:28px;font-weight:500;color:#172D29">Raff — Design tokens</h1><a href="Raff POS.dc.html">POS screen →</a></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:24px">
+<sc-for list="{{ themes }}" as="th" hint-placeholder-count="2">
+<section dir="ltr" style="{{ th.frame }}">
+<div style="font-size:16px;font-weight:500;margin-block-end:16px">{{ th.name }}</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px">
+<sc-for list="{{ th.colors }}" as="c" hint-placeholder-count="12">
+<div style="display:flex;align-items:center;gap:10px;padding:6px;border:1px solid {{ th.line }};border-radius:8px;background:{{ th.surface }}">
+<span style="{{ c.sw }}"></span><span style="display:grid;line-height:1.3;min-width:0;white-space:nowrap"><b style="font-weight:500;font-size:13px">{{ c.name }}</b><span style="font-size:12px;opacity:.75;font-family:ui-monospace,monospace">{{ c.val }}</span></span></div></sc-for>
+</div>
+<div style="margin-block-start:20px;display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ th.badges }}" as="b" hint-placeholder-count="4"><span style="{{ b.st }}">{{ b.label }}</span></sc-for></div>
+<div style="margin-block-start:16px;display:flex;gap:8px"><button style="{{ th.btn }}">Primary</button><button style="{{ th.btn2 }}">Outline</button></div>
+</section></sc-for>
+</div>
+<section style="background:#fff;border-radius:12px;padding:24px;display:grid;gap:12px;color:#172D29">
+<div style="font-size:16px;font-weight:500">Type · spacing · radius · shadow</div>
+<sc-for list="{{ type }}" as="y" hint-placeholder-count="6"><div style="display:flex;align-items:baseline;gap:16px;border-block-end:1px solid #E0E6D7;padding-block:6px"><span style="width:170px;font-size:12px;color:#5F6D63">{{ y.role }}</span><span style="{{ y.st }}">{{ y.sample }} <span dir="rtl" style="unicode-bidi:isolate">رَفّ الصيدلية</span></span></div></sc-for>
+<div style="display:flex;align-items:end;gap:12px;margin-block-start:8px"><sc-for list="{{ space }}" as="p" hint-placeholder-count="7"><div style="display:grid;gap:4px;justify-items:center;font-size:12px"><span style="{{ p.st }}"></span>{{ p.n }}</div></sc-for>
+<div style="margin-inline-start:auto;display:flex;gap:16px"><div style="width:90px;height:56px;border:1px solid #E0E6D7;border-radius:8px;display:grid;place-items:center;font-size:12px">8px</div><div style="width:90px;height:56px;border:1px solid #E0E6D7;border-radius:12px;display:grid;place-items:center;font-size:12px">12px</div><div style="width:90px;height:56px;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,.3);display:grid;place-items:center;font-size:12px">dialog</div></div></div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const names = ['bg','surface','raised','sidebar','ink','muted','line','primary','primary-ink','accent','success','success-bg','warn','warn-bg','danger','danger-bg','info','info-bg','focus'];
+    const V = {
+      Light: ['#F7F8F2','#FFFFFF','#FBFCF7','#F0F3E9','#172D29','#5F6D63','#E0E6D7','#245C4F','#FFFFFF','#DCEB9D','#3D765B','#EDF5EE','#98612A','#FBF1DF','#B54739','#FAEBE5','#2F5F7A','#E9EFF3','#91B09C'],
+      Dark: ['#0F1A17','#16221E','#1C2A25','#121C19','#E6ECE7','#9AA89F','#273832','#5FA58F','#0F1A17','#3A4A2A','#7CC4A4','#17302A','#E0A869','#33271A','#E8847A','#3A1F1C','#7FB3D1','#182A34','#5FA58F']
+    };
+    const themes = Object.keys(V).map(n => {
+      const v = {}; names.forEach((k, i) => v[k] = V[n][i]);
+      const badge = (t, l) => ({ label: l, st: `color:${v[t]};background:${v[t + '-bg']};font-size:12px;font-weight:500;padding:2px 10px;border-radius:999px` });
+      return { name: n, line: v.line, surface: v.surface,
+        frame: `background:${v.bg};color:${v.ink};border-radius:12px;padding:24px;border:1px solid ${v.line}`,
+        colors: names.map((k, i) => ({ name: k, val: V[n][i], sw: `width:28px;height:28px;border-radius:6px;border:1px solid ${v.line};background:${V[n][i]}` })),
+        badges: [badge('success','● Valid'), badge('warn','▲ Near expiry'), badge('danger','✕ Expired'), badge('info','■ In transit')],
+        btn: `height:40px;padding-inline:16px;border:0;border-radius:10px;background:${v.primary};color:${v['primary-ink']};font-family:inherit;font-weight:600`,
+        btn2: `height:40px;padding-inline:16px;border:1px solid ${v.line};border-radius:10px;background:transparent;color:${v.ink};font-family:inherit;font-weight:500` };
+    });
+    const ty = [['Screen title','26px / 500',26,500],['Panel title','16px / 500',16,500],['Body & tables','14px / 400',14,400],['Sidebar','14px / 500',14,500],['Badges & labels','12px / 500',12,500],['Money (cart total)','32px / 500 tabular',32,500]];
+    return { themes,
+      type: ty.map(([role, s, z, w]) => ({ role, sample: s, st: `font-size:${z}px;font-weight:${w};font-variant-numeric:tabular-nums` })),
+      space: [4,8,12,16,24,32,48].map(n => ({ n, st: `display:block;width:${n}px;height:${n}px;background:#245C4F;border-radius:2px` })) };
+  }
+}
+</script>
+</body>
+</html>

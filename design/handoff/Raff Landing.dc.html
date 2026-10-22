@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0;background:#F7F8F2}button,input,textarea{font-family:inherit}a{color:#245C4F}a:hover{color:#172D29}
+@keyframes lIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes lPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</helmet>
+<div dir="{{ dir }}" style="{{ rootStyle }}">
+<header style="max-width:1120px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:22px;color:#245C4F"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="6" width="4" height="12" rx="1"/><rect x="10" y="3" width="4" height="15" rx="1"/><rect x="16" y="8" width="4" height="10" rx="1"/><rect x="2" y="19" width="20" height="2" rx="1"/></svg>{{ t.brand }}</div>
+<nav style="display:flex;gap:20px;margin-inline-start:32px;flex-wrap:wrap"><sc-for list="{{ links }}" as="l" hint-placeholder-count="4"><a href="{{ l.h }}" style="font-weight:500;color:#172D29;text-decoration:none;padding-block:8px;white-space:nowrap">{{ l.t }}</a></sc-for></nav>
+<span style="margin-inline-start:auto;display:flex;gap:4px;padding:3px;background:#F0F3E9;border-radius:8px"><sc-for list="{{ langs }}" as="x" hint-placeholder-count="2"><span onClick="{{ x.go }}" style="{{ x.st }}">{{ x.l }}</span></sc-for></span>
+</header>
+
+<section style="max-width:1120px;margin:0 auto;padding:48px 24px 72px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px;align-items:center">
+<div style="animation:lIn .7s cubic-bezier(.2,.8,.2,1) both">
+<div style="font-size:14px;font-weight:600;color:#245C4F;margin-block-end:16px">{{ t.kicker }}</div>
+<h1 style="margin:0;font-size:56px;line-height:1.15;font-weight:600;letter-spacing:-.01em;text-wrap:balance">{{ t.h1 }}</h1>
+<p style="margin:20px 0 0;font-size:19px;line-height:1.7;color:#4a5a50;max-width:520px;text-wrap:pretty">{{ t.lead }}</p>
+<div style="display:flex;gap:12px;margin-block-start:32px;flex-wrap:wrap"><a href="#demo" style="{{ cta }}">{{ t.cta }}</a><a href="#offline" style="{{ cta2 }}">{{ t.cta2 }}</a></div>
+</div>
+<div style="background:#fff;border:1px solid #E0E6D7;border-radius:16px;box-shadow:0 18px 50px rgba(23,45,41,.10);overflow:hidden;animation:lIn .7s .12s cubic-bezier(.2,.8,.2,1) both">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#FBFCF7;border-block-end:1px solid #E0E6D7">
+<span style="{{ pill }}"><span style="{{ dot }}"></span>{{ connText }}</span><span style="flex:1"></span>
+<button onClick="{{ toggle }}" style="min-height:40px;white-space:nowrap;padding-inline:14px;border-radius:10px;border:1px solid #E0E6D7;background:transparent;color:#172D29;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s" style-hover="background:#F0F3E9">{{ toggleText }}</button></div>
+<div style="padding:8px 0;min-height:292px">
+<sc-for list="{{ sales }}" as="s" hint-placeholder-count="5"><div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 16px;border-block-end:1px solid #E0E6D7;animation:lIn .35s ease both"><span dir="ltr" style="font-size:13px;color:#5F6D63;font-variant-numeric:tabular-nums;width:48px">{{ s.time }}</span><span style="flex:1;font-weight:500">{{ s.name }}</span><span dir="ltr" style="font-variant-numeric:tabular-nums;font-weight:600">{{ s.amt }}</span><span style="{{ s.st }}">{{ s.badge }}</span></div></sc-for></div>
+<div style="padding:12px 16px;background:#FBFCF7;border-block-start:1px solid #E0E6D7;font-size:13px;color:#5F6D63;display:flex;justify-content:space-between"><span>{{ t.queue }}</span><b dir="ltr" style="color:#172D29;font-variant-numeric:tabular-nums">{{ queued }}</b></div>
+</div>
+</section>
+
+<section id="offline" style="background:#fff;border-block:1px solid #E0E6D7"><div style="max-width:1120px;margin:0 auto;padding:72px 24px;display:grid;gap:32px">
+<div style="max-width:620px"><h2 style="margin:0;font-size:36px;font-weight:600;line-height:1.25">{{ t.offH }}</h2><p style="margin:12px 0 0;color:#4a5a50;font-size:17px;line-height:1.7">{{ t.offP }}</p></div>
+<div style="border:1px solid #E0E6D7;border-radius:14px;overflow:hidden">
+<div style="display:grid;grid-template-columns:minmax(0,1.2fr) 150px minmax(0,1.6fr);gap:16px;padding:12px 20px;background:#FBFCF7;font-size:13px;font-weight:600;color:#5F6D63"><span>{{ t.cCap }}</span><span>{{ t.cOff }}</span><span>{{ t.cNote }}</span></div>
+<sc-for list="{{ caps }}" as="c" hint-placeholder-count="7"><div style="display:grid;grid-template-columns:minmax(0,1.2fr) 150px minmax(0,1.6fr);gap:16px;align-items:center;min-height:56px;padding:10px 20px;border-block-start:1px solid #E0E6D7;transition:background .2s" style-hover="background:#F7F8F2"><span style="font-weight:500">{{ c.n }}</span><span style="{{ c.st }}">{{ c.s }}</span><span style="color:#4a5a50;font-size:15px">{{ c.note }}</span></div></sc-for></div>
+</div></section>
+
+<section style="max-width:1120px;margin:0 auto;padding:72px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:48px">
+<div><h2 style="margin:0 0 20px;font-size:28px;font-weight:600">{{ t.hwH }}</h2>
+<div style="display:grid;gap:0;border-block-start:1px solid #E0E6D7"><sc-for list="{{ hw }}" as="h" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:130px 1fr;gap:16px;padding:14px 0;border-block-end:1px solid #E0E6D7"><span style="font-weight:600">{{ h.k }}</span><span style="color:#4a5a50">{{ h.v }}</span></div></sc-for></div></div>
+<div><h2 style="margin:0 0 20px;font-size:28px;font-weight:600">{{ t.subH }}</h2>
+<div style="display:grid;gap:12px"><sc-for list="{{ subs }}" as="s" hint-placeholder-count="3"><div style="display:flex;gap:14px;align-items:flex-start;padding:16px;border:1px solid #E0E6D7;border-radius:12px;background:#fff"><span style="{{ s.st }}">{{ s.sym }}</span><div><div style="font-weight:600">{{ s.k }}</div><div style="color:#4a5a50;font-size:15px;line-height:1.6">{{ s.v }}</div></div></div></sc-for></div></div>
+</section>
+
+<section id="demo" style="background:#245C4F;color:#fff"><div style="max-width:1120px;margin:0 auto;padding:72px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:48px;align-items:start">
+<div><h2 style="margin:0;font-size:36px;font-weight:600;line-height:1.25;text-wrap:balance">{{ t.dmH }}</h2><p style="margin:16px 0 0;font-size:17px;line-height:1.7;max-width:460px;color:#E9F0EA">{{ t.dmP }}</p>
+<a href="https://wa.me/{{ waNum }}" style="display:inline-flex;align-items:center;gap:8px;margin-block-start:24px;min-height:48px;padding-inline:20px;border-radius:12px;border:2px solid #DCEB9D;color:#DCEB9D;font-weight:600;text-decoration:none;transition:background .2s,color .2s" style-hover="background:#DCEB9D;color:#172D29">{{ t.wa }}</a></div>
+<form onSubmit="{{ submit }}" style="background:#F7F8F2;color:#172D29;border-radius:14px;padding:24px;display:grid;gap:14px">
+<sc-for list="{{ fields }}" as="f" hint-placeholder-count="3"><label style="display:grid;gap:4px;font-size:13px;font-weight:600;color:#5F6D63">{{ f.l }}<input name="{{ f.n }}" dir="{{ f.d }}" style="height:48px;padding-inline:14px;border:1px solid #E0E6D7;border-radius:10px;background:#fff;color:#172D29;font-size:16px;outline:0;transition:box-shadow .2s,border-color .2s" style-focus="border-color:#245C4F;box-shadow:0 0 0 3px #91B09C"></label></sc-for>
+<button type="submit" style="{{ sendSt }}">{{ sendText }}</button>
+<div style="min-height:20px;font-size:13px;color:#3D765B;font-weight:500">{{ doneMsg }}</div></form>
+</div></section>
+<footer style="max-width:1120px;margin:0 auto;padding:24px;font-size:13px;color:#5F6D63">{{ t.foot }}</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;whatsapp&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;249902929451&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'ar', online: true, sales: [], sent: false };
+  names = [['أموكسيسيلين 625', 'Augmentin 625', '12,500'], ['باراسيتامول 500', 'Paracetamol 500', '800'], ['محلول الإرواء', 'ORS sachet', '300'], ['أوميبرازول 20', 'Omeprazole 20', '2,400'], ['إيبوبروفين 400', 'Ibuprofen 400', '1,100']];
+  tick = 0;
+  componentDidMount() {
+    const add = (q) => { const n = this.names[this.tick++ % 5]; const m = 32 + this.tick; this.setState(s => ({ sales: [{ id: this.tick, n, time: '14:' + (m < 60 ? m : m - 60 < 10 ? '0' + (m - 60) : m - 60), q }, ...s.sales].slice(0, 5) })); };
+    add(false); add(false); add(false);
+    this.iv = setInterval(() => { if (!this.state.online) add(true); }, 2200);
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  renderVals() {
+    const { lang, online, sales, sent } = this.state, ar = lang === 'ar', p = (a, e) => ar ? a : e;
+    const T = ar ? { brand:'رَفّ', kicker:'نظام إدارة الصيدليات في السودان', h1:'يستمر البيع حتى لو انقطع الإنترنت.', lead:'مخزون وصندوق يتطابقان، وبيانات تُستعاد. يعمل على حاسوب الكاونتر، ويتابعه المالك من الهاتف.', cta:'اطلب عرضاً', cta2:'ما الذي يعمل دون إنترنت؟', queue:'عمليات بانتظار المزامنة',
+        offH:'ما الذي يعمل عند انقطاع الإنترنت', offP:'نكتب هذا الجدول بصراحة: ما يعمل محلياً بالكامل، وما ينتظر الاتصال.', cCap:'الوظيفة', cOff:'دون إنترنت', cNote:'ملاحظة',
+        hwH:'متطلبات الأجهزة', subH:'بياناتك تبقى لك',
+        dmH:'جرّب «رَفّ» على صيدليتك', dmP:'نرتّب عرضاً قصيراً بأصنافك أنت. أو راسلنا مباشرة على واتساب.', wa:'واتساب', foot:'أمثلة هذه الصفحة تجريبية ولا تمثّل بيانات حقيقية.' }
+      : { brand:'Raff', kicker:'Pharmacy management for Sudan', h1:'Keep selling when the internet drops.', lead:'Stock and cash that agree with each other, and data you can restore. Runs on the counter PC; owners follow along on their phone.', cta:'Request a demo', cta2:'What works offline?', queue:'Operations waiting to sync',
+        offH:'What works when the internet is down', offP:'Stated plainly: what runs fully local, and what waits for a connection.', cCap:'Capability', cOff:'Offline', cNote:'Note',
+        hwH:'Hardware requirements', subH:'Your data stays yours',
+        dmH:'Try Raff on your own pharmacy', dmP:'We set up a short demo with your own items. Or message us directly on WhatsApp.', wa:'WhatsApp', foot:'Examples on this page are sample data, not real records.' };
+    const st = (t) => `font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap;justify-self:start;color:var(--c);background:var(--b)`.replace('var(--c)', { ok: '#3D765B', wn: '#98612A', no: '#B54739' }[t]).replace('var(--b)', { ok: '#EDF5EE', wn: '#FBF1DF', no: '#FAEBE5' }[t]);
+    const caps = [
+      [p('البيع والدفع النقدي', 'Selling & cash payment'), 'ok', p('● يعمل', '● Works'), p('الاعتماد يتم على الخادم المحلي في الصيدلية.', 'Approval runs on the pharmacy local server.')],
+      [p('البحث والباركود', 'Search & barcode'), 'ok', p('● يعمل', '● Works'), p('قاعدة الأصناف محلية بالكامل.', 'The item database is fully local.')],
+      [p('الاستلام والجرد والمرتجعات', 'Receiving, stocktake, returns'), 'ok', p('● يعمل', '● Works'), p('تُسجَّل محلياً وتُزامَن لاحقاً.', 'Recorded locally and synced later.')],
+      [p('التحقق من التحويلات البنكية', 'Bank transfer verification'), 'wn', p('▲ جزئي', '▲ Partial'), p('يُسجَّل المرجع، ويبقى «بانتظار التحقق».', 'Reference is saved; status stays “awaiting verification”.')],
+      [p('ملخص المالك على الهاتف', 'Owner summary on phone'), 'wn', p('▲ آخر تحديث', '▲ Last update'), p('يعرض آخر مزامنة مع وقتها.', 'Shows the last sync with its time.')],
+      [p('التحويل بين الفروع', 'Branch transfers'), 'no', p('✕ ينتظر الاتصال', '✕ Needs connection'), p('يحتاج فرعين متصلين.', 'Needs both branches online.')]
+    ].map(([n, t, s, note]) => ({ n, st: st(t), s, note }));
+    const hw = [[p('حاسوب الكاونتر', 'Counter PC'), p('ويندوز 10 أو أحدث، 4GB ذاكرة، شاشة 1366×768 فأكثر.', 'Windows 10+, 4GB RAM, 1366×768 screen or larger.')], [p('الهاتف', 'Phone'), p('Android 9 أو أحدث، عرض 360–412، كاميرا للجرد.', 'Android 9+, 360–412 wide, camera for stocktake.')], [p('الطابعة', 'Printer'), p('طابعة إيصالات حرارية 80mm.', '80mm thermal receipt printer.')], [p('قارئ الباركود', 'Barcode reader'), p('أي قارئ USB يعمل كلوحة مفاتيح.', 'Any USB reader acting as a keyboard.')]].map(([k, v]) => ({ k, v }));
+    const subs = [[p('القراءة تبقى متاحة', 'Reading stays available'), p('تستطيع فتح كل سجلاتك وتقاريرك.', 'You can still open all your records and reports.'), '#3D765B', '#EDF5EE', '●'], [p('التصدير مضمون', 'Export is guaranteed'), p('تُصدَّر بياناتك كاملة بصيغة مفتوحة في أي وقت.', 'Your full data exports in an open format any time.'), '#3D765B', '#EDF5EE', '●']].map(([k, v, c, b, sym]) => ({ k, v, sym, st: `flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;color:${c};background:${b}` }));
+    const set = o => () => this.setState(o);
+    const cap = n => ({ id: n.id, name: ar ? n.n[0] : n.n[1], amt: ar ? n.n[2] + ' ج.س' : 'SDG ' + n.n[2], time: n.time });
+    return { waNum: String(this.props.whatsapp ?? '249902929451').replace(/\D/g, ''), dir: ar ? 'rtl' : 'ltr', t: T, caps, hw, subs,
+      rootStyle: { background: '#F7F8F2', color: '#172D29', minHeight: '100vh', font: '400 16px/1.5 ' + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif") },
+      links: [{ h: '#offline', t: p('دون إنترنت', 'Offline') }, { h: '#demo', t: p('اطلب عرضاً', 'Demo') }],
+      langs: [['ar', 'العربية'], ['en', 'English']].map(([k, l]) => ({ l, go: set({ lang: k }), st: `padding:6px 12px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s;${lang === k ? 'background:#fff;color:#245C4F;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'color:#5F6D63'}` })),
+      cta: 'display:inline-flex;align-items:center;white-space:nowrap;min-height:52px;padding-inline:24px;border-radius:12px;background:#245C4F;color:#fff;font-weight:600;text-decoration:none;transition:transform .15s,background .2s',
+      cta2: 'display:inline-flex;align-items:center;white-space:nowrap;min-height:52px;padding-inline:20px;border-radius:12px;border:1px solid #E0E6D7;color:#172D29;font-weight:500;text-decoration:none;background:#fff',
+      pill: `display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;transition:background .3s,color .3s;${online ? 'color:#3D765B;background:#EDF5EE' : 'color:#98612A;background:#FBF1DF'}`,
+      dot: `width:8px;height:8px;border-radius:50%;background:currentColor;${online ? '' : 'animation:lPulse 1.4s ease-in-out infinite'}`,
+      connText: online ? p('الخادم متصل', 'Server online') : p('بلا إنترنت — البيع مستمر', 'No internet — still selling'),
+      toggleText: online ? p('قطع الاتصال', 'Cut connection') : p('إعادة الاتصال', 'Reconnect'),
+      toggle: () => this.setState(s => ({ online: !s.online, sales: s.online ? s.sales : s.sales.map(x => ({ ...x, q: false })) })),
+      sales: sales.map(s => ({ ...cap(s), badge: s.q ? p('▲ بانتظار المزامنة', '▲ Queued') : p('● متزامن', '● Synced'), st: `font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap;transition:background .4s,color .4s;${s.q ? 'color:#98612A;background:#FBF1DF' : 'color:#3D765B;background:#EDF5EE'}` })),
+      queued: sales.filter(s => s.q).length,
+      fields: [[p('اسم الصيدلية', 'Pharmacy name'), 'name', ar ? 'rtl' : 'ltr'], [p('الهاتف', 'Phone'), 'phone', 'ltr'], [p('عدد الفروع', 'Number of branches'), 'branches', 'ltr']].map(([l, n, d]) => ({ l, n, d })),
+      submit: e => { e.preventDefault(); this.setState({ sent: true }); },
+      sendText: sent ? p('✓ تم الإرسال', '✓ Sent') : p('أرسل الطلب', 'Send request'),
+      sendSt: `height:52px;border-radius:12px;border:0;font-size:16px;font-weight:600;cursor:pointer;transition:background .3s;color:#fff;background:${sent ? '#3D765B' : '#245C4F'}`,
+      doneMsg: sent ? p('سنتواصل معك قريباً.', 'We will be in touch soon.') : '' };
+  }
+}
+</script>
+</body>
+</html>

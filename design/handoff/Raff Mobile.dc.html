@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}button,input{font-family:inherit}a{color:#245C4F}a:hover{color:#172D29}
+@keyframes raffScan{0%{top:8%}50%{top:88%}100%{top:8%}}
+@keyframes raffRise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes raffPulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</helmet>
+<div dir="{{ dir }}" style="{{ rootStyle }}">
+<sc-if value="{{ showBar }}" hint-placeholder-val="{{ true }}">
+<div dir="ltr" style="background:#2a2f2c;color:#ddd;display:flex;gap:8px;align-items:center;padding:8px 12px;font:500 12px 'IBM Plex Sans',sans-serif;flex-wrap:wrap">
+<span style="opacity:.7">Raff mobile · 390×800 · sample data</span>
+<sc-for list="{{ switches }}" as="s" hint-placeholder-count="4"><button onClick="{{ s.go }}" style="{{ s.st }}">{{ s.label }}</button></sc-for>
+<a href="Raff Screens.dc.html" style="color:#DCEB9D;margin-inline-start:auto">Desktop screens →</a>
+</div>
+</sc-if>
+<div style="display:flex;flex-wrap:wrap;gap:40px;padding:40px;justify-content:center;align-items:flex-start">
+
+<section style="flex:none;display:grid;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--muted)">{{ t.l1 }}</div>
+<div style="{{ phone }}">
+<div style="height:28px;flex:none;display:flex;justify-content:space-between;padding-inline:20px;align-items:center;font-size:12px;font-weight:600"><span dir="ltr">09:41</span><span>{{ t.net }}</span></div>
+<div style="padding:8px 16px 12px"><div style="font-size:26px;font-weight:500">{{ t.sTitle }}</div></div>
+<div style="padding-inline:16px;display:grid;gap:12px;flex:1;min-height:0;grid-template-rows:auto 1fr">
+<label style="display:flex;align-items:center;gap:8px;height:48px;padding-inline:14px;border:2px solid var(--primary);border-radius:12px;background:var(--surface)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input value="{{ q }}" onInput="{{ onQ }}" placeholder="{{ t.ph }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:16px"></label>
+<div style="overflow:hidden;display:grid;gap:8px;align-content:start">
+<sc-for list="{{ found }}" as="i" hint-placeholder-count="4">
+<div onClick="{{ i.pick }}" style="{{ i.card }}">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><span style="font-weight:500;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ i.name }}</span><span dir="ltr" style="font-weight:600;font-variant-numeric:tabular-nums;flex:none;white-space:nowrap">{{ i.price }}</span></div>
+<div style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);white-space:nowrap"><span>{{ t.stock }} <b dir="ltr" style="color:var(--ink)">{{ i.stock }}</b></span><span style="{{ i.badge }}">{{ i.bt }}</span></div>
+<div style="{{ i.more }}"><div style="overflow:hidden;font-size:13px;color:var(--muted);display:grid;gap:4px;padding-block-start:8px"><span>{{ t.batch }}: <b dir="ltr" style="color:var(--ink)">{{ i.batch }}</b></span><span>{{ t.exp }}: <b dir="ltr" style="color:var(--ink)">{{ i.exp }}</b></span><span>{{ t.form }}: <b dir="ltr" style="color:var(--ink)">{{ i.form }}</b></span></div></div>
+</div></sc-for>
+<sc-if value="{{ none }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 8px;text-align:center;color:var(--muted)">{{ t.none }}</div></sc-if>
+</div></div>
+<sc-if value="{{ kbOn }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset-inline:0;bottom:0;z-index:3;background:#d4d8cf;padding:8px 4px 20px;display:grid;gap:8px;animation:raffRise .25s ease both" dir="ltr"><sc-for list="{{ keys }}" as="row" hint-placeholder-count="4"><div style="display:flex;gap:4px;justify-content:center"><sc-for list="{{ row }}" as="c" hint-placeholder-count="10"><span style="flex:1;max-width:34px;height:44px;border-radius:6px;background:#fff;color:#111;display:grid;place-items:center;font-size:18px;box-shadow:0 1px 0 rgba(0,0,0,.3)">{{ c.k }}</span></sc-for></div></sc-for></div></sc-if>
+<nav style="height:68px;flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised);border-block-start:1px solid var(--line)"><sc-for list="{{ nav1 }}" as="n" hint-placeholder-count="4"><div style="{{ n.st }}"><span style="{{ n.pill }}"></span><span>{{ n.l }}</span></div></sc-for></nav>
+</div></section>
+
+<section style="flex:none;display:grid;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--muted)">{{ t.l2 }}</div>
+<div style="{{ phone }}">
+<div style="height:28px;flex:none;display:flex;justify-content:space-between;padding-inline:20px;align-items:center;font-size:12px;font-weight:600"><span dir="ltr">09:41</span><span>{{ t.net }}</span></div>
+<div style="padding:8px 16px 12px"><div style="font-size:26px;font-weight:500">{{ t.cTitle }}</div><div style="color:var(--muted);font-size:13px">{{ t.cScope }}</div></div>
+<div style="padding-inline:16px;display:grid;gap:12px;flex:1;align-content:start">
+<sc-if value="{{ camOk }}" hint-placeholder-val="{{ true }}"><div style="position:relative;height:180px;border-radius:14px;background:#10201b;overflow:hidden">
+<div style="position:absolute;inset:24px 40px;border:2px solid rgba(220,235,157,.9);border-radius:10px"></div>
+<div style="position:absolute;inset-inline:40px;height:2px;background:#DCEB9D;box-shadow:0 0 12px 2px rgba(220,235,157,.7);animation:raffScan 2.4s ease-in-out infinite"></div>
+<div style="position:absolute;inset-inline:0;bottom:10px;text-align:center;font-size:12px;color:#DCEB9D">{{ t.aim }}</div></div></sc-if><sc-if value="{{ camDenied }}" hint-placeholder-val="{{ false }}"><div style="height:180px;border-radius:14px;background:var(--danger-bg);color:var(--danger);display:grid;place-content:center;gap:8px;text-align:center;padding:16px;animation:raffRise .3s ease both"><div style="font-weight:600">✕ {{ camT }}</div><div style="font-size:13px">{{ camB }}</div><div style="justify-self:center;min-height:44px;display:grid;place-items:center;padding-inline:16px;border-radius:10px;border:1px solid var(--danger);font-weight:500">{{ camA }}</div></div></sc-if>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:500">{{ t.cItem }}</span><span style="color:var(--muted);font-size:13px">{{ t.sys }} <b dir="ltr" style="color:var(--ink)">42</b></span></div>
+<div style="display:flex;align-items:center;justify-content:center;gap:16px">
+<button onClick="{{ dec }}" aria-label="-" style="width:56px;height:56px;border-radius:14px;border:1px solid var(--line);background:var(--raised);color:var(--ink);font-size:26px;cursor:pointer;transition:transform .12s" style-active="transform:scale(.92)">−</button>
+<span dir="ltr" style="min-width:90px;text-align:center;font-size:44px;font-weight:500;font-variant-numeric:tabular-nums">{{ count }}</span>
+<button onClick="{{ inc }}" aria-label="+" style="width:56px;height:56px;border-radius:14px;border:0;background:var(--primary);color:var(--primary-ink);font-size:26px;cursor:pointer;transition:transform .12s" style-active="transform:scale(.92)">+</button></div>
+<div style="{{ diffStyle }}">{{ diffText }}</div>
+</div>
+<button style="height:52px;border-radius:12px;border:0;background:var(--primary);color:var(--primary-ink);font-size:16px;font-weight:600;cursor:pointer;transition:transform .12s" style-active="transform:scale(.98)">{{ t.confirmCount }}</button>
+<div style="font-size:12px;color:var(--muted);text-align:center">{{ t.counted }}</div>
+</div>
+<nav style="height:68px;flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised);border-block-start:1px solid var(--line);margin-block-start:auto"><sc-for list="{{ nav2 }}" as="n" hint-placeholder-count="4"><div style="{{ n.st }}"><span style="{{ n.pill }}"></span><span>{{ n.l }}</span></div></sc-for></nav>
+</div></section>
+
+<section style="flex:none;display:grid;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--muted)">{{ t.l3 }}</div>
+<div style="{{ phone }}">
+<div style="height:28px;flex:none;display:flex;justify-content:space-between;padding-inline:20px;align-items:center;font-size:12px;font-weight:600"><span dir="ltr">09:41</span><span>{{ t.net }}</span></div>
+<div style="padding:8px 16px 12px;display:grid;gap:12px"><div style="font-size:26px;font-weight:500">{{ t.oTitle }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--sidebar);border-radius:10px"><span onClick="{{ allB }}" style="{{ segAll }}">{{ t.all }}</span><span onClick="{{ oneB }}" style="{{ segOne }}">{{ t.khr }}</span></div></div>
+<div style="padding-inline:16px;display:grid;gap:12px;flex:1;align-content:start">
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:4px"><span style="color:var(--muted);font-size:13px">{{ t.today }}</span><span dir="ltr" style="font-size:32px;font-weight:500;font-variant-numeric:tabular-nums;text-align:start;transition:opacity .2s">{{ sales }}</span><span style="font-size:12px;color:var(--muted)">{{ t.upd }}</span>
+<div dir="ltr" style="display:flex;align-items:end;gap:6px;height:80px;margin-block-start:8px"><sc-for list="{{ bars }}" as="b" hint-placeholder-count="7"><span style="{{ b.st }}"></span></sc-for></div></div>
+<div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden"><sc-for list="{{ acts }}" as="a" hint-placeholder-count="3"><div style="display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 16px;border-block-end:1px solid var(--line)"><span style="flex:1">{{ a.t }}</span><span style="{{ a.st }}">{{ a.v }}</span></div></sc-for></div>
+</div>
+<nav style="height:68px;flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised);border-block-start:1px solid var(--line)"><sc-for list="{{ nav3 }}" as="n" hint-placeholder-count="4"><div style="{{ n.st }}"><span style="{{ n.pill }}"></span><span>{{ n.l }}</span></div></sc-for></nav>
+</div></section>
+
+<section style="flex:none;display:grid;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--muted)">{{ t.l4 }}</div>
+<div style="{{ phone }}">
+<div style="height:28px;flex:none;display:flex;justify-content:space-between;padding-inline:20px;align-items:center;font-size:12px;font-weight:600"><span dir="ltr">09:41</span><span>{{ t.net }}</span></div>
+<div style="padding:8px 16px 12px"><div style="font-size:26px;font-weight:500">{{ t.pTitle }}</div></div>
+<div style="padding-inline:16px;display:grid;gap:8px;align-content:start;flex:1">
+<sc-for list="{{ quick }}" as="i" hint-placeholder-count="5"><div onClick="{{ i.add }}" style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:transform .12s,background .2s" style-active="transform:scale(.98)"><span style="flex:1;font-weight:500">{{ i.name }}</span><span dir="ltr" style="font-variant-numeric:tabular-nums;color:var(--muted)">{{ i.price }}</span><span style="width:44px;height:44px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-size:22px">+</span></div></sc-for>
+</div>
+<div style="{{ sheet }}">
+<div onClick="{{ toggle }}" style="padding:10px 16px 0;cursor:pointer"><div style="width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px"></div>
+<div style="display:flex;align-items:center;gap:12px;height:52px"><span style="flex:1;font-weight:500">{{ t.cart }} · <b dir="ltr">{{ cartN }}</b></span><span dir="ltr" style="font-size:22px;font-weight:500;font-variant-numeric:tabular-nums">{{ cartTotal }}</span></div></div>
+<div style="padding:12px 16px 12px"><button style="width:100%;height:52px;border-radius:12px;border:0;background:var(--primary);color:var(--primary-ink);font-size:16px;font-weight:600;cursor:pointer;transition:transform .12s" style-active="transform:scale(.98)">{{ t.pay }}</button></div>
+<div style="padding-inline:16px;display:grid;gap:6px;height:210px;padding-block-end:8px;overflow:hidden">
+<sc-for list="{{ cartLines }}" as="l" hint-placeholder-count="3"><div style="display:flex;gap:12px;min-height:44px;align-items:center;border-block-start:1px solid var(--line);animation:raffRise .25s ease both"><span style="flex:1">{{ l.name }}</span><span dir="ltr" style="color:var(--muted)">× {{ l.qty }}</span><span dir="ltr" style="font-weight:600;font-variant-numeric:tabular-nums">{{ l.total }}</span></div></sc-for></div>
+</div>
+<nav style="position:absolute;inset-inline:0;bottom:0;z-index:2;height:68px;display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised);border-block-start:1px solid var(--line)"><sc-for list="{{ nav4 }}" as="n" hint-placeholder-count="4"><div style="{{ n.st }}"><span style="{{ n.pill }}"></span><span>{{ n.l }}</span></div></sc-for></nav>
+</div></section>
+
+<section style="flex:none;display:grid;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--muted)">{{ ordL }}</div>
+<div style="{{ phone }}">
+<div style="height:28px;flex:none;display:flex;justify-content:space-between;padding-inline:20px;align-items:center;font-size:12px;font-weight:600"><span dir="ltr">09:41</span><span>{{ t.net }}</span></div>
+<div style="padding:8px 16px 12px;display:flex;align-items:baseline;justify-content:space-between"><div style="font-size:26px;font-weight:500">{{ ordT }}</div><span style="{{ ordChip }}">{{ ordNew }}</span></div>
+<div style="padding-inline:16px;display:grid;gap:10px;align-content:start;flex:1;overflow:auto">
+<sc-for list="{{ ords }}" as="o" hint-placeholder-count="3"><div style="{{ o.card }}">
+<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b dir="ltr" style="white-space:nowrap">{{ o.no }}</b><span style="{{ o.badge }}">{{ o.bt }}</span></div>
+<div style="display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)"><span style="display:flex;gap:6px;min-width:0"><span style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ o.cust }}</span><bdi dir="ltr" style="unicode-bidi:isolate;flex:none">{{ o.time }}</bdi></span><span dir="ltr" style="font-weight:600;color:var(--ink);white-space:nowrap;flex:none">{{ o.total }}</span></div>
+<div style="display:flex;gap:8px"><a href="{{ o.wa }}" style="flex:1;min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:500;white-space:nowrap">{{ waL }}</a><button onClick="{{ o.go }}" style="{{ o.btn }}">{{ o.next }}</button></div>
+</div></sc-for></div>
+<nav style="height:68px;flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--raised);border-block-start:1px solid var(--line)"><sc-for list="{{ nav3 }}" as="n" hint-placeholder-count="4"><div style="{{ n.st }}"><span style="{{ n.pill }}"></span><span>{{ n.l }}</span></div></sc-for></nav>
+</div></section>
+
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;ar&quot;,&quot;en&quot;],&quot;default&quot;:&quot;ar&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;embed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { ords: [['O-1042','سلمى أحمد','Salma Ahmed','14:32',6000,'new','0912345678'],['O-1041','محمد علي','Mohamed Ali','13:05',5300,'confirmed','0923456789'],['O-1039','نهى حسن','Nuha Hassan','11:48',3200,'ready','0911112233']], w: 390, kb: false, cam: true, lang: this.props.lang ?? 'ar', theme: this.props.theme ?? 'light', q: '', sel: 0, count: 40, sheet: false, branch: 'all', ready: false, cart: [[0, 1], [1, 2]] };
+  componentDidMount() { setTimeout(() => this.setState({ ready: true }), 120); }
+  renderVals() {
+    const { w, kb, cam, lang, theme, q, sel, count, sheet, branch, ready, cart } = this.state, ar = lang === 'ar', p = (a, e) => ar ? a : e;
+    const L = {
+      light: { bg:'#F7F8F2', surface:'#FFFFFF', raised:'#FBFCF7', sidebar:'#F0F3E9', ink:'#172D29', muted:'#5F6D63', line:'#E0E6D7', primary:'#245C4F', 'primary-ink':'#FFFFFF', accent:'#DCEB9D', success:'#3D765B', 'success-bg':'#EDF5EE', warn:'#98612A', 'warn-bg':'#FBF1DF', danger:'#B54739', 'danger-bg':'#FAEBE5', info:'#2F5F7A', 'info-bg':'#E9EFF3' },
+      dark: { bg:'#0F1A17', surface:'#16221E', raised:'#1C2A25', sidebar:'#121C19', ink:'#E6ECE7', muted:'#9AA89F', line:'#273832', primary:'#5FA58F', 'primary-ink':'#0F1A17', accent:'#3A4A2A', success:'#7CC4A4', 'success-bg':'#17302A', warn:'#E0A869', 'warn-bg':'#33271A', danger:'#E8847A', 'danger-bg':'#3A1F1C', info:'#7FB3D1', 'info-bg':'#182A34' }
+    }[theme];
+    const vars = {}; Object.keys(L).forEach(k => vars['--' + k] = L[k]);
+    const tone = n => `color:var(--${n});background:var(--${n}-bg);font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px;white-space:nowrap`;
+    const cur = n => ar ? n + ' ج.س' : 'SDG ' + n;
+    const T = ar ? { net:'متصل', l1:'1 · بحث سريع عن صنف', l2:'2 · جرد بالكاميرا', l3:'3 · ملخص المالك', l4:'4 · نقطة بيع مبسطة', sTitle:'بحث', ph:'اسم أو باركود', stock:'الرصيد', batch:'الدفعة', exp:'الصلاحية', form:'الشكل', none:'لا نتائج. جرّب الاسم العلمي.',
+      cTitle:'جرد', cScope:'رف 2 · 14 من 18', aim:'وجّه الكاميرا إلى الباركود', cItem:'باراسيتامول 500 mg', sys:'النظام', confirmCount:'تأكيد العد', counted:'تم عدّ 14 صنفاً حتى الآن',
+      oTitle:'اليوم', all:'كل الفروع', khr:'الخرطوم', today:'مبيعات اليوم', upd:'آخر تحديث قبل 4 دقائق', pTitle:'بيع', cart:'السلة', pay:'الدفع' }
+    : { net:'Online', l1:'1 · Quick item lookup', l2:'2 · Camera stocktake', l3:'3 · Owner summary', l4:'4 · Simplified POS', sTitle:'Search', ph:'Name or barcode', stock:'Stock', batch:'Batch', exp:'Expiry', form:'Form', none:'No results. Try the generic name.',
+      cTitle:'Count', cScope:'Shelf 2 · 14 of 18', aim:'Point the camera at the barcode', cItem:'Paracetamol 500 mg', sys:'System', confirmCount:'Confirm count', counted:'14 items counted so far',
+      oTitle:'Today', all:'All branches', khr:'Khartoum', today:'Sales today', upd:'Updated 4 min ago', pTitle:'Sell', cart:'Cart', pay:'Pay' };
+    const items = [
+      { ar:'باراسيتامول 500', en:'Paracetamol 500', price:'800', stock:'210', tone:'success', bt: p('● جيد','● Good'), batch:'B-9120', exp:'2027-01-15', form:'500 mg tab' },
+      { ar:'أموكسيسيلين/كلافولانيك 625', en:'Augmentin 625', price:'12,500', stock:'34', tone:'warn', bt: p('▲ قرب الانتهاء','▲ Near expiry'), batch:'B-2301', exp:'2026-12-02', form:'625 mg tab' },
+      { ar:'أوميبرازول 20', en:'Omeprazole 20', price:'2,400', stock:'18', tone:'warn', bt: p('▲ تحت حد الطلب','▲ Low stock'), batch:'B-4407', exp:'2027-02-10', form:'20 mg cap' },
+      { ar:'إيبوبروفين 400', en:'Ibuprofen 400', price:'1,100', stock:'0', tone:'info', bt: p('■ نفد','■ Out'), batch:'—', exp:'—', form:'400 mg tab' },
+      { ar:'شراب سعال', en:'Cough syrup', price:'2,900', stock:'7', tone:'danger', bt: p('✕ منتهي','✕ Expired'), batch:'B-2288', exp:'2026-09-30', form:'100 ml syr' }
+    ];
+    const ql = q.trim().toLowerCase();
+    const list = items.map((it, i) => ({ it, i })).filter(({ it }) => !ql || it.ar.includes(ql) || it.en.toLowerCase().includes(ql));
+    const found = list.map(({ it, i }) => ({ name: ar ? it.ar : it.en, price: cur(it.price), stock: it.stock, badge: tone(it.tone), bt: it.bt, batch: it.batch, exp: it.exp, form: it.form,
+      pick: () => this.setState({ sel: sel === i ? -1 : i }),
+      card: `display:grid;gap:4px;padding:12px 14px;background:var(--surface);border:1px solid ${sel === i ? 'var(--primary)' : 'var(--line)'};border-radius:12px;cursor:pointer;transition:border-color .2s,transform .12s;animation:raffRise .3s ease both`,
+      more: `display:grid;grid-template-rows:${sel === i ? '1fr' : '0fr'};transition:grid-template-rows .3s cubic-bezier(.2,.8,.2,1);opacity:${sel === i ? 1 : 0}` }));
+    const navFor = a => [[p('بحث','Search')], [p('جرد','Count')], [p('اليوم','Today')], [p('بيع','Sell')]].map((x, i) => ({ l: x[0], st: `display:grid;place-items:center;align-content:center;gap:4px;font-size:12px;font-weight:500;min-height:44px;color:${i === a ? 'var(--primary)' : 'var(--muted)'}`, pill: `display:block;width:${i === a ? 28 : 18}px;height:4px;border-radius:2px;background:${i === a ? 'var(--primary)' : 'var(--line)'}` }));
+    const diff = count - 42;
+    const dTone = diff === 0 ? 'success' : diff < 0 ? 'warn' : 'info';
+    const dText = diff === 0 ? p('● مطابق للنظام', '● Matches system') : diff < 0 ? p('▲ نقص ' + Math.abs(diff), '▲ Short by ' + Math.abs(diff)) : p('■ زيادة ' + diff, '■ Over by ' + diff);
+    const all = branch === 'all';
+    const seg = on => `text-align:center;padding:10px;border-radius:8px;font-weight:500;cursor:pointer;min-height:20px;transition:background .25s,color .25s;${on ? 'background:var(--surface);color:var(--primary);box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'color:var(--muted)'}`;
+    const vals = all ? [60, 72, 55, 80, 76, 66, 90] : [34, 41, 30, 46, 44, 38, 52];
+    const acts = [[p('أصناف تنتهي خلال 90 يوماً', 'Expiring in 90 days'), all ? '23' : '9', 'warn'], [p('فروق وردية غير مسوّاة', 'Unsettled shift variance'), '2', 'danger'], [p('تحويلات بانتظار الاستلام', 'Transfers to receive'), all ? '3' : '1', 'info']];
+    const quick = items.filter(x => x.tone !== 'danger' && x.stock !== '0').map((it, i) => ({ name: ar ? it.ar : it.en, price: cur(it.price), add: () => this.setState({ cart: cart.some(c => c[0] === i) ? cart.map(c => c[0] === i ? [i, c[1] + 1] : c) : [...cart, [i, 1]] }) }));
+    const pr = it => +it.price.replace(',', '');
+    const total = cart.reduce((s, [i, n]) => s + pr(items[i]) * n, 0), cn = cart.reduce((s, c) => s + c[1], 0);
+    const set = o => () => this.setState(o);
+    const sw = (label, go, on) => ({ label, go, st: `border:0;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;white-space:nowrap;background:${on ? '#DCEB9D' : '#444'};color:${on ? '#172D29' : '#ddd'}` });
+    return {
+      showBar: !this.props.embed, ordL: p('5 · طلبات المتجر (موظف)', '5 · Store orders (staff)'), ordT: p('الطلبات', 'Orders'), waL: p('واتساب', 'WhatsApp'),
+      ordNew: p(this.state.ords.filter(o => o[5] === 'new').length + ' جديد', this.state.ords.filter(o => o[5] === 'new').length + ' new'), ordChip: tone('info'),
+      ords: this.state.ords.map((o, k) => { const NX = { new: 'confirmed', confirmed: 'preparing', preparing: 'ready' }, LB = { new: p('جديد','New'), confirmed: p('مؤكد','Confirmed'), preparing: p('قيد التجهيز','Preparing'), ready: p('جاهز للاستلام','Ready'), done: p('مكتمل','Completed') }, TN = { new: ['info','■'], confirmed: ['success','●'], preparing: ['info','■'], ready: ['success','●'], done: ['success','●'] }; const nx = NX[o[5]];
+        return { no: o[0], cust: ar ? o[1] : o[2], time: o[3], total: cur(o[4].toLocaleString('en-US')), bt: TN[o[5]][1] + ' ' + LB[o[5]], badge: tone(TN[o[5]][0]), wa: 'https://wa.me/249' + o[6].slice(1),
+          next: nx ? p('← ', '→ ') + LB[nx] : o[5] === 'ready' ? p('يُكمل بالفاتورة في نقطة البيع', 'Completes via POS invoice') : p('مكتمل', 'Done'), go: () => nx && this.setState(s => ({ ords: s.ords.map((x, j) => j === k ? [...x.slice(0, 5), nx, x[6]] : x) })),
+          btn: 'flex:1;min-height:44px;border-radius:10px;font-family:inherit;font-weight:600;white-space:nowrap;transition:background .2s;' + (nx ? 'border:0;background:var(--primary);color:var(--primary-ink);cursor:pointer' : 'border:0;background:var(--line);color:var(--muted)'),
+          card: 'background:var(--surface);border:1px solid ' + (o[5] === 'new' ? 'var(--primary)' : 'var(--line)') + ';border-radius:14px;padding:12px 14px;display:grid;gap:10px;animation:raffRise .3s ease both' }; }), kbOn: kb, camOk: cam, camDenied: !cam, keys: ['1234567890','qwertyuiop','asdfghjkl','zxcvbnm'].map(x => x.split('').map(k => ({ k }))), camT: ar ? 'تعذّر الوصول إلى الكاميرا' : 'Camera access denied', camB: ar ? 'فعّل الإذن من إعدادات المتصفح، أو أدخل الباركود يدوياً.' : 'Enable permission in browser settings, or type the barcode.', camA: ar ? 'إدخال يدوي' : 'Enter manually', dir: ar ? 'rtl' : 'ltr', rootStyle: { ...vars, minHeight: '100vh', background: theme === 'dark' ? '#080f0d' : '#E4E7DC', font: "400 14px/1.4 " + (ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif"), transition: 'background .3s' }, t: T, found, q, none: list.length === 0, stage: theme === 'dark' ? '#080f0d' : '#E4E7DC',
+      font: ar ? "'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif" : "'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif",
+      phone: 'width:' + w + 'px;height:800px;background:var(--bg);color:var(--ink);border-radius:36px;border:8px solid #1b1f1d;box-shadow:0 24px 60px rgba(0,0,0,.25);overflow:hidden;display:flex;flex-direction:column;position:relative',
+      onQ: e => this.setState({ q: e.target.value, sel: -1 }),
+      nav1: navFor(0), nav2: navFor(1), nav3: navFor(2), nav4: navFor(3),
+      count, inc: () => this.setState({ count: count + 1 }), dec: () => this.setState({ count: Math.max(0, count - 1) }),
+      diffText: dText, diffStyle: tone(dTone) + ';justify-self:center;font-size:13px;padding:4px 12px;transition:background .25s,color .25s',
+      allB: set({ branch: 'all' }), oneB: set({ branch: 'one' }), segAll: seg(all), segOne: seg(!all),
+      sales: cur(all ? '412,300' : '236,900'),
+      bars: vals.map((v, i) => ({ st: `flex:1;border-radius:4px 4px 0 0;background:var(--primary);opacity:${i === 6 ? 1 : .5};height:${ready ? v : 0}%;transition:height .6s cubic-bezier(.2,.8,.2,1) ${i * 60}ms` })),
+      acts: acts.map(([t, v, tn]) => ({ t, v, st: tone(tn) })),
+      quick, cartN: cn, cartTotal: cur(total.toLocaleString('en-US')), toggle: set({ sheet: !sheet }),
+      cartLines: cart.map(([i, n]) => ({ name: ar ? items[i].ar : items[i].en, qty: n, total: cur((pr(items[i]) * n).toLocaleString('en-US')) })),
+      sheet: `position:absolute;inset-inline:0;bottom:68px;background:var(--surface);border-radius:20px 20px 0 0;border-block-start:1px solid var(--line);box-shadow:0 -10px 30px rgba(0,0,0,.14);transform:translateY(${sheet ? '0' : '212px'});transition:transform .35s cubic-bezier(.2,.8,.2,1)`,
+      switches: [sw('360', set({ w: 360 }), w === 360), sw('390', set({ w: 390 }), w === 390), sw('412', set({ w: 412 }), w === 412), sw(ar ? 'لوحة المفاتيح' : 'Keyboard', set({ kb: !kb }), kb), sw(ar ? 'الكاميرا مرفوضة' : 'Camera denied', set({ cam: !cam }), !cam), sw('العربية', set({ lang: 'ar' }), ar), sw('English', set({ lang: 'en' }), !ar), sw('Light', set({ theme: 'light' }), theme === 'light'), sw('Dark', set({ theme: 'dark' }), theme === 'dark')]
+    };
+  }
+}
+</script>
+</body>
+</html>
