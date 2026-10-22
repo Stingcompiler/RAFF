@@ -13,6 +13,7 @@ api_v1: list[URLPattern | URLResolver] = [
     path("", include("apps.inventory.urls")),
     path("", include("apps.purchasing.urls")),
     path("", include("apps.sales.urls")),
+    path("", include("apps.returns.urls")),
 ]
 
 urlpatterns = [

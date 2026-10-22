@@ -6,13 +6,14 @@ import uuid
 from collections import defaultdict
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
+from typing import Any
 
 from django.conf import settings
 from django.db.models import Sum
 
 from apps.catalog.models import Item
 from apps.finance.money import money
-from apps.inventory.models import Batch, Location, StockBalance, StockMovement
+from apps.inventory.models import Batch, Location, StockBalance, StockMovement, Stocktake
 from apps.tenancy import clock
 from apps.tenancy.models import Branch
 
@@ -130,3 +131,53 @@ def on_hand_by_movements(branch: Branch, item: Item) -> int:
         q=Sum("quantity_base")
     )["q"]
     return int(total or 0)
+
+
+def stocktake_rows(take: Stocktake, *, with_lines: bool) -> dict[str, Any]:
+    """A stocktake with its counted lines in each item's default sale unit."""
+    from apps.inventory.services.stocktake import needs_reason
+
+    lines = list(take.lines.select_related("item").prefetch_related("item__units"))
+    out: dict[str, Any] = {
+        "id": take.pk,
+        "number": take.number,
+        "scope": take.scope,
+        "category_name_ar": take.category.name_ar if take.category else None,
+        "category_name_en": take.category.name_en if take.category else None,
+        "status": take.status,
+        "snapshot_at": take.snapshot_at,
+        "approved_at": take.approved_at,
+        "impact": take.impact,
+        "counted": sum(1 for line in lines if line.counted_base is not None),
+        "total": len(lines),
+    }
+    if with_lines:
+        rows = []
+        for line in lines:
+            units = list(line.item.units.all())
+            unit = next((u for u in units if u.is_default_sale), None) or next(
+                (u for u in units if u.is_base), None
+            )
+            variance = None if line.counted_base is None else line.counted_base - line.system_base
+            rows.append(
+                {
+                    "id": line.pk,
+                    "item_id": line.item_id,
+                    "code": line.item.code,
+                    "name_ar": line.item.name_ar,
+                    "name_en": line.item.name_en,
+                    "strength": line.item.strength,
+                    "unit_ar": unit.name_ar if unit else "",
+                    "unit_en": unit.name_en if unit else "",
+                    "factor": unit.factor if unit else 1,
+                    "system_base": line.system_base,
+                    "counted_base": line.counted_base,
+                    "variance_base": variance,
+                    "applied_base": line.applied_base,
+                    "reason": line.reason,
+                    "reason_required": needs_reason(line),
+                    "value": None if variance is None else money(variance * line.unit_cost),
+                }
+            )
+        out["lines"] = rows
+    return out

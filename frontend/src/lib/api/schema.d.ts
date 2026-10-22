@@ -558,6 +558,89 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/quarantine/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["quarantine_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/quarantine/{id}/decide/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Restock, destroy or return to supplier — the responsible pharmacist's decision. */
+    post: operations["quarantine_decide"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/quarantine/recall/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Hold a whole batch (recall): shelf and review stock move to quarantine. */
+    post: operations["quarantine_recall"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/returns/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["returns_list"];
+    put?: never;
+    post: operations["returns_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/returns/lookup/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Find a sale of this branch by its invoice number, with what can still be returned. */
+    get: operations["returns_lookup"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/roles/": {
     parameters: {
       query?: never;
@@ -753,6 +836,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/stocktakes/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["stocktakes_list"];
+    put?: never;
+    post: operations["stocktakes_start"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/stocktakes/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["stocktakes_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["stocktakes_count"];
+    trace?: never;
+  };
+  "/api/v1/stocktakes/{id}/approve/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["stocktakes_approve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/suppliers/": {
     parameters: {
       query?: never;
@@ -873,11 +1004,27 @@ export interface components {
       /** Format: decimal */
       counted_cash: string;
     };
+    /**
+     * @description * `sealed` - Sealed
+     *     * `opened` - Opened
+     *     * `damaged` - Damaged
+     * @enum {string}
+     */
+    ConditionEnum: "sealed" | "opened" | "damaged";
     Context: {
       /** Format: uuid */
       branch_id: string;
       /** Format: uuid */
       device_id?: string | null;
+    };
+    CountIn: {
+      /** Format: uuid */
+      line_id: string;
+      counted_units: number | null;
+      /** @default 0 */
+      loose_base: number;
+      /** @default  */
+      reason: string;
     };
     Customer: {
       /** Format: uuid */
@@ -892,6 +1039,18 @@ export interface components {
       readonly balance: string;
       is_active?: boolean;
     };
+    Decision: {
+      decision: components["schemas"]["DecisionEnum"];
+      /** @default  */
+      note: string;
+    };
+    /**
+     * @description * `restock` - restock
+     *     * `destroy` - destroy
+     *     * `return` - return
+     * @enum {string}
+     */
+    DecisionEnum: "restock" | "destroy" | "return";
     Device: {
       /** Format: uuid */
       readonly id: string;
@@ -1129,6 +1288,9 @@ export interface components {
       /** Format: decimal */
       opening_cash: string;
     };
+    PatchedCountsIn: {
+      lines?: components["schemas"]["CountIn"][];
+    };
     PatchedItemUpdate: {
       name_ar?: string;
       name_en?: string;
@@ -1215,6 +1377,35 @@ export interface components {
       name_en: string;
       is_default?: boolean;
     };
+    QuarantineEntry: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly item_code: string;
+      readonly item_name_ar: string;
+      readonly item_name_en: string;
+      readonly strength: string;
+      readonly batch_no: string;
+      /** Format: date */
+      readonly expiry_date: string;
+      readonly expired: boolean;
+      quantity_base: number;
+      source: components["schemas"]["SourceEnum"];
+      reason?: string;
+      status?: components["schemas"]["QuarantineEntryStatusEnum"];
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      decided_at?: string | null;
+      decision_note?: string;
+    };
+    /**
+     * @description * `pending` - Awaiting decision
+     *     * `restocked` - Back on the shelf
+     *     * `destroyed` - Destroyed
+     *     * `returned` - Returned to supplier
+     * @enum {string}
+     */
+    QuarantineEntryStatusEnum: "pending" | "restocked" | "destroyed" | "returned";
     Quote: {
       lines: components["schemas"]["QuoteLine"][];
       /** Format: decimal */
@@ -1239,6 +1430,20 @@ export interface components {
       line_total: string;
       available_base: number;
       base_quantity: number;
+    };
+    /**
+     * @description * `damaged` - Damaged pack
+     *     * `wrong_item` - Wrong item
+     *     * `expired` - Expired
+     *     * `not_needed` - No longer needed
+     *     * `other` - Other
+     * @enum {string}
+     */
+    ReasonEnum: "damaged" | "wrong_item" | "expired" | "not_needed" | "other";
+    Recall: {
+      /** Format: uuid */
+      batch_id: string;
+      reason: string;
     };
     Receipt: {
       /** Format: uuid */
@@ -1324,9 +1529,78 @@ export interface components {
      * @enum {string}
      */
     ReceiptStatusEnum: "draft" | "posted";
+    /**
+     * @description * `cash` - Cash from the drawer
+     *     * `account` - Credit to the customer's account
+     * @enum {string}
+     */
+    RefundMethodEnum: "cash" | "account";
     Release: {
       /** Format: date */
       expiry_date: string;
+    };
+    ReturnIn: {
+      /** Format: uuid */
+      sale_id: string;
+      refund_method: components["schemas"]["RefundMethodEnum"];
+      lines: components["schemas"]["ReturnLineIn"][];
+    };
+    ReturnLineIn: {
+      /** Format: uuid */
+      sale_line_id: string;
+      quantity: number;
+      reason: components["schemas"]["ReasonEnum"];
+      condition: components["schemas"]["ConditionEnum"];
+    };
+    ReturnList: {
+      /** Format: uuid */
+      readonly id: string;
+      number: string;
+      readonly sale_number: string;
+      refund_method: components["schemas"]["RefundMethodEnum"];
+      /** Format: decimal */
+      total: string;
+      /** Format: date-time */
+      readonly posted_at: string;
+      readonly lines_count: number;
+    };
+    ReturnResult: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: decimal */
+      total: string;
+    };
+    ReturnableLine: {
+      /** Format: uuid */
+      id: string;
+      line_no: number;
+      /** Format: uuid */
+      item_id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      quantity: number;
+      returned: number;
+      returnable: number;
+      /** Format: decimal */
+      line_total: string;
+    };
+    ReturnableSale: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      /** Format: date-time */
+      posted_at: string;
+      /** Format: decimal */
+      total: string;
+      customer_name_ar: string | null;
+      customer_name_en: string | null;
+      default_refund: components["schemas"]["RefundMethodEnum"];
+      lines: components["schemas"]["ReturnableLine"][];
     };
     Role: {
       /** Format: uuid */
@@ -1438,6 +1712,12 @@ export interface components {
       /** Format: decimal */
       expected_cash: string | null;
     };
+    /**
+     * @description * `return` - Customer return
+     *     * `recall` - Batch recall
+     * @enum {string}
+     */
+    SourceEnum: "return" | "recall";
     Stock: {
       sellable_base: number;
       held_base: number;
@@ -1478,6 +1758,73 @@ export interface components {
      * @enum {string}
      */
     StockStatusEnum: "good" | "near_expiry" | "low" | "out" | "expired";
+    Stocktake: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      scope: string;
+      category_name_ar: string | null;
+      category_name_en: string | null;
+      status: string;
+      /** Format: date-time */
+      snapshot_at: string;
+      /** Format: date-time */
+      approved_at: string | null;
+      /** Format: decimal */
+      impact: string;
+      counted: number;
+      total: number;
+    };
+    StocktakeApproveResult: {
+      /** Format: uuid */
+      id: string;
+      /** Format: decimal */
+      impact: string;
+      adjusted_items: number;
+    };
+    StocktakeDetail: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      scope: string;
+      category_name_ar: string | null;
+      category_name_en: string | null;
+      status: string;
+      /** Format: date-time */
+      snapshot_at: string;
+      /** Format: date-time */
+      approved_at: string | null;
+      /** Format: decimal */
+      impact: string;
+      counted: number;
+      total: number;
+      lines: components["schemas"]["StocktakeLine"][];
+    };
+    StocktakeLine: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      item_id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      strength: string;
+      unit_ar: string;
+      unit_en: string;
+      factor: number;
+      system_base: number;
+      counted_base: number | null;
+      variance_base: number | null;
+      applied_base: number;
+      reason: string;
+      reason_required: boolean;
+      /** Format: decimal */
+      value: string | null;
+    };
+    StocktakeStart: {
+      /** Format: uuid */
+      category_id?: string | null;
+    };
     Supplier: {
       /** Format: uuid */
       readonly id: string;
@@ -2418,6 +2765,144 @@ export interface operations {
       };
     };
   };
+  quarantine_list: {
+    parameters: {
+      query?: {
+        status?: "decided" | "pending";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuarantineEntry"][];
+        };
+      };
+    };
+  };
+  quarantine_decide: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Decision"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuarantineEntry"];
+        };
+      };
+    };
+  };
+  quarantine_recall: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Recall"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QuarantineEntry"];
+        };
+      };
+    };
+  };
+  returns_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReturnList"][];
+        };
+      };
+    };
+  };
+  returns_post: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReturnIn"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReturnResult"];
+        };
+      };
+    };
+  };
+  returns_lookup: {
+    parameters: {
+      query: {
+        number: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReturnableSale"];
+        };
+      };
+    };
+  };
   roles_list: {
     parameters: {
       query?: never;
@@ -2697,6 +3182,117 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ShiftSummary"];
+        };
+      };
+    };
+  };
+  stocktakes_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Stocktake"][];
+        };
+      };
+    };
+  };
+  stocktakes_start: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["StocktakeStart"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StocktakeDetail"];
+        };
+      };
+    };
+  };
+  stocktakes_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StocktakeDetail"];
+        };
+      };
+    };
+  };
+  stocktakes_count: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedCountsIn"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StocktakeDetail"];
+        };
+      };
+    };
+  };
+  stocktakes_approve: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StocktakeApproveResult"];
         };
       };
     };
