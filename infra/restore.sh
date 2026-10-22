@@ -82,7 +82,7 @@ compose exec -T postgres createdb -U "$POSTGRES_USER" "$POSTGRES_DB"
 compose exec -T postgres pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-owner <"$WORK/db.dump"
 
 log "Restoring listing images…"
-compose run --rm --no-deps -T --entrypoint sh backend -c "rm -rf /media/* && tar -C /media -xf -" <"$WORK/media.tar"
+compose run --rm --no-deps -T --entrypoint sh backend -c "rm -rf /media/* && tar -C /media --no-overwrite-dir -xf -" <"$WORK/media.tar"
 
 compose up -d
 wait_healthy 600 || { compose logs --tail 100; die "Restored, but the services are not healthy."; }
