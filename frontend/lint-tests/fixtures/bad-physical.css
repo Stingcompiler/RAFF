@@ -1,0 +1,16 @@
+/* Negative fixture: every declaration must be reported by raff/no-physical-properties. */
+.a {
+  margin-left: 4px;
+}
+.b {
+  padding-right: 8px;
+}
+.c {
+  left: 0;
+}
+.d {
+  text-align: right;
+}
+.e {
+  @apply ml-2;
+}

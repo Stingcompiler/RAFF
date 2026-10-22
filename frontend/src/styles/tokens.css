@@ -1,0 +1,91 @@
+/*
+ * Raff design tokens — the ONLY file allowed to contain color values.
+ * Source: design/handoff/Raff Tokens.dc.html. Deviation from the brief:
+ * light `muted` is #5F6D63 (the brief's #6F7D73 fails 4.5:1).
+ * `brand` / `brand-ink` default to `primary` / `primary-ink`.
+ */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f7f8f2;
+  --surface: #ffffff;
+  --surface-raised: #fbfcf7;
+  --sidebar: #f0f3e9;
+  --ink: #172d29;
+  --muted: #5f6d63;
+  --line: #e0e6d7;
+  --primary: #245c4f;
+  --primary-ink: #ffffff;
+  --accent: #dceb9d;
+  --success: #3d765b;
+  --success-bg: #edf5ee;
+  --warn: #98612a;
+  --warn-bg: #fbf1df;
+  --danger: #b54739;
+  --danger-bg: #faebe5;
+  --info: #2f5f7a;
+  --info-bg: #e9eff3;
+  --focus: #91b09c;
+  --brand: var(--primary);
+  --brand-ink: var(--primary-ink);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f1a17;
+  --surface: #16221e;
+  --surface-raised: #1c2a25;
+  --sidebar: #121c19;
+  --ink: #e6ece7;
+  --muted: #9aa89f;
+  --line: #273832;
+  --primary: #5fa58f;
+  --primary-ink: #0f1a17;
+  --accent: #3a4a2a;
+  --success: #7cc4a4;
+  --success-bg: #17302a;
+  --warn: #e0a869;
+  --warn-bg: #33271a;
+  --danger: #e8847a;
+  --danger-bg: #3a1f1c;
+  --info: #7fb3d1;
+  --info-bg: #182a34;
+  --focus: #5fa58f;
+  --brand: var(--primary);
+  --brand-ink: var(--primary-ink);
+}
+
+@theme inline {
+  /* Drop Tailwind's default palette: only the tokens below exist as colors. */
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-sidebar: var(--sidebar);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-primary-ink: var(--primary-ink);
+  --color-accent: var(--accent);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-focus: var(--focus);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* The one shadow in the system: dialogs only. */
+  --shadow-dialog: 0 20px 50px rgba(0, 0, 0, 0.3);
+
+  --font-sans: "IBM Plex Sans Arabic", "IBM Plex Sans", sans-serif;
+  --font-latin: "IBM Plex Sans", "IBM Plex Sans Arabic", sans-serif;
+}

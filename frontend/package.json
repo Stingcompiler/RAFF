@@ -1,0 +1,42 @@
+{
+  "name": "frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "lint": "eslint . --max-warnings 0 && stylelint \"src/**/*.css\" && prettier --check . && node lint-tests/run.mjs",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "openapi": "openapi-typescript ../backend/openapi/schema.yaml -o src/lib/api/schema.d.ts && prettier --write src/lib/api/schema.d.ts"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "5.3.0",
+    "@hookform/resolvers": "6.0.0",
+    "@tanstack/react-query": "5.104.5",
+    "lucide-react": "1.61.0",
+    "next": "16.4.2",
+    "next-intl": "4.14.9",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-hook-form": "7.90.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.2",
+    "openapi-typescript": "7.13.0",
+    "postcss": "8.5.31",
+    "prettier": "3.9.10",
+    "stylelint": "17.16.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3"
+  }
+}

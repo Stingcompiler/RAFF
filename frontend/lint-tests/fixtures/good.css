@@ -1,0 +1,12 @@
+/* Positive fixture: token colors and logical properties pass both rules. */
+.a {
+  margin-inline-start: 4px;
+  inset-inline-start: 0;
+  text-align: start;
+  color: var(--color-ink);
+  background: transparent;
+  border-color: currentColor;
+}
+.b {
+  @apply ms-2 bg-surface;
+}
