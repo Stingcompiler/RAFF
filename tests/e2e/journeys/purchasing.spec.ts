@@ -25,7 +25,9 @@ test.describe("purchasing & stock", () => {
     const n = Date.now() % 1000000;
     await page.goto("/purchases");
     await page.getByRole("link", { name: "استلام جديد" }).click();
-    await page.getByLabel("المورد", { exact: true }).selectOption({ label: "شركة الندى للأدوية (تجريبي)" });
+    await page
+      .getByLabel("المورد", { exact: true })
+      .selectOption({ label: "شركة الندى للأدوية (تجريبي)" });
     await page.getByLabel("رقم فاتورة المورد").fill(`E2E-${n}`);
     await page.getByRole("button", { name: "حفظ الرأس" }).click();
     await expect(page).toHaveURL(/\/purchases\/[0-9a-f-]{36}$/);
