@@ -21,7 +21,7 @@ export HOST_GID := $(shell id -g)
 
 MANAGE := uv run --directory backend python manage.py
 
-.PHONY: install dev down test e2e visual lint typecheck openapi openapi-check reference frontend-build check
+.PHONY: install dev down test e2e visual lint typecheck openapi openapi-check reference check
 
 install:
 	uv sync --directory backend
@@ -39,15 +39,13 @@ down:
 test:
 	cd backend && uv run pytest
 
-# Rewrites are fixed at build time: point /api at the Playwright backend (port 8100).
-frontend-build:
-	RAFF_API_ORIGIN=http://127.0.0.1:8100 pnpm --dir frontend build
+# Build (with /api pointed at the Playwright backend, port 8100) and run the browser tests.
+# The same pnpm scripts run in CI, inside the Playwright image (which has no make).
+e2e:
+	pnpm e2e
 
-e2e: frontend-build
-	pnpm exec playwright test --project=e2e
-
-visual: frontend-build
-	pnpm exec playwright test --project=visual
+visual:
+	pnpm visual
 
 lint:
 	cd backend && uv run ruff check . && uv run ruff format --check .

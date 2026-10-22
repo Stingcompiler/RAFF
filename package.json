@@ -7,9 +7,10 @@
   },
   "scripts": {
     "reference": "node design/handoff/generate-reference.mjs",
-    "e2e": "playwright test --project=e2e",
-    "visual": "playwright test --project=visual",
-    "format:check": "prettier --check \"tests/**/*.ts\" \"design/handoff/*.mjs\" playwright.config.ts"
+    "e2e": "pnpm build:test && playwright test --project=e2e",
+    "visual": "pnpm build:test && playwright test --project=visual",
+    "format:check": "prettier --check \"tests/**/*.ts\" \"design/handoff/*.mjs\" playwright.config.ts",
+    "build:test": "RAFF_API_ORIGIN=http://127.0.0.1:8100 pnpm --dir frontend build"
   },
   "devDependencies": {
     "@babel/standalone": "7.29.0",
