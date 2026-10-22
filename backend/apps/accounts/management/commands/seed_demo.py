@@ -241,6 +241,7 @@ class Command(BaseCommand):
             with org_context(org_id):
                 self._catalog()
                 self._purchasing(Branch.objects.get(code="KRT"))
+                self._customers()
         self.stdout.write("sample data ready")
 
     def _catalog(self) -> None:
@@ -276,6 +277,29 @@ class Command(BaseCommand):
             sale = item.units.get(is_default_sale=True)
             set_price(sale, Decimal(price))
             set_price(sale, Decimal(price) * Decimal("0.9"), price_list=wholesale)
+
+    def _customers(self) -> None:
+        from apps.finance.models import Customer
+        from apps.finance.services.ledger import charge_customer
+
+        if Customer.objects.filter(code="AMAL").exists():
+            return
+        amal = Customer.objects.create(
+            code="AMAL",
+            name_ar="مركز الأمل الطبي (تجريبي)",
+            name_en="Al-Amal Clinic (sample)",
+            phone="09x xxx 0101",
+            credit_limit=Decimal("150000"),
+        )
+        charge_customer(
+            amal, Decimal("84000"), document_type="opening_balance", document_id=amal.pk
+        )
+        Customer.objects.create(
+            code="NOUR",
+            name_ar="عيادة النور",
+            name_en="Al-Nour Clinic",
+            credit_limit=Decimal("50000"),
+        )
 
     def _purchasing(self, branch: Branch) -> None:
         """Two sample suppliers, one posted receipt (stock on hand) and one draft (the design's)."""
