@@ -1,5 +1,5 @@
-import { Placeholder } from "@/components/Placeholder";
+import { WorkspacePlaceholder } from "@/components/WorkspacePlaceholder";
 
 export default function DashboardPage() {
-  return <Placeholder titleKey="nav.dashboard" />;
+  return <WorkspacePlaceholder screen="dashboard" />;
 }
