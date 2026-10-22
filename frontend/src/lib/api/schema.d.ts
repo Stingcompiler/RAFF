@@ -1614,6 +1614,7 @@ export interface components {
     OperationStatusEnum: "approved" | "verifying" | "to_inspect";
     Overview: {
       needs_action: components["schemas"]["NeedsAction"];
+      near_expiry_days: number;
       /** Format: decimal */
       sales_today: string;
       sales_count: number;
@@ -1932,7 +1933,8 @@ export interface components {
     ReceivedLine: {
       /** Format: uuid */
       line_id: string;
-      received_base: number;
+      /** @description In the item's default sale unit */
+      received: number;
     };
     /**
      * @description * `cash` - Cash from the drawer
@@ -2356,7 +2358,8 @@ export interface components {
     TransferLineIn: {
       /** Format: uuid */
       batch_id: string;
-      quantity_base: number;
+      /** @description In the item's default sale unit */
+      quantity: number;
     };
     Unit: {
       /** Format: uuid */

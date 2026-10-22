@@ -50,7 +50,7 @@ class TransferDetailSerializer(TransferSerializer):
 
 class TransferLineInSerializer(serializers.Serializer[None]):
     batch_id = serializers.UUIDField()
-    quantity_base = serializers.IntegerField(min_value=1)
+    quantity = serializers.IntegerField(min_value=1, help_text="In the item's default sale unit")
 
 
 class TransferInSerializer(serializers.Serializer[None]):
@@ -61,7 +61,7 @@ class TransferInSerializer(serializers.Serializer[None]):
 
 class ReceivedLineSerializer(serializers.Serializer[None]):
     line_id = serializers.UUIDField()
-    received_base = serializers.IntegerField(min_value=0)
+    received = serializers.IntegerField(min_value=0, help_text="In the item's default sale unit")
 
 
 class ReceiveInSerializer(serializers.Serializer[None]):

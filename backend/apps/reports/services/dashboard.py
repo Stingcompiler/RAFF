@@ -129,6 +129,7 @@ def overview(branches: list[Branch]) -> dict[str, Any]:
             "store_orders": 0,
             "pending_sync": 0,
         },
+        "near_expiry_days": settings.RAFF_NEAR_EXPIRY_DAYS,
         "sales_today": money(totals["total"] or 0),
         "sales_count": totals["count"],
         "cash_today": money((by_method.get("cash") or 0) - refunds),

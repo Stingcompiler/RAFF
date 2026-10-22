@@ -1,30 +1,57 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import {
+  AuditPanel,
+  DevicesPanel,
+  LicensePanel,
+  ReceiptPanel,
+  SystemTiles,
+} from "@/features/settings/SettingsPanels";
 import { UsersPanel } from "@/features/users/UsersPanel";
 import { serverGet } from "@/lib/api/server";
-import type { Branch, Role, User } from "@/lib/api/types";
+import type { Branch, Device, DeviceInfo, Role, Schemas, User } from "@/lib/api/types";
 import { requireMe } from "@/lib/session";
 
 export default async function SettingsPage() {
   const t = await getTranslations();
   const me = await requireMe();
-  const canManage = me.permissions.includes("users.manage");
-  const [users, roles, branches] = canManage
-    ? await Promise.all([
-        serverGet<User[]>("/users/"),
-        serverGet<Role[]>("/roles/"),
-        serverGet<Branch[]>("/branches/"),
-      ])
-    : [null, null, null];
+  const ar = (await getLocale()) === "ar";
+  const canUsers = me.permissions.includes("users.manage");
+  const canSettings = me.permissions.includes("settings.manage");
+  const [users, roles, branches, devices, current, license, events] = await Promise.all([
+    canUsers ? serverGet<User[]>("/users/") : null,
+    canUsers ? serverGet<Role[]>("/roles/") : null,
+    serverGet<Branch[]>("/branches/"),
+    canSettings ? serverGet<Device[]>("/devices/") : null,
+    serverGet<DeviceInfo>("/auth/device/"),
+    serverGet<Schemas["LicenseStatus"]>("/licensing/status/"),
+    canSettings ? serverGet<Schemas["AuditEvent"][]>("/audit/events/?limit=30") : null,
+  ]);
   return (
     <>
-      <PageHeader title={t("nav.settings")} />
-      {users && roles && branches ? (
-        <UsersPanel users={users} roles={roles} branches={branches} meId={me.user.id} />
-      ) : (
-        <p className="m-0 text-muted">{t("users.noAccess")}</p>
-      )}
+      <PageHeader title={t("settings.title")} />
+      <SystemTiles />
+      <div className="grid grid-cols-12 items-start gap-[16px]">
+        <section className="col-span-7 grid min-w-0 gap-[16px] max-[1180px]:col-span-12">
+          {users && roles && branches ? (
+            <UsersPanel users={users} roles={roles} branches={branches} meId={me.user.id} />
+          ) : (
+            <p className="m-0 text-muted">{t("users.noAccess")}</p>
+          )}
+          {devices && branches && (
+            <DevicesPanel devices={devices} branches={branches} current={current} />
+          )}
+          {events && <AuditPanel events={events} />}
+        </section>
+        <section className="col-span-5 grid min-w-0 gap-[16px] max-[1180px]:col-span-12">
+          <ReceiptPanel
+            locale={me.branch.receipt_locale === "en" ? "en" : "ar"}
+            branch={ar ? me.branch.name_ar : me.branch.name_en}
+          />
+          {license && <LicensePanel license={license} />}
+        </section>
+      </div>
     </>
   );
 }

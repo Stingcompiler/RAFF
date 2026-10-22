@@ -35,6 +35,27 @@ class LineInput:
     quantity_base: int
 
 
+def in_sale_units(lines: list[dict[str, Any]]) -> list[LineInput]:
+    """Lines entered in each item's default sale unit, converted to base units."""
+    batches = {
+        b.pk: b
+        for b in Batch.objects.filter(pk__in=[li["batch_id"] for li in lines]).prefetch_related(
+            "item__units"
+        )
+    }
+    out = []
+    for li in lines:
+        batch = batches.get(li["batch_id"])
+        if batch is None:
+            raise TransferError("invalid_line")
+        units = list(batch.item.units.all())
+        unit = next((u for u in units if u.is_default_sale), None) or next(
+            (u for u in units if u.is_base), None
+        )
+        out.append(LineInput(batch.pk, li["quantity"] * (unit.factor if unit else 1)))
+    return out
+
+
 @transaction.atomic
 def save_draft(
     *,

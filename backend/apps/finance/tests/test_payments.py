@@ -123,3 +123,35 @@ def test_bank_transfer_is_confirmed_once(world: World) -> None:
             ("1010", Decimal("12500"), Decimal(0)),
             ("1020", Decimal(0), Decimal("12500")),
         }
+
+
+def test_verify_and_settle_over_the_api(world: World) -> None:
+    from apps.returns.tests.test_api import owner_at
+    from apps.sales.services.shifts import close_shift
+
+    with org_context(world.org.id):
+        item = stocked(world, boxes=1)
+        with_shift(world)
+        post_sale(
+            device=world.counter,
+            user=world.cashier,
+            lines=[line(item)],
+            payments=[PaymentRequest("bank", Decimal("12500"), bank_reference="BK-9")],
+            customer_id=None,
+            can_discount=False,
+            idempotency_key=str(uuid.uuid4()),
+        )
+        payment = Payment.objects.get(method="bank")
+        shift = payment.sale.shift
+        close_shift(shift.pk, Decimal("49000"), idempotency_key=str(uuid.uuid4()), user=world.owner)
+    client, csrf = owner_at(world, world.khartoum.pk)
+    pending = client.get("/api/v1/finance/bank-transfers/").json()
+    assert [p["bank_reference"] for p in pending] == ["BK-9"]
+    done = client.post(f"/api/v1/finance/bank-transfers/{payment.pk}/verify/", **csrf)
+    assert done.status_code == 200 and done.json()["verification"] == "confirmed"
+    assert client.get("/api/v1/finance/bank-transfers/").json() == []
+    log = client.get("/api/v1/shifts/history/").json()
+    assert log[0]["settled"] is False and log[0]["shift"]["variance"] == "-1000.0000"
+    settled = client.post(f"/api/v1/shifts/{shift.pk}/settle/", **csrf)
+    assert settled.status_code == 200
+    assert client.get("/api/v1/shifts/history/").json()[0]["settled"] is True

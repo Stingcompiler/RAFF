@@ -348,12 +348,12 @@ class ShiftSettleView(APIView):
     permission_classes = [requires("finance.manage")]
 
     @extend_schema(operation_id="shifts_settle", request=None, responses=ShiftSerializer)
-    def post(self, request: Request, pk: str) -> Response:
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
         if not Shift.objects.filter(pk=pk, branch=current_branch(request)).exists():
             raise NotFound
         assert isinstance(request.user, User)
         try:
-            shift = shifts.settle(uuid.UUID(pk), request.user)
+            shift = shifts.settle(pk, request.user)
         except shifts.ShiftError as exc:
             raise _bad(exc.code) from None
         return Response(ShiftSerializer(shift).data)

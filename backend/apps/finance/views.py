@@ -174,14 +174,14 @@ class BankTransferVerifyView(APIView):
     @extend_schema(
         operation_id="finance_bank_transfer_verify", request=None, responses=VerifyResultSerializer
     )
-    def post(self, request: Request, pk: str) -> Response:
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
         from apps.sales.models import Payment
 
         if not Payment.objects.filter(pk=pk, sale__branch=current_branch(request)).exists():
             raise NotFound
         assert isinstance(request.user, User)
         try:
-            result = verify_transfer(uuid.UUID(pk), request.user)
+            result = verify_transfer(pk, request.user)
         except PaymentError as exc:
             raise _bad(exc.code) from None
         return Response(VerifyResultSerializer(result).data)

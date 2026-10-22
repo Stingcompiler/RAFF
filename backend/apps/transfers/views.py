@@ -80,7 +80,7 @@ class TransferListView(APIView):
                 transfer=None,
                 from_branch=current_branch(request),
                 to_branch=to,
-                lines=[moving.LineInput(**li) for li in data.validated_data["lines"]],
+                lines=moving.in_sale_units(data.validated_data["lines"]),
                 note=data.validated_data["note"],
                 user=request.user,
             )
@@ -151,8 +151,10 @@ class TransferReceiveView(APIView):
             raise NotFound
         data = ReceiveInSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        factors = {str(li["id"]): li["factor"] for li in transfer_row(t, with_lines=True)["lines"]}
         received: dict[str, Any] = {
-            str(li["line_id"]): li["received_base"] for li in data.validated_data["lines"]
+            str(li["line_id"]): li["received"] * factors.get(str(li["line_id"]), 1)
+            for li in data.validated_data["lines"]
         }
         assert isinstance(request.user, User)
         key = idempotency_key(request)

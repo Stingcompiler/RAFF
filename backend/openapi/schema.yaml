@@ -2898,6 +2898,8 @@ components:
       properties:
         needs_action:
           $ref: '#/components/schemas/NeedsAction'
+        near_expiry_days:
+          type: integer
         sales_today:
           type: string
           format: decimal
@@ -2928,6 +2930,7 @@ components:
       - bank_today
       - cash_today
       - latest
+      - near_expiry_days
       - needs_action
       - open_shift
       - sales_count
@@ -3677,12 +3680,13 @@ components:
         line_id:
           type: string
           format: uuid
-        received_base:
+        received:
           type: integer
           minimum: 0
+          description: In the item's default sale unit
       required:
       - line_id
-      - received_base
+      - received
     RefundMethodEnum:
       enum:
       - cash
@@ -4787,12 +4791,13 @@ components:
         batch_id:
           type: string
           format: uuid
-        quantity_base:
+        quantity:
           type: integer
           minimum: 1
+          description: In the item's default sale unit
       required:
       - batch_id
-      - quantity_base
+      - quantity
     Unit:
       type: object
       properties:
