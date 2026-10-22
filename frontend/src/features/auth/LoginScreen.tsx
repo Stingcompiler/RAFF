@@ -133,6 +133,7 @@ export function LoginScreen({ device, initialMe, next }: Props) {
               <label className={label}>
                 {t("branch")}
                 <select
+                  aria-label={t("branch")}
                   name="branch"
                   value={branchId}
                   disabled={!signedIn}
@@ -153,6 +154,7 @@ export function LoginScreen({ device, initialMe, next }: Props) {
               <label className={label}>
                 {t("counter")}
                 <select
+                  aria-label={t("counter")}
                   name="counter"
                   value={deviceId}
                   disabled={!signedIn}

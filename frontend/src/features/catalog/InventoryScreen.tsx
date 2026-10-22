@@ -26,24 +26,40 @@ import { amount } from "@/lib/format";
 
 import { ItemDrawer } from "./ItemDrawer";
 import { ItemFormDialog } from "./ItemFormDialog";
-import { type ItemDetail, type ItemRow, itemLabel, pick, strengthForm } from "./labels";
+import {
+  BATCH_TONE,
+  type BatchRow,
+  inSaleUnit,
+  type ItemDetail,
+  itemLabel,
+  pick,
+  STOCK_TONE,
+  type StockRow,
+  strengthForm,
+} from "./labels";
 import { PriceDialog } from "./PriceDialog";
 
-type Page = { count: number; next: string | null; results: ItemRow[] };
+type Page = { count: number; next: string | null; results: StockRow[] };
 const DASH = "—";
 const PAGE = 50;
 
-type Props = { initial: Page; categories: Schemas["Category"][]; canManage: boolean };
+type Props = {
+  initial: Page;
+  categories: Schemas["Category"][];
+  canManage: boolean;
+  canReceive: boolean;
+};
 
 /** Items & stock (Raff Screens › الأصناف والمخزون). Stock columns fill in with WO-04. */
-export function InventoryScreen({ initial, categories, canManage }: Props) {
+export function InventoryScreen({ initial, categories, canManage, canReceive }: Props) {
   const t = useTranslations("inventory");
   const ar = useLocale() === "ar";
   const toast = useToast();
   const [page, setPage] = useState<Page>(initial);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
-  const [selected, setSelected] = useState<ItemRow | null>(null);
+  const [selected, setSelected] = useState<StockRow | null>(null);
+  const [batches, setBatches] = useState<BatchRow[]>([]);
   const [drawer, setDrawer] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
   const [form, setForm] = useState<{ open: boolean; item: ItemDetail | null }>({
@@ -61,7 +77,7 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
       });
       if (query) params.set("q", query);
       if (category) params.set("category", category);
-      const res = await apiGet<Page>(`/catalog/items/?${params}`);
+      const res = await apiGet<Page>(`/inventory/items/?${params}`);
       if (res.ok) {
         setPage((prev) =>
           offset ? { ...res.data, results: [...prev.results, ...res.data.results] } : res.data,
@@ -75,6 +91,17 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
     const timer = setTimeout(() => void load(0), 200);
     return () => clearTimeout(timer);
   }, [load]);
+
+  useEffect(() => {
+    if (!selected) return;
+    let live = true;
+    void apiGet<BatchRow[]>(`/inventory/items/${selected.id}/batches/`).then((res) => {
+      if (live && res.ok) setBatches(res.data);
+    });
+    return () => {
+      live = false;
+    };
+  }, [selected, version]);
 
   const saved = (item: ItemDetail) => {
     setForm({ open: false, item: null });
@@ -192,6 +219,7 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
                   columns={columns}
                   selected={selected?.id === item.id}
                   onActivate={() => {
+                    setBatches([]);
                     setSelected(item);
                     setDrawer(item.id);
                   }}
@@ -205,12 +233,18 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
                     )}
                   </TextCell>
                   <CodeCell>{strengthForm(item)}</CodeCell>
-                  <NumberCell>{DASH}</NumberCell>
-                  <CodeCell>{DASH}</CodeCell>
-                  <NumberCell>{DASH}</NumberCell>
+                  <NumberCell>
+                    {inSaleUnit(item.stock.sellable_base, item.sale_unit?.factor)}
+                  </NumberCell>
+                  <CodeCell>{item.stock.nearest_expiry ?? DASH}</CodeCell>
+                  <NumberCell>{amount(item.stock.cost_per_sale_unit) || DASH}</NumberCell>
                   <NumberCell>{amount(item.price) || DASH}</NumberCell>
                   <span role="cell" className="justify-self-start">
-                    {!item.is_active && (
+                    {item.is_active ? (
+                      <Badge tone={STOCK_TONE[item.stock.status]} dense>
+                        {t(`status.${item.stock.status}`)}
+                      </Badge>
+                    ) : (
                       <Badge tone="danger" dense>
                         {t("inactive")}
                       </Badge>
@@ -231,8 +265,27 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
         </section>
         <section className="col-span-4 min-w-0 max-[1180px]:col-span-12">
           <Panel title={selected ? t("batchesFor", { item: selected.name_en }) : t("tabBatches")}>
-            <TableHead columns={batchCols} />
-            <TableEmpty>{selected ? t("batchesNone") : t("pickItem")}</TableEmpty>
+            <div role="table" aria-label={t("tabBatches")}>
+              <TableHead columns={batchCols} />
+              {selected &&
+                batches.map((b) => (
+                  <TableRow key={`${b.batch_id}-${b.location}`} columns={batchCols}>
+                    <CodeCell>{b.batch_no}</CodeCell>
+                    <CodeCell>{b.expiry_date ?? DASH}</CodeCell>
+                    <NumberCell>
+                      {inSaleUnit(b.quantity_base, selected.sale_unit?.factor)}
+                    </NumberCell>
+                    <span role="cell" className="justify-self-start">
+                      <Badge tone={BATCH_TONE[b.status]} dense>
+                        {t(`batch.${b.status}`)}
+                      </Badge>
+                    </span>
+                  </TableRow>
+                ))}
+              {(!selected || batches.length === 0) && (
+                <TableEmpty>{selected ? t("batchesNone") : t("pickItem")}</TableEmpty>
+              )}
+            </div>
           </Panel>
         </section>
       </div>
@@ -240,10 +293,15 @@ export function InventoryScreen({ initial, categories, canManage }: Props) {
         itemId={drawer}
         ar={ar}
         canManage={canManage}
+        canReceive={canReceive}
         version={version}
         onClose={() => setDrawer(null)}
         onEdit={(item) => setForm({ open: true, item })}
         onNewPrice={(item) => setPriceFor(item)}
+        onStockChanged={() => {
+          setVersion((v) => v + 1);
+          void load(0);
+        }}
       />
       <ItemFormDialog
         open={form.open}

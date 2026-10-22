@@ -3,13 +3,26 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Dialog } from "@/components/ui/Dialog";
 import { Drawer, DrawerRow } from "@/components/ui/Drawer";
+import { Field, TextInput } from "@/components/ui/Field";
+import { useToast } from "@/components/ui/Toast";
 import { cn } from "@/lib/cn";
-import { apiGet } from "@/lib/api/browser";
+import { apiGet, apiSend } from "@/lib/api/browser";
+import type { Schemas } from "@/lib/api/types";
 import { amount } from "@/lib/format";
 
-import { type ItemDetail, pick, strengthForm } from "./labels";
+import {
+  BATCH_TONE,
+  type BatchRow,
+  inSaleUnit,
+  type ItemDetail,
+  pick,
+  type StockRow,
+  strengthForm,
+} from "./labels";
 
 const DASH = "—";
 const CLOSE = "✕";
@@ -27,7 +40,9 @@ type Props = {
   itemId: string | null;
   ar: boolean;
   canManage: boolean;
+  canReceive: boolean;
   onClose: () => void;
+  onStockChanged: () => void;
   onEdit: (item: ItemDetail) => void;
   onNewPrice: (item: ItemDetail) => void;
   /** Bumped by the parent after a save to reload the detail. */
@@ -35,21 +50,63 @@ type Props = {
 };
 
 /** Item details drawer (Raff Screens › items): six tabs of key/value rows. */
-export function ItemDrawer({ itemId, ar, canManage, onClose, onEdit, onNewPrice, version }: Props) {
+export function ItemDrawer({
+  itemId,
+  ar,
+  canManage,
+  canReceive,
+  onClose,
+  onEdit,
+  onNewPrice,
+  onStockChanged,
+  version,
+}: Props) {
   const t = useTranslations("inventory");
+  const toast = useToast();
   const [tab, setTab] = useState(0);
   const [item, setItem] = useState<ItemDetail | null>(null);
+  const [stock, setStock] = useState<StockRow | null>(null);
+  const [batches, setBatches] = useState<BatchRow[]>([]);
+  const [moves, setMoves] = useState<Schemas["Movement"][]>([]);
+  const [releasing, setReleasing] = useState<BatchRow | null>(null);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     if (!itemId) return;
     let live = true;
-    void apiGet<ItemDetail>(`/catalog/items/${itemId}/`).then((res) => {
-      if (live && res.ok) setItem(res.data);
+    void Promise.all([
+      apiGet<ItemDetail>(`/catalog/items/${itemId}/`),
+      apiGet<StockRow>(`/inventory/items/${itemId}/`),
+      apiGet<BatchRow[]>(`/inventory/items/${itemId}/batches/`),
+      apiGet<Schemas["Movement"][]>(`/inventory/items/${itemId}/movements/`),
+    ]).then(([detail, st, bs, ms]) => {
+      if (!live) return;
+      if (detail.ok) setItem(detail.data);
+      setStock(st.ok ? st.data : null);
+      setBatches(bs.ok ? bs.data : []);
+      setMoves(ms.ok ? ms.data : []);
     });
     return () => {
       live = false;
     };
-  }, [itemId, version]);
+  }, [itemId, version, reload]);
+
+  async function release(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!releasing) return;
+    const expiry = new FormData(e.currentTarget).get("expiry");
+    const res = await apiSend("POST", `/inventory/batches/${releasing.batch_id}/release/`, {
+      expiry_date: expiry,
+    });
+    setReleasing(null);
+    if (!res.ok) {
+      toast.push("danger", t("errors.failed"));
+      return;
+    }
+    toast.push("success", t("released"));
+    setReload((r) => r + 1);
+    onStockChanged();
+  }
 
   const open = !!itemId;
   const current = item && item.id === itemId ? item : null;
@@ -150,16 +207,69 @@ export function ItemDrawer({ itemId, ar, canManage, onClose, onEdit, onNewPrice,
                   ))}
                 </div>
               ))}
-            {tab === 2 && <p className="m-0 p-[20px] text-muted">{t("batchesNone")}</p>}
-            {tab === 3 && <p className="m-0 p-[20px] text-muted">{t("noMovements")}</p>}
+            {tab === 2 &&
+              (batches.length === 0 ? (
+                <p className="m-0 p-[20px] text-muted">{t("batchesNone")}</p>
+              ) : (
+                batches.map((b) => {
+                  const label = [b.batch_no, b.expiry_date].filter(Boolean).join(" · ");
+                  const state = [
+                    t(`batch.${b.status}`),
+                    inSaleUnit(b.quantity_base, current.sale_unit?.factor),
+                  ].join(" · ");
+                  return (
+                    <DrawerRow
+                      key={`${b.batch_id}-${b.location}`}
+                      label={<span dir="ltr">{label}</span>}
+                    >
+                      <span className="flex items-center gap-[8px]">
+                        <Badge tone={BATCH_TONE[b.status]} dense>
+                          {state}
+                        </Badge>
+                        {b.status === "held" && b.location === "review" && canReceive && (
+                          <Button
+                            variant="quiet"
+                            className="h-[32px] px-[8px]"
+                            onClick={() => setReleasing(b)}
+                          >
+                            {t("release")}
+                          </Button>
+                        )}
+                      </span>
+                    </DrawerRow>
+                  );
+                })
+              ))}
+            {tab === 3 &&
+              (moves.length === 0 ? (
+                <p className="m-0 p-[20px] text-muted">{t("noMovements")}</p>
+              ) : (
+                moves.map((m) => {
+                  const when = m.created_at.slice(0, 16).replace("T", " ");
+                  const sign = m.quantity_base > 0 ? "+" : "−";
+                  const text = [
+                    t(`move.${m.kind}`),
+                    sign + inSaleUnit(Math.abs(m.quantity_base), current.sale_unit?.factor),
+                  ].join(" ");
+                  return (
+                    <DrawerRow key={m.id} label={<span dir="ltr">{when}</span>}>
+                      {text}
+                    </DrawerRow>
+                  );
+                })
+              ))}
             {tab === 4 && (
               <>
-                <DrawerRow label={t("cost")}>{DASH}</DrawerRow>
+                <DrawerRow label={t("cost")}>
+                  {amount(stock?.stock.cost_per_sale_unit) || DASH}
+                </DrawerRow>
                 <DrawerRow label={t("retail")}>{retail ? amount(retail.price) : DASH}</DrawerRow>
                 <DrawerRow label={t("wholesale")}>
                   {wholesale ? amount(wholesale.price) : DASH}
                 </DrawerRow>
-                <DrawerRow label={t("margin")}>{DASH}</DrawerRow>
+                <DrawerRow label={t("margin")}>
+                  {stock?.stock.margin_pct ? `${stock.stock.margin_pct}%` : DASH}
+                </DrawerRow>
                 <div className="px-[20px] pt-[16px] pb-[4px] text-[12px] font-medium text-muted">
                   {t("priceHistory")}
                 </div>
@@ -192,6 +302,27 @@ export function ItemDrawer({ itemId, ar, canManage, onClose, onEdit, onNewPrice,
           </div>
         </>
       )}
+      <Dialog open={!!releasing} onClose={() => setReleasing(null)} labelledBy="release-title">
+        <form onSubmit={release} className="grid gap-[12px]">
+          <div id="release-title" className="text-[16px] font-medium">
+            {t("releaseTitle")}
+          </div>
+          <div dir="ltr" className="text-start text-muted">
+            {releasing?.batch_no}
+          </div>
+          <Field label={t("expiry")}>
+            {({ id }) => <TextInput id={id} name="expiry" type="date" dir="ltr" required />}
+          </Field>
+          <div className="flex justify-end gap-[8px]">
+            <Button variant="outline" size="lg" onClick={() => setReleasing(null)}>
+              {t("cancel")}
+            </Button>
+            <Button type="submit" size="lg">
+              {t("release")}
+            </Button>
+          </div>
+        </form>
+      </Dialog>
     </Drawer>
   );
 }
