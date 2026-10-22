@@ -1,5 +1,14 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// Own ports so the test stack never collides with `make dev` or other local servers.
+const API_PORT = 8100;
+const WEB_PORT = 3100;
+
+// Test-only values: a fixed organization for the seeded sample data, and an
+// 8-character demo password (the sign-in reference shows eight dots).
+export const TEST_ORG_ID = "6f1d3c2a-5b7e-4c1d-9a8f-2e4b6c8d0a12";
+export const DEMO_PASSWORD = "Raff2026";
+
 const backendEnv = {
   DJANGO_SETTINGS_MODULE: "config.settings.dev",
   DJANGO_SECRET_KEY: process.env.DJANGO_SECRET_KEY ?? "e2e-only-not-a-secret",
@@ -8,11 +17,9 @@ const backendEnv = {
   POSTGRES_DB: process.env.POSTGRES_DB ?? "raff",
   POSTGRES_USER: process.env.POSTGRES_USER ?? "raff",
   POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? "",
+  SINGLE_ORG_ID: TEST_ORG_ID,
+  RAFF_DEMO_PASSWORD: DEMO_PASSWORD,
 };
-
-// Own ports so the test stack never collides with `make dev` or other local servers.
-const API_PORT = 8100;
-const WEB_PORT = 3100;
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -50,9 +57,10 @@ export default defineConfig({
     {
       command:
         "uv run --directory backend python manage.py migrate --noinput && " +
+        "uv run --directory backend python manage.py seed_demo && " +
         `uv run --directory backend python manage.py runserver 127.0.0.1:${API_PORT} --noreload`,
       url: `http://127.0.0.1:${API_PORT}/api/v1/health/`,
-      env: backendEnv,
+      env: { ...backendEnv, DJANGO_CSRF_TRUSTED_ORIGINS: `http://localhost:${WEB_PORT}` },
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
