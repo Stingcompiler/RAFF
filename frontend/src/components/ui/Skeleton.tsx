@@ -1,0 +1,13 @@
+import { cn } from "@/lib/cn";
+
+export function Skeleton({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        "block h-[12px] rounded-[6px] bg-[linear-gradient(90deg,var(--color-line)_25%,var(--color-surface-raised)_50%,var(--color-line)_75%)] bg-[length:200%_100%] animate-[raff-shimmer_1.4s_linear_infinite]",
+        className,
+      )}
+    />
+  );
+}
