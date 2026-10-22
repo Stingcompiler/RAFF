@@ -26,7 +26,8 @@ load_env() {
   set +a
 }
 
-rand() { LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c "$1"; }
+# `head` closes the pipe early by design; under pipefail that SIGPIPE must not count as failure.
+rand() { LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom 2>/dev/null | head -c "$1" || true; }
 new_uuid() { cat /proc/sys/kernel/random/uuid 2>/dev/null || uuidgen | tr 'A-Z' 'a-z'; }
 
 # Replace KEY=... in the env file (or append it).
