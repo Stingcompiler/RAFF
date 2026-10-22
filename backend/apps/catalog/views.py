@@ -6,7 +6,6 @@ from typing import Any
 
 from django.db.models import OuterRef
 from django.http import HttpResponse
-from django.utils import timezone
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
@@ -41,6 +40,7 @@ from apps.catalog.services.items import (
     set_price,
     update_item,
 )
+from apps.tenancy import clock
 
 
 def _error(exc: CatalogError) -> ValidationError:
@@ -54,7 +54,7 @@ def _with_price(qs: Any) -> Any:
         sale_unit_id=ItemUnit.objects.filter(item=OuterRef("pk"), is_default_sale=True).values(
             "pk"
         )[:1]
-    ).annotate(price=current_price_subquery("sale_unit_id", retail, timezone.localdate()))
+    ).annotate(price=current_price_subquery("sale_unit_id", retail, clock.today()))
 
 
 def _item(pk: str) -> Item:

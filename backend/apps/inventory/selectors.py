@@ -9,11 +9,11 @@ from decimal import ROUND_HALF_UP, Decimal
 
 from django.conf import settings
 from django.db.models import Sum
-from django.utils import timezone
 
 from apps.catalog.models import Item
 from apps.finance.money import money
 from apps.inventory.models import Batch, Location, StockBalance, StockMovement
+from apps.tenancy import clock
 from apps.tenancy.models import Branch
 
 
@@ -44,7 +44,7 @@ def batch_status(expiry: dt.date | None, today: dt.date, location_kind: str) -> 
 
 def stock_for_items(branch: Branch, items: list[Item]) -> dict[uuid.UUID, ItemStock]:
     """Stock summary per item for one branch (one query for balances)."""
-    today = timezone.localdate()
+    today = clock.today()
     near = today + dt.timedelta(days=settings.RAFF_NEAR_EXPIRY_DAYS)
     ids = [i.pk for i in items]
     rows = (
@@ -96,7 +96,7 @@ def stock_for_items(branch: Branch, items: list[Item]) -> dict[uuid.UUID, ItemSt
 
 
 def batches_for_item(branch: Branch, item: Item) -> list[dict[str, object]]:
-    today = timezone.localdate()
+    today = clock.today()
     rows = (
         StockBalance.objects.filter(branch=branch, item=item, quantity_base__gt=0)
         .select_related("batch", "location")

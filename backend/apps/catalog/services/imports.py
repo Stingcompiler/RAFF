@@ -24,6 +24,7 @@ from apps.accounts.models import User
 from apps.catalog.models import Barcode, Category, ImportBatch, Item, ItemPrice, ItemUnit
 from apps.catalog.search import normalize, search_document
 from apps.catalog.services.items import CatalogError, ensure_default_price_lists
+from apps.tenancy import clock
 
 COLUMNS = [
     "code",
@@ -168,7 +169,7 @@ def apply(batch: ImportBatch, user: User) -> ImportBatch:
     if batch.status == ImportBatch.Status.APPLIED:
         return batch
     retail = ensure_default_price_lists()
-    today = timezone.localdate()
+    today = clock.today()
     categories: dict[str, Category] = {}
     created = updated = 0
 

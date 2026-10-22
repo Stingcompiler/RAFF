@@ -7,12 +7,12 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 
 from django.db import transaction
-from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.catalog.models import Barcode, Category, Item, ItemPrice, ItemUnit, PriceList
 from apps.catalog.search import search_document
 from apps.finance.money import money
+from apps.tenancy import clock
 
 
 class CatalogError(Exception):
@@ -166,7 +166,7 @@ def set_price(
     if price < 0:
         raise CatalogError("price_negative")
     price_list = price_list or ensure_default_price_lists()
-    effective_from = effective_from or timezone.localdate()
+    effective_from = effective_from or clock.today()
     if ItemPrice.objects.filter(
         price_list=price_list, unit=unit, effective_from=effective_from
     ).exists():
