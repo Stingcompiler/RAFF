@@ -30,7 +30,9 @@
     "localeEn": "English",
     "theme": "Theme",
     "themeLight": "Light",
-    "themeDark": "Dark"
+    "themeDark": "Dark",
+    "signOut": "Sign out",
+    "deviceLine": "Device registered as: {device}"
   },
   "connection": {
     "online": "Server: online",
@@ -179,5 +181,52 @@
       "initial": "S",
       "device": "Device registered as: Counter 1"
     }
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "username": "Username",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "invalid": "✕ Wrong username or password.",
+    "unreachable": "✕ Cannot reach the server. Try again.",
+    "deviceLine": "Device registered as: {device} — {city}",
+    "deviceUnregistered": "This device is not registered as a counter.",
+    "contextTitle": "Choose branch & counter",
+    "branch": "Branch",
+    "counter": "Counter",
+    "noCounter": "No counter",
+    "continue": "Continue",
+    "continuing": "Continuing…",
+    "signInFirst": "Sign in first.",
+    "notAllowed": "✕ You have no role in this branch."
+  },
+  "users": {
+    "title": "Users & roles",
+    "newUser": "New user",
+    "user": "User",
+    "role": "Role",
+    "branch": "Branch",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Suspended",
+    "allBranches": "All branches",
+    "deactivate": "Suspend",
+    "activate": "Activate",
+    "username": "Username",
+    "password": "Password",
+    "passwordHelp": "At least 8 characters",
+    "nameAr": "Name in Arabic",
+    "nameEn": "Name in English",
+    "create": "Create",
+    "creating": "Creating…",
+    "cancel": "Back",
+    "created": "User created",
+    "usernameTaken": "Username already taken",
+    "weakPassword": "Password is too weak or too common",
+    "cannotDeactivateSelf": "You cannot suspend your own account",
+    "failed": "Could not save",
+    "noAccess": "You do not have permission to manage users.",
+    "actions": "Action"
   }
 }

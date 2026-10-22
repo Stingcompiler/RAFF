@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import { apiSend } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { LOCALE_COOKIE } from "@/lib/i18n/config";
 import { THEME_COOKIE } from "@/lib/theme/cookie";
@@ -38,6 +39,13 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
       document.removeEventListener("keydown", close);
     };
   }, [open]);
+
+  const signOut = async () => {
+    setOpen(false);
+    await apiSend("POST", "/auth/logout/");
+    router.push("/login");
+    router.refresh();
+  };
 
   const choose = (cookie: string, value: string) => {
     setCookie(cookie, value);
@@ -112,6 +120,10 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
             onClick={() => choose(THEME_COOKIE, "dark")}
           >
             {t("themeDark")}
+          </button>
+          <div className="my-[4px] border-t border-line" />
+          <button type="button" role="menuitem" className={item(false)} onClick={signOut}>
+            {t("signOut")}
           </button>
         </div>
       )}

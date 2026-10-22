@@ -30,7 +30,9 @@
     "localeEn": "English",
     "theme": "المظهر",
     "themeLight": "فاتح",
-    "themeDark": "داكن"
+    "themeDark": "داكن",
+    "signOut": "تسجيل الخروج",
+    "deviceLine": "الجهاز مسجَّل باسم: {device}"
   },
   "connection": {
     "online": "الخادم: متصل",
@@ -179,5 +181,52 @@
       "initial": "س",
       "device": "الجهاز مسجَّل باسم: كاونتر 1"
     }
+  },
+  "auth": {
+    "signInTitle": "تسجيل الدخول",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "signIn": "دخول",
+    "signingIn": "جارٍ الدخول…",
+    "invalid": "✕ اسم المستخدم أو كلمة المرور غير صحيحة.",
+    "unreachable": "✕ تعذّر الوصول إلى الخادم. حاول مجدداً.",
+    "deviceLine": "الجهاز مسجَّل باسم: {device} — {city}",
+    "deviceUnregistered": "الجهاز غير مسجَّل ككاونتر.",
+    "contextTitle": "اختيار الفرع والكاونتر",
+    "branch": "الفرع",
+    "counter": "الكاونتر",
+    "noCounter": "بلا كاونتر",
+    "continue": "متابعة",
+    "continuing": "جارٍ المتابعة…",
+    "signInFirst": "سجّل الدخول أولاً.",
+    "notAllowed": "✕ لا صلاحية لك في هذا الفرع."
+  },
+  "users": {
+    "title": "المستخدمون والأدوار",
+    "newUser": "مستخدم جديد",
+    "user": "المستخدم",
+    "role": "الدور",
+    "branch": "الفرع",
+    "status": "الحالة",
+    "active": "نشط",
+    "inactive": "موقوف",
+    "allBranches": "كل الفروع",
+    "deactivate": "إيقاف",
+    "activate": "تفعيل",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "passwordHelp": "8 أحرف على الأقل",
+    "nameAr": "الاسم بالعربية",
+    "nameEn": "الاسم بالإنجليزية",
+    "create": "إنشاء",
+    "creating": "جارٍ الإنشاء…",
+    "cancel": "رجوع",
+    "created": "تم إنشاء المستخدم",
+    "usernameTaken": "اسم المستخدم مستخدم من قبل",
+    "weakPassword": "كلمة المرور ضعيفة أو شائعة",
+    "cannotDeactivateSelf": "لا يمكنك إيقاف حسابك",
+    "failed": "تعذّر الحفظ",
+    "noAccess": "لا صلاحية لك في إدارة المستخدمين.",
+    "actions": "إجراء"
   }
 }
