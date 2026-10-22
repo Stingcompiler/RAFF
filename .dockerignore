@@ -1,0 +1,10 @@
+**/node_modules
+**/.next
+backend
+design
+docs
+tests
+infra
+.git
+test-results
+playwright-report

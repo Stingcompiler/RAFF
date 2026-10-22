@@ -1,0 +1,28 @@
+# Environment and secrets
+.env
+*.env
+!.env.example
+infra/compose/.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+backend/staticfiles/
+
+# Node
+node_modules/
+.next/
+frontend/next-env.d.ts
+*.tsbuildinfo
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
+# OS
+.DS_Store
