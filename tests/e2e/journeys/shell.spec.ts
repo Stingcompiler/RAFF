@@ -7,7 +7,9 @@ test.describe("app shell", () => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "دواؤك قريب، وصيدلي يراجع طلبك.",
+    );
 
     await page.goto("/en");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
@@ -24,7 +26,9 @@ test.describe("app shell", () => {
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "دواؤك قريب، وصيدلي يراجع طلبك.",
+    );
     await signIn(page, "salma");
     await page.goto("/dashboard");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
