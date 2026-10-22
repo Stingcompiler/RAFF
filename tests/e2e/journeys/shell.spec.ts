@@ -42,10 +42,10 @@ test.describe("app shell", () => {
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Overview");
   });
 
-  test("fonts are self-hosted, nothing loads from Google", async ({ page }) => {
+  test("fonts are self-hosted, nothing loads from Google", async ({ page, baseURL }) => {
     const external: string[] = [];
     page.on("request", (r) => {
-      if (!r.url().startsWith("http://localhost:3000")) external.push(r.url());
+      if (!r.url().startsWith(baseURL!)) external.push(r.url());
     });
     await page.goto("/ar");
     await page.evaluate(() => document.fonts.ready);

@@ -10,6 +10,10 @@ const backendEnv = {
   POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD ?? "",
 };
 
+// Own ports so the test stack never collides with `make dev` or other local servers.
+const API_PORT = 8100;
+const WEB_PORT = 3100;
+
 export default defineConfig({
   testDir: "tests/e2e",
   snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}{ext}",
@@ -18,7 +22,7 @@ export default defineConfig({
   retries: 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: `http://localhost:${WEB_PORT}`,
     locale: "en-US",
     timezoneId: "Africa/Khartoum",
     trace: "retain-on-failure",
@@ -46,16 +50,16 @@ export default defineConfig({
     {
       command:
         "uv run --directory backend python manage.py migrate --noinput && " +
-        "uv run --directory backend python manage.py runserver 127.0.0.1:8000 --noreload",
-      url: "http://127.0.0.1:8000/api/v1/health/",
+        `uv run --directory backend python manage.py runserver 127.0.0.1:${API_PORT} --noreload`,
+      url: `http://127.0.0.1:${API_PORT}/api/v1/health/`,
       env: backendEnv,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },
     {
-      command: "pnpm --dir frontend start",
-      url: "http://localhost:3000/",
-      env: { RAFF_API_ORIGIN: "http://127.0.0.1:8000" },
+      command: `pnpm --dir frontend exec next start --port ${WEB_PORT}`,
+      url: `http://localhost:${WEB_PORT}/`,
+      env: { RAFF_API_ORIGIN: `http://127.0.0.1:${API_PORT}`, RAFF_DEV_ROUTES: "1" },
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
     },

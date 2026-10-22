@@ -39,8 +39,9 @@ down:
 test:
 	cd backend && uv run pytest
 
+# Rewrites are fixed at build time: point /api at the Playwright backend (port 8100).
 frontend-build:
-	pnpm --dir frontend build
+	RAFF_API_ORIGIN=http://127.0.0.1:8100 pnpm --dir frontend build
 
 e2e: frontend-build
 	pnpm exec playwright test --project=e2e
