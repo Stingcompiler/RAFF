@@ -481,6 +481,138 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/inventory/batches/{id}/release/:
+    post:
+      operationId: inventory_batch_release
+      description: Give a held batch its expiry date and make it sellable.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - inventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Release'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BatchRow'
+          description: ''
+  /api/v1/inventory/items/:
+    get:
+      operationId: inventory_items
+      description: Items with their stock in the session's branch (Items & stock screen).
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+      - in: query
+        name: limit
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StockItem'
+          description: ''
+  /api/v1/inventory/items/{id}/:
+    get:
+      operationId: inventory_item
+      description: One item with its stock in the session's branch (item drawer).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockItem'
+          description: ''
+  /api/v1/inventory/items/{id}/batches/:
+    get:
+      operationId: inventory_item_batches
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BatchRow'
+          description: ''
+  /api/v1/inventory/items/{id}/movements/:
+    get:
+      operationId: inventory_item_movements
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - inventory
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movement'
+          description: ''
   /api/v1/licensing/status/:
     get:
       operationId: licensing_status
@@ -494,6 +626,120 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LicenseStatus'
+          description: ''
+  /api/v1/purchasing/receipts/:
+    get:
+      operationId: receipts_list
+      parameters:
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - purchasing
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReceiptList'
+          description: ''
+    post:
+      operationId: receipts_create
+      tags:
+      - purchasing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+  /api/v1/purchasing/receipts/{id}/:
+    get:
+      operationId: receipts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - purchasing
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+    put:
+      operationId: receipts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - purchasing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+          description: ''
+  /api/v1/purchasing/receipts/{id}/post/:
+    post:
+      operationId: receipts_post
+      description: Post (approve) a draft receipt. Requires an Idempotency-Key header.
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - purchasing
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResult'
           description: ''
   /api/v1/roles/:
     get:
@@ -510,6 +756,41 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Role'
+          description: ''
+  /api/v1/suppliers/:
+    get:
+      operationId: suppliers_list
+      tags:
+      - suppliers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supplier'
+          description: ''
+    post:
+      operationId: suppliers_create
+      tags:
+      - suppliers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supplier'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supplier'
           description: ''
   /api/v1/users/:
     get:
@@ -596,6 +877,50 @@ components:
       required:
       - item
       - unit
+    BatchRow:
+      type: object
+      properties:
+        batch_id:
+          type: string
+          format: uuid
+        batch_no:
+          type: string
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+        quantity_base:
+          type: integer
+        location:
+          type: string
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        status:
+          $ref: '#/components/schemas/BatchStatusEnum'
+      required:
+      - batch_id
+      - batch_no
+      - expiry_date
+      - location
+      - quantity_base
+      - status
+      - unit_cost
+    BatchStatusEnum:
+      enum:
+      - good
+      - near_expiry
+      - expired
+      - held
+      - quarantined
+      type: string
+      description: |-
+        * `good` - good
+        * `near_expiry` - near_expiry
+        * `expired` - expired
+        * `held` - held
+        * `quarantined` - quarantined
     Branch:
       type: object
       properties:
@@ -751,7 +1076,7 @@ components:
           type: string
           maxLength: 200
         status:
-          $ref: '#/components/schemas/StatusEnum'
+          $ref: '#/components/schemas/ImportStatusEnum'
         summary: {}
         rows: {}
         created_at:
@@ -766,6 +1091,14 @@ components:
       - created_at
       - file_name
       - id
+    ImportStatusEnum:
+      enum:
+      - preview
+      - applied
+      type: string
+      description: |-
+        * `preview` - Preview
+        * `applied` - Applied
     ImportUpload:
       type: object
       properties:
@@ -946,11 +1279,41 @@ components:
       - name_en
       - price
       - sale_unit
+    KindEnum:
+      enum:
+      - receipt
+      - sale
+      - return
+      - release
+      - adjustment
+      - transfer_out
+      - transfer_in
+      - quarantine
+      type: string
+      description: |-
+        * `receipt` - Goods receipt
+        * `sale` - Sale
+        * `return` - Customer return
+        * `release` - Released from review
+        * `adjustment` - Adjustment
+        * `transfer_out` - Transfer out
+        * `transfer_in` - Transfer in
+        * `quarantine` - Quarantine
+    LicenseStateEnum:
+      enum:
+      - valid
+      - missing
+      - invalid
+      type: string
+      description: |-
+        * `valid` - valid
+        * `missing` - missing
+        * `invalid` - invalid
     LicenseStatus:
       type: object
       properties:
         state:
-          $ref: '#/components/schemas/StateEnum'
+          $ref: '#/components/schemas/LicenseStateEnum'
         organization:
           type: string
           nullable: true
@@ -965,6 +1328,44 @@ components:
       - issued
       - organization
       - state
+    LineInput:
+      type: object
+      properties:
+        item_id:
+          type: string
+          format: uuid
+        unit_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        bonus_quantity:
+          type: integer
+          minimum: 0
+          default: 0
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          default: '0.0000'
+        batch_no:
+          type: string
+          maxLength: 40
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - batch_no
+      - item_id
+      - quantity
+      - unit_cost
+      - unit_id
     Login:
       type: object
       properties:
@@ -1031,6 +1432,47 @@ components:
       - display_name_en
       - id
       - username
+    Movement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        quantity_base:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        batch_no:
+          type: string
+        location:
+          type: string
+        document_type:
+          type: string
+          maxLength: 30
+        document_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - batch_no
+      - created_at
+      - document_id
+      - document_type
+      - id
+      - kind
+      - location
+      - quantity_base
+      - unit_cost
     PatchedItemUpdate:
       type: object
       properties:
@@ -1073,6 +1515,25 @@ components:
           type: string
           maxLength: 200
           minLength: 8
+    PostResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        held_lines:
+          type: integer
+      required:
+      - held_lines
+      - id
+      - number
+      - total
     Price:
       type: object
       properties:
@@ -1145,6 +1606,207 @@ components:
       - id
       - name_ar
       - name_en
+    Receipt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: string
+          maxLength: 20
+        status:
+          $ref: '#/components/schemas/ReceiptStatusEnum'
+        branch:
+          type: string
+          format: uuid
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+        supplier_invoice_no:
+          type: string
+          maxLength: 60
+        invoice_date:
+          type: string
+          format: date
+        payment_terms_days:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        notes:
+          type: string
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        bonus_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        bonus_allocated:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        posted_at:
+          type: string
+          format: date-time
+          nullable: true
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReceiptLine'
+      required:
+      - bonus_allocated
+      - branch
+      - created_at
+      - id
+      - invoice_date
+      - lines
+      - supplier
+      - supplier_invoice_no
+    ReceiptInput:
+      type: object
+      properties:
+        supplier_id:
+          type: string
+          format: uuid
+        supplier_invoice_no:
+          type: string
+          maxLength: 60
+        invoice_date:
+          type: string
+          format: date
+        payment_terms_days:
+          type: integer
+          minimum: 0
+          default: 0
+        notes:
+          type: string
+          default: ''
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineInput'
+      required:
+      - invoice_date
+      - lines
+      - supplier_id
+      - supplier_invoice_no
+    ReceiptLine:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        line_no:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        item:
+          type: string
+          format: uuid
+        unit:
+          type: string
+          format: uuid
+        item_name_ar:
+          type: string
+          readOnly: true
+        item_name_en:
+          type: string
+          readOnly: true
+        unit_name_ar:
+          type: string
+          readOnly: true
+        unit_name_en:
+          type: string
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        bonus_quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        unit_cost:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        batch_no:
+          type: string
+          maxLength: 40
+        expiry_date:
+          type: string
+          format: date
+          nullable: true
+        base_quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        cost_per_base:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        held:
+          type: boolean
+      required:
+      - batch_no
+      - id
+      - item
+      - item_name_ar
+      - item_name_en
+      - line_no
+      - quantity
+      - unit
+      - unit_cost
+      - unit_name_ar
+      - unit_name_en
+    ReceiptList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: string
+          maxLength: 20
+        status:
+          $ref: '#/components/schemas/ReceiptStatusEnum'
+        supplier:
+          $ref: '#/components/schemas/Supplier'
+        supplier_invoice_no:
+          type: string
+          maxLength: 60
+        invoice_date:
+          type: string
+          format: date
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        line_count:
+          type: integer
+        posted_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - invoice_date
+      - line_count
+      - supplier
+      - supplier_invoice_no
     ReceiptLocaleEnum:
       enum:
       - ar
@@ -1153,6 +1815,22 @@ components:
       description: |-
         * `ar` - ar
         * `en` - en
+    ReceiptStatusEnum:
+      enum:
+      - draft
+      - posted
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `posted` - Posted
+    Release:
+      type: object
+      properties:
+        expiry_date:
+          type: string
+          format: date
+      required:
+      - expiry_date
     Role:
       type: object
       properties:
@@ -1179,24 +1857,146 @@ components:
       - id
       - name_ar
       - name_en
-    StateEnum:
+    Stock:
+      type: object
+      properties:
+        sellable_base:
+          type: integer
+        held_base:
+          type: integer
+        nearest_expiry:
+          type: string
+          format: date
+          nullable: true
+        cost_per_base:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        cost_per_sale_unit:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        margin_pct:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,1})?$
+          nullable: true
+        status:
+          $ref: '#/components/schemas/StockStatusEnum'
+      required:
+      - cost_per_base
+      - cost_per_sale_unit
+      - held_base
+      - margin_pct
+      - nearest_expiry
+      - sellable_base
+      - status
+    StockItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        generic_name:
+          type: string
+          maxLength: 200
+        strength:
+          type: string
+          maxLength: 60
+        dosage_form:
+          type: string
+          maxLength: 40
+        classification:
+          $ref: '#/components/schemas/ClassificationEnum'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/Category'
+          nullable: true
+        is_active:
+          type: boolean
+        sale_unit:
+          allOf:
+          - $ref: '#/components/schemas/Unit'
+          nullable: true
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        reorder_level_base:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        stock:
+          allOf:
+          - $ref: '#/components/schemas/Stock'
+          readOnly: true
+      required:
+      - category
+      - code
+      - id
+      - name_ar
+      - name_en
+      - price
+      - sale_unit
+      - stock
+    StockStatusEnum:
       enum:
-      - valid
-      - missing
-      - invalid
+      - good
+      - near_expiry
+      - low
+      - out
+      - expired
       type: string
       description: |-
-        * `valid` - valid
-        * `missing` - missing
-        * `invalid` - invalid
-    StatusEnum:
-      enum:
-      - preview
-      - applied
-      type: string
-      description: |-
-        * `preview` - Preview
-        * `applied` - Applied
+        * `good` - good
+        * `near_expiry` - near_expiry
+        * `low` - low
+        * `out` - out
+        * `expired` - expired
+    Supplier:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        phone:
+          type: string
+          maxLength: 40
+        payment_terms_days:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        is_active:
+          type: boolean
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
     Unit:
       type: object
       properties:
