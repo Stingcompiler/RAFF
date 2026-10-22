@@ -3,6 +3,194 @@ info:
   title: Raff API
   version: 1.0.0
 paths:
+  /api/v1/auth/context/:
+    post:
+      operationId: auth_context
+      description: Choose the branch and counter this session works in.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+          description: ''
+  /api/v1/auth/csrf/:
+    get:
+      operationId: auth_csrf
+      description: Sets the csrftoken cookie; call before the first state-changing
+        request.
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/device/:
+    get:
+      operationId: auth_device
+      description: Which counter this browser is registered as (from the HttpOnly
+        device cookie).
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceInfo'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout
+      tags:
+      - auth
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/me/:
+    get:
+      operationId: auth_me
+      tags:
+      - auth
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Me'
+          description: ''
+  /api/v1/branches/:
+    get:
+      operationId: branches_list
+      tags:
+      - branches
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Branch'
+          description: ''
+  /api/v1/branches/{id}/:
+    get:
+      operationId: branches_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - branches
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Branch'
+          description: ''
+  /api/v1/devices/:
+    get:
+      operationId: devices_list
+      tags:
+      - devices
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Device'
+          description: ''
+    post:
+      operationId: devices_create
+      tags:
+      - devices
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeviceCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
+  /api/v1/devices/{id}/register/:
+    post:
+      operationId: devices_register
+      description: Register the calling browser as this counter (sets the HttpOnly
+        device cookie).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - devices
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Device'
+          description: ''
   /api/v1/health/:
     get:
       operationId: health
@@ -17,8 +205,216 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/licensing/status/:
+    get:
+      operationId: licensing_status
+      tags:
+      - licensing
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseStatus'
+          description: ''
+  /api/v1/roles/:
+    get:
+      operationId: roles_list
+      tags:
+      - roles
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+          description: ''
+  /api/v1/users/:
+    get:
+      operationId: users_list
+      tags:
+      - users
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/users/{id}/:
+    patch:
+      operationId: users_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserUpdate'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
 components:
   schemas:
+    Assignment:
+      type: object
+      properties:
+        role_id:
+          type: string
+          format: uuid
+        branch_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - role_id
+    Branch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name_ar:
+          type: string
+          maxLength: 120
+        name_en:
+          type: string
+          maxLength: 120
+        city_ar:
+          type: string
+          maxLength: 80
+        city_en:
+          type: string
+          maxLength: 80
+        receipt_locale:
+          $ref: '#/components/schemas/ReceiptLocaleEnum'
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
+    Context:
+      type: object
+      properties:
+        branch_id:
+          type: string
+          format: uuid
+        device_id:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - branch_id
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        branch:
+          type: string
+          format: uuid
+        name_ar:
+          type: string
+          maxLength: 80
+        name_en:
+          type: string
+          maxLength: 80
+        registered_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+      required:
+      - branch
+      - id
+      - is_active
+      - name_ar
+      - name_en
+      - registered_at
+    DeviceCreate:
+      type: object
+      properties:
+        branch_id:
+          type: string
+          format: uuid
+        name_ar:
+          type: string
+          maxLength: 80
+        name_en:
+          type: string
+          maxLength: 80
+      required:
+      - branch_id
+      - name_ar
+      - name_en
+    DeviceInfo:
+      type: object
+      properties:
+        registered:
+          type: boolean
+        device:
+          allOf:
+          - $ref: '#/components/schemas/Device'
+          nullable: true
+        branch:
+          allOf:
+          - $ref: '#/components/schemas/Branch'
+          nullable: true
+      required:
+      - branch
+      - device
+      - registered
     Health:
       type: object
       properties:
@@ -29,3 +425,208 @@ components:
       required:
       - database
       - status
+    LicenseStatus:
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        organization:
+          type: string
+          nullable: true
+        branches:
+          type: integer
+          nullable: true
+        issued:
+          type: string
+          nullable: true
+      required:
+      - branches
+      - issued
+      - organization
+      - state
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 60
+        password:
+          type: string
+          maxLength: 200
+      required:
+      - password
+      - username
+    Me:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/MeUser'
+        role:
+          allOf:
+          - $ref: '#/components/schemas/Role'
+          nullable: true
+        counters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Device'
+        permissions:
+          type: array
+          items:
+            type: string
+        branch:
+          allOf:
+          - $ref: '#/components/schemas/Branch'
+          nullable: true
+        device:
+          allOf:
+          - $ref: '#/components/schemas/Device'
+          nullable: true
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+      required:
+      - branch
+      - branches
+      - counters
+      - device
+      - permissions
+      - role
+      - user
+    MeUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        display_name_ar:
+          type: string
+        display_name_en:
+          type: string
+      required:
+      - display_name_ar
+      - display_name_en
+      - id
+      - username
+    PatchedUserUpdate:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+        password:
+          type: string
+          maxLength: 200
+          minLength: 8
+    ReceiptLocaleEnum:
+      enum:
+      - ar
+      - en
+      type: string
+      description: |-
+        * `ar` - ar
+        * `en` - en
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 80
+        name_en:
+          type: string
+          maxLength: 80
+        permissions:
+          type: array
+          items:
+            type: string
+            maxLength: 40
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
+    StateEnum:
+      enum:
+      - valid
+      - missing
+      - invalid
+      type: string
+      description: |-
+        * `valid` - valid
+        * `missing` - missing
+        * `invalid` - invalid
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        username:
+          type: string
+          maxLength: 60
+        display_name_ar:
+          type: string
+          maxLength: 120
+        display_name_en:
+          type: string
+          maxLength: 120
+        is_active:
+          type: boolean
+        roles:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+              nullable: true
+          readOnly: true
+      required:
+      - display_name_ar
+      - display_name_en
+      - id
+      - roles
+      - username
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          pattern: ^[a-zA-Z0-9._-]{3,60}$
+        password:
+          type: string
+          maxLength: 200
+          minLength: 8
+        display_name_ar:
+          type: string
+          maxLength: 120
+        display_name_en:
+          type: string
+          maxLength: 120
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+      required:
+      - assignments
+      - display_name_ar
+      - display_name_en
+      - password
+      - username
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
