@@ -67,6 +67,11 @@ jobs:
 
   e2e:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    # Browsers and their system libraries are preinstalled (no apt at run time).
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    env:
+      POSTGRES_HOST: postgres
     services:
       postgres:
         image: postgres:17.11-bookworm
@@ -81,8 +86,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
-        with:
-          playwright: "true"
       - run: make e2e
       - if: failure()
         uses: actions/upload-artifact@v7.0.2
@@ -95,6 +98,10 @@ jobs:
   visual:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # Browsers and their system libraries are preinstalled (no apt at run time).
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    env:
+      POSTGRES_HOST: postgres
     services:
       postgres:
         image: postgres:17.11-bookworm
@@ -109,8 +116,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
-        with:
-          playwright: "true"
       - run: make visual
       - if: failure()
         uses: actions/upload-artifact@v7.0.2
