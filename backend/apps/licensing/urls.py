@@ -1,3 +1,7 @@
-from django.urls import URLPattern, URLResolver
+from django.urls import URLPattern, URLResolver, path
 
-urlpatterns: list[URLPattern | URLResolver] = []
+from apps.licensing import views
+
+urlpatterns: list[URLPattern | URLResolver] = [
+    path("licensing/status/", views.LicenseStatusView.as_view()),
+]
