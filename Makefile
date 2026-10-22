@@ -21,7 +21,7 @@ export HOST_GID := $(shell id -g)
 
 MANAGE := uv run --directory backend python manage.py
 
-.PHONY: install dev down test e2e visual lint typecheck openapi openapi-check reference check
+.PHONY: install dev demo down test e2e visual lint typecheck openapi openapi-check reference check
 
 install:
 	uv sync --directory backend
@@ -32,6 +32,11 @@ dev:
 	./infra/compose/init-env.sh
 	$(COMPOSE) up --detach --build --wait --wait-timeout 300 || ($(COMPOSE) logs --tail 200 && exit 1)
 	@echo "frontend http://localhost:3000/  ·  api http://localhost:8000/api/v1/health/"
+
+# Sample organization, branches, counters and users (password: RAFF_DEMO_PASSWORD in the env file).
+demo:
+	$(COMPOSE) exec backend python manage.py seed_demo
+	@echo "sign in at http://localhost:3000/login as admin, mazin, salma or huda"
 
 down:
 	$(COMPOSE) down

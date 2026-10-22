@@ -2,6 +2,7 @@
 
 ```bash
 make dev    # ينشئ infra/compose/.env بأسرار عشوائية إن لم يوجد، ثم يرفع postgres وbackend وfrontend وينتظر جاهزيتها
+make demo   # يحمّل بيانات العينة: فرعان، كاونترات، والمستخدمون admin/mazin/salma/huda (كلمة المرور RAFF_DEMO_PASSWORD في infra/compose/.env)
 make down   # يوقف الحاويات (البيانات تبقى في volume pgdata)
 ```
 

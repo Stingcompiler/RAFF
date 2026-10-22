@@ -33,6 +33,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SINGLE_ORG_ID: ${SINGLE_ORG_ID:-}
+      RAFF_DEMO_PASSWORD: ${RAFF_DEMO_PASSWORD:-}
+      DJANGO_CSRF_TRUSTED_ORIGINS: http://localhost:3000
     volumes:
       - ../../backend:/app
     ports:
