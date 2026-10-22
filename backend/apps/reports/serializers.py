@@ -62,6 +62,7 @@ class OverviewSerializer(serializers.Serializer[Any]):
     needs_action = NeedsActionSerializer()
     near_expiry_days = serializers.IntegerField()
     store_today = StoreTodaySerializer()
+    reserved_orders = serializers.IntegerField()
     sales_today = serializers.DecimalField(max_digits=18, decimal_places=4)
     sales_count = serializers.IntegerField()
     cash_today = serializers.DecimalField(max_digits=18, decimal_places=4)

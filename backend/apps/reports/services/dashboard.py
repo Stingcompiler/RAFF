@@ -72,6 +72,14 @@ def overview(branches: list[Branch]) -> dict[str, Any]:
     orders_today = Order.objects.filter(
         branch__in=branches, created_at__gte=start, created_at__lt=end
     )
+    from apps.orders.models import StockReservation
+
+    reserved_orders = (
+        StockReservation.objects.filter(branch__in=branches, status=StockReservation.Status.ACTIVE)
+        .values("order_id")
+        .distinct()
+        .count()
+    )
     trio = {
         "new": orders_today.filter(status=Order.Status.NEW).count(),
         "confirmed": orders_today.filter(
@@ -144,6 +152,7 @@ def overview(branches: list[Branch]) -> dict[str, Any]:
         },
         "near_expiry_days": settings.RAFF_NEAR_EXPIRY_DAYS,
         "store_today": trio,
+        "reserved_orders": reserved_orders,
         "sales_today": money(totals["total"] or 0),
         "sales_count": totals["count"],
         "cash_today": money((by_method.get("cash") or 0) - refunds),

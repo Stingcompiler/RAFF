@@ -20,6 +20,7 @@ import { ShiftDialog } from "./ShiftDialog";
 import {
   type CartLine,
   type Customer,
+  type FromOrder,
   errorCode,
   errorKey,
   type HeldSale,
@@ -65,6 +66,8 @@ export type PosScreenProps = {
   canOpenShift: boolean;
   initialItems: PosItem[];
   initialShift: ShiftSummary;
+  /** Opened from a ready storefront order: its lines are loaded and locked. */
+  fromOrder?: FromOrder | null;
 };
 
 /** Point of sale (Raff POS). Keyboard first; the server prices, allocates and posts. */
@@ -75,7 +78,9 @@ export function PosScreen(props: PosScreenProps) {
   const router = useRouter();
   const toast = useToast();
   const conn = useConnection();
-  const cart = usePosCart(props.deviceId);
+  const order = props.fromOrder ?? null;
+  // An order's cart is kept apart from the counter's own draft.
+  const cart = usePosCart(order ? `${props.deviceId}.order.${order.id}` : props.deviceId);
   const input = useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState("");
@@ -99,6 +104,35 @@ export function PosScreen(props: PosScreenProps) {
 
   // A key left over from an unanswered approval (e.g. after a reload) must be checked first.
   const phase: Phase = phaseState === "idle" && cart.pendingKey ? "verify" : phaseState;
+
+  useEffect(() => {
+    if (!order) return;
+    const timer = setTimeout(() =>
+      cart.setLines((prev) =>
+        prev.length
+          ? prev
+          : order.lines.flatMap((l) => {
+              const unit = l.item.units.find((u) => u.id === l.unit_id);
+              return unit
+                ? [
+                    {
+                      key: crypto.randomUUID(),
+                      item: l.item,
+                      unit,
+                      quantity: l.quantity,
+                      discountPct: 0,
+                      batch: null,
+                      locked: true,
+                    },
+                  ]
+                : [];
+            }),
+      ),
+    );
+    return () => clearTimeout(timer);
+    // Load once per order.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.id]);
 
   const focusSearch = useCallback(() => setTimeout(() => input.current?.focus(), 0), []);
 
@@ -126,7 +160,7 @@ export function PosScreen(props: PosScreenProps) {
 
   const addItem = useCallback(
     (item: PosItem, unit: Unit | null) => {
-      if (!unit) return;
+      if (!unit || order) return;
       const quantity = mult;
       cart.setLines((prev) => {
         const same = prev.find((l) => l.item.id === item.id && l.unit.id === unit.id && !l.batch);
@@ -144,7 +178,7 @@ export function PosScreen(props: PosScreenProps) {
       setQuery("");
       focusSearch();
     },
-    [cart, mult, focusSearch],
+    [cart, mult, focusSearch, order],
   );
 
   const onEnter = async () => {
@@ -169,7 +203,7 @@ export function PosScreen(props: PosScreenProps) {
   };
 
   const hold = useCallback(async () => {
-    if (cart.lines.length === 0 || phase !== "idle") return false;
+    if (cart.lines.length === 0 || phase !== "idle" || order) return false;
     const res = await apiSend<HeldSale>("POST", "/sales/held/", {
       lines: cart.lines.map(toLineIn),
     });
@@ -182,7 +216,7 @@ export function PosScreen(props: PosScreenProps) {
     toast.push("success", t("heldDone"));
     focusSearch();
     return true;
-  }, [cart, phase, toast, t, tErr, focusSearch]);
+  }, [cart, phase, toast, t, tErr, focusSearch, order]);
 
   const resume = async (held: HeldSale) => {
     if (cart.lines.length && !(await hold())) return;
@@ -476,6 +510,7 @@ export function PosScreen(props: PosScreenProps) {
             />
           </main>
           <CartPanel
+            fromOrder={order}
             lines={cart.lines}
             quoted={cart.quoted}
             customerName={customer ? (ar ? customer.name_ar : customer.name_en) : null}
@@ -524,7 +559,7 @@ export function PosScreen(props: PosScreenProps) {
             }}
             onConfirm={(request, chosen) => {
               setCustomer(chosen);
-              void approve(request);
+              void approve(order ? { ...request, order_id: order.id } : request);
             }}
           />
         )}
@@ -557,6 +592,7 @@ export function PosScreen(props: PosScreenProps) {
             requestKey={approved.key}
             onNewSale={() => {
               setApproved(null);
+              if (order) router.replace("/pos");
               focusSearch();
             }}
           />

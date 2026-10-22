@@ -183,6 +183,7 @@ class SaleListView(APIView):
                 customer_id=v["customer_id"],
                 can_discount=has_code(request, "pos.discount"),
                 idempotency_key=key,
+                order_id=v["order_id"],
             )
         except KeyRace:
             from apps.sales.services.posting import sale_payload
@@ -190,7 +191,9 @@ class SaleListView(APIView):
             try:
                 with transaction.atomic():
                     result = replay(
-                        "post_sale", key, sale_payload(device, v["customer_id"], lines, payments)
+                        "post_sale",
+                        key,
+                        sale_payload(device, v["customer_id"], lines, payments, v["order_id"]),
                     )
             except KeyConflict:
                 return Response(

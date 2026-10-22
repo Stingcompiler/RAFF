@@ -19,8 +19,11 @@ const NAV_KEYS = "↑↓";
 const ENTER = "Enter";
 const SEP = " · ";
 
+/** Units on the shelf that are not held for a storefront order. */
+export const free = (row: PosItem) => row.sellable_base - row.reserved_base;
+
 export const sellable = (row: PosItem) =>
-  row.status !== "out" && row.status !== "expired" && row.sellable_base > 0;
+  row.status !== "out" && row.status !== "expired" && free(row) > 0;
 
 type Props = {
   rows: PosItem[];
@@ -121,7 +124,14 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               <span dir="ltr" className="text-end tabular-nums [unicode-bidi:isolate]">
                 {money(row.price, ar ? "ar" : "en")}
               </span>
-              <span className="text-end whitespace-nowrap tabular-nums">{stock}</span>
+              <span className="grid text-end leading-[1.2] whitespace-nowrap tabular-nums">
+                <span>{stock}</span>
+                {row.reserved_base > 0 && (
+                  <span className="text-[11px] font-medium text-info">
+                    {t("reserved", { count: inUnit(row.reserved_base, row.unit?.factor) })}
+                  </span>
+                )}
+              </span>
               <span className="flex items-center gap-[6px] whitespace-nowrap">
                 <span dir="ltr" className="text-[12px] tabular-nums">
                   {row.nearest_expiry ?? ""}

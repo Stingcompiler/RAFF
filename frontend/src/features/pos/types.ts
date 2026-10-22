@@ -22,12 +22,22 @@ export type CartLine = {
   discountPct: number;
   /** null = automatic FEFO */
   batch: { id: string; no: string } | null;
+  /** Lines loaded from a storefront order: their quantities and held batches are fixed. */
+  locked?: boolean;
+};
+
+export type FromOrder = {
+  id: string;
+  number: string;
+  customer_name: string;
+  lines: { item: PosItem; unit_id: string; quantity: number }[];
 };
 
 export type SaleRequest = {
   lines: LineIn[];
   payments: PaymentIn[];
   customer_id: string | null;
+  order_id?: string | null;
 };
 
 export const toLineIn = (line: CartLine): LineIn => ({

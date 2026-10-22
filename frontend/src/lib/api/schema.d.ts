@@ -639,6 +639,23 @@ export interface paths {
     patch: operations["orders_note"];
     trace?: never;
   };
+  "/api/v1/orders/{id}/pos/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description A ready order as a POS cart (its lines, held batches). Only in 'ready'. */
+    get: operations["orders_pos"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/orders/{id}/transition/": {
     parameters: {
       query?: never;
@@ -1938,6 +1955,12 @@ export interface components {
       slug: string;
       quantity: number;
     };
+    OrderRef: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      customer_name: string;
+    };
     /**
      * @description * `new` - new
      *     * `needs_contact` - needs_contact
@@ -1968,6 +1991,7 @@ export interface components {
       needs_action: components["schemas"]["NeedsAction"];
       near_expiry_days: number;
       store_today: components["schemas"]["StoreToday"];
+      reserved_orders: number;
       /** Format: decimal */
       sales_today: string;
       sales_count: number;
@@ -2112,10 +2136,23 @@ export interface components {
       /** Format: decimal */
       price: string | null;
       sellable_base: number;
+      reserved_base: number;
       /** Format: date */
       nearest_expiry: string | null;
       status: components["schemas"]["StockStatusEnum"];
       barcodes: string[];
+    };
+    PosOrder: {
+      order: components["schemas"]["OrderRef"];
+      lines: components["schemas"]["PosOrderLine"][];
+    };
+    PosOrderLine: {
+      item: {
+        [key: string]: unknown;
+      };
+      /** Format: uuid */
+      unit_id: string;
+      quantity: number;
     };
     PostResult: {
       /** Format: uuid */
@@ -2529,6 +2566,8 @@ export interface components {
       lines: components["schemas"]["SaleLineOut"][];
     };
     SaleIn: {
+      /** Format: uuid */
+      order_id?: string | null;
       lines: components["schemas"]["LineIn"][];
       payments: components["schemas"]["PaymentIn"][];
       /** Format: uuid */
@@ -3938,6 +3977,27 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  orders_pos: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PosOrder"];
         };
       };
     };

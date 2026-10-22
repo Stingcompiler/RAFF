@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonClasses } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Textarea } from "@/components/ui/Field";
 import { Panel } from "@/components/ui/Panel";
@@ -13,6 +13,7 @@ import { Segmented } from "@/components/ui/Segmented";
 import { NumberCell, TableHead, TableRow, TextCell, type Column } from "@/components/ui/Table";
 import { useToast } from "@/components/ui/Toast";
 import { apiSend } from "@/lib/api/browser";
+import { cn } from "@/lib/cn";
 import { amount, money, timeOfDay } from "@/lib/format";
 
 import { type OrderDetail, type OrderStatus, STATUS_TONE } from "./labels";
@@ -146,6 +147,11 @@ export function OrderDetailScreen({
           </bdi>
         </span>
         <span className="ms-auto flex flex-wrap gap-[8px]">
+          {order.status === "ready" && !order.sale_number && (
+            <Link href={`/pos?order=${order.id}`} className={cn(buttonClasses({}), "no-underline")}>
+              {t("toPos")}
+            </Link>
+          )}
           {editable && !editing && (
             <Button variant="outline" onClick={() => setEditing(true)}>
               {t("edit")}

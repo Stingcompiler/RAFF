@@ -146,3 +146,20 @@ class OrdersSummarySerializer(serializers.Serializer[Any]):
     new = serializers.IntegerField()
     confirmed = serializers.IntegerField()
     completed = serializers.IntegerField()
+
+
+class OrderRefSerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    number = serializers.CharField()
+    customer_name = serializers.CharField()
+
+
+class PosOrderLineSerializer(serializers.Serializer[Any]):
+    item = serializers.DictField()
+    unit_id = serializers.UUIDField()
+    quantity = serializers.IntegerField()
+
+
+class PosOrderSerializer(serializers.Serializer[Any]):
+    order = OrderRefSerializer()
+    lines = PosOrderLineSerializer(many=True)
