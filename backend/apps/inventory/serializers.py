@@ -65,6 +65,14 @@ class ReleaseSerializer(serializers.Serializer[None]):
     expiry_date = serializers.DateField()
 
 
+class UnitNamesSerializer(serializers.Serializer[Any]):
+    name_ar = serializers.CharField()
+    name_en = serializers.CharField()
+    factor = serializers.IntegerField()
+    base_ar = serializers.CharField()
+    base_en = serializers.CharField()
+
+
 class QuarantineEntrySerializer(serializers.ModelSerializer[QuarantineEntry]):
     item_code = serializers.CharField(source="item.code", read_only=True)
     item_name_ar = serializers.CharField(source="item.name_ar", read_only=True)
@@ -73,6 +81,7 @@ class QuarantineEntrySerializer(serializers.ModelSerializer[QuarantineEntry]):
     batch_no = serializers.CharField(source="batch.batch_no", read_only=True)
     expiry_date = serializers.DateField(source="batch.expiry_date", read_only=True)
     expired = serializers.SerializerMethodField()
+    unit = serializers.SerializerMethodField()
 
     class Meta:
         model = QuarantineEntry
@@ -85,6 +94,7 @@ class QuarantineEntrySerializer(serializers.ModelSerializer[QuarantineEntry]):
             "batch_no",
             "expiry_date",
             "expired",
+            "unit",
             "quantity_base",
             "source",
             "reason",
@@ -93,6 +103,20 @@ class QuarantineEntrySerializer(serializers.ModelSerializer[QuarantineEntry]):
             "decided_at",
             "decision_note",
         ]
+
+    @extend_schema_field(UnitNamesSerializer)
+    def get_unit(self, obj: QuarantineEntry) -> dict[str, Any]:
+        """The item's default sale unit and its base unit, to show quantities in packs."""
+        units = list(obj.item.units.all())
+        sale = next((u for u in units if u.is_default_sale), None)
+        base = next((u for u in units if u.is_base), None) or sale
+        return {
+            "name_ar": sale.name_ar if sale else "",
+            "name_en": sale.name_en if sale else "",
+            "factor": sale.factor if sale else 1,
+            "base_ar": base.name_ar if base else "",
+            "base_en": base.name_en if base else "",
+        }
 
     def get_expired(self, obj: QuarantineEntry) -> bool:
         return obj.batch.expiry_date is None or obj.batch.expiry_date < clock.today()

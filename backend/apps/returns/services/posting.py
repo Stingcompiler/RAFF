@@ -75,22 +75,12 @@ def return_payload(
     }
 
 
-def _post(
-    sale: Sale, device: Device, refund: str, requests: list[ReturnLineRequest], user: User, key: str
-) -> dict[str, Any]:
+def price(
+    sale: Sale, requests: list[ReturnLineRequest]
+) -> list[tuple[SaleLine, ReturnLineRequest, int, Decimal]]:
+    """Check each requested line against what is left and price the refund (server-side)."""
     if not requests:
         raise ReturnError("no_lines")
-    if sale.branch_id != device.branch_id:
-        raise ReturnError("other_branch")
-    if refund not in SaleReturn.Refund.values:
-        raise ReturnError("invalid_refund")
-    if refund == SaleReturn.Refund.ACCOUNT and sale.customer is None:
-        raise ReturnError("no_customer")
-    shift = None
-    if refund == SaleReturn.Refund.CASH:
-        shift = Shift.objects.filter(device=device, status=Shift.Status.OPEN).first()
-        if shift is None:
-            raise ReturnError("shift_closed")
     lines = {line.pk: line for line in sale.lines.select_related("item", "unit")}
     done = returned(list(lines))
     seen: set[uuid.UUID] = set()
@@ -115,7 +105,28 @@ def _post(
             else money(line.line_total * r.quantity / line.quantity)
         )
         priced.append((line, r, r.quantity * line.unit.factor, amount))
+    return priced
 
+
+def quote_return(sale: Sale, requests: list[ReturnLineRequest]) -> Decimal:
+    return money(sum((p[3] for p in price(sale, requests)), Decimal(0)))
+
+
+def _post(
+    sale: Sale, device: Device, refund: str, requests: list[ReturnLineRequest], user: User, key: str
+) -> dict[str, Any]:
+    if sale.branch_id != device.branch_id:
+        raise ReturnError("other_branch")
+    if refund not in SaleReturn.Refund.values:
+        raise ReturnError("invalid_refund")
+    if refund == SaleReturn.Refund.ACCOUNT and sale.customer is None:
+        raise ReturnError("no_customer")
+    shift = None
+    if refund == SaleReturn.Refund.CASH:
+        shift = Shift.objects.filter(device=device, status=Shift.Status.OPEN).first()
+        if shift is None:
+            raise ReturnError("shift_closed")
+    priced = price(sale, requests)
     total = money(sum((p[3] for p in priced), Decimal(0)))
     sale_return = SaleReturn.objects.create(
         number=next_number("return", "RET"),

@@ -51,6 +51,13 @@ def test_return_quarantine_and_stocktake_over_the_api(world: World) -> None:
     )
     assert too_many.status_code == 400 and too_many.json()["detail"] == "exceeds_sold"
     body["lines"][0]["quantity"] = 1
+    quoted = client.post(
+        "/api/v1/returns/quote/",
+        {"sale_id": body["sale_id"], "lines": body["lines"]},
+        format="json",
+        **csrf,
+    ).json()
+    assert quoted["total"] == "12500.0000"
     key = str(uuid.uuid4())
     posted = client.post("/api/v1/returns/", body, format="json", HTTP_IDEMPOTENCY_KEY=key, **csrf)
     assert posted.status_code == 201, posted.json()
@@ -62,6 +69,7 @@ def test_return_quarantine_and_stocktake_over_the_api(world: World) -> None:
 
     pending = client.get("/api/v1/quarantine/").json()
     assert len(pending) == 1 and pending[0]["status"] == "pending"
+    assert pending[0]["unit"]["factor"] == 14 and pending[0]["quantity_base"] == 14
     entry = pending[0]["id"]
     # The cashier may not decide; the responsible pharmacist (here the owner) may.
     denied = client.post(

@@ -994,6 +994,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReturnableSale'
           description: ''
+  /api/v1/returns/quote/:
+    post:
+      operationId: returns_quote
+      description: The refund for these lines, priced by the server (shown before
+        approval).
+      tags:
+      - returns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnQuoteIn'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnQuote'
+          description: ''
   /api/v1/roles/:
     get:
       operationId: roles_list
@@ -2552,6 +2574,10 @@ components:
         expired:
           type: boolean
           readOnly: true
+        unit:
+          allOf:
+          - $ref: '#/components/schemas/UnitNames'
+          readOnly: true
         quantity_base:
           type: integer
           maximum: 2147483647
@@ -2586,6 +2612,7 @@ components:
       - quantity_base
       - source
       - strength
+      - unit
     QuarantineEntryStatusEnum:
       enum:
       - pending
@@ -2983,6 +3010,28 @@ components:
       - refund_method
       - sale_number
       - total
+    ReturnQuote:
+      type: object
+      properties:
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - total
+    ReturnQuoteIn:
+      type: object
+      properties:
+        sale_id:
+          type: string
+          format: uuid
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnLineIn'
+      required:
+      - lines
+      - sale_id
     ReturnResult:
       type: object
       properties:
@@ -3769,6 +3818,25 @@ components:
             maxLength: 64
       required:
       - code
+      - factor
+      - name_ar
+      - name_en
+    UnitNames:
+      type: object
+      properties:
+        name_ar:
+          type: string
+        name_en:
+          type: string
+        factor:
+          type: integer
+        base_ar:
+          type: string
+        base_en:
+          type: string
+      required:
+      - base_ar
+      - base_en
       - factor
       - name_ar
       - name_en

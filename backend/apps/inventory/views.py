@@ -155,8 +155,10 @@ class QuarantineListView(APIView):
         responses=QuarantineEntrySerializer(many=True),
     )
     def get(self, request: Request) -> Response:
-        rows = QuarantineEntry.objects.filter(branch=current_branch(request)).select_related(
-            "item", "batch"
+        rows = (
+            QuarantineEntry.objects.filter(branch=current_branch(request))
+            .select_related("item", "batch")
+            .prefetch_related("item__units")
         )
         if request.query_params.get("status", "pending") == "pending":
             rows = rows.filter(status=QuarantineEntry.Status.PENDING)

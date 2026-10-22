@@ -641,6 +641,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/returns/quote/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description The refund for these lines, priced by the server (shown before approval). */
+    post: operations["returns_quote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/roles/": {
     parameters: {
       query?: never;
@@ -1388,6 +1405,7 @@ export interface components {
       /** Format: date */
       readonly expiry_date: string;
       readonly expired: boolean;
+      readonly unit: components["schemas"]["UnitNames"];
       quantity_base: number;
       source: components["schemas"]["SourceEnum"];
       reason?: string;
@@ -1563,6 +1581,15 @@ export interface components {
       /** Format: date-time */
       readonly posted_at: string;
       readonly lines_count: number;
+    };
+    ReturnQuote: {
+      /** Format: decimal */
+      total: string;
+    };
+    ReturnQuoteIn: {
+      /** Format: uuid */
+      sale_id: string;
+      lines: components["schemas"]["ReturnLineIn"][];
     };
     ReturnResult: {
       /** Format: uuid */
@@ -1856,6 +1883,13 @@ export interface components {
       /** @default false */
       is_default_sale: boolean;
       barcodes?: string[];
+    };
+    UnitNames: {
+      name_ar: string;
+      name_en: string;
+      factor: number;
+      base_ar: string;
+      base_en: string;
     };
     User: {
       /** Format: uuid */
@@ -2899,6 +2933,29 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ReturnableSale"];
+        };
+      };
+    };
+  };
+  returns_quote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReturnQuoteIn"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReturnQuote"];
         };
       };
     };

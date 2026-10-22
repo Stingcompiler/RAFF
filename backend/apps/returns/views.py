@@ -18,12 +18,15 @@ from apps.returns.serializers import (
     ReturnableSaleSerializer,
     ReturnInSerializer,
     ReturnListSerializer,
+    ReturnQuoteInSerializer,
+    ReturnQuoteSerializer,
     ReturnResultSerializer,
 )
 from apps.returns.services.posting import (
     ReturnError,
     ReturnLineRequest,
     post_return,
+    quote_return,
     return_payload,
 )
 from apps.sales.models import Sale
@@ -112,3 +115,31 @@ class ReturnListView(APIView):
         except InsufficientStock:
             raise _bad("insufficient_stock") from None
         return Response(ReturnResultSerializer(result).data, status=status.HTTP_201_CREATED)
+
+
+class ReturnQuoteView(APIView):
+    """The refund for these lines, priced by the server (shown before approval)."""
+
+    permission_classes = [requires("returns.create")]
+
+    @extend_schema(
+        operation_id="returns_quote",
+        request=ReturnQuoteInSerializer,
+        responses=ReturnQuoteSerializer,
+    )
+    def post(self, request: Request) -> Response:
+        data = ReturnQuoteInSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        sale = (
+            Sale.objects.filter(pk=data.validated_data["sale_id"], branch=current_branch(request))
+            .select_related("customer")
+            .first()
+        )
+        if sale is None:
+            raise NotFound
+        lines = [ReturnLineRequest(**line) for line in data.validated_data["lines"]]
+        try:
+            total = quote_return(sale, lines)
+        except ReturnError as exc:
+            raise _bad(exc.code, **exc.detail) from None
+        return Response(ReturnQuoteSerializer({"total": total}).data)

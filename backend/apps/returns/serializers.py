@@ -47,6 +47,15 @@ class ReturnInSerializer(serializers.Serializer[None]):
     lines = ReturnLineInSerializer(many=True, allow_empty=False)
 
 
+class ReturnQuoteInSerializer(serializers.Serializer[None]):
+    sale_id = serializers.UUIDField()
+    lines = ReturnLineInSerializer(many=True, allow_empty=False)
+
+
+class ReturnQuoteSerializer(serializers.Serializer[Any]):
+    total = serializers.DecimalField(max_digits=18, decimal_places=4)
+
+
 class ReturnResultSerializer(serializers.Serializer[Any]):
     id = serializers.UUIDField()
     number = serializers.CharField()
