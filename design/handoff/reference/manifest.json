@@ -1,0 +1,1676 @@
+[
+  {
+    "design": "Raff POS.dc.html",
+    "state": "pos",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/pos-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "pos",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/pos-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "pos",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/pos-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "pos",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/pos-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-bank",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-bank-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-bank",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-bank-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-bank",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-bank-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-bank",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-bank-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-credit",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-credit-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-credit",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-credit-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-credit",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-credit-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-credit",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-credit-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-split",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-split-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-split",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-split-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-split",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/payment-split-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "payment-split",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/payment-split-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "from-order",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/from-order-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "from-order",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/from-order-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "from-order",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/from-order-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "from-order",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/from-order-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "reconnecting",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/reconnecting-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "reconnecting",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/reconnecting-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "reconnecting",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/reconnecting-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "reconnecting",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/reconnecting-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "server-offline",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/server-offline-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "server-offline",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/server-offline-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "server-offline",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/server-offline-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "server-offline",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/server-offline-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approving",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/approving-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approving",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/approving-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approving",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/approving-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approving",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/approving-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "verifying",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/verifying-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "verifying",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/verifying-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "verifying",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/verifying-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "verifying",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/verifying-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approved",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/approved-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approved",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/approved-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approved",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/approved-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approved",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/approved-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "held-sales",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/held-sales-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "held-sales",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/held-sales-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "held-sales",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/held-sales-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "held-sales",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/held-sales-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "empty-cart",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/empty-cart-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "empty-cart",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/empty-cart-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "empty-cart",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/empty-cart-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "empty-cart",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/empty-cart-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "no-results",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/no-results-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "no-results",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/no-results-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "no-results",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/no-results-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "no-results",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/no-results-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "batches",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/batches-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "batches",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/batches-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "batches",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/batches-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "batches",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/batches-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approval-failed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/approval-failed-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approval-failed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/approval-failed-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approval-failed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/approval-failed-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "approval-failed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/approval-failed-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "shift-closed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-pos/shift-closed-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "shift-closed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1366,
+    "png": "reference/raff-pos/shift-closed-ar-light-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "shift-closed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-pos/shift-closed-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff POS.dc.html",
+    "state": "shift-closed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1366,
+    "png": "reference/raff-pos/shift-closed-en-dark-1366.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "dashboard",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/dashboard-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "dashboard",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/dashboard-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "orders",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/orders-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "orders",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/orders-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "inventory",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/inventory-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "inventory",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/inventory-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "purchases",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/purchases-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "purchases",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/purchases-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "returns",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/returns-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "returns",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/returns-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "stocktake",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/stocktake-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "stocktake",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/stocktake-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "shifts",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/shifts-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "shifts",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/shifts-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "parties",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/parties-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "parties",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/parties-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "transfers",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/transfers-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "transfers",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/transfers-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "reports",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/reports-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "reports",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/reports-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "settings",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/settings-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "settings",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/settings-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "storefront-settings",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/storefront-settings-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "storefront-settings",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/storefront-settings-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "storefront-catalog",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/storefront-catalog-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "storefront-catalog",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/storefront-catalog-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "login",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/login-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "login",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/login-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-new",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-new-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-new",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-new-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-needs-contact",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-needs-contact-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-needs-contact",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-needs-contact-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-confirmed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-confirmed-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-confirmed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-confirmed-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-preparing",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-preparing-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-preparing",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-preparing-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-ready",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-ready-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-ready",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-ready-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-completed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-completed-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-completed",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-completed-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-cancelled",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-screens/order-cancelled-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Screens.dc.html",
+    "state": "order-cancelled",
+    "locale": "en",
+    "theme": "dark",
+    "width": 1440,
+    "png": "reference/raff-screens/order-cancelled-en-dark-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/raff-mobile/default-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "dark",
+    "width": 390,
+    "png": "reference/raff-mobile/default-en-dark-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 360,
+    "png": "reference/raff-mobile/default-ar-light-360.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "dark",
+    "width": 360,
+    "png": "reference/raff-mobile/default-en-dark-360.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 412,
+    "png": "reference/raff-mobile/default-ar-light-412.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "dark",
+    "width": 412,
+    "png": "reference/raff-mobile/default-en-dark-412.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "keyboard",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/raff-mobile/keyboard-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "keyboard",
+    "locale": "en",
+    "theme": "dark",
+    "width": 390,
+    "png": "reference/raff-mobile/keyboard-en-dark-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "camera-denied",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/raff-mobile/camera-denied-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Mobile.dc.html",
+    "state": "camera-denied",
+    "locale": "en",
+    "theme": "dark",
+    "width": 390,
+    "png": "reference/raff-mobile/camera-denied-en-dark-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "home",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/home-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "home",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/home-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "home",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/home-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "home",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/home-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "store",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/store-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "store",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/store-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "store",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/store-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "store",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/store-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/product-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/product-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/product-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/product-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product-rx",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/product-rx-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product-rx",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/product-rx-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product-rx",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/product-rx-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "product-rx",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/product-rx-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "cart",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/cart-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "cart",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/cart-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "cart",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/cart-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "cart",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/cart-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-idle",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-idle-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-idle",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-idle-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-idle",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-idle-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-idle",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-idle-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-sending",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-sending-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-sending",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-sending-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-sending",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-sending-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-sending",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-sending-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-failed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-failed-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-failed",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-failed-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-failed",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-failed-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-failed",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-failed-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-verifying",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-verifying-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-verifying",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-verifying-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-verifying",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-verifying-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-verifying",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-verifying-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-success",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-success-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-success",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-success-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-success",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/checkout-success-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "checkout-success",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/checkout-success-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "order",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/order-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "order",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/order-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "order",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/order-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "order",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/order-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "track",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/track-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "track",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/track-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "track",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/track-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "track",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/track-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "about",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/about-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "about",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/about-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "about",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/about-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "about",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/about-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "contact",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/contact-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "contact",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/contact-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "contact",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/contact-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "contact",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/contact-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "policy",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/policy-ar-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "policy",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/policy-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "policy",
+    "locale": "en",
+    "theme": "light",
+    "width": 1280,
+    "png": "reference/storefront/policy-en-light-1280.png",
+    "generated": true
+  },
+  {
+    "design": "Storefront.dc.html",
+    "state": "policy",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/storefront/policy-en-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Components.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-components/default-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Components.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-components/default-en-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Landing.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-landing/default-ar-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Landing.dc.html",
+    "state": "default",
+    "locale": "ar",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/raff-landing/default-ar-light-390.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Landing.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "light",
+    "width": 1440,
+    "png": "reference/raff-landing/default-en-light-1440.png",
+    "generated": true
+  },
+  {
+    "design": "Raff Landing.dc.html",
+    "state": "default",
+    "locale": "en",
+    "theme": "light",
+    "width": 390,
+    "png": "reference/raff-landing/default-en-light-390.png",
+    "generated": true
+  }
+]
