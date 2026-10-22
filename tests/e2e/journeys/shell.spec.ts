@@ -28,7 +28,7 @@ test.describe("app shell", () => {
     await signIn(page, "salma");
     await page.goto("/dashboard");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("المتابعة");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("نظرة عامة");
   });
 
   test("user locale and theme come from cookies", async ({ page, context, baseURL }) => {

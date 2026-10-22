@@ -27,6 +27,8 @@ export default defineConfig({
   testDir: "tests/e2e",
   snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}{ext}",
   fullyParallel: true,
+  // One dev server answers every worker; more than three locally only adds queueing.
+  workers: process.env.CI ? undefined : 3,
   forbidOnly: !!process.env.CI,
   retries: 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
@@ -37,6 +39,8 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   expect: {
+    // Postings run real transactions on a single dev server; 5 s is tight under parallel load.
+    timeout: 10_000,
     toHaveScreenshot: { maxDiffPixelRatio: 0.02, animations: "disabled", caret: "hide" },
   },
   projects: [

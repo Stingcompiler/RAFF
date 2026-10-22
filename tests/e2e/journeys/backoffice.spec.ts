@@ -22,21 +22,22 @@ test.describe("overview, parties, transfers, reports", () => {
     await expect(expiry).toContainText("2026-12-02");
   });
 
-  test("accountant records a collection and sees it in the ledger", async ({ page }) => {
+  test("accountant records an advance payment and sees it in the ledger", async ({ page }) => {
     await signIn(page, "huda");
     await page.goto("/parties");
+    // Al-Nour: no other journey touches it (the POS journeys sell on credit to Al-Amal).
     const customers = page.getByRole("table", { name: "العملاء" });
-    const amal = customers.getByRole("row", { name: /مركز الأمل الطبي/ });
-    await expect(amal).toContainText("84,000");
-    await amal.click();
+    const nour = customers.getByRole("row", { name: /عيادة النور/ });
+    await expect(nour).toContainText("0 ج.س");
+    await nour.click();
     await page.getByRole("button", { name: "تسجيل دفعة" }).click();
     const dialog = page.getByRole("dialog", { name: "تسجيل دفعة" });
     await dialog.getByLabel("المبلغ").fill("4000");
-    await expect(dialog).toContainText("80,000 ج.س");
+    await expect(dialog).toContainText("-4,000 ج.س"); // an advance: the clinic is in credit
     await dialog.getByRole("button", { name: "تسجيل" }).click();
     await expect(page.getByText(/سُجّلت الدفعة PAY-/)).toBeVisible();
-    await expect(amal).toContainText("80,000");
-    const ledger = page.getByRole("table", { name: /دفتر الحركات — مركز الأمل/ });
+    await expect(nour).toContainText("-4,000");
+    const ledger = page.getByRole("table", { name: /دفتر الحركات — عيادة النور/ });
     await expect(ledger.getByRole("row", { name: /دفعة PAY-/ })).toContainText("4,000");
   });
 
