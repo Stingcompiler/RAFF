@@ -13,5 +13,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY frontend frontend
 RUN mkdir -p frontend/.next && chown -R node:node /workspace/frontend
 USER node
+WORKDIR /workspace/frontend
 EXPOSE 3000
-CMD ["pnpm", "--dir", "frontend", "dev", "--hostname", "0.0.0.0"]
+# Start Next directly: `pnpm dev` would re-check dependencies at startup and try to
+# reinstall into the root-owned /workspace/node_modules as the unprivileged user.
+CMD ["./node_modules/.bin/next", "dev", "--port", "3000", "--hostname", "0.0.0.0"]

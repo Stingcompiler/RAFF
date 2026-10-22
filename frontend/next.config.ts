@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
     return [{ source: "/api/:path*", destination: `${apiOrigin}/api/:path*/` }];
   },
   skipTrailingSlashRedirect: true,
+  // `next dev` must not write files into the (bind-mounted) source tree.
+  agentRules: false,
 };
 
 export default withNextIntl(nextConfig);
