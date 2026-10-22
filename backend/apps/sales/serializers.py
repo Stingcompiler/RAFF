@@ -24,6 +24,7 @@ class PosItemSerializer(serializers.Serializer[Any]):
     units = UnitSerializer(many=True)
     price = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
     sellable_base = serializers.IntegerField()
+    reserved_base = serializers.IntegerField()
     nearest_expiry = serializers.DateField(allow_null=True)
     status = serializers.ChoiceField(["good", "near_expiry", "low", "out", "expired"])
     barcodes = serializers.ListField(child=serializers.CharField())
@@ -79,6 +80,7 @@ class PaymentInSerializer(serializers.Serializer[None]):
 
 
 class SaleInSerializer(serializers.Serializer[None]):
+    order_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     lines = LineInSerializer(many=True, allow_empty=False)
     payments = PaymentInSerializer(many=True, allow_empty=False)
     customer_id = serializers.UUIDField(required=False, allow_null=True, default=None)

@@ -31,6 +31,7 @@ from apps.orders.serializers import (
     OrdersSummarySerializer,
     PlacedSerializer,
     PlaceOrderSerializer,
+    PosOrderSerializer,
     PublicOrderSerializer,
     StaffOrderRowSerializer,
     StaffOrderSerializer,
@@ -314,3 +315,42 @@ class NoteView(APIView):
             order.pk, data.validated_data["internal_note"], request.user
         )
         return Response(StaffOrderSerializer(staff_order(order)).data)
+
+
+class OrderToPosView(APIView):
+    """A ready order as a POS cart (its lines, held batches). Only in 'ready'."""
+
+    permission_classes = [requires("pos.sell")]
+
+    @extend_schema(operation_id="orders_pos", responses=PosOrderSerializer)
+    def get(self, request: Request, pk: uuid.UUID) -> Response:
+        from apps.sales.selectors import pos_items
+        from apps.sales.serializers import PosItemSerializer
+
+        order = _mine(request, pk)
+        if order.status != Order.Status.READY:
+            raise ValidationError({"detail": "order_not_ready"})
+        lines = list(order.lines.all())
+        rows = {
+            r["id"]: r for r in pos_items(order.branch, "", ids=[str(li.item_id) for li in lines])
+        }
+        return Response(
+            PosOrderSerializer(
+                {
+                    "order": {
+                        "id": order.pk,
+                        "number": order.number,
+                        "customer_name": order.customer_name,
+                    },
+                    "lines": [
+                        {
+                            "item": PosItemSerializer(rows[li.item_id]).data,
+                            "unit_id": li.unit_id,
+                            "quantity": li.quantity,
+                        }
+                        for li in lines
+                        if li.item_id in rows
+                    ],
+                }
+            ).data
+        )

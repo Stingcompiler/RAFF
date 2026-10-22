@@ -163,4 +163,52 @@ test.describe("point of sale", () => {
     await page.getByRole("button", { name: "تسجيل طلب غير متوفر" }).click();
     await expect(page.getByText("سُجّل الطلب")).toBeVisible();
   });
+
+  test("a ready storefront order becomes one sale and completes", async ({ page }) => {
+    await page.request.get("/api/v1/auth/csrf/");
+    const token = async () =>
+      (await page.context().cookies()).find((c) => c.name === "csrftoken")?.value ?? "";
+    const placed = await page.request.post("/api/v1/public/orders/", {
+      data: {
+        name: "زبون المتجر",
+        phone: "0911111111",
+        note: "",
+        agree: true,
+        lines: [{ slug: "par-500", quantity: 2 }],
+      },
+      headers: { "x-csrftoken": await token(), "idempotency-key": crypto.randomUUID() },
+    });
+    expect(placed.ok(), await placed.text()).toBe(true);
+    const { number } = await placed.json();
+
+    await atCounter(page);
+    const headers = { "x-csrftoken": await token() };
+    const [row] = await (await page.request.get(`/api/v1/orders/?q=${number}`)).json();
+    for (const to of ["confirmed", "preparing", "ready"]) {
+      const moved = await page.request.post(`/api/v1/orders/${row.id}/transition/`, {
+        data: { to },
+        headers,
+      });
+      expect(moved.ok(), await moved.text()).toBe(true);
+    }
+
+    await search(page).fill("Paracetamol");
+    await expect(page.getByRole("option", { name: /Paracetamol/ })).toContainText("محجوزة");
+
+    await page.goto(`/pos?order=${row.id}`);
+    await expect(page.getByTestId("from-order")).toContainText(number);
+    await expect(lines(page)).toHaveCount(1);
+    await expect(lines(page).first().getByRole("button", { name: "حذف السطر" })).toBeDisabled();
+    await expect(total(page)).toHaveText("1,600 ج.س");
+    await page.keyboard.press("F8");
+    await page
+      .getByRole("dialog", { name: "الدفع" })
+      .getByRole("button", { name: "اعتماد البيع" })
+      .click();
+    await expect(page.getByRole("dialog", { name: "اعتُمد البيع" })).toBeVisible();
+
+    const done = await (await page.request.get(`/api/v1/orders/${row.id}/`)).json();
+    expect(done.status).toBe("completed");
+    expect(done.sale_number).toMatch(/^INV-/);
+  });
 });

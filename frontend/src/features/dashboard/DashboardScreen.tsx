@@ -153,7 +153,11 @@ export function DashboardScreen({ initial, canAll }: Props) {
           />
           <StatTile
             label={t("storeToday")}
-            note={t("storeNote")}
+            note={
+              data.reserved_orders
+                ? t("reservedNote", { count: data.reserved_orders })
+                : t("storeNote")
+            }
             trio={[
               { value: String(data.store_today.new), label: t("new") },
               { value: String(data.store_today.confirmed), label: t("confirmed") },

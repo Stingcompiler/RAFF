@@ -8,9 +8,28 @@ if TYPE_CHECKING:
     from apps.orders.models import Order
 
 
-def reserved_base(branch_id: uuid.UUID | None, item_ids: list[uuid.UUID]) -> dict[uuid.UUID, int]:
-    """Base units held for confirmed orders, per item. Reservations arrive with WO-09."""
-    return {}
+def reserved_base(
+    branch_id: uuid.UUID | None,
+    item_ids: list[uuid.UUID],
+    *,
+    exclude_order: uuid.UUID | None = None,
+) -> dict[uuid.UUID, int]:
+    """Base units held for confirmed orders, per item."""
+    from django.db.models import Sum
+
+    from apps.orders.models import StockReservation
+
+    if branch_id is None:
+        return {}
+    rows = (
+        StockReservation.objects.filter(
+            branch_id=branch_id, item_id__in=item_ids, status=StockReservation.Status.ACTIVE
+        )
+        .exclude(order_id=exclude_order)
+        .values("item_id")
+        .annotate(q=Sum("quantity_base"))
+    )
+    return {r["item_id"]: r["q"] or 0 for r in rows}
 
 
 def public_order(order: Order) -> dict[str, Any]:
@@ -54,8 +73,11 @@ def staff_order(order: Order) -> dict[str, Any]:
         r["id"]: r["sellable_base"]
         for r in pos_items(order.branch, "", ids=[str(li.item_id) for li in lines])
     }
-    held = reserved_base(order.branch_id, [li.item_id for li in lines])
-    sale = getattr(order, "sale_link", None)
+    # What this order can still get: the shelf less what other orders hold.
+    held = reserved_base(order.branch_id, [li.item_id for li in lines], exclude_order=order.pk)
+    from apps.orders.models import OrderInvoiceLink
+
+    link = OrderInvoiceLink.objects.filter(order=order).select_related("sale").first()
     return {
         "id": order.pk,
         "number": order.number,
@@ -99,6 +121,6 @@ def staff_order(order: Order) -> dict[str, Any]:
             }
             for e in order.events.select_related("actor")
         ],
-        "sale_number": sale.sale.number if sale else None,
+        "sale_number": link.sale.number if link else None,
         "whatsapp": storefront_settings().whatsapp,
     }

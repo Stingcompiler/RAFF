@@ -107,6 +107,47 @@ def _payments(
     return payments
 
 
+def _order_allocations(order: Any, priced: list[PricedLine]) -> list[list[tuple[Batch, int]]]:
+    """An order's sale takes exactly the batches its reservations hold."""
+    from apps.orders.models import StockReservation
+
+    wanted = sorted((li.item_id, li.unit_id, li.quantity) for li in order.lines.all())
+    asked = sorted((li.item.pk, li.unit.pk, li.quantity) for li in priced)
+    if wanted != asked:
+        raise SaleError("order_lines_changed")
+    held: dict[uuid.UUID, list[StockReservation]] = {}
+    for r in order.reservations.filter(status=StockReservation.Status.ACTIVE).select_related(
+        "batch"
+    ):
+        held.setdefault(r.item_id, []).append(r)
+    out = []
+    for line in priced:
+        taken = []
+        need = line.base_quantity
+        for r in held.get(line.item.pk, []):
+            q = min(need, r.quantity_base)
+            if q > 0:
+                taken.append((r.batch, q))
+                r.quantity_base -= q
+                need -= q
+        if need:
+            raise SaleError("order_not_reserved", line=line.line_no)
+        out.append(taken)
+    return out
+
+
+def _complete_order(order: Any, sale: Sale, user: User) -> None:
+    from apps.orders.models import Order, OrderEvent, OrderInvoiceLink, StockReservation
+
+    StockReservation.objects.filter(order=order, status=StockReservation.Status.ACTIVE).update(
+        status=StockReservation.Status.CONSUMED
+    )
+    OrderInvoiceLink.objects.create(order=order, sale=sale)
+    order.status = Order.Status.COMPLETED
+    order.save(update_fields=["status", "updated_at"])
+    OrderEvent.objects.create(order=order, status=order.status, actor=user, note=sale.number)
+
+
 def _post(
     *,
     device: Device,
@@ -116,6 +157,7 @@ def _post(
     customer_id: uuid.UUID | None,
     can_discount: bool,
     key: str,
+    order: Any = None,
 ) -> dict[str, Any]:
     branch = device.branch
     shift = Shift.objects.filter(device=device, status=Shift.Status.OPEN).first()
@@ -129,12 +171,26 @@ def _post(
     q = quote(lines, can_discount=can_discount)
     payments = _payments(q.total, payments, customer)
 
+    from apps.orders.services.reserving import held_by_batch, lock_reservations
+
+    if order is not None and (order.status != "ready" or order.branch_id != branch.pk):
+        raise SaleError("order_not_ready")
     number = next_number("sale", "INV")
-    candidates = lock_candidates(branch.pk, {line.item.pk for line in q.lines})
-    used: dict[uuid.UUID, int] = {}
-    allocations = [
-        (line, allocate(line, candidates.get(line.item.pk, []), used)) for line in q.lines
-    ]
+    item_ids = {line.item.pk for line in q.lines}
+    candidates = lock_candidates(branch.pk, item_ids)
+    # Units held for confirmed storefront orders are not for sale at the counter.
+    held = held_by_batch(
+        lock_reservations(branch.pk, item_ids), exclude_order=order.pk if order else None
+    )
+    used: dict[uuid.UUID, int] = {
+        b.pk: held.get(b.batch_id, 0) for balances in candidates.values() for b in balances
+    }
+    if order is not None:
+        allocations = list(zip(q.lines, _order_allocations(order, q.lines), strict=True))
+    else:
+        allocations = [
+            (line, allocate(line, candidates.get(line.item.pk, []), used)) for line in q.lines
+        ]
     shelf = location(branch, Location.Kind.SELLABLE)
     sale = Sale(
         number=number,
@@ -238,6 +294,8 @@ def _post(
     locked = Shift.objects.select_for_update().get(pk=shift.pk)
     if locked.status != Shift.Status.OPEN:
         raise SaleError("shift_closed")
+    if order is not None:
+        _complete_order(order, sale, user)
     record("post", "sale", sale.pk, actor=user, branch=branch, number=number, total=str(q.total))
     return {
         "id": str(sale.pk),
@@ -252,9 +310,11 @@ def sale_payload(
     customer_id: uuid.UUID | None,
     lines: list[LineRequest],
     payments: list[PaymentRequest],
+    order_id: uuid.UUID | None = None,
 ) -> dict[str, Any]:
     """What an Idempotency-Key is bound to: the same key with a different cart is a 409."""
     return {
+        "order": str(order_id) if order_id else None,
         "device": str(device.pk),
         "customer": str(customer_id) if customer_id else None,
         "lines": [
@@ -277,18 +337,13 @@ def post_sale(
     customer_id: uuid.UUID | None,
     can_discount: bool,
     idempotency_key: str | None,
+    order_id: uuid.UUID | None = None,
 ) -> dict[str, Any]:
-    payload = {
-        "device": str(device.pk),
-        "customer": str(customer_id) if customer_id else None,
-        "lines": [
-            [str(x.item_id), str(x.unit_id), x.quantity, str(x.discount_pct), str(x.batch_id)]
-            for x in lines
-        ],
-        "payments": [
-            [p.method, str(p.amount), str(p.tendered), p.bank_reference] for p in payments
-        ],
-    }
+    from apps.orders.models import Order
+
+    # LOCKING.md step 1: an order being turned into a sale is the document.
+    order = Order.objects.select_for_update().get(pk=order_id) if order_id else None
+    payload = sale_payload(device, customer_id, lines, payments, order_id)
     key = idempotency_key or ""
     return run_once(
         "post_sale",
@@ -302,5 +357,6 @@ def post_sale(
             customer_id=customer_id,
             can_discount=can_discount,
             key=key,
+            order=order,
         ),
     )

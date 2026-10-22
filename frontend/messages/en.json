@@ -588,7 +588,11 @@
     "batchChosen": "Chosen batch",
     "dismiss": "Close",
     "printFailed": "Printing failed",
-    "brand": "Raff"
+    "brand": "Raff",
+    "fromOrder": "■ Order {number} — {name} — reserved",
+    "locked": "Batches locked",
+    "reserved": "({count} reserved)",
+    "orderLine": "From the order"
   },
   "returns": {
     "title": "Returns & quarantine",
@@ -776,7 +780,8 @@
       "verifying": "Bank — verifying",
       "to_inspect": "Awaiting check"
     },
-    "none": "No operations today."
+    "none": "No operations today.",
+    "reservedNote": "Held for {count} orders"
   },
   "shifts": {
     "title": "Shifts & cash",
@@ -1293,7 +1298,8 @@
       "consent_required": "Record the customer's consent",
       "not_editable": "Cannot edit in this status",
       "failed": "Could not save"
-    }
+    },
+    "toPos": "Turn into an invoice at the POS"
   },
   "storeAdmin": {
     "catT": "Published catalog",

@@ -55,9 +55,11 @@ def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
     if to in NEEDS_REASON and not reason.strip():
         raise WorkflowError("reason_required")
     hooks = _hooks()
+    automatic = ""
     if hooks is not None:
-        to = hooks.on_transition(order, to, user)
+        to, automatic = hooks.on_transition(order, to, user)
     order.status = to
+    reason = automatic or reason
     if to in NEEDS_REASON or reason.strip():
         order.reason = reason.strip()[:300]
     if order.assigned_to_id is None:

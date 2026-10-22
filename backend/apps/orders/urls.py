@@ -13,4 +13,5 @@ urlpatterns: list[URLPattern | URLResolver] = [
     path("orders/<uuid:pk>/transition/", views.TransitionView.as_view()),
     path("orders/<uuid:pk>/lines/", views.EditLinesView.as_view()),
     path("orders/<uuid:pk>/note/", views.NoteView.as_view()),
+    path("orders/<uuid:pk>/pos/", views.OrderToPosView.as_view()),
 ]

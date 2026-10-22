@@ -954,6 +954,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaffOrder'
           description: ''
+  /api/v1/orders/{id}/pos/:
+    get:
+      operationId: orders_pos
+      description: A ready order as a POS cart (its lines, held batches). Only in
+        'ready'.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PosOrder'
+          description: ''
   /api/v1/orders/{id}/transition/:
     post:
       operationId: orders_transition
@@ -3415,6 +3438,20 @@ components:
       required:
       - quantity
       - slug
+    OrderRef:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        customer_name:
+          type: string
+      required:
+      - customer_name
+      - id
+      - number
     OrderStatusEnum:
       enum:
       - new
@@ -3460,6 +3497,8 @@ components:
           type: integer
         store_today:
           $ref: '#/components/schemas/StoreToday'
+        reserved_orders:
+          type: integer
         sales_today:
           type: string
           format: decimal
@@ -3493,6 +3532,7 @@ components:
       - near_expiry_days
       - needs_action
       - open_shift
+      - reserved_orders
       - sales_count
       - sales_today
       - store_today
@@ -3797,6 +3837,8 @@ components:
           nullable: true
         sellable_base:
           type: integer
+        reserved_base:
+          type: integer
         nearest_expiry:
           type: string
           format: date
@@ -3817,12 +3859,40 @@ components:
       - name_en
       - nearest_expiry
       - price
+      - reserved_base
       - rx
       - sellable_base
       - status
       - strength
       - unit
       - units
+    PosOrder:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderRef'
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/PosOrderLine'
+      required:
+      - lines
+      - order
+    PosOrderLine:
+      type: object
+      properties:
+        item:
+          type: object
+          additionalProperties: {}
+        unit_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+      required:
+      - item
+      - quantity
+      - unit_id
     PostResult:
       type: object
       properties:
@@ -4884,6 +4954,10 @@ components:
     SaleIn:
       type: object
       properties:
+        order_id:
+          type: string
+          format: uuid
+          nullable: true
         lines:
           type: array
           items:

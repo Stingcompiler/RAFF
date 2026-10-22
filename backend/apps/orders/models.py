@@ -90,3 +90,52 @@ class OrderEvent(OrgScopedModel):
 
     def __str__(self) -> str:
         return f"{self.order_id}:{self.status}"
+
+
+class StockReservation(OrgScopedModel):
+    """Units held on the shelf for a confirmed order. Selling them at the counter is refused;
+    turning the order into a sale consumes them; cancelling releases them."""
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", "Held"
+        CONSUMED = "consumed", "Sold"
+        RELEASED = "released", "Released"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    branch = models.ForeignKey(Branch, on_delete=models.PROTECT, related_name="+")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="reservations")
+    line = models.ForeignKey(OrderLine, on_delete=models.CASCADE, related_name="reservations")
+    item = models.ForeignKey(Item, on_delete=models.PROTECT, related_name="+")
+    batch = models.ForeignKey("inventory.Batch", on_delete=models.PROTECT, related_name="+")
+    quantity_base = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["branch", "item", "status"])]
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(quantity_base__gt=0), name="reservation_qty_positive"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.order_id}:{self.batch_id}x{self.quantity_base}:{self.status}"
+
+
+class OrderInvoiceLink(OrgScopedModel):
+    """One order, one sale: the reference that stops an order becoming two invoices."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name="+")
+    sale = models.ForeignKey("sales.Sale", on_delete=models.PROTECT, related_name="+")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["organization", "order"], name="one_sale_per_order"),
+            models.UniqueConstraint(fields=["organization", "sale"], name="one_order_per_sale"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.order_id}->{self.sale_id}"

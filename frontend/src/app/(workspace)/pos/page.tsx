@@ -4,7 +4,10 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { buttonClasses } from "@/components/ui/Button";
 import { ToastProvider } from "@/components/ui/Toast";
 import { PosScreen } from "@/features/pos/PosScreen";
-import type { PosItem, ShiftSummary } from "@/features/pos/types";
+import type { FromOrder, PosItem, ShiftSummary } from "@/features/pos/types";
+import type { Schemas } from "@/lib/api/types";
+
+type PosOrder = Schemas["PosOrder"];
 import { serverGet } from "@/lib/api/server";
 import { cn } from "@/lib/cn";
 import { requireMe } from "@/lib/session";
@@ -20,7 +23,7 @@ const NO_SHIFT: ShiftSummary = {
 };
 
 /** Full-screen point of sale (no sidebar shell). Needs a counter chosen for this session. */
-export default async function PosPage() {
+export default async function PosPage({ searchParams }: PageProps<"/pos">) {
   const me = await requireMe();
   const t = await getTranslations("pos");
   const tCommon = await getTranslations("common");
@@ -38,9 +41,13 @@ export default async function PosPage() {
     );
   }
 
-  const [items, shift] = await Promise.all([
+  const orderId = (await searchParams).order;
+  const [items, shift, fromOrder] = await Promise.all([
     serverGet<PosItem[]>("/pos/items/?q="),
     serverGet<ShiftSummary>("/shifts/current/"),
+    typeof orderId === "string" && /^[0-9a-f-]{36}$/.test(orderId)
+      ? serverGet<PosOrder>(`/orders/${orderId}/pos/`).catch(() => null)
+      : null,
   ]);
   const name = ar ? me.user.display_name_ar : me.user.display_name_en;
   return (
@@ -54,6 +61,9 @@ export default async function PosPage() {
         canOpenShift={me.permissions.includes("shifts.manage")}
         initialItems={items ?? []}
         initialShift={shift ?? NO_SHIFT}
+        fromOrder={
+          fromOrder ? { ...fromOrder.order, lines: fromOrder.lines as FromOrder["lines"] } : null
+        }
       />
     </ToastProvider>
   );

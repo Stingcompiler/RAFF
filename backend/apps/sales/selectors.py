@@ -21,6 +21,9 @@ def pos_items(
         qs = qs.order_by("code")
     items: list[Item] = list(_with_price(qs.prefetch_related("units__barcodes"))[:limit])
     stock = stock_for_items(branch, items)
+    from apps.orders.selectors import reserved_base
+
+    held = reserved_base(branch.pk, [i.pk for i in items])
     rows = []
     for item in items:
         st = stock[item.pk]
@@ -39,6 +42,7 @@ def pos_items(
                 "units": list(item.units.all()),
                 "price": getattr(item, "price", None),
                 "sellable_base": st.sellable_base,
+                "reserved_base": held.get(item.pk, 0),
                 "nearest_expiry": st.nearest_expiry,
                 "status": st.status,
                 "barcodes": [b.code for u in item.units.all() for b in u.barcodes.all()],

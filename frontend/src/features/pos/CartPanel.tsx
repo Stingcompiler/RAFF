@@ -19,6 +19,7 @@ const F4 = "F4";
 const MAX_QTY = 999;
 
 type Props = {
+  fromOrder?: { number: string; customer_name: string } | null;
   lines: CartLine[];
   quoted: QuoteState;
   customerName: string | null;
@@ -45,6 +46,20 @@ export function CartPanel(props: Props) {
 
   return (
     <aside className="flex min-w-[420px] flex-[38] flex-col border-s border-line bg-sidebar">
+      {props.fromOrder && (
+        <div
+          data-testid="from-order"
+          className="flex flex-none items-center gap-[8px] border-b border-line bg-info-bg px-[16px] py-[10px] font-medium text-info"
+        >
+          <span className="min-w-0 flex-1 truncate">
+            {t("fromOrder", {
+              number: props.fromOrder.number,
+              name: props.fromOrder.customer_name,
+            })}
+          </span>
+          <span className="text-[12px] whitespace-nowrap">{t("locked")}</span>
+        </div>
+      )}
       <div className="flex items-center justify-between border-b border-line px-[16px] py-[12px]">
         <span className="text-[16px] font-medium">{t("cart")}</span>
         <span className="flex items-center gap-[6px] rounded-[8px] border border-line bg-surface px-[12px] py-[6px] text-[13px]">
@@ -85,6 +100,7 @@ export function CartPanel(props: Props) {
                 <button
                   type="button"
                   aria-label={t("del")}
+                  disabled={line.locked}
                   onClick={() => props.onRemove(line.key)}
                   className="type-inherit -m-[6px] grid size-[44px] flex-none cursor-pointer place-items-center rounded-[8px] border-0 bg-transparent p-0 text-muted transition-[background,color] duration-150 hover:bg-danger-bg hover:text-danger"
                 >
@@ -110,6 +126,7 @@ export function CartPanel(props: Props) {
                   {unitChip}
                   <select
                     aria-label={t("hUnit")}
+                    disabled={line.locked}
                     value={line.unit.id}
                     onChange={(e) => {
                       const unit = line.item.units.find((u) => u.id === e.target.value);
@@ -126,10 +143,15 @@ export function CartPanel(props: Props) {
                 </label>
                 <button
                   type="button"
+                  disabled={line.locked}
                   onClick={() => props.onBatch(line.key)}
                   className="type-inherit cursor-pointer rounded-[6px] border border-dashed border-line bg-transparent px-[8px] py-[3px] text-ink"
                 >
-                  {line.batch ? line.batch.no || t("batchChosen") : t("fefo")}
+                  {line.locked
+                    ? t("locked")
+                    : line.batch
+                      ? line.batch.no || t("batchChosen")
+                      : t("fefo")}
                 </button>
                 <span dir="ltr" className="tabular-nums">
                   {ql ? cur(ql.unit_price) : ""}
@@ -147,7 +169,7 @@ export function CartPanel(props: Props) {
                     inputMode="numeric"
                     aria-label={t("discL")}
                     value={line.discountPct}
-                    disabled={!canDiscount}
+                    disabled={!canDiscount || line.locked}
                     onChange={(e) =>
                       props.onChange(line.key, { discountPct: digits(e.target.value, 100) })
                     }
@@ -164,6 +186,7 @@ export function CartPanel(props: Props) {
                   <button
                     type="button"
                     aria-label={t("decrease")}
+                    disabled={line.locked}
                     onClick={() =>
                       props.onChange(line.key, { quantity: Math.max(1, line.quantity - 1) })
                     }
@@ -176,6 +199,7 @@ export function CartPanel(props: Props) {
                     type="text"
                     inputMode="numeric"
                     aria-label={t("qtyL")}
+                    readOnly={line.locked}
                     value={line.quantity}
                     onChange={(e) =>
                       props.onChange(line.key, { quantity: digits(e.target.value, MAX_QTY) })
@@ -188,6 +212,7 @@ export function CartPanel(props: Props) {
                   <button
                     type="button"
                     aria-label={t("increase")}
+                    disabled={line.locked}
                     onClick={() =>
                       props.onChange(line.key, {
                         quantity: Math.min(MAX_QTY, line.quantity + 1),

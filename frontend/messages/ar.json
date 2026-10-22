@@ -588,7 +588,11 @@
     "batchChosen": "دفعة محددة",
     "dismiss": "إغلاق",
     "printFailed": "تعذّرت الطباعة",
-    "brand": "رَفّ"
+    "brand": "رَفّ",
+    "fromOrder": "■ طلب {number} — {name} — محجوز",
+    "locked": "الدفعات مقفلة",
+    "reserved": "({count} محجوزة)",
+    "orderLine": "من الطلب"
   },
   "returns": {
     "title": "المرتجعات والحجر",
@@ -776,7 +780,8 @@
       "verifying": "بنكي — تحقق",
       "to_inspect": "بانتظار الفحص"
     },
-    "none": "لا عمليات اليوم."
+    "none": "لا عمليات اليوم.",
+    "reservedNote": "محجوز لـ {count} طلبات"
   },
   "shifts": {
     "title": "الورديات والخزينة",
@@ -1293,7 +1298,8 @@
       "consent_required": "سجّل موافقة الزبون",
       "not_editable": "لا يمكن التعديل في هذه الحالة",
       "failed": "تعذّر الحفظ"
-    }
+    },
+    "toPos": "تحويل إلى فاتورة في نقطة البيع"
   },
   "storeAdmin": {
     "catT": "الكتالوج المنشور",
