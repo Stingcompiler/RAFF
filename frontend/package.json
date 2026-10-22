@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start --port 3000",
     "lint": "eslint . --max-warnings 0 && stylelint \"src/**/*.css\" && prettier --check . && node lint-tests/run.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "openapi": "openapi-typescript ../backend/openapi/schema.yaml -o src/lib/api/schema.d.ts && prettier --write src/lib/api/schema.d.ts"
   },
