@@ -3,5 +3,7 @@ packages:
 
 allowBuilds:
   "@parcel/watcher": true
-  "@swc/core": true
+  # Only next-intl's optional message extractor uses it; its postinstall fails in
+  # containers (cache dir checks) and the prebuilt optional binding is enough.
+  "@swc/core": false
   unrs-resolver: true
