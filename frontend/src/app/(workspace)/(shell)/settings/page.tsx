@@ -23,7 +23,7 @@ export default async function SettingsPage() {
   const ar = (await getLocale()) === "ar";
   const canUsers = me.permissions.includes("users.manage");
   const canSettings = me.permissions.includes("settings.manage");
-  const [users, roles, branches, devices, current, license, events] = await Promise.all([
+  const [users, roles, branches, devices, current, license, events, backup] = await Promise.all([
     canUsers ? serverGet<User[]>("/users/") : null,
     canUsers ? serverGet<Role[]>("/roles/") : null,
     serverGet<Branch[]>("/branches/"),
@@ -31,6 +31,7 @@ export default async function SettingsPage() {
     serverGet<DeviceInfo>("/auth/device/"),
     serverGet<Schemas["LicenseStatus"]>("/licensing/status/"),
     canSettings ? serverGet<Schemas["AuditEvent"][]>("/audit/events/?limit=30") : null,
+    canSettings ? serverGet<Schemas["BackupStatus"]>("/backup/status/") : null,
   ]);
   return (
     <>
@@ -55,7 +56,7 @@ export default async function SettingsPage() {
           )
         }
       />
-      <SystemTiles />
+      <SystemTiles backup={backup} />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-7 grid min-w-0 gap-[16px] max-[1180px]:col-span-12">
           {users && roles && branches ? (

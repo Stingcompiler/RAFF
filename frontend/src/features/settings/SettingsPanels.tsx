@@ -23,14 +23,32 @@ import { timeOfDay } from "@/lib/format";
 
 const DASH = "—";
 
-/** Backup and sync figures arrive with WO-10 / WO-11; until then they say so. */
-export function SystemTiles() {
+/** Last good backup and restore drill (recorded by infra/backup scripts); sync is WO-11. */
+export function SystemTiles({ backup }: { backup: Schemas["BackupStatus"] | null }) {
   const t = useTranslations("settings");
+  const ok = backup?.last_ok;
+  const drill = backup?.last_restore_test;
   return (
     <div className="mb-[16px] grid grid-cols-3 gap-[16px]">
-      <StatTile label={t("lastBackup")} value={t("notYet")} note={t("notConfigured")} />
+      <StatTile
+        label={t("lastBackup")}
+        value={ok ? [ok.at.slice(0, 10), timeOfDay(ok.at)].join(" ") : t("notYet")}
+        note={
+          backup?.failing && backup.last_failed
+            ? t("backupFailed", { detail: backup.last_failed.detail || DASH })
+            : ok
+              ? ok.offsite
+                ? t("offsite")
+                : t("localOnly")
+              : t("notConfigured")
+        }
+      />
       <StatTile label={t("pendingSync")} value="0" note={t("noErrors")} />
-      <StatTile label={t("restoreTest")} value={t("notYet")} note={t("notConfigured")} />
+      <StatTile
+        label={t("restoreTest")}
+        value={drill ? drill.at.slice(0, 10) : t("notYet")}
+        note={drill ? drill.detail : t("notConfigured")}
+      />
     </div>
   );
 }

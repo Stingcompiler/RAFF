@@ -20,10 +20,14 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # Production image: runtime dependencies only, served by Gunicorn.
 FROM base AS prod
+ARG RAFF_VERSION=dev
 COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --frozen --no-dev --no-install-project
 COPY . .
-ENV DJANGO_SETTINGS_MODULE=config.settings.prod
+# The media volume takes this directory's owner on first use: the app must be able to write it.
+RUN mkdir -p /media && chown raff:raff /media
+ENV DJANGO_SETTINGS_MODULE=config.settings.prod \
+    RAFF_VERSION=${RAFF_VERSION}
 USER raff
 EXPOSE 8000
 CMD ["gunicorn", "config.wsgi", "--bind", "0.0.0.0:8000", "--workers", "3"]

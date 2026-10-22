@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 def test_health_reports_ok_without_authentication() -> None:
     response = APIClient().get("/api/v1/health/")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok", "database": "ok"}
+    assert response.json() == {"status": "ok", "database": "ok", "version": "dev"}
 
 
 def test_health_rejects_state_changes() -> None:

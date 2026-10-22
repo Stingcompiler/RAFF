@@ -1,0 +1,110 @@
+# Production stack on the pharmacy's server: `infra/install.sh` creates .env and starts it.
+# Only Caddy publishes ports; Postgres, Django and Next talk on the internal network.
+name: raff
+
+services:
+  postgres:
+    image: postgres:17.11-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?run infra/install.sh}
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    image: raff/backend:${RAFF_TAG:-current}
+    build:
+      context: ../../backend
+      target: prod
+      args:
+        RAFF_VERSION: ${RAFF_VERSION:-dev}
+    restart: unless-stopped
+    command: >-
+      sh -c "python manage.py migrate --noinput &&
+      gunicorn config.wsgi --bind 0.0.0.0:8000 --workers ${GUNICORN_WORKERS:-3}
+      --timeout 60 --access-logfile -"
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?}
+      DJANGO_ALLOWED_HOSTS: ${SITE_HOST:?},backend,localhost,127.0.0.1
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${SITE_ORIGIN:?}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SINGLE_ORG_ID: ${SINGLE_ORG_ID:?}
+      RAFF_LICENSE_FILE: /license/LICENSE.json
+      RAFF_LICENSE_PUBLIC_KEY: ${RAFF_LICENSE_PUBLIC_KEY:-}
+      RAFF_MEDIA_ROOT: /media
+      RAFF_TELEGRAM_BOT_TOKEN: ${RAFF_TELEGRAM_BOT_TOKEN:-}
+      RAFF_DEMO_PASSWORD: ${RAFF_DEMO_PASSWORD:-}
+    volumes:
+      - media:/media
+      - ./license:/license:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/', timeout=3)"
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  frontend:
+    image: raff/frontend:${RAFF_TAG:-current}
+    build:
+      context: ../..
+      dockerfile: frontend/Dockerfile
+      target: prod
+    restart: unless-stopped
+    environment:
+      RAFF_API_ORIGIN: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/login').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 20s
+
+  caddy:
+    image: caddy:2.8.4-alpine
+    restart: unless-stopped
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:?}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - media:/srv/media:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  media:
+  caddy_data:
+  caddy_config:

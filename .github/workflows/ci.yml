@@ -139,3 +139,54 @@ jobs:
         run: docker compose -f infra/compose/compose.yaml --env-file infra/compose/.env logs
       - if: always()
         run: make down
+
+  # WO-10 acceptance: install the production stack, back up, wipe the server, restore with
+  # one command on the "clean" machine, and prove a failed update rolls back by itself.
+  deploy-drill:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      COMPOSE: docker compose -p raff -f infra/prod/compose.yaml --env-file infra/prod/.env
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Install (plain HTTP)
+        run: >-
+          sudo RAFF_OWNER_PASSWORD=drill-owner-pass infra/install.sh --http
+          --org "Drill Pharmacy" --branch-code KRT --branch-ar "فرع الخرطوم" --branch-en Khartoum
+          --owner owner --owner-ar "المالك" --owner-en Owner --no-cron
+      - name: Sample data
+        run: sudo $COMPOSE exec -T -e RAFF_DEMO_PASSWORD=drill-demo-pass backend python manage.py seed_demo
+      - name: Served through Caddy
+        run: |
+          curl -fsS http://localhost/api/v1/health/
+          curl -fsS -o /dev/null http://localhost/login
+          curl -fsS http://localhost/api/v1/public/products/ | grep -q par-500
+      - name: Backup
+        run: |
+          echo "BACKUP=$(sudo infra/backup/backup.sh | tail -n 1)" >> "$GITHUB_ENV"
+          echo "ITEMS=$(sudo $COMPOSE exec -T postgres psql -U raff -d raff -tAc 'SELECT count(*) FROM catalog_item')" >> "$GITHUB_ENV"
+      - name: Wipe the server (a clean replacement)
+        run: |
+          sudo cp infra/prod/backup.key /tmp/backup.key
+          sudo $COMPOSE down --volumes
+          sudo rm -f infra/prod/.env infra/prod/backup.key
+      - name: Restore with one command
+        run: sudo infra/restore.sh "$BACKUP" --key /tmp/backup.key --http
+      - name: The data came back
+        run: |
+          test "$(sudo $COMPOSE exec -T postgres psql -U raff -d raff -tAc 'SELECT count(*) FROM catalog_item')" = "$ITEMS"
+          curl -fsS http://localhost/api/v1/public/products/ | grep -q par-500
+      - name: Weekly restore drill
+        run: sudo infra/restore.sh --verify-latest
+      - name: A failed update rolls back
+        run: |
+          set +e
+          sudo RAFF_UPDATE_SIMULATE_FAILURE=1 infra/update.sh
+          code=$?
+          set -e
+          test "$code" -ne 0
+          curl -fsS http://localhost/api/v1/health/
+          test "$(sudo $COMPOSE exec -T postgres psql -U raff -d raff -tAc 'SELECT count(*) FROM catalog_item')" = "$ITEMS"
+      - name: Logs
+        if: failure()
+        run: sudo $COMPOSE logs --tail 200
