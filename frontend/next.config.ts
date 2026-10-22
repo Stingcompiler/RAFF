@@ -3,6 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
+// Read at build time (`next build`) and dev start: rewrites are baked into the build.
 const apiOrigin = process.env.RAFF_API_ORIGIN ?? "http://localhost:8000";
 
 const nextConfig: NextConfig = {
