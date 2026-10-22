@@ -56,6 +56,28 @@
   --brand-ink: var(--primary-ink);
 }
 
+/*
+ * Supplementary values used verbatim by the approved design files but not in
+ * the 21-token table (see docs/spec/BACKLOG.md, "supplementary tokens").
+ * Theme-independent: backdrops, shadows, the always-light receipt, and the
+ * light-only storefront and gallery surfaces.
+ */
+:root {
+  --scrim: #0f1a17;
+  --receipt-paper: #ffffff;
+  --receipt-ink: #111111;
+  --line-strong: #d5dccb;
+  --ink-soft: #4a5a50;
+  --placeholder-bg: #eef1e6;
+  --placeholder-ink: #8a968d;
+  --canvas: #e4e7dc;
+  --elev-dialog: 0 20px 50px rgba(0, 0, 0, 0.3);
+  --elev-drawer: -12px 0 40px rgba(0, 0, 0, 0.18);
+  --elev-tile: 0 8px 20px rgba(23, 45, 41, 0.1);
+  --elev-segment: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --elev-receipt: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
 @theme inline {
   /* Drop Tailwind's default palette: only the tokens below exist as colors. */
   --color-*: initial;
@@ -80,11 +102,22 @@
   --color-focus: var(--focus);
   --color-brand: var(--brand);
   --color-brand-ink: var(--brand-ink);
+  --color-scrim: var(--scrim);
+  --color-receipt-paper: var(--receipt-paper);
+  --color-receipt-ink: var(--receipt-ink);
+  --color-line-strong: var(--line-strong);
+  --color-ink-soft: var(--ink-soft);
+  --color-placeholder-bg: var(--placeholder-bg);
+  --color-placeholder-ink: var(--placeholder-ink);
+  --color-canvas: var(--canvas);
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  /* The one shadow in the system: dialogs only. */
-  --shadow-dialog: 0 20px 50px rgba(0, 0, 0, 0.3);
+  --shadow-dialog: var(--elev-dialog);
+  --shadow-drawer: var(--elev-drawer);
+  --shadow-tile: var(--elev-tile);
+  --shadow-segment: var(--elev-segment);
+  --shadow-receipt: var(--elev-receipt);
 
   --font-sans: "IBM Plex Sans Arabic", "IBM Plex Sans", sans-serif;
   --font-latin: "IBM Plex Sans", "IBM Plex Sans Arabic", sans-serif;
