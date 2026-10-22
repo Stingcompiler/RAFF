@@ -13,8 +13,10 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.accounts.models import User
+from apps.audit.services.log import record
 from apps.catalog.models import Item, ItemUnit
 from apps.finance.money import money
+from apps.finance.services.ledger import charge_supplier, post_journal
 from apps.inventory.models import Batch, Location, StockMovement
 from apps.inventory.services.stock import Move, apply_movements, location
 from apps.purchasing.models import GoodsReceipt, GoodsReceiptLine, Supplier
@@ -178,6 +180,31 @@ def _post(receipt: GoodsReceipt, user: User) -> dict[str, Any]:
         user=user,
     )
     GoodsReceiptLine.objects.bulk_update(lines, ["base_quantity", "cost_per_base", "held"])
+    inventory_value = receipt.total + bonus_value
+    post_journal(
+        branch=receipt.branch,
+        date=receipt.invoice_date,
+        document_type="goods_receipt",
+        document_id=receipt.pk,
+        lines=[
+            ("1200", inventory_value, Decimal(0)),
+            ("2000", Decimal(0), receipt.total),
+            ("4100", Decimal(0), bonus_value),
+        ],
+        memo=receipt.supplier_invoice_no,
+    )
+    charge_supplier(
+        receipt.supplier_id, receipt.total, document_type="goods_receipt", document_id=receipt.pk
+    )
+    record(
+        "post",
+        "goods_receipt",
+        receipt.pk,
+        actor=user,
+        branch=receipt.branch,
+        number=receipt.number,
+        total=str(receipt.total),
+    )
     receipt.status = GoodsReceipt.Status.POSTED
     receipt.posted_at = timezone.now()
     receipt.posted_by = user
