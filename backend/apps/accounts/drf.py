@@ -10,7 +10,7 @@ from rest_framework.request import Request
 
 from apps.accounts.models import User
 from apps.accounts.services.session import current_context
-from apps.tenancy.models import Branch
+from apps.tenancy.models import Branch, Device
 
 
 def has_code(request: Request, code: str) -> bool:
@@ -48,3 +48,14 @@ def idempotency_key(request: Request) -> str:
     if not key:
         raise ValidationError({"detail": "idempotency_key_required"})
     return key
+
+
+def current_device(request: Request) -> Device:
+    """The counter chosen for this session; 403 when none (selling needs a counter)."""
+    user = request.user
+    if not isinstance(user, User):
+        raise PermissionDenied("not_signed_in")
+    device = current_context(request._request, user).device
+    if device is None:
+        raise PermissionDenied("no_counter")
+    return device
