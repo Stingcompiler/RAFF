@@ -42,7 +42,9 @@ ignore = ["S101", "RUF012"]
 
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*" = ["F405"]
-"**/tests/**" = ["DJ008", "S105", "S106"]
+"**/tests/**" = ["DJ008", "S105", "S106", "RUF001"]
+# Arabic-Indic digits are mapped on purpose.
+"apps/catalog/search.py" = ["RUF001"]
 
 [tool.mypy]
 strict = true

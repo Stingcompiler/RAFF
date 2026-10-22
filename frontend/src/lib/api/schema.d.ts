@@ -135,6 +135,166 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/catalog/barcode/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_barcode_lookup"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/categories/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_categories_list"];
+    put?: never;
+    post: operations["catalog_categories_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/export/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_items_export"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/imports/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["catalog_imports_preview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/imports/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_imports_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/imports/{id}/apply/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["catalog_imports_apply"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/items/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_items_list"];
+    put?: never;
+    post: operations["catalog_items_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/items/{id}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_items_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["catalog_items_update"];
+    trace?: never;
+  };
+  "/api/v1/catalog/items/{id}/prices/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["catalog_items_price"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/catalog/price-lists/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["catalog_price_lists"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/devices/": {
     parameters: {
       query?: never;
@@ -258,6 +418,10 @@ export interface components {
       /** Format: uuid */
       branch_id?: string | null;
     };
+    BarcodeLookup: {
+      item: components["schemas"]["ItemList"];
+      unit: components["schemas"]["Unit"];
+    };
     Branch: {
       /** Format: uuid */
       readonly id: string;
@@ -268,6 +432,19 @@ export interface components {
       city_en?: string;
       receipt_locale?: components["schemas"]["ReceiptLocaleEnum"];
     };
+    Category: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+    };
+    /**
+     * @description * `otc` - Over the counter
+     *     * `rx` - Prescription
+     * @enum {string}
+     */
+    ClassificationEnum: "otc" | "rx";
     Context: {
       /** Format: uuid */
       branch_id: string;
@@ -300,6 +477,79 @@ export interface components {
       status: string;
       database: string;
     };
+    ImportBatch: {
+      /** Format: uuid */
+      readonly id: string;
+      file_name: string;
+      status?: components["schemas"]["StatusEnum"];
+      summary?: unknown;
+      rows?: unknown;
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      applied_at?: string | null;
+    };
+    ImportUpload: {
+      /** Format: uri */
+      file: string;
+    };
+    ItemCreate: {
+      code: string;
+      name_ar: string;
+      name_en: string;
+      /** @default  */
+      generic_name: string;
+      /** @default  */
+      strength: string;
+      /** @default  */
+      dosage_form: string;
+      /** Format: uuid */
+      category_id?: string | null;
+      /** @default otc */
+      classification: components["schemas"]["ClassificationEnum"];
+      /** @default 0 */
+      reorder_level_base: number;
+      units: components["schemas"]["UnitInput"][];
+      /** Format: decimal */
+      price?: string;
+    };
+    ItemDetail: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      generic_name?: string;
+      strength?: string;
+      dosage_form?: string;
+      classification?: components["schemas"]["ClassificationEnum"];
+      category: components["schemas"]["Category"] | null;
+      is_active?: boolean;
+      readonly sale_unit: components["schemas"]["Unit"] | null;
+      /** Format: decimal */
+      price: string | null;
+      reorder_level_base?: number;
+      readonly units: components["schemas"]["Unit"][];
+      readonly prices: components["schemas"]["Price"][];
+      /** Format: date-time */
+      readonly updated_at: string;
+    };
+    ItemList: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      generic_name?: string;
+      strength?: string;
+      dosage_form?: string;
+      classification?: components["schemas"]["ClassificationEnum"];
+      category: components["schemas"]["Category"] | null;
+      is_active?: boolean;
+      readonly sale_unit: components["schemas"]["Unit"] | null;
+      /** Format: decimal */
+      price: string | null;
+    };
     LicenseStatus: {
       state: components["schemas"]["StateEnum"];
       organization: string | null;
@@ -326,10 +576,52 @@ export interface components {
       display_name_ar: string;
       display_name_en: string;
     };
+    PatchedItemUpdate: {
+      name_ar?: string;
+      name_en?: string;
+      generic_name?: string;
+      strength?: string;
+      dosage_form?: string;
+      /** Format: uuid */
+      category_id?: string | null;
+      classification?: components["schemas"]["ClassificationEnum"];
+      reorder_level_base?: number;
+      is_active?: boolean;
+    };
     PatchedUserUpdate: {
       is_active?: boolean;
       assignments?: components["schemas"]["Assignment"][];
       password?: string;
+    };
+    Price: {
+      /** Format: uuid */
+      readonly id: string;
+      price_list: string;
+      unit: string;
+      /** Format: decimal */
+      price: string;
+      /** Format: date */
+      effective_from: string;
+      /** Format: date-time */
+      readonly created_at: string;
+    };
+    PriceInput: {
+      /** Format: uuid */
+      unit_id: string;
+      /** Format: decimal */
+      price: string;
+      /** @default retail */
+      price_list: string;
+      /** Format: date */
+      effective_from?: string;
+    };
+    PriceList: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      is_default?: boolean;
     };
     /**
      * @description * `ar` - ar
@@ -352,6 +644,34 @@ export interface components {
      * @enum {string}
      */
     StateEnum: "valid" | "missing" | "invalid";
+    /**
+     * @description * `preview` - Preview
+     *     * `applied` - Applied
+     * @enum {string}
+     */
+    StatusEnum: "preview" | "applied";
+    Unit: {
+      /** Format: uuid */
+      readonly id: string;
+      code: string;
+      name_ar: string;
+      name_en: string;
+      factor: number;
+      is_base?: boolean;
+      is_default_sale?: boolean;
+      readonly barcodes: string[];
+    };
+    UnitInput: {
+      code: string;
+      name_ar: string;
+      name_en: string;
+      factor: number;
+      /** @default false */
+      is_base: boolean;
+      /** @default false */
+      is_default_sale: boolean;
+      barcodes?: string[];
+    };
     User: {
       /** Format: uuid */
       readonly id: string;
@@ -535,6 +855,291 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Branch"];
+        };
+      };
+    };
+  };
+  catalog_barcode_lookup: {
+    parameters: {
+      query: {
+        code: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["BarcodeLookup"];
+        };
+      };
+    };
+  };
+  catalog_categories_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Category"][];
+        };
+      };
+    };
+  };
+  catalog_categories_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["Category"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Category"];
+        };
+      };
+    };
+  };
+  catalog_items_export: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "text/csv": string;
+        };
+      };
+    };
+  };
+  catalog_imports_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["ImportUpload"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportBatch"];
+        };
+      };
+    };
+  };
+  catalog_imports_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportBatch"];
+        };
+      };
+    };
+  };
+  catalog_imports_apply: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportBatch"];
+        };
+      };
+    };
+  };
+  catalog_items_list: {
+    parameters: {
+      query?: {
+        active?: boolean;
+        category?: string;
+        limit?: number;
+        offset?: number;
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ItemList"][];
+        };
+      };
+    };
+  };
+  catalog_items_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ItemCreate"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ItemDetail"];
+        };
+      };
+    };
+  };
+  catalog_items_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ItemDetail"];
+        };
+      };
+    };
+  };
+  catalog_items_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedItemUpdate"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ItemDetail"];
+        };
+      };
+    };
+  };
+  catalog_items_price: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PriceInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ItemDetail"];
+        };
+      };
+    };
+  };
+  catalog_price_lists: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PriceList"][];
         };
       };
     };

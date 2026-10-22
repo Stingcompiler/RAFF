@@ -133,6 +133,282 @@ paths:
               schema:
                 $ref: '#/components/schemas/Branch'
           description: ''
+  /api/v1/catalog/barcode/:
+    get:
+      operationId: catalog_barcode_lookup
+      parameters:
+      - in: query
+        name: code
+        schema:
+          type: string
+        required: true
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BarcodeLookup'
+          description: ''
+  /api/v1/catalog/categories/:
+    get:
+      operationId: catalog_categories_list
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+    post:
+      operationId: catalog_categories_create
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/catalog/export/:
+    get:
+      operationId: catalog_items_export
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            text/csv:
+              schema:
+                type: string
+          description: ''
+  /api/v1/catalog/imports/:
+    post:
+      operationId: catalog_imports_preview
+      tags:
+      - catalog
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportUpload'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportBatch'
+          description: ''
+  /api/v1/catalog/imports/{id}/:
+    get:
+      operationId: catalog_imports_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportBatch'
+          description: ''
+  /api/v1/catalog/imports/{id}/apply/:
+    post:
+      operationId: catalog_imports_apply
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportBatch'
+          description: ''
+  /api/v1/catalog/items/:
+    get:
+      operationId: catalog_items_list
+      parameters:
+      - in: query
+        name: active
+        schema:
+          type: boolean
+      - in: query
+        name: category
+        schema:
+          type: string
+      - in: query
+        name: limit
+        schema:
+          type: integer
+      - in: query
+        name: offset
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemList'
+          description: ''
+    post:
+      operationId: catalog_items_create
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDetail'
+          description: ''
+  /api/v1/catalog/items/{id}/:
+    get:
+      operationId: catalog_items_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDetail'
+          description: ''
+    patch:
+      operationId: catalog_items_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedItemUpdate'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDetail'
+          description: ''
+  /api/v1/catalog/items/{id}/prices/:
+    post:
+      operationId: catalog_items_price
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - catalog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceInput'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemDetail'
+          description: ''
+  /api/v1/catalog/price-lists/:
+    get:
+      operationId: catalog_price_lists
+      tags:
+      - catalog
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceList'
+          description: ''
   /api/v1/devices/:
     get:
       operationId: devices_list
@@ -310,6 +586,16 @@ components:
           nullable: true
       required:
       - role_id
+    BarcodeLookup:
+      type: object
+      properties:
+        item:
+          $ref: '#/components/schemas/ItemList'
+        unit:
+          $ref: '#/components/schemas/Unit'
+      required:
+      - item
+      - unit
     Branch:
       type: object
       properties:
@@ -339,6 +625,35 @@ components:
       - id
       - name_ar
       - name_en
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 120
+        name_en:
+          type: string
+          maxLength: 120
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
+    ClassificationEnum:
+      enum:
+      - otc
+      - rx
+      type: string
+      description: |-
+        * `otc` - Over the counter
+        * `rx` - Prescription
     Context:
       type: object
       properties:
@@ -425,6 +740,212 @@ components:
       required:
       - database
       - status
+    ImportBatch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        file_name:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        summary: {}
+        rows: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        applied_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - created_at
+      - file_name
+      - id
+    ImportUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: uri
+      required:
+      - file
+    ItemCreate:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        generic_name:
+          type: string
+          default: ''
+          maxLength: 200
+        strength:
+          type: string
+          default: ''
+          maxLength: 60
+        dosage_form:
+          type: string
+          default: ''
+          maxLength: 40
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+        classification:
+          allOf:
+          - $ref: '#/components/schemas/ClassificationEnum'
+          default: otc
+        reorder_level_base:
+          type: integer
+          minimum: 0
+          default: 0
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/UnitInput'
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - code
+      - name_ar
+      - name_en
+      - units
+    ItemDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        generic_name:
+          type: string
+          maxLength: 200
+        strength:
+          type: string
+          maxLength: 60
+        dosage_form:
+          type: string
+          maxLength: 40
+        classification:
+          $ref: '#/components/schemas/ClassificationEnum'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/Category'
+          nullable: true
+        is_active:
+          type: boolean
+        sale_unit:
+          allOf:
+          - $ref: '#/components/schemas/Unit'
+          nullable: true
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        reorder_level_base:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/Unit'
+          readOnly: true
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Price'
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - code
+      - id
+      - name_ar
+      - name_en
+      - price
+      - prices
+      - sale_unit
+      - units
+      - updated_at
+    ItemList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 40
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        generic_name:
+          type: string
+          maxLength: 200
+        strength:
+          type: string
+          maxLength: 60
+        dosage_form:
+          type: string
+          maxLength: 40
+        classification:
+          $ref: '#/components/schemas/ClassificationEnum'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/Category'
+          nullable: true
+        is_active:
+          type: boolean
+        sale_unit:
+          allOf:
+          - $ref: '#/components/schemas/Unit'
+          nullable: true
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+      required:
+      - category
+      - code
+      - id
+      - name_ar
+      - name_en
+      - price
+      - sale_unit
     LicenseStatus:
       type: object
       properties:
@@ -510,6 +1031,35 @@ components:
       - display_name_en
       - id
       - username
+    PatchedItemUpdate:
+      type: object
+      properties:
+        name_ar:
+          type: string
+          maxLength: 200
+        name_en:
+          type: string
+          maxLength: 200
+        generic_name:
+          type: string
+          maxLength: 200
+        strength:
+          type: string
+          maxLength: 60
+        dosage_form:
+          type: string
+          maxLength: 40
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+        classification:
+          $ref: '#/components/schemas/ClassificationEnum'
+        reorder_level_base:
+          type: integer
+          minimum: 0
+        is_active:
+          type: boolean
     PatchedUserUpdate:
       type: object
       properties:
@@ -523,6 +1073,78 @@ components:
           type: string
           maxLength: 200
           minLength: 8
+    Price:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        price_list:
+          type: string
+        unit:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        effective_from:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - effective_from
+      - id
+      - price
+      - price_list
+      - unit
+    PriceInput:
+      type: object
+      properties:
+        unit_id:
+          type: string
+          format: uuid
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+        price_list:
+          type: string
+          default: retail
+          maxLength: 20
+        effective_from:
+          type: string
+          format: date
+      required:
+      - price
+      - unit_id
+    PriceList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name_ar:
+          type: string
+          maxLength: 80
+        name_en:
+          type: string
+          maxLength: 80
+        is_default:
+          type: boolean
+      required:
+      - code
+      - id
+      - name_ar
+      - name_en
     ReceiptLocaleEnum:
       enum:
       - ar
@@ -567,6 +1189,82 @@ components:
         * `valid` - valid
         * `missing` - missing
         * `invalid` - invalid
+    StatusEnum:
+      enum:
+      - preview
+      - applied
+      type: string
+      description: |-
+        * `preview` - Preview
+        * `applied` - Applied
+    Unit:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        code:
+          type: string
+          maxLength: 20
+        name_ar:
+          type: string
+          maxLength: 40
+        name_en:
+          type: string
+          maxLength: 40
+        factor:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        is_base:
+          type: boolean
+        is_default_sale:
+          type: boolean
+        barcodes:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - barcodes
+      - code
+      - factor
+      - id
+      - name_ar
+      - name_en
+    UnitInput:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 20
+          pattern: ^[-a-zA-Z0-9_]+$
+        name_ar:
+          type: string
+          maxLength: 40
+        name_en:
+          type: string
+          maxLength: 40
+        factor:
+          type: integer
+          minimum: 1
+        is_base:
+          type: boolean
+          default: false
+        is_default_sale:
+          type: boolean
+          default: false
+        barcodes:
+          type: array
+          items:
+            type: string
+            maxLength: 64
+      required:
+      - code
+      - factor
+      - name_ar
+      - name_en
     User:
       type: object
       properties:

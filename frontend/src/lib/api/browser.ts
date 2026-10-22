@@ -61,3 +61,35 @@ async function send<T>(
     ? { ok: true, status: res.status, data: data as T }
     : { ok: false, status: res.status, error: data as Record<string, unknown> | null };
 }
+
+/** Download a file from the API (e.g. a CSV export) without leaving the page. */
+export async function apiDownload(path: string, fileName: string): Promise<boolean> {
+  const res = await fetch(`/api/v1${path}`, { credentials: "same-origin" }).catch(() => null);
+  if (!res?.ok) return false;
+  const url = URL.createObjectURL(await res.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+  return true;
+}
+
+/** Multipart upload (CSV imports). */
+export async function apiUpload<T>(path: string, form: FormData): Promise<ApiResult<T>> {
+  let res: Response;
+  try {
+    res = await fetch(`/api/v1${path}`, {
+      method: "POST",
+      headers: { accept: "application/json", "x-csrftoken": await csrfToken() },
+      credentials: "same-origin",
+      body: form,
+    });
+  } catch {
+    return { ok: false, status: 0, error: null };
+  }
+  const data = await res.json().catch(() => null);
+  return res.ok
+    ? { ok: true, status: res.status, data: data as T }
+    : { ok: false, status: res.status, error: data as Record<string, unknown> | null };
+}

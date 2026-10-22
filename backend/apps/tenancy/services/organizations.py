@@ -14,7 +14,9 @@ from apps.tenancy.models import Organization
 def create_organization(name: str, org_id: uuid.UUID | None = None) -> Organization:
     org = Organization.objects.create(id=org_id or uuid.uuid4(), name=name)
     from apps.accounts.services.users import ensure_default_roles
+    from apps.catalog.services.items import ensure_default_price_lists
 
     with org_context(org.id):
         ensure_default_roles()
+        ensure_default_price_lists()
     return org
