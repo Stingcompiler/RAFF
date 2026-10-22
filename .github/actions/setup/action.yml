@@ -1,0 +1,26 @@
+name: Set up toolchain
+description: uv + Python, pnpm + Node, and installed dependencies.
+inputs:
+  playwright:
+    description: Install the Playwright Chromium browser
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@v10.3.2
+      with:
+        version: "0.12.15"
+        enable-cache: true
+        cache-dependency-glob: backend/uv.lock
+    - run: uv sync --directory backend --frozen
+      shell: bash
+    - uses: pnpm/action-setup@v6.1.0
+    - uses: actions/setup-node@v7.1.0
+      with:
+        node-version: "24.22.1"
+        cache: pnpm
+    - run: pnpm install --frozen-lockfile
+      shell: bash
+    - if: inputs.playwright == 'true'
+      run: pnpm exec playwright install --with-deps chromium
+      shell: bash

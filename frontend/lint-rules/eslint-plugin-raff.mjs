@@ -1,0 +1,113 @@
+// ESLint plugin enforcing CLAUDE.md rules 11 (token colors) and 12 (logical properties).
+import {
+  findPhysicalClass,
+  findPhysicalInCssText,
+  findRawColorInText,
+  PHYSICAL_PROPERTIES_CAMEL,
+  PHYSICAL_VALUE_PROPERTIES_CAMEL,
+  PHYSICAL_VALUES,
+} from "./patterns.mjs";
+
+const LOOKS_LIKE_CSS = /[a-z-]+\s*:\s*[^;]+;/i;
+
+/** Yield [node, text] for every string literal and template chunk in the file. */
+function stringVisitors(check) {
+  return {
+    Literal(node) {
+      if (typeof node.value === "string") check(node, node.value);
+    },
+    TemplateElement(node) {
+      check(node, node.value.cooked ?? node.value.raw);
+    },
+    JSXText(node) {
+      check(node, node.value);
+    },
+  };
+}
+
+function propertyName(prop) {
+  if (prop.type !== "Property" || prop.computed) return null;
+  if (prop.key.type === "Identifier") return prop.key.name;
+  if (prop.key.type === "Literal" && typeof prop.key.value === "string") return prop.key.value;
+  return null;
+}
+
+function staticString(node) {
+  if (node.type === "Literal" && typeof node.value === "string") return node.value;
+  if (node.type === "TemplateLiteral" && node.expressions.length === 0) {
+    return node.quasis[0].value.cooked ?? "";
+  }
+  return null;
+}
+
+const noRawColor = {
+  meta: {
+    type: "problem",
+    docs: { description: "Colors only via design tokens (src/styles/tokens.css)." },
+    schema: [],
+    messages: {
+      raw: "Raw color ({{what}}). Use a design token utility (bg-surface, text-ink, …).",
+    },
+  },
+  create(context) {
+    return stringVisitors((node, text) => {
+      const what = findRawColorInText(text);
+      if (what) context.report({ node, messageId: "raw", data: { what } });
+    });
+  },
+};
+
+const noPhysicalProperties = {
+  meta: {
+    type: "problem",
+    docs: { description: "Logical CSS properties only (ps-*, ms-*, text-start, border-s…)." },
+    schema: [],
+    messages: {
+      cls: 'Physical utility "{{what}}". Use the logical form (ms-/me-/ps-/pe-/start-/end-/text-start/border-s/rounded-s).',
+      css: 'Physical CSS "{{what}}". Use the logical property (margin-inline-start, inset-inline-start, text-align: start…).',
+    },
+  },
+  create(context) {
+    const strings = stringVisitors((node, text) => {
+      const cls = findPhysicalClass(text);
+      if (cls) {
+        context.report({ node, messageId: "cls", data: { what: cls } });
+        return;
+      }
+      if (LOOKS_LIKE_CSS.test(text)) {
+        const css = findPhysicalInCssText(text);
+        if (css) context.report({ node, messageId: "css", data: { what: css } });
+      }
+    });
+    return {
+      ...strings,
+      // style={{ marginLeft: 4, textAlign: "left" }}
+      "JSXAttribute[name.name='style'] ObjectExpression > Property"(prop) {
+        const name = propertyName(prop);
+        if (!name) return;
+        if (PHYSICAL_PROPERTIES_CAMEL.has(name)) {
+          context.report({ node: prop.key, messageId: "css", data: { what: name } });
+          return;
+        }
+        const value = staticString(prop.value);
+        if (
+          PHYSICAL_VALUE_PROPERTIES_CAMEL.has(name) &&
+          value !== null &&
+          PHYSICAL_VALUES.has(value.trim().toLowerCase())
+        ) {
+          context.report({ node: prop, messageId: "css", data: { what: `${name}: ${value}` } });
+        }
+      },
+    };
+  },
+};
+
+const plugin = {
+  meta: { name: "eslint-plugin-raff" },
+  rules: {
+    "no-raw-color": noRawColor,
+    "no-physical-properties": noPhysicalProperties,
+  },
+};
+
+export default plugin;

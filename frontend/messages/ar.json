@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "رَفّ"
+  },
+  "nav": {
+    "dashboard": "المتابعة",
+    "orders": "الطلبات",
+    "inventory": "الأصناف والمخزون",
+    "purchases": "المشتريات",
+    "returns": "المرتجعات والحجر",
+    "stocktake": "الجرد",
+    "shifts": "الورديات والخزينة",
+    "parties": "العملاء والموردون",
+    "transfers": "التحويلات",
+    "reports": "التقارير",
+    "settings": "الإعدادات",
+    "storefrontCatalog": "الكتالوج المنشور",
+    "storefrontSettings": "المتجر",
+    "login": "الدخول"
+  },
+  "placeholder": {
+    "body": "هذه الصفحة قيد الإنشاء."
+  }
+}

@@ -1,0 +1,13 @@
+/* Negative fixture: every declaration must be reported by raff/no-raw-color. */
+.a {
+  color: #245c4f;
+}
+.b {
+  background: rgba(0, 0, 0, 0.3);
+}
+.c {
+  border-color: red;
+}
+.d {
+  @apply bg-blue-600;
+}

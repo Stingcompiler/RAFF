@@ -1,0 +1,36 @@
+# pip install pre-commit (or `uvx pre-commit`) && pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff-check
+        args: [--config, backend/pyproject.toml]
+        files: ^backend/
+      - id: ruff-format
+        args: [--config, backend/pyproject.toml]
+        files: ^backend/
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        entry: bash -c 'cd frontend && pnpm exec eslint --max-warnings 0 "${@#frontend/}"' --
+        language: system
+        files: ^frontend/.*\.(ts|tsx|mjs)$
+        exclude: ^frontend/lint-tests/fixtures/
+      - id: stylelint
+        name: stylelint
+        entry: bash -c 'cd frontend && pnpm exec stylelint "${@#frontend/}"' --
+        language: system
+        files: ^frontend/src/.*\.css$
+      - id: prettier
+        name: prettier
+        entry: pnpm exec prettier --check --ignore-unknown
+        language: system
+        files: ^(frontend/|tests/|design/handoff/generate-reference\.mjs|playwright\.config\.ts)
+        exclude: ^frontend/lint-tests/fixtures/|\.(png|woff2?)$
+      - id: tsc
+        name: tsc (frontend)
+        entry: pnpm --dir frontend typecheck
+        language: system
+        files: ^frontend/.*\.tsx?$
+        pass_filenames: false

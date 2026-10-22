@@ -1,0 +1,24 @@
+{
+  "app": {
+    "name": "Raff"
+  },
+  "nav": {
+    "dashboard": "Overview",
+    "orders": "Orders",
+    "inventory": "Items & stock",
+    "purchases": "Purchasing",
+    "returns": "Returns & quarantine",
+    "stocktake": "Stocktake",
+    "shifts": "Shifts & cash",
+    "parties": "Customers & suppliers",
+    "transfers": "Transfers",
+    "reports": "Reports",
+    "settings": "Settings",
+    "storefrontCatalog": "Published catalog",
+    "storefrontSettings": "Storefront",
+    "login": "Sign-in"
+  },
+  "placeholder": {
+    "body": "This page is under construction."
+  }
+}
