@@ -130,11 +130,11 @@ export function LicensePanel({ license }: { license: Schemas["LicenseStatus"] })
         </Badge>
         {license.organization && (
           <div className="flex justify-between gap-[12px]">
-            <span className="text-muted">{t("licensee")}</span>
+            <span className="text-text-muted">{t("licensee")}</span>
             <span>{license.organization}</span>
           </div>
         )}
-        <p className="m-0 text-[13px] text-muted">{t("licenseNote")}</p>
+        <p className="m-0 text-[13px] text-text-muted">{t("licenseNote")}</p>
       </div>
     </Panel>
   );
@@ -145,7 +145,7 @@ export function ReceiptPanel({ locale, branch }: { locale: "ar" | "en"; branch: 
   const ar = locale === "ar";
   return (
     <Panel title={t("receipt")} note={t("receiptLocale", { locale: ar ? "العربية" : "English" })}>
-      <div className="grid place-items-center bg-canvas p-[16px]">
+      <div className="grid place-items-center bg-surface-subtle p-[16px]">
         <ReceiptPreview
           data={{
             locale,

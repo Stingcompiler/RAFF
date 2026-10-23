@@ -73,6 +73,26 @@ export function findRawColorInText(text) {
   return null;
 }
 
+// Names of the pre-v2.2 color tokens (WO-15). They no longer exist, so a class using one
+// silently renders nothing: fail the build instead.
+const LEGACY_NAMES =
+  "bg|sidebar|ink|muted|line|line-strong|primary|primary-ink|brand-ink|accent|ink-soft|" +
+  "placeholder-bg|placeholder-ink|success|warn|danger|info|warn-bg";
+const COLOR_PREFIXES =
+  "border-[xytrblse]|border|bg|text|ring-offset|ring|outline|fill|stroke|from|via|to|" +
+  "decoration|divide|placeholder|caret|accent";
+const LEGACY_CLASS = new RegExp(`^-?(?:${COLOR_PREFIXES})-(?:${LEGACY_NAMES})(?:/\\d+)?$`);
+const LEGACY_VAR = new RegExp(`var\\(--color-(?:${LEGACY_NAMES})\\)`);
+
+/** Return the first pre-v2.2 color token (class or CSS variable) in free text, or null. */
+export function findLegacyToken(text) {
+  for (const token of classTokens(text)) {
+    if (LEGACY_CLASS.test(token)) return token;
+  }
+  const variable = LEGACY_VAR.exec(text);
+  return variable ? variable[0] : null;
+}
+
 /** Return the first physical Tailwind class in a class string, or null. */
 export function findPhysicalClass(text) {
   for (const token of classTokens(text)) {

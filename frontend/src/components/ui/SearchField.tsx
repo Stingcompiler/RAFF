@@ -17,17 +17,17 @@ export function SearchField({ shortcut, label, className, wrapperClassName, ...p
   return (
     <div
       className={cn(
-        "flex h-[48px] items-center gap-[8px] rounded-[10px] border border-line bg-surface px-[14px]",
-        "focus-within:border-primary focus-within:shadow-[0_0_0_3px_var(--color-focus)]",
+        "flex h-[48px] items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[14px]",
+        "focus-within:border-brand focus-within:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
         wrapperClassName,
       )}
     >
-      <SearchIcon className="flex-none text-muted" />
+      <SearchIcon className="flex-none text-text-muted" />
       <input
         type="search"
         aria-label={label}
         className={cn(
-          "min-w-0 flex-1 border-0 bg-transparent p-0 text-[14px] text-ink outline-none placeholder:text-muted",
+          "min-w-0 flex-1 border-0 bg-transparent p-0 text-[14px] text-text outline-none placeholder:text-text-muted",
           className,
         )}
         {...props}

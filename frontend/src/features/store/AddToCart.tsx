@@ -47,12 +47,12 @@ export function AddToCart({ product }: { product: Product }) {
   }
   return (
     <div className="flex flex-wrap items-center gap-[12px]">
-      <span className="flex items-center overflow-hidden rounded-[10px] border border-line-strong bg-surface">
+      <span className="flex items-center overflow-hidden rounded-[10px] border border-border-strong bg-surface">
         <button
           type="button"
           aria-label={t("decrease")}
           onClick={() => setQty((q) => Math.max(1, q - 1))}
-          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-ink"
+          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-text"
         >
           {MINUS}
         </button>
@@ -63,7 +63,7 @@ export function AddToCart({ product }: { product: Product }) {
           type="button"
           aria-label={t("increase")}
           onClick={() => setQty((q) => Math.min(20, q + 1))}
-          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-ink"
+          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-text"
         >
           {PLUS}
         </button>

@@ -25,7 +25,7 @@ export function WhatsAppAction({
       <button
         type="button"
         onClick={() => void navigator.clipboard?.writeText(message)}
-        className="min-h-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent px-[16px] whitespace-nowrap text-ink"
+        className="min-h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent px-[16px] whitespace-nowrap text-text"
       >
         {copyLabel}
       </button>

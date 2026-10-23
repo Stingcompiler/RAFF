@@ -120,14 +120,14 @@ export function ItemDrawer({
     <Drawer open={open} onClose={onClose} labelledBy="item-drawer-title">
       {current && (
         <>
-          <div className="flex items-center gap-[12px] border-b border-line px-[20px] py-[16px]">
+          <div className="flex items-center gap-[12px] border-b border-border px-[20px] py-[16px]">
             <div className="min-w-0 flex-1">
               <div id="item-drawer-title" className="text-[16px] font-medium">
                 {ar
                   ? `${current.name_ar} · ${current.name_en}`
                   : `${current.name_en} · ${current.generic_name}`}
               </div>
-              <div dir="ltr" className="text-start text-[13px] text-muted">
+              <div dir="ltr" className="text-start text-[13px] text-text-muted">
                 {[strengthForm(current), current.sale_unit?.barcodes[0]]
                   .filter(Boolean)
                   .join(" · ")}
@@ -137,14 +137,14 @@ export function ItemDrawer({
               type="button"
               onClick={onClose}
               aria-label={t("close")}
-              className="size-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent text-[18px] text-ink"
+              className="size-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent text-[18px] text-text"
             >
               {CLOSE}
             </button>
           </div>
           <div
             role="tablist"
-            className="flex gap-[16px] overflow-hidden border-b border-line px-[20px]"
+            className="flex gap-[16px] overflow-hidden border-b border-border px-[20px]"
           >
             {TABS.map((key, i) => (
               <button
@@ -156,8 +156,8 @@ export function ItemDrawer({
                 className={cn(
                   "cursor-pointer border-0 bg-transparent px-[2px] py-[12px] text-[13px] font-medium whitespace-nowrap transition-[color,box-shadow] duration-200 [font-family:inherit]",
                   i === tab
-                    ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]"
-                    : "text-muted shadow-[inset_0_-2px_0_transparent]",
+                    ? "text-brand shadow-[inset_0_-2px_0_var(--color-brand)]"
+                    : "text-text-muted shadow-[inset_0_-2px_0_transparent]",
                 )}
               >
                 {t(key)}
@@ -209,7 +209,7 @@ export function ItemDrawer({
               ))}
             {tab === 2 &&
               (batches.length === 0 ? (
-                <p className="m-0 p-[20px] text-muted">{t("batchesNone")}</p>
+                <p className="m-0 p-[20px] text-text-muted">{t("batchesNone")}</p>
               ) : (
                 batches.map((b) => {
                   const label = [b.batch_no, b.expiry_date].filter(Boolean).join(" · ");
@@ -242,7 +242,7 @@ export function ItemDrawer({
               ))}
             {tab === 3 &&
               (moves.length === 0 ? (
-                <p className="m-0 p-[20px] text-muted">{t("noMovements")}</p>
+                <p className="m-0 p-[20px] text-text-muted">{t("noMovements")}</p>
               ) : (
                 moves.map((m) => {
                   const when = m.created_at.slice(0, 16).replace("T", " ");
@@ -270,7 +270,7 @@ export function ItemDrawer({
                 <DrawerRow label={t("margin")}>
                   {stock?.stock.margin_pct ? `${stock.stock.margin_pct}%` : DASH}
                 </DrawerRow>
-                <div className="px-[20px] pt-[16px] pb-[4px] text-[12px] font-medium text-muted">
+                <div className="px-[20px] pt-[16px] pb-[4px] text-[12px] font-medium text-text-muted">
                   {t("priceHistory")}
                 </div>
                 {current.prices.map((p) => {
@@ -307,7 +307,7 @@ export function ItemDrawer({
           <div id="release-title" className="text-[16px] font-medium">
             {t("releaseTitle")}
           </div>
-          <div dir="ltr" className="text-start text-muted">
+          <div dir="ltr" className="text-start text-text-muted">
             {releasing?.batch_no}
           </div>
           <Field label={t("expiry")}>

@@ -26,7 +26,7 @@ export function PublishToggle({
         onClick={() => onChange?.(!checked)}
         className={cn(
           "relative h-[26px] w-[44px] flex-none rounded-full border-0 p-0 transition-[background] duration-[250ms]",
-          checked ? "bg-brand" : "bg-line",
+          checked ? "bg-brand" : "bg-border",
           disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         )}
       >

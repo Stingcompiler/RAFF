@@ -26,15 +26,15 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           {t("backStore")}
         </Link>
         <h1 className="m-0 text-[32px] font-semibold">{productName(ar, product)}</h1>
-        <bdi dir="ltr" className="text-muted [unicode-bidi:isolate]">
+        <bdi dir="ltr" className="text-text-muted [unicode-bidi:isolate]">
           {[product.name_en, product.strength].filter(Boolean).join(" · ")}
         </bdi>
-        <div className="text-ink-soft">
+        <div className="text-text-secondary">
           {t("unitL")}
           {ar ? product.unit_ar : product.unit_en}
         </div>
         {product.rx ? (
-          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[14px] font-medium text-info">
+          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[14px] font-medium text-info-text">
             {t("rxLong")}
           </div>
         ) : (
@@ -54,7 +54,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
                 <span className="text-[28px] font-semibold tabular-nums">
                   {money(product.price, ar ? "ar" : "en")}
                 </span>
-                <span className="text-[12px] whitespace-nowrap text-muted">
+                <span className="text-[12px] whitespace-nowrap text-text-muted">
                   {t("updated")}{" "}
                   <bdi dir="ltr" className="[unicode-bidi:isolate]">
                     {product.price_date}
@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             )}
           </>
         )}
-        <p className="m-0 max-w-[480px] leading-[1.7] text-ink-soft">
+        <p className="m-0 max-w-[480px] leading-[1.7] text-text-secondary">
           {ar ? product.description_ar : product.description_en || product.description_ar}
         </p>
         <AddToCart product={product} />

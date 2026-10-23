@@ -62,7 +62,7 @@ export default async function SettingsPage() {
           {users && roles && branches ? (
             <UsersPanel users={users} roles={roles} branches={branches} meId={me.user.id} />
           ) : (
-            <p className="m-0 text-muted">{t("users.noAccess")}</p>
+            <p className="m-0 text-text-muted">{t("users.noAccess")}</p>
           )}
           {devices && branches && (
             <DevicesPanel devices={devices} branches={branches} current={current} />

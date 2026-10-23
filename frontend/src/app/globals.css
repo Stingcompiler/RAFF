@@ -10,8 +10,8 @@
 
 @layer base {
   html {
-    background-color: var(--color-bg);
-    color: var(--color-ink);
+    background-color: var(--color-canvas);
+    color: var(--color-text);
     font-family: var(--font-sans);
   }
 
@@ -34,20 +34,26 @@
   }
 
   a {
-    color: var(--color-primary);
+    color: var(--color-brand);
   }
 
   a:hover {
-    color: var(--color-ink);
+    color: var(--color-text);
   }
 
-  /* Grid rows keep a minimum width (components/ui/Table.tsx); narrower screens scroll the table. */
+  /* On phones, grid rows keep a minimum width (components/ui/Table.tsx) and the table scrolls. */
   [role="table"] {
     overflow-x: auto;
   }
 
+  @media (max-width: 760px) {
+    [role="table"] [role="row"] {
+      min-width: var(--row-min, 0);
+    }
+  }
+
   :focus-visible {
-    outline: 3px solid var(--color-focus);
+    outline: 2px solid var(--color-focus);
     outline-offset: 2px;
   }
 

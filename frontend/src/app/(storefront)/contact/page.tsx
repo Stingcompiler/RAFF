@@ -18,13 +18,13 @@ export default async function ContactPage() {
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-[28px] px-[20px] py-[32px]">
       <div className="grid content-start gap-[16px]">
         <h1 className="m-0 text-[32px] font-semibold">{t("nav.contact")}</h1>
-        <dl className="m-0 grid border-t border-line">
+        <dl className="m-0 grid border-t border-border">
           {rows.map(([label, value, ltr]) => (
             <div
               key={label}
-              className="flex min-h-[52px] items-center justify-between gap-[12px] border-b border-line"
+              className="flex min-h-[52px] items-center justify-between gap-[12px] border-b border-border"
             >
-              <dt className="text-muted">{label}</dt>
+              <dt className="text-text-muted">{label}</dt>
               <dd className="m-0" dir={ltr ? "ltr" : undefined}>
                 {value}
               </dd>
@@ -34,13 +34,13 @@ export default async function ContactPage() {
         {store?.whatsapp && (
           <a
             href={waLink(store.whatsapp)}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-brand-ink no-underline"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-on-brand no-underline"
           >
             {t("waLong")}
           </a>
         )}
       </div>
-      <div className="grid h-[300px] place-items-center rounded-[16px] bg-placeholder-bg text-placeholder-ink">
+      <div className="grid h-[300px] place-items-center rounded-[16px] bg-surface-subtle text-text-muted">
         {t("imgPh")}
       </div>
     </section>

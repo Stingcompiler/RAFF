@@ -203,7 +203,7 @@ export function TransfersScreen({ initial, branchId, branches }: Props) {
                     <TableRow key={li.id} columns={lineCols}>
                       <TextCell>
                         {ar ? li.name_ar : li.name_en}{" "}
-                        <bdi dir="ltr" className="text-[12px] text-muted">
+                        <bdi dir="ltr" className="text-[12px] text-text-muted">
                           {li.strength}
                         </bdi>
                       </TextCell>
@@ -222,7 +222,7 @@ export function TransfersScreen({ initial, branchId, branches }: Props) {
                             onChange={(e) =>
                               setReceived((prev) => ({ ...prev, [li.id]: e.target.value }))
                             }
-                            className="h-[32px] w-full rounded-[6px] border border-line bg-surface px-[6px] text-end text-ink tabular-nums"
+                            className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                           />
                         ) : (
                           <span className="block text-end tabular-nums">

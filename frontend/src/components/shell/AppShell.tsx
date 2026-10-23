@@ -35,7 +35,7 @@ export function AppShell({
   const phoneScreen = phone && isPhoneScreen(activePath ?? pathname);
   return (
     <ToastProvider dismissLabel={t("dismiss")}>
-      <div className="relative flex h-dvh overflow-hidden bg-bg text-ink">
+      <div className="relative flex h-dvh overflow-hidden bg-canvas text-text">
         <Sidebar
           context={context}
           open={drawer}

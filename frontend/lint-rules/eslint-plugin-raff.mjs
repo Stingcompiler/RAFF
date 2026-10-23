@@ -1,5 +1,6 @@
 // ESLint plugin enforcing CLAUDE.md rules 11 (token colors) and 12 (logical properties).
 import {
+  findLegacyToken,
   findPhysicalClass,
   findPhysicalInCssText,
   findRawColorInText,
@@ -57,6 +58,24 @@ const noRawColor = {
   },
 };
 
+const noLegacyToken = {
+  meta: {
+    type: "problem",
+    docs: { description: "Color tokens use the v2.2 names (canvas, text, border, brand, …)." },
+    schema: [],
+    messages: {
+      legacy:
+        'Legacy color token "{{what}}" (removed in WO-15). See docs/design/Design-Reference-v2.2.md §1: text-text, bg-canvas, border-border, bg-brand, …',
+    },
+  },
+  create(context) {
+    return stringVisitors((node, text) => {
+      const what = findLegacyToken(text);
+      if (what) context.report({ node, messageId: "legacy", data: { what } });
+    });
+  },
+};
+
 const noPhysicalProperties = {
   meta: {
     type: "problem",
@@ -107,6 +126,7 @@ const plugin = {
   rules: {
     "no-raw-color": noRawColor,
     "no-physical-properties": noPhysicalProperties,
+    "no-legacy-token": noLegacyToken,
   },
 };
 

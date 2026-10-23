@@ -38,23 +38,23 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
         <div id="shift-title" className="text-[16px] font-medium">
           {t("openShift")}
         </div>
-        <div className="text-muted">{canOpen ? t("shiftHint") : t("shiftNoPermission")}</div>
+        <div className="text-text-muted">{canOpen ? t("shiftHint") : t("shiftNoPermission")}</div>
         {canOpen && (
           <>
-            <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
               {t("opening")}
               <input
                 dir="ltr"
                 inputMode="decimal"
                 value={opening}
                 onChange={(e) => setOpening(cleanAmount(e.target.value))}
-                className="h-[44px] rounded-[8px] border-2 border-primary bg-bg px-[12px] text-[18px] font-medium text-ink outline-none"
+                className="h-[44px] rounded-[8px] border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none"
               />
             </label>
             {error && (
               <div
                 role="alert"
-                className="rounded-[8px] bg-danger-bg px-[12px] py-[10px] text-danger"
+                className="rounded-[8px] bg-danger-bg px-[12px] py-[10px] text-danger-text"
               >
                 {error}
               </div>
@@ -62,7 +62,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
             <button
               type="submit"
               disabled={busy || !opening}
-              className="h-[48px] cursor-pointer rounded-[10px] border-0 bg-primary text-[16px] font-semibold text-primary-ink disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
+              className="h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
             >
               {t("openShift")}
             </button>
@@ -71,7 +71,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
         <button
           type="button"
           onClick={onLeave}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent font-medium text-ink"
+          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
         >
           {t("cancel")}
         </button>

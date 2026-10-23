@@ -24,7 +24,7 @@ type TextKey =
   | "whatsapp"
   | "telegram_chat_id";
 type LongKey = "hero_lead_ar" | "hero_lead_en" | "about_ar" | "about_en" | "blocked_phones";
-const LABEL = "grid gap-[4px] text-[12px] font-medium text-muted";
+const LABEL = "grid gap-[4px] text-[12px] font-medium text-text-muted";
 
 /** Storefront settings (§5.4): identity, contact, pickup branch, limits. */
 export function StoreSettingsScreen({
@@ -96,7 +96,7 @@ export function StoreSettingsScreen({
             <div className="flex items-center justify-between gap-[12px]">
               <div>
                 <div className="font-medium">{t("enable")}</div>
-                <div className="text-[13px] text-muted">{t("enableD")}</div>
+                <div className="text-[13px] text-text-muted">{t("enableD")}</div>
               </div>
               <button
                 type="button"
@@ -106,7 +106,7 @@ export function StoreSettingsScreen({
                 onClick={() => set("enabled", !s.enabled)}
                 className={cn(
                   "relative h-[24px] w-[42px] flex-none cursor-pointer rounded-full border-0 p-0",
-                  s.enabled ? "bg-primary" : "bg-line-strong",
+                  s.enabled ? "bg-brand" : "bg-border-strong",
                 )}
               >
                 <span
@@ -138,7 +138,7 @@ export function StoreSettingsScreen({
                 aria-label={t("brandC")}
                 value={s.brand_color ?? ""}
                 onChange={(e) => set("brand_color", e.target.value)}
-                className="h-[40px] w-[80px] cursor-pointer rounded-[8px] border border-line bg-surface"
+                className="h-[40px] w-[80px] cursor-pointer rounded-[8px] border border-border-strong bg-surface"
               />
             </label>
             {text("name_ar", t("nameAr"))}

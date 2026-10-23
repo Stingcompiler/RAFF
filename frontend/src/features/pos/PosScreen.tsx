@@ -385,7 +385,7 @@ export function PosScreen(props: PosScreenProps) {
       {offline && (
         <div
           role="alert"
-          className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
+          className="flex flex-none items-center gap-[12px] border-b border-danger-solid bg-danger-bg px-[16px] py-[10px] font-medium text-danger-text"
         >
           <WarningIcon />
           {t("offlineMsg")}
@@ -394,7 +394,7 @@ export function PosScreen(props: PosScreenProps) {
       {conn === "reconnecting" && (
         <div
           role="status"
-          className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
+          className="flex flex-none items-center gap-[12px] border-b border-warning-solid bg-warning-bg px-[16px] py-[10px] font-medium text-warning-text"
         >
           <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
           {t("reconnMsg")}
@@ -403,7 +403,7 @@ export function PosScreen(props: PosScreenProps) {
       {phase === "verify" && cart.pendingKey && (
         <div
           role="alert"
-          className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
+          className="flex flex-none items-center gap-[12px] border-b border-warning-solid bg-warning-bg px-[16px] py-[10px] font-medium text-warning-text"
         >
           <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
           <span className="flex-1">{t("verifyMsg")}</span>
@@ -422,7 +422,7 @@ export function PosScreen(props: PosScreenProps) {
       {phase === "failed" && (
         <div
           role="alert"
-          className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
+          className="flex flex-none items-center gap-[12px] border-b border-danger-solid bg-danger-bg px-[16px] py-[10px] font-medium text-danger-text"
         >
           <CircleXIcon />
           <span className="flex-1">{t("failMsg")}</span>
@@ -532,13 +532,13 @@ export function PosScreen(props: PosScreenProps) {
 
   return (
     <div className="overflow-x-auto">
-      <div className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-bg text-ink">
-        <header className="flex h-[52px] flex-none items-center gap-[20px] border-b border-line bg-surface-raised px-[16px]">
-          <div className="flex items-center gap-[8px] text-[18px] font-bold text-primary">
+      <div className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-canvas text-text">
+        <header className="flex h-[52px] flex-none items-center gap-[20px] border-b border-border bg-surface-subtle px-[16px]">
+          <div className="flex items-center gap-[8px] text-[18px] font-bold text-brand">
             <BrandMark />
             {t("brand")}
           </div>
-          <div className="flex flex-1 gap-[16px] text-[13px] text-muted">
+          <div className="flex flex-1 gap-[16px] text-[13px] text-text-muted">
             <span>{props.branchName}</span>
             <span>{SEP}</span>
             <span>{props.counterName}</span>
@@ -551,7 +551,7 @@ export function PosScreen(props: PosScreenProps) {
             detail={t("pending", { count: pending })}
           />
           <div className="flex items-center gap-[8px] font-medium">
-            <span className="grid size-[28px] place-items-center rounded-full bg-accent text-[12px] text-ink">
+            <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-[12px] text-text">
               {props.user.initial}
             </span>
             {props.user.name}
@@ -562,11 +562,11 @@ export function PosScreen(props: PosScreenProps) {
 
         <div className="flex min-h-0 flex-1">
           <main className="flex min-w-0 flex-[62] flex-col gap-[12px] p-[16px]">
-            <div className="flex h-[56px] items-center gap-[12px] rounded-[12px] border-2 border-primary bg-surface px-[16px] shadow-[0_0_0_3px_var(--color-focus)]">
-              <SearchIcon size={22} className="text-muted" />
+            <div className="flex h-[56px] items-center gap-[12px] rounded-[12px] border-2 border-brand bg-surface px-[16px] shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]">
+              <SearchIcon size={22} className="text-text-muted" />
               {mult > 1 && (
                 <span
-                  className="rounded-full bg-accent px-[10px] py-[2px] font-latin text-[13px] font-semibold"
+                  className="rounded-full bg-brand-subtle px-[10px] py-[2px] font-latin text-[13px] font-semibold"
                   data-testid="multiplier"
                 >
                   {multText}
@@ -587,11 +587,11 @@ export function PosScreen(props: PosScreenProps) {
                   } else setQuery(e.target.value);
                 }}
                 onKeyDown={onQueryKey}
-                className="h-full min-w-0 flex-1 border-0 bg-transparent text-[18px] leading-[1.4] text-ink outline-none"
+                className="h-full min-w-0 flex-1 border-0 bg-transparent text-[18px] leading-[1.4] text-text outline-none"
               />
               <span
                 dir="ltr"
-                className="rounded-[6px] border border-b-2 border-line px-[8px] py-[2px] font-latin text-[12px] font-medium text-muted"
+                className="rounded-[6px] border border-b-2 border-border px-[8px] py-[2px] font-latin text-[12px] font-medium text-text-muted"
               >
                 {F2}
               </span>
@@ -628,12 +628,12 @@ export function PosScreen(props: PosScreenProps) {
           />
         </div>
 
-        <footer className="flex h-[36px] flex-none items-center gap-[20px] border-t border-line bg-surface-raised px-[16px] text-[12px] text-muted">
+        <footer className="flex h-[36px] flex-none items-center gap-[20px] border-t border-border bg-surface-subtle px-[16px] text-[12px] text-text-muted">
           {KEYS.map(([key, label]) => (
             <span key={key} className="flex items-center gap-[6px]">
               <span
                 dir="ltr"
-                className="rounded-[5px] border border-b-2 border-line px-[6px] font-latin text-[11px] font-medium text-ink"
+                className="rounded-[5px] border border-b-2 border-border px-[6px] font-latin text-[11px] font-medium text-text"
               >
                 {key}
               </span>

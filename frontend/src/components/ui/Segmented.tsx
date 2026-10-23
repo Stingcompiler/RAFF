@@ -21,7 +21,7 @@ export function Segmented<T extends string>({
     <span
       role="radiogroup"
       aria-label={label}
-      className={cn("flex gap-[2px] rounded-[8px] bg-sidebar p-[3px]", className)}
+      className={cn("flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]", className)}
     >
       {items.map((item) => {
         const active = item.id === value;
@@ -35,7 +35,7 @@ export function Segmented<T extends string>({
             className={cn(
               "cursor-pointer rounded-[6px] border-0 px-[12px] py-[4px] [font-family:inherit] [line-height:inherit] text-[13px] font-medium",
               "transition-[background,color] duration-200",
-              active ? "bg-surface text-primary shadow-segment" : "bg-transparent text-muted",
+              active ? "bg-surface text-brand shadow-segment" : "bg-transparent text-text-muted",
             )}
           >
             {item.label}

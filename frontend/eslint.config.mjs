@@ -21,6 +21,7 @@ const config = [
     rules: {
       "raff/no-raw-color": "error",
       "raff/no-physical-properties": "error",
+      "raff/no-legacy-token": "error",
       // CLAUDE.md rule 13: every visible string comes from messages/*.json.
       "react/jsx-no-literals": ["error", { noStrings: true, ignoreProps: true }],
     },

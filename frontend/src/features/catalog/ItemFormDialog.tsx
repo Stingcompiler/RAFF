@@ -224,7 +224,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           )}
         </div>
         {error && (
-          <div role="alert" className="text-[13px] font-medium text-danger">
+          <div role="alert" className="text-[13px] font-medium text-danger-text">
             {error}
           </div>
         )}

@@ -125,7 +125,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
       note={customer ? t("customer", { name: customer }) : undefined}
     >
       <form onSubmit={find} className="flex items-end gap-[8px] p-[12px]">
-        <label className="grid flex-1 gap-[4px] text-[12px] font-medium text-muted">
+        <label className="grid flex-1 gap-[4px] text-[12px] font-medium text-text-muted">
           {t("invoiceNo")}
           <TextInput dir="ltr" value={number} onChange={(e) => setNumber(e.target.value)} />
         </label>
@@ -134,7 +134,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
         </Button>
       </form>
       {missing && (
-        <div role="alert" className="px-[12px] pb-[12px] text-danger">
+        <div role="alert" className="px-[12px] pb-[12px] text-danger-text">
           {t("notFound")}
         </div>
       )}
@@ -148,7 +148,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                 <TableRow key={line.id} columns={columns}>
                   <TextCell>
                     {ar ? line.name_ar : line.name_en}{" "}
-                    <bdi dir="ltr" className="text-[12px] text-muted">
+                    <bdi dir="ltr" className="text-[12px] text-text-muted">
                       {line.strength}
                     </bdi>
                   </TextCell>
@@ -168,7 +168,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                           qty: Math.max(0, Math.min(line.returnable, Number(e.target.value) || 0)),
                         })
                       }
-                      className="h-[32px] w-full rounded-[6px] border border-line bg-surface px-[6px] text-end text-ink tabular-nums"
+                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                     />
                   </span>
                   <span role="cell">
@@ -176,7 +176,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       aria-label={`${t("colReason")} ${line.name_en}`}
                       value={c?.reason ?? "damaged"}
                       onChange={(e) => set(line.id, { reason: e.target.value as Choice["reason"] })}
-                      className="h-[32px] w-full rounded-[6px] border border-line bg-surface text-[13px] text-ink"
+                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface text-[13px] text-text"
                     >
                       {REASONS.map((r) => (
                         <option key={r} value={r}>
@@ -192,7 +192,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       onChange={(e) =>
                         set(line.id, { condition: e.target.value as Choice["condition"] })
                       }
-                      className="h-[32px] w-full rounded-[6px] border border-line bg-surface text-[13px] text-ink"
+                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface text-[13px] text-text"
                     >
                       {CONDITIONS.map((r) => (
                         <option key={r} value={r}>
@@ -207,7 +207,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
             {sale.lines.length === 0 && <TableEmpty>{t("pickInvoice")}</TableEmpty>}
           </div>
           <div className="flex flex-wrap items-end gap-[12px] p-[12px]">
-            <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
               {t("refund")}
               <Select
                 value={refund}
@@ -227,12 +227,12 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
         </>
       )}
       {!sale && !missing && (
-        <div className="px-[12px] pb-[12px] text-muted">{t("pickInvoice")}</div>
+        <div className="px-[12px] pb-[12px] text-text-muted">{t("pickInvoice")}</div>
       )}
       {error && (
         <div
           role="alert"
-          className="mx-[12px] mb-[12px] rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger"
+          className="mx-[12px] mb-[12px] rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
         >
           {error}
         </div>

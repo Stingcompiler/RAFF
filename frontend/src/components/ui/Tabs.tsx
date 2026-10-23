@@ -21,7 +21,7 @@ export function Tabs<T extends string>({
   end,
 }: Props<T>) {
   return (
-    <div className={cn("flex gap-[16px] border-b border-line", className)}>
+    <div className={cn("flex gap-[16px] border-b border-border", className)}>
       <div role="tablist" aria-label={label} className="contents">
         {items.map((item) => {
           const active = item.id === value;
@@ -36,8 +36,8 @@ export function Tabs<T extends string>({
                 "min-h-[20px] cursor-pointer border-0 bg-transparent px-[4px] py-[8px] type-inherit font-medium",
                 "transition-[color,box-shadow] duration-200",
                 active
-                  ? "text-primary shadow-[inset_0_-2px_0_var(--color-primary)]"
-                  : "text-muted shadow-[inset_0_-2px_0_transparent]",
+                  ? "text-brand shadow-[inset_0_-2px_0_var(--color-brand)]"
+                  : "text-text-muted shadow-[inset_0_-2px_0_transparent]",
               )}
             >
               {item.label}

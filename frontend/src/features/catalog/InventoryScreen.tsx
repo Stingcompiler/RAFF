@@ -205,7 +205,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                 <span aria-disabled="true" className="opacity-60">
                   <Chip>{t("chipBranch")}</Chip>
                 </span>
-                <label className="ms-auto flex items-center gap-[6px] rounded-full border border-line px-[12px] py-[2px] text-[13px] text-muted focus-within:border-primary">
+                <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border-strong px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
                   <SearchIcon size={14} />
                   <input
                     type="search"
@@ -213,7 +213,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                     placeholder={t("search")}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-ink outline-none"
+                    className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
                   />
                 </label>
               </>
@@ -235,7 +235,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                   <TextCell>
                     {itemLabel(ar, item)}
                     {item.classification === "rx" && (
-                      <span className="ms-[6px] rounded-[4px] border border-info px-[4px] text-[11px] font-semibold text-info">
+                      <span className="ms-[6px] rounded-[4px] border border-info-solid px-[4px] text-[11px] font-semibold text-info-text">
                         {t("rx")}
                       </span>
                     )}

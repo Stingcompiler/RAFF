@@ -12,12 +12,12 @@ type Filters = { q?: string; category?: string; availability?: string; sort?: st
 const chip = (on: boolean) =>
   cn(
     "inline-flex min-h-[40px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-200",
-    on ? "border-brand bg-brand text-brand-ink" : "border-line-strong bg-surface text-ink",
+    on ? "border-brand bg-brand text-on-brand" : "border-border-strong bg-surface text-text",
   );
 const seg = (on: boolean) =>
   cn(
     "rounded-[6px] px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-200",
-    on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-muted",
+    on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-text-muted",
   );
 
 /** Store and category pages (§4.2): search, category and availability filters, simple sort. */
@@ -51,7 +51,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
   if (products === null) {
     return (
       <section className="px-[20px] py-[48px] text-center">
-        <p className="text-muted">{t("loadError")}</p>
+        <p className="text-text-muted">{t("loadError")}</p>
         <Link href={href({})} className={chip(false)}>
           {t("retry")}
         </Link>
@@ -64,7 +64,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         <h1 className="m-0 text-[26px] font-semibold">
           {filters.q ? t("searchResults") : t("storeTitle")}
         </h1>
-        <span className="text-[14px] whitespace-nowrap text-muted">
+        <span className="text-[14px] whitespace-nowrap text-text-muted">
           {t("published", { count: total })}
         </span>
       </div>
@@ -83,8 +83,8 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         ))}
         <span className="h-0 basis-full" />
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
-          <span className="text-[13px] font-medium text-muted">{t("availability")}</span>
-          <span className="flex gap-[2px] rounded-[8px] bg-sidebar p-[3px]">
+          <span className="text-[13px] font-medium text-text-muted">{t("availability")}</span>
+          <span className="flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
             <Link href={href({ availability: "" })} className={seg(!filters.availability)}>
               {t("all")}
             </Link>
@@ -103,8 +103,8 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
           </span>
         </span>
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
-          <span className="text-[13px] font-medium text-muted">{t("sort")}</span>
-          <span className="flex gap-[2px] rounded-[8px] bg-sidebar p-[3px]">
+          <span className="text-[13px] font-medium text-text-muted">{t("sort")}</span>
+          <span className="flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
             <Link href={href({ sort: "" })} className={seg(filters.sort !== "price")}>
               {t("byName")}
             </Link>
@@ -118,8 +118,8 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         </span>
       </div>
       {products.length === 0 && (
-        <div className="mt-[24px] grid justify-items-center gap-[8px] rounded-[12px] border border-dashed border-line-strong px-[20px] py-[40px] text-center text-muted">
-          <b className="text-ink">{t("noRes")}</b>
+        <div className="mt-[24px] grid justify-items-center gap-[8px] rounded-[12px] border border-dashed border-border-strong px-[20px] py-[40px] text-center text-text-muted">
+          <b className="text-text">{t("noRes")}</b>
           {t("noResB")}
           {store?.whatsapp && (
             <a href={waLink(store.whatsapp)} className="inline-flex min-h-[44px] items-center">

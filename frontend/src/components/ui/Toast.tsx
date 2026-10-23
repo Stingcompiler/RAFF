@@ -10,9 +10,9 @@ type ToastItem = { id: number; tone: ToastTone; message: string; requestId?: str
 
 const SYMBOL: Record<ToastTone, string> = { success: "✓", warn: "▲", danger: "✕" };
 const TONE: Record<ToastTone, string> = {
-  success: "text-success bg-success-bg border-success",
-  warn: "text-warn bg-warn-bg border-warn",
-  danger: "text-danger bg-danger-bg border-danger",
+  success: "text-success-text bg-success-bg border-success-solid",
+  warn: "text-warning-text bg-warning-bg border-warning-solid",
+  danger: "text-danger-text bg-danger-bg border-danger-solid",
 };
 
 /** One toast; errors stay until dismissed and show a short request id. */

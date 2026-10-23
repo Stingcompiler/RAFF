@@ -21,7 +21,7 @@ export HOST_GID := $(shell id -g)
 
 MANAGE := uv run --directory backend python manage.py
 
-.PHONY: install dev demo down test perf e2e visual lint typecheck openapi openapi-check reference check
+.PHONY: install dev demo down test perf e2e visual visual-update tokens contrast lint typecheck openapi openapi-check reference check
 
 install:
 	uv sync --directory backend
@@ -56,7 +56,20 @@ e2e:
 visual:
 	pnpm visual
 
-lint:
+# Rewrites the baselines of this machine (macOS ones stay untracked). Review the images, then commit.
+visual-update:
+	pnpm visual:update
+
+# The only writer of frontend/src/styles/tokens.css (design/system/build_tokens.py).
+tokens:
+	python3 design/system/build_tokens.py
+
+# Fails when tokens.css is stale or any text/border/chart pair misses its WCAG ratio.
+contrast:
+	python3 design/system/build_tokens.py --check
+	python3 design/system/check_contrast.py
+
+lint: contrast
 	cd backend && uv run ruff check . && uv run ruff format --check .
 	pnpm --dir frontend lint
 	pnpm format:check
@@ -76,8 +89,7 @@ openapi-check: openapi
 	@test -z "$$(git ls-files --others --exclude-standard -- backend/openapi frontend/src/lib/api)" \
 		|| (echo "Untracked OpenAPI output; commit it." && exit 1)
 
-# Canonical references come from CI (.github/workflows/references.yml, Linux).
-# Locally this makes the macOS copy used by `make visual` on a Mac.
+# Archive only: regenerates the pre-v2.2 design/handoff references (not used by `make visual`).
 reference:
 	node design/handoff/generate-reference.mjs --local
 

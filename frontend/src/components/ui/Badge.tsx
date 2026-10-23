@@ -13,10 +13,10 @@ export const TONE_SYMBOL: Record<Tone, string> = {
 };
 
 const TONES: Record<Tone, string> = {
-  success: "text-success bg-success-bg",
-  warn: "text-warn bg-warn-bg",
-  danger: "text-danger bg-danger-bg",
-  info: "text-info bg-info-bg",
+  success: "text-success-text bg-success-bg",
+  warn: "text-warning-text bg-warning-bg",
+  danger: "text-danger-text bg-danger-bg",
+  info: "text-info-text bg-info-bg",
 };
 
 type Props = {

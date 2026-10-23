@@ -172,7 +172,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
             placeholder={t("filter")}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="ms-auto h-[30px] w-[200px] rounded-full border border-line bg-transparent px-[12px] text-[13px] text-ink outline-none focus:border-primary"
+            className="ms-auto h-[30px] w-[200px] rounded-full border border-border-strong bg-transparent px-[12px] text-[13px] text-text outline-none focus:border-brand"
           />
         }
       >
@@ -192,7 +192,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                 <TableRow columns={columns}>
                   <TextCell>
                     {name}{" "}
-                    <bdi dir="ltr" className="text-[12px] text-muted">
+                    <bdi dir="ltr" className="text-[12px] text-text-muted">
                       {line.strength}
                     </bdi>
                   </TextCell>
@@ -214,7 +214,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                             },
                           }))
                         }
-                        className="h-[32px] w-full rounded-[6px] border border-line bg-surface px-[6px] text-end text-ink tabular-nums"
+                        className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                       />
                     ) : (
                       <span className="block text-end tabular-nums">
@@ -227,8 +227,8 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                   <NumberCell>
                     <span
                       className={cn(
-                        (line.variance_base ?? 0) < 0 && "text-warn",
-                        (line.variance_base ?? 0) > 0 && "text-info",
+                        (line.variance_base ?? 0) < 0 && "text-warning-text",
+                        (line.variance_base ?? 0) > 0 && "text-info-text",
                       )}
                     >
                       {line.variance_base === null ? DASH : signed(line.variance_base, line.factor)}
@@ -237,7 +237,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                   <span role="cell">{status(line)}</span>
                 </TableRow>
                 {editable && needReason && (
-                  <div className="border-b border-line bg-surface-raised px-[16px] py-[6px]">
+                  <div className="border-b border-border bg-surface-subtle px-[16px] py-[6px]">
                     <input
                       aria-label={[t("reason"), name].join(" — ")}
                       placeholder={t("reason")}
@@ -255,7 +255,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                           },
                         }))
                       }
-                      className="h-[30px] w-full rounded-[6px] border border-line bg-surface px-[8px] text-[13px] text-ink"
+                      className="h-[30px] w-full rounded-[6px] border border-border-strong bg-surface px-[8px] text-[13px] text-text"
                     />
                   </div>
                 )}

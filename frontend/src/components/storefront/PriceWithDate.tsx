@@ -20,7 +20,7 @@ export function PriceWithDate({
       <span className={cn("font-semibold", size === "lg" ? "text-[22px]" : "text-[17px]")}>
         {price}
       </span>
-      <span className="text-[12px] text-muted">
+      <span className="text-[12px] text-text-muted">
         {updatedLabel && updatedOn ? (
           <>
             {updatedLabel}{" "}

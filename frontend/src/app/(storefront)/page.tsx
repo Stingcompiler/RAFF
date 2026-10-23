@@ -40,29 +40,29 @@ export default async function StorefrontHome() {
             {title || t("storeTitle")}
           </h1>
           {lead && (
-            <p className="mt-[14px] mb-0 max-w-[460px] text-[18px] leading-[1.7] text-ink-soft">
+            <p className="mt-[14px] mb-0 max-w-[460px] text-[18px] leading-[1.7] text-text-secondary">
               {lead}
             </p>
           )}
           <div className="mt-[24px] flex flex-wrap gap-[12px]">
             <Link
               href="/store"
-              className="inline-flex min-h-[52px] items-center rounded-[12px] bg-brand px-[24px] text-[16px] font-semibold whitespace-nowrap text-brand-ink no-underline transition-[transform] duration-150 hover:-translate-y-[2px]"
+              className="inline-flex min-h-[52px] items-center rounded-[12px] bg-brand px-[24px] text-[16px] font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-150 hover:-translate-y-[2px]"
             >
               {t("browse")}
             </Link>
             {store?.whatsapp && (
               <a
                 href={waLink(store.whatsapp)}
-                className="inline-flex min-h-[52px] items-center rounded-[12px] border border-line-strong bg-surface px-[20px] font-medium whitespace-nowrap text-ink no-underline"
+                className="inline-flex min-h-[52px] items-center rounded-[12px] border border-border-strong bg-surface px-[20px] font-medium whitespace-nowrap text-text no-underline"
               >
                 {t("contactUs")}
               </a>
             )}
           </div>
-          {address && <div className="mt-[20px] text-[14px] text-muted">{address}</div>}
+          {address && <div className="mt-[20px] text-[14px] text-text-muted">{address}</div>}
         </div>
-        <div className="grid h-[340px] place-items-center rounded-[18px] bg-placeholder-bg text-placeholder-ink">
+        <div className="grid h-[340px] place-items-center rounded-[18px] bg-surface-subtle text-text-muted">
           {t("imgPh")}
         </div>
       </section>
@@ -77,7 +77,7 @@ export default async function StorefrontHome() {
         <div className="mt-[20px]">
           <Link
             href="/store"
-            className="inline-flex min-h-[44px] items-center rounded-[10px] border border-line-strong px-[20px] font-semibold text-brand no-underline"
+            className="inline-flex min-h-[44px] items-center rounded-[10px] border border-border-strong px-[20px] font-semibold text-brand no-underline"
           >
             {t("viewAll")}
           </Link>
@@ -92,12 +92,14 @@ export default async function StorefrontHome() {
             return (
               <div
                 key={f.t}
-                className="grid grid-cols-[36px_1fr] gap-[12px] border-t border-line py-[18px]"
+                className="grid grid-cols-[36px_1fr] gap-[12px] border-t border-border py-[18px]"
               >
                 <Icon size={26} className="text-brand" />
                 <div>
                   <div className="font-semibold">{f.t}</div>
-                  <div className="mt-[2px] text-[15px] leading-[1.6] text-ink-soft">{f.d}</div>
+                  <div className="mt-[2px] text-[15px] leading-[1.6] text-text-secondary">
+                    {f.d}
+                  </div>
                 </div>
               </div>
             );
@@ -105,14 +107,14 @@ export default async function StorefrontHome() {
         </div>
       </section>
 
-      <section className="mx-[20px] mt-[32px] rounded-[16px] bg-brand px-[24px] py-[32px] text-brand-ink">
+      <section className="mx-[20px] mt-[32px] rounded-[16px] bg-brand px-[24px] py-[32px] text-on-brand">
         <h2 className="mt-0 mb-[20px] text-[26px] font-semibold">{t("howOrder")}</h2>
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-[20px]">
           {steps.map((s, i) => (
             <div key={s.t} className="flex items-start gap-[14px]">
               <span
                 dir="ltr"
-                className="text-[40px] leading-none font-medium text-accent tabular-nums"
+                className="text-[40px] leading-none font-medium text-brand-subtle tabular-nums"
               >
                 {i + 1}
               </span>
@@ -123,16 +125,16 @@ export default async function StorefrontHome() {
             </div>
           ))}
         </div>
-        <div className="mt-[20px] rounded-[8px] bg-brand-ink/15 px-[14px] py-[10px] text-[14px]">
+        <div className="mt-[20px] rounded-[8px] bg-on-brand/15 px-[14px] py-[10px] text-[14px]">
           {t("howNote")}
         </div>
       </section>
 
       <section className="px-[20px] pt-[48px] pb-[16px]">
         <h2 className="mt-0 mb-[12px] text-[26px] font-semibold">{t("faqT")}</h2>
-        <div className="border-t border-line">
+        <div className="border-t border-border">
           {faq.map((f, i) => (
-            <details key={f.q} open={i === 0} className="group border-b border-line">
+            <details key={f.q} open={i === 0} className="group border-b border-border">
               <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between gap-[12px] text-[17px] font-medium">
                 {f.q}
                 <span
@@ -142,7 +144,7 @@ export default async function StorefrontHome() {
                   {PLUS}
                 </span>
               </summary>
-              <div className="max-w-[640px] pb-[16px] leading-[1.7] text-ink-soft">{f.a}</div>
+              <div className="max-w-[640px] pb-[16px] leading-[1.7] text-text-secondary">{f.a}</div>
             </details>
           ))}
         </div>

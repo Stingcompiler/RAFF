@@ -117,7 +117,7 @@ export function ImportScreen({ ar }: { ar: boolean }) {
       <Panel title={t("pick")}>
         <form onSubmit={preview} className="grid gap-[12px] p-[16px]">
           <input type="file" name="file" accept=".csv,text/csv" required className="text-[14px]" />
-          <div dir="ltr" className="text-start text-[12px] text-muted">
+          <div dir="ltr" className="text-start text-[12px] text-text-muted">
             {t("help")}
           </div>
           <div className="flex flex-wrap gap-[8px]">
@@ -132,7 +132,7 @@ export function ImportScreen({ ar }: { ar: boolean }) {
             </Button>
           </div>
           {error && (
-            <div role="alert" className="text-[13px] font-medium text-danger">
+            <div role="alert" className="text-[13px] font-medium text-danger-text">
               {error}
             </div>
           )}

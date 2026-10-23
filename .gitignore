@@ -37,3 +37,7 @@ backend/media/
 infra/prod/.env
 infra/prod/backup.key
 infra/prod/license/*.json
+
+# Visual baselines: only the Linux ones from CI are committed
+tests/e2e/__screenshots__/**/*-darwin.png
+tests/e2e/__screenshots__/**/*-win32.png

@@ -4,9 +4,9 @@ import { cn } from "@/lib/cn";
 export type Availability = "available" | "confirm" | "unavailable";
 
 const STYLE: Record<Availability, string> = {
-  available: "text-success bg-success-bg",
-  confirm: "text-warn bg-warn-bg",
-  unavailable: "text-info bg-info-bg",
+  available: "text-success-text bg-success-bg",
+  confirm: "text-warning-text bg-warning-bg",
+  unavailable: "text-info-text bg-info-bg",
 };
 const SYMBOL: Record<Availability, string> = { available: "●", confirm: "▲", unavailable: "■" };
 

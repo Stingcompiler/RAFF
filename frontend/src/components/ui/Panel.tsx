@@ -14,15 +14,17 @@ type Props = {
 /** Card with an optional header (title + inline-end note). */
 export function Panel({ title, note, chips, children, className }: Props) {
   return (
-    <div className={cn("overflow-hidden rounded-[12px] border border-line bg-surface", className)}>
+    <div
+      className={cn("overflow-hidden rounded-[12px] border border-border bg-surface", className)}
+    >
       {(title || note) && (
-        <div className="flex items-center justify-between gap-[12px] border-b border-line px-[16px] py-[12px]">
+        <div className="flex items-center justify-between gap-[12px] border-b border-border px-[16px] py-[12px]">
           <span className="text-[16px] font-medium whitespace-nowrap">{title}</span>
-          {note && <span className="text-end text-[12px] text-muted">{note}</span>}
+          {note && <span className="text-end text-[12px] text-text-muted">{note}</span>}
         </div>
       )}
       {chips && (
-        <div className="flex flex-wrap gap-[8px] border-b border-line px-[16px] py-[10px]">
+        <div className="flex flex-wrap gap-[8px] border-b border-border px-[16px] py-[10px]">
           {chips}
         </div>
       )}
@@ -36,8 +38,8 @@ export function Chip({ active, children }: { active?: boolean; children: ReactNo
   return (
     <span
       className={cn(
-        "rounded-full border border-line px-[12px] py-[4px] text-[13px]",
-        active ? "bg-accent font-medium" : "text-muted",
+        "rounded-full border border-border px-[12px] py-[4px] text-[13px]",
+        active ? "bg-brand-subtle font-medium" : "text-text-muted",
       )}
     >
       {children}

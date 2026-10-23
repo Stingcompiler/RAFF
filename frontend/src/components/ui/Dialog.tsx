@@ -94,7 +94,7 @@ export function Dialog({
         aria-labelledby={labelledBy}
         tabIndex={-1}
         className={cn(
-          "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-[12px] border border-line bg-surface p-[24px] shadow-dialog outline-none",
+          "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-[12px] border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
           // Phones: nearly full width, scrolling inside when the content is taller than the screen.
           "max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
           "animate-[raff-fade_.3s_cubic-bezier(.2,.8,.2,1)_both]",
@@ -148,9 +148,9 @@ export function ConfirmDialog({
       <div id="confirm-title" className="text-[16px] font-medium">
         {title}
       </div>
-      <div className="text-muted">{body}</div>
+      <div className="text-text-muted">{body}</div>
       {impact && impact.length > 0 && (
-        <div className="grid gap-[6px] rounded-[8px] bg-warn-bg p-[12px] font-medium text-warn">
+        <div className="grid gap-[6px] rounded-[8px] bg-warning-bg p-[12px] font-medium text-warning-text">
           {impact.map((i) => (
             <div key={i.label} className="flex justify-between gap-[12px]">
               <span>{i.label}</span>

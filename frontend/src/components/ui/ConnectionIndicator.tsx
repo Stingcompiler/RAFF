@@ -3,9 +3,9 @@ import { cn } from "@/lib/cn";
 export type ConnectionStatus = "online" | "reconnecting" | "unavailable";
 
 const TONE = {
-  online: "text-success bg-success-bg",
-  reconnecting: "text-warn bg-warn-bg",
-  unavailable: "text-danger bg-danger-bg",
+  online: "text-success-text bg-success-bg",
+  reconnecting: "text-warning-text bg-warning-bg",
+  unavailable: "text-danger-text bg-danger-bg",
 } as const;
 
 type Props = {

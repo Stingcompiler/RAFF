@@ -58,7 +58,7 @@ const CAPTION = {
   qty120: "120",
   plus: "+",
 } as const;
-const caption = "text-[12px] font-semibold uppercase tracking-[.04em] text-muted";
+const caption = "text-[12px] font-semibold uppercase tracking-[.04em] text-text-muted";
 const tableCols: readonly Column[] = [
   { header: "", width: "36px" },
   { header: "", width: "1fr" },
@@ -88,7 +88,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   };
 
   const inputBox =
-    "flex h-[44px] items-center rounded-[8px] bg-bg px-[12px] text-[14px] font-normal text-ink";
+    "flex h-[44px] items-center rounded-[8px] bg-canvas px-[12px] text-[14px] font-normal text-text";
   const rows: [string, string, Tone, string][] = [
     [t("r1"), "210", "success", t("rGood")],
     [t("r2"), "18", "warn", t("rLow")],
@@ -104,25 +104,25 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   return (
     <section
       data-theme={theme}
-      className="grid min-w-0 content-start gap-[24px] rounded-[14px] border border-line bg-bg p-[24px] text-ink"
+      className="grid min-w-0 content-start gap-[24px] rounded-[14px] border border-border bg-canvas p-[24px] text-text"
     >
       <div className="flex items-baseline justify-between">
         <h2 className="m-0 text-[16px] font-medium">
           {theme === "light" ? t("themeLight") : t("themeDark")}
         </h2>
-        <span className="text-[12px] text-muted">{t("hint")}</span>
+        <span className="text-[12px] text-text-muted">{t("hint")}</span>
       </div>
 
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.button}</div>
-        <div className="grid grid-cols-[70px_repeat(5,minmax(0,1fr))] items-center gap-[8px] text-[12px] text-muted">
+        <div className="grid grid-cols-[70px_repeat(5,minmax(0,1fr))] items-center gap-[8px] text-[12px] text-text-muted">
           <span />
           {STATES.map((s) => (
             <span key={s}>{s}</span>
           ))}
           {VARIANTS.map((v) => (
             <div key={v} className="contents">
-              <span className="font-medium text-ink">{v}</span>
+              <span className="font-medium text-text">{v}</span>
               {STATES.map((s) => (
                 <Button
                   key={s}
@@ -141,11 +141,11 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         <div className="flex items-center gap-[8px]">
           <span
             aria-label={t("search")}
-            className="grid size-[44px] place-items-center rounded-[10px] border border-line bg-surface"
+            className="grid size-[44px] place-items-center rounded-[10px] border border-border bg-surface"
           >
             <SearchIcon />
           </span>
-          <span className="text-[12px] text-muted">
+          <span className="text-[12px] text-text-muted">
             {CAPTION.iconButton}
             {t("iconNote")}
           </span>
@@ -155,31 +155,33 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.inputs}</div>
         <div className="grid grid-cols-2 gap-[12px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("name")}
-            <span className={cn(inputBox, "border border-line")}>{t("nameV")}</span>
-            <span className="font-normal text-muted">{t("helper")}</span>
+            <span className={cn(inputBox, "border border-border")}>{t("nameV")}</span>
+            <span className="font-normal text-text-muted">{t("helper")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("qtyFocus")}
             <span
               className={cn(
                 inputBox,
-                "border-2 border-primary shadow-[0_0_0_3px_var(--color-focus)]",
+                "border-2 border-brand shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
               )}
             >
               {CAPTION.qty12}
             </span>
             <span />
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("qtyError")}
-            <span className={cn(inputBox, "border-2 border-danger")}>{CAPTION.qty120}</span>
-            <span className="text-danger">{t("qtyErrorMsg")}</span>
+            <span className={cn(inputBox, "border-2 border-danger-solid")}>{CAPTION.qty120}</span>
+            <span className="text-danger-text">{t("qtyErrorMsg")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("disabled")}
-            <span className={cn(inputBox, "border border-line bg-sidebar text-muted")}>
+            <span
+              className={cn(inputBox, "border border-border bg-surface-subtle text-text-muted")}
+            >
               {t("batchNo")}
             </span>
             <span />
@@ -264,7 +266,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             />
           }
         />
-        <div className="overflow-hidden rounded-[10px] border border-line bg-surface">
+        <div className="overflow-hidden rounded-[10px] border border-border bg-surface">
           <TableHead columns={head} className="border-b-0 px-[12px]" />
           {rows.map(([name, qty, tone, label], i) => {
             const on = selected.includes(i);
@@ -280,9 +282,9 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
               >
                 <span
                   className={cn(
-                    "grid size-[18px] place-items-center rounded-[5px] border-2 text-[12px] font-bold text-primary-ink",
+                    "grid size-[18px] place-items-center rounded-[5px] border-2 text-[12px] font-bold text-on-brand",
                     "transition-[background,border-color] duration-200",
-                    on ? "border-primary bg-primary" : "border-line bg-transparent",
+                    on ? "border-brand bg-brand" : "border-border bg-transparent",
                   )}
                 >
                   {on ? "✓" : ""}
@@ -308,11 +310,11 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
           <div
             role="dialog"
             aria-label={t("dTitle")}
-            className="grid w-full max-w-[380px] gap-[12px] rounded-[12px] border border-line bg-surface p-[20px] shadow-dialog"
+            className="grid w-full max-w-[380px] gap-[12px] rounded-[12px] border border-border bg-surface p-[20px] shadow-dialog"
           >
             <div className="text-[16px] font-medium">{t("dTitle")}</div>
-            <div className="text-muted">{t("dBody")}</div>
-            <div className="flex justify-between rounded-[8px] bg-warn-bg px-[12px] py-[10px] font-medium text-warn">
+            <div className="text-text-muted">{t("dBody")}</div>
+            <div className="flex justify-between rounded-[8px] bg-warning-bg px-[12px] py-[10px] font-medium text-warning-text">
               <span>{t("impact")}</span>
               <span dir="ltr">{CAPTION.amount}</span>
             </div>
@@ -356,10 +358,10 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
 function StorefrontSection() {
   const t = useTranslations("dev.store");
   const card =
-    "grid content-start gap-[12px] rounded-[12px] border border-line bg-surface p-[16px]";
+    "grid content-start gap-[12px] rounded-[12px] border border-border bg-surface p-[16px]";
   return (
     <div data-theme="light" className="grid gap-[16px] px-[24px] pt-[8px] pb-[24px]">
-      <h2 className="m-0 text-[16px] font-medium text-ink">{t("heading")}</h2>
+      <h2 className="m-0 text-[16px] font-medium text-text">{t("heading")}</h2>
       <div
         dir="rtl"
         className="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-[16px]"
@@ -425,8 +427,8 @@ function StorefrontSection() {
             updatedOn="2026-10-21"
             size="lg"
           />
-          <div className="text-[12px] font-medium text-warn">{t("confirmOnReview")}</div>
-          <div className="text-[13px] text-muted">{t("noStock")}</div>
+          <div className="text-[12px] font-medium text-warning-text">{t("confirmOnReview")}</div>
+          <div className="text-[13px] text-text-muted">{t("noStock")}</div>
         </div>
         <div className={card}>
           <div className={caption}>{CAPTION.pickup}</div>
@@ -470,16 +472,16 @@ function StorefrontSection() {
           <PublishToggle label={t("published")} checked />
           <PublishToggle label={t("published")} checked={false} disabled />
           <div className="grid gap-[2px] text-[13px]">
-            <span className="text-success">{t("cPrice")}</span>
-            <span className="text-success">{t("cClass")}</span>
-            <span className="text-warn">{t("cImage")}</span>
-            <span className="text-warn">{t("cDesc")}</span>
+            <span className="text-success-text">{t("cPrice")}</span>
+            <span className="text-success-text">{t("cClass")}</span>
+            <span className="text-warning-text">{t("cImage")}</span>
+            <span className="text-warning-text">{t("cDesc")}</span>
           </div>
         </div>
         <div className={card}>
           <div className={caption}>{CAPTION.whatsapp}</div>
           <WhatsAppAction href="#" message="" openLabel={t("openWa")} copyLabel={t("copyMsg")} />
-          <div className="grid gap-[4px] text-[13px] text-muted">
+          <div className="grid gap-[4px] text-[13px] text-text-muted">
             <span>{t("templates")}</span>
           </div>
         </div>
@@ -491,7 +493,7 @@ function StorefrontSection() {
 export function Gallery({ receipts }: { receipts: readonly ReceiptData[] }) {
   const t = useTranslations("dev.gallery");
   return (
-    <div data-theme="light" className="min-h-screen bg-canvas text-ink">
+    <div data-theme="light" className="min-h-screen bg-surface-subtle text-text">
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(560px,100%),1fr))] gap-[24px] p-[24px]">
         <ThemeSection theme="light" />
         <ThemeSection theme="dark" />
@@ -499,7 +501,7 @@ export function Gallery({ receipts }: { receipts: readonly ReceiptData[] }) {
       <StorefrontSection />
       <div className="grid gap-[16px] px-[24px] pt-[8px] pb-[48px]">
         <div className="flex items-center gap-[16px]">
-          <h2 className="m-0 text-[16px] font-medium text-ink">
+          <h2 className="m-0 text-[16px] font-medium text-text">
             {CAPTION.receipt}
             {t("always")}
           </h2>

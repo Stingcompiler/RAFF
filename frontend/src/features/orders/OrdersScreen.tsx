@@ -89,7 +89,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                 <Chip active={status === s}>{t(`status.${s}`)}</Chip>
               </button>
             ))}
-            <span className="ms-auto flex gap-[2px] rounded-[8px] bg-sidebar p-[3px]">
+            <span className="ms-auto flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
               {PERIODS.map((p) => (
                 <button
                   key={p}
@@ -98,15 +98,15 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                   className={cn(
                     "type-inherit cursor-pointer rounded-[6px] border-0 px-[10px] py-[4px] text-[13px]",
                     period === p
-                      ? "bg-surface font-medium text-primary"
-                      : "bg-transparent text-muted",
+                      ? "bg-surface font-medium text-brand"
+                      : "bg-transparent text-text-muted",
                   )}
                 >
                   {t(p)}
                 </button>
               ))}
             </span>
-            <label className="flex items-center gap-[6px] rounded-full border border-line px-[12px] py-[2px] text-[13px] text-muted focus-within:border-primary">
+            <label className="flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
               <SearchIcon size={14} />
               <input
                 type="search"
@@ -114,7 +114,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                 placeholder={t("search")}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-ink outline-none"
+                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
               />
             </label>
           </>

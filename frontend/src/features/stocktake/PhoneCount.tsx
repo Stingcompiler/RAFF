@@ -13,10 +13,10 @@ import { BarcodeCamera } from "./BarcodeCamera";
 import { inUnits, scopeLabel, type Take, type TakeDetail, type TakeLine } from "./labels";
 
 const TONES: Record<Tone, string> = {
-  success: "text-success bg-success-bg",
-  warn: "text-warn bg-warn-bg",
-  danger: "text-danger bg-danger-bg",
-  info: "text-info bg-info-bg",
+  success: "text-success-text bg-success-bg",
+  warn: "text-warning-text bg-warning-bg",
+  danger: "text-danger-text bg-danger-bg",
+  info: "text-info-text bg-info-bg",
 };
 type Cam = "on" | "denied";
 type Found = { results: { id: string }[] };
@@ -140,7 +140,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
       <div className="px-[16px] pt-[8px] pb-[12px]">
         <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
         {take && (
-          <div className="text-[13px] text-muted">
+          <div className="text-[13px] text-text-muted">
             {t("scope", {
               scope: scopeLabel(take, ar, tStock),
               counted: take.counted,
@@ -151,14 +151,14 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
       </div>
       <div className="grid flex-1 content-start gap-[12px] px-[16px] pb-[16px]">
         {!loading && !take && (
-          <div className="grid justify-items-center gap-[12px] rounded-[14px] border border-line bg-surface p-[24px] text-center">
-            <p className="m-0 text-muted">{canCount ? t("noTake") : t("noPermission")}</p>
+          <div className="grid justify-items-center gap-[12px] rounded-[14px] border border-border bg-surface p-[24px] text-center">
+            <p className="m-0 text-text-muted">{canCount ? t("noTake") : t("noPermission")}</p>
             {canCount && (
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void start()}
-                className="min-h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-primary font-[inherit] text-[16px] font-semibold text-primary-ink disabled:opacity-60"
+                className="min-h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand disabled:opacity-60"
               >
                 {busy ? t("starting") : t("startTake")}
               </button>
@@ -166,7 +166,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
           </div>
         )}
         {take && !editable && (
-          <div className="rounded-[14px] border border-line bg-surface p-[16px] text-center text-muted">
+          <div className="rounded-[14px] border border-border bg-surface p-[16px] text-center text-text-muted">
             {canCount ? t("approved") : t("noPermission")}
           </div>
         )}
@@ -178,7 +178,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 onUnavailable={() => setCam("denied")}
               />
             ) : (
-              <div className="grid h-[180px] animate-[raff-fade_.3s_ease_both] content-center justify-items-center gap-[8px] rounded-[14px] bg-danger-bg p-[16px] text-center text-danger">
+              <div className="grid h-[180px] animate-[raff-fade_.3s_ease_both] content-center justify-items-center gap-[8px] rounded-[14px] bg-danger-bg p-[16px] text-center text-danger-text">
                 <div className="font-semibold">
                   {TONE_SYMBOL.danger} {t("camTitle")}
                 </div>
@@ -186,7 +186,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 <button
                   type="button"
                   onClick={() => setManual(true)}
-                  className="min-h-[44px] cursor-pointer rounded-[10px] border border-danger bg-transparent px-[16px] font-[inherit] font-medium text-danger"
+                  className="min-h-[44px] cursor-pointer rounded-[10px] border border-danger-solid bg-transparent px-[16px] font-[inherit] font-medium text-danger-text"
                 >
                   {t("camManual")}
                 </button>
@@ -206,31 +206,31 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   placeholder={t("manualLabel")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="h-[48px] min-w-0 flex-1 rounded-[12px] border-2 border-primary bg-surface px-[14px] text-[16px] text-ink outline-none"
+                  className="h-[48px] min-w-0 flex-1 rounded-[12px] border-2 border-brand bg-surface px-[14px] text-[16px] text-text outline-none"
                 />
                 <button
                   type="submit"
-                  className="min-h-[48px] cursor-pointer rounded-[12px] border-0 bg-primary px-[16px] font-[inherit] font-semibold text-primary-ink"
+                  className="min-h-[48px] cursor-pointer rounded-[12px] border-0 bg-brand px-[16px] font-[inherit] font-semibold text-on-brand"
                 >
                   {t("find")}
                 </button>
               </form>
             )}
             {note && (
-              <div role="status" className="text-center text-[13px] text-warn">
+              <div role="status" className="text-center text-[13px] text-warning-text">
                 {TONE_SYMBOL.warn} {note}
               </div>
             )}
             {line ? (
               <>
-                <section className="grid gap-[12px] rounded-[14px] border border-line bg-surface p-[14px]">
+                <section className="grid gap-[12px] rounded-[14px] border border-border bg-surface p-[14px]">
                   <div className="flex items-center justify-between gap-[8px]">
                     <span className="min-w-0 font-medium">
                       {[ar ? line.name_ar : line.name_en, line.strength].filter(Boolean).join(" ")}
                     </span>
-                    <span className="flex-none text-[13px] whitespace-nowrap text-muted">
+                    <span className="flex-none text-[13px] whitespace-nowrap text-text-muted">
                       {t("system")}{" "}
-                      <b dir="ltr" className="text-ink">
+                      <b dir="ltr" className="text-text">
                         {inUnits(line.system_base, factor)}
                       </b>
                     </span>
@@ -240,7 +240,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       type="button"
                       aria-label={t("decrease")}
                       onClick={() => step(-1)}
-                      className="size-[56px] cursor-pointer rounded-[14px] border border-line bg-surface-raised text-[26px] text-ink transition-transform duration-[120ms] active:scale-[.92]"
+                      className="size-[56px] cursor-pointer rounded-[14px] border border-border bg-surface-subtle text-[26px] text-text transition-transform duration-[120ms] active:scale-[.92]"
                     >
                       {MINUS}
                     </button>
@@ -250,13 +250,13 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       aria-label={t("countLabel")}
                       value={units}
                       onChange={(e) => setUnits(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                      className="w-[90px] border-0 bg-transparent p-0 text-center text-[44px] font-medium text-ink tabular-nums outline-none"
+                      className="w-[90px] border-0 bg-transparent p-0 text-center text-[44px] font-medium text-text tabular-nums outline-none"
                     />
                     <button
                       type="button"
                       aria-label={t("increase")}
                       onClick={() => step(1)}
-                      className="size-[56px] cursor-pointer rounded-[14px] border-0 bg-primary text-[26px] text-primary-ink transition-transform duration-[120ms] active:scale-[.92]"
+                      className="size-[56px] cursor-pointer rounded-[14px] border-0 bg-brand text-[26px] text-on-brand transition-transform duration-[120ms] active:scale-[.92]"
                     >
                       {PLUS}
                     </button>
@@ -274,17 +274,17 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   type="button"
                   disabled={busy || !valid}
                   onClick={() => void confirm()}
-                  className="h-[52px] cursor-pointer rounded-[12px] border-0 bg-primary font-[inherit] text-[16px] font-semibold text-primary-ink transition-transform duration-[120ms] active:scale-[.98] disabled:opacity-60"
+                  className="h-[52px] cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-[120ms] active:scale-[.98] disabled:opacity-60"
                 >
                   {t("confirm")}
                 </button>
               </>
             ) : (
-              <div className="rounded-[14px] border border-line bg-surface p-[16px] text-center text-muted">
+              <div className="rounded-[14px] border border-border bg-surface p-[16px] text-center text-text-muted">
                 {allDone ? t("allDone") : t("pick")}
               </div>
             )}
-            <div className="text-center text-[12px] text-muted">
+            <div className="text-center text-[12px] text-text-muted">
               {t("counted", { count: take.counted })}
             </div>
           </>

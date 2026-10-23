@@ -10,11 +10,11 @@ import { cn } from "@/lib/cn";
 
 /** Shared look of text inputs: 44px content height, line border, bg fill. */
 export const controlClasses = cn(
-  "h-[44px] rounded-[8px] border border-line bg-bg px-[12px] py-0 text-[14px] font-normal text-ink",
+  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text",
   "outline-none transition-[border-color,box-shadow] duration-200",
-  "focus:border-2 focus:border-primary focus:px-[11px] focus:shadow-[0_0_0_3px_var(--color-focus)]",
-  "aria-[invalid=true]:border-2 aria-[invalid=true]:border-danger aria-[invalid=true]:px-[11px]",
-  "disabled:bg-sidebar disabled:text-muted",
+  "focus:border-2 focus:border-brand focus:px-[11px] focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
+  "aria-[invalid=true]:border-2 aria-[invalid=true]:border-danger-solid aria-[invalid=true]:px-[11px]",
+  "disabled:bg-surface-subtle disabled:text-text-muted",
 );
 
 type FieldProps = {
@@ -34,12 +34,12 @@ export function Field({ label, help, error, children, className }: FieldProps) {
   return (
     <label
       htmlFor={id}
-      className={cn("grid gap-[4px] text-[12px] font-medium text-muted", className)}
+      className={cn("grid gap-[4px] text-[12px] font-medium text-text-muted", className)}
     >
       {label}
       {children({ id, describedBy: message ? helpId : undefined, invalid: !!error })}
       {message && (
-        <span id={helpId} className={error ? "text-danger" : "font-normal text-muted"}>
+        <span id={helpId} className={error ? "text-danger-text" : "font-normal text-text-muted"}>
           {message}
         </span>
       )}

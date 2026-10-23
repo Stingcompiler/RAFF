@@ -11,10 +11,10 @@ import { money, timeOfDay } from "@/lib/format";
 import { type OrderRow, type OrderStatus, STATUS_TONE } from "./labels";
 
 const TONE = {
-  success: "text-success bg-success-bg",
-  warn: "text-warn bg-warn-bg",
-  danger: "text-danger bg-danger-bg",
-  info: "text-info bg-info-bg",
+  success: "text-success-text bg-success-bg",
+  warn: "text-warning-text bg-warning-bg",
+  danger: "text-danger-text bg-danger-bg",
+  info: "text-info-text bg-info-bg",
 } as const;
 const SYMBOL = { success: "●", warn: "▲", danger: "✕", info: "■" } as const;
 
@@ -72,7 +72,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
               key={order.id}
               className={cn(
                 "grid gap-[10px] rounded-[14px] border bg-surface px-[14px] py-[12px]",
-                order.status === "new" ? "border-primary" : "border-line",
+                order.status === "new" ? "border-brand" : "border-border",
               )}
             >
               <div className="flex items-center justify-between gap-[8px]">
@@ -88,14 +88,14 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                   {SYMBOL[tone]} {t(`status.${order.status}`)}
                 </span>
               </div>
-              <div className="flex justify-between gap-[8px] text-[13px] text-muted">
+              <div className="flex justify-between gap-[8px] text-[13px] text-text-muted">
                 <span className="flex min-w-0 gap-[6px]">
                   <span className="min-w-0 truncate">{order.customer_name}</span>
                   <bdi dir="ltr" className="flex-none [unicode-bidi:isolate]">
                     {timeOfDay(order.created_at)}
                   </bdi>
                 </span>
-                <span dir="ltr" className="flex-none font-semibold whitespace-nowrap text-ink">
+                <span dir="ltr" className="flex-none font-semibold whitespace-nowrap text-text">
                   {cur(order.estimated_total)}
                 </span>
               </div>
@@ -103,7 +103,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                 <a
                   href={waLink(order.phone)}
                   aria-label={t("waFor", { name: order.customer_name })}
-                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-line font-medium whitespace-nowrap text-ink no-underline"
+                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-border-strong font-medium whitespace-nowrap text-text no-underline"
                 >
                   {t("whatsapp")}
                 </a>
@@ -112,12 +112,12 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                     type="button"
                     disabled={busy === order.id}
                     onClick={() => void advance(order, next)}
-                    className="min-h-[44px] flex-1 cursor-pointer rounded-[10px] border-0 bg-primary font-[inherit] font-semibold whitespace-nowrap text-primary-ink transition-[background] duration-200 disabled:opacity-60"
+                    className="min-h-[44px] flex-1 cursor-pointer rounded-[10px] border-0 bg-brand font-[inherit] font-semibold whitespace-nowrap text-on-brand transition-[background] duration-200 disabled:opacity-60"
                   >
                     {[ar ? ARROW_AR : ARROW_EN, t(`status.${next}`)].join(" ")}
                   </button>
                 ) : (
-                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-[10px] bg-line px-[8px] text-center font-semibold text-muted">
+                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-[10px] bg-border px-[8px] text-center font-semibold text-text-muted">
                     {order.status === "ready" ? t("viaPos") : t(`status.${order.status}`)}
                   </span>
                 )}
@@ -126,7 +126,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
           );
         })}
         {rows.length === 0 && (
-          <div className="px-[8px] py-[24px] text-center text-muted">{t("noOrders")}</div>
+          <div className="px-[8px] py-[24px] text-center text-text-muted">{t("noOrders")}</div>
         )}
       </div>
     </>

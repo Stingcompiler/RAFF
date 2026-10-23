@@ -130,7 +130,7 @@ export function OrderDetailScreen({
       <div className="flex flex-wrap items-center gap-[12px]">
         <Link
           href="/orders"
-          className="inline-flex min-h-[44px] items-center whitespace-nowrap text-primary"
+          className="inline-flex min-h-[44px] items-center whitespace-nowrap text-brand"
         >
           {t("back")}
         </Link>
@@ -140,7 +140,7 @@ export function OrderDetailScreen({
         <Badge tone={STATUS_TONE[order.status]} dense>
           {t(`status.${order.status}`)}
         </Badge>
-        <span className="whitespace-nowrap text-muted">
+        <span className="whitespace-nowrap text-text-muted">
           {order.customer_name}{" "}
           <bdi dir="ltr" className="[unicode-bidi:isolate]">
             {order.phone}
@@ -171,12 +171,12 @@ export function OrderDetailScreen({
         </span>
       </div>
       {order.sale_number && (
-        <div className="rounded-[8px] bg-success-bg px-[14px] py-[10px] font-medium text-success">
+        <div className="rounded-[8px] bg-success-bg px-[14px] py-[10px] font-medium text-success-text">
           {[t("linked"), order.sale_number].join(" ")}
         </div>
       )}
       {order.status === "ready" && !order.sale_number && (
-        <div className="rounded-[8px] bg-info-bg px-[14px] py-[10px] font-medium text-info">
+        <div className="rounded-[8px] bg-info-bg px-[14px] py-[10px] font-medium text-info-text">
           {t("readyNote")}
         </div>
       )}
@@ -184,8 +184,8 @@ export function OrderDetailScreen({
         <div
           className={
             order.status === "cancelled"
-              ? "rounded-[8px] bg-danger-bg px-[14px] py-[10px] font-medium text-danger"
-              : "rounded-[8px] bg-warn-bg px-[14px] py-[10px] font-medium text-warn"
+              ? "rounded-[8px] bg-danger-bg px-[14px] py-[10px] font-medium text-danger-text"
+              : "rounded-[8px] bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
           }
         >
           {order.reason}
@@ -203,7 +203,7 @@ export function OrderDetailScreen({
                     <TextCell>
                       {[ar ? l.name_ar : l.name_en, l.strength].filter(Boolean).join(" ")}
                       {l.rx && (
-                        <span className="ms-[6px] text-[12px] text-info">{t("rxNote")}</span>
+                        <span className="ms-[6px] text-[12px] text-info-text">{t("rxNote")}</span>
                       )}
                     </TextCell>
                     <NumberCell>{l.published_price ? amount(l.published_price) : DASH}</NumberCell>
@@ -211,14 +211,14 @@ export function OrderDetailScreen({
                     <NumberCell>{l.available_units}</NumberCell>
                     <span role="cell" className="flex justify-end">
                       {editing ? (
-                        <span className="flex items-center overflow-hidden rounded-[8px] border border-line">
+                        <span className="flex items-center overflow-hidden rounded-[8px] border border-border">
                           <button
                             type="button"
                             aria-label={MINUS}
                             onClick={() =>
                               setQuantities((p) => ({ ...p, [l.id]: Math.max(0, qty - 1) }))
                             }
-                            className="type-inherit grid h-[36px] w-[32px] cursor-pointer place-items-center border-0 bg-surface-raised text-ink"
+                            className="type-inherit grid h-[36px] w-[32px] cursor-pointer place-items-center border-0 bg-surface-subtle text-text"
                           >
                             {MINUS}
                           </button>
@@ -231,7 +231,7 @@ export function OrderDetailScreen({
                             onClick={() =>
                               setQuantities((p) => ({ ...p, [l.id]: Math.min(20, qty + 1) }))
                             }
-                            className="type-inherit grid h-[36px] w-[32px] cursor-pointer place-items-center border-0 bg-surface-raised text-ink"
+                            className="type-inherit grid h-[36px] w-[32px] cursor-pointer place-items-center border-0 bg-surface-subtle text-text"
                           >
                             {PLUS}
                           </button>
@@ -244,7 +244,7 @@ export function OrderDetailScreen({
                 );
               })}
             </div>
-            <div className="flex min-h-[48px] items-center justify-between border-t border-line px-[16px] font-semibold">
+            <div className="flex min-h-[48px] items-center justify-between border-t border-border px-[16px] font-semibold">
               <span>{t("finalT")}</span>
               <span dir="ltr" className="tabular-nums">
                 {total}
@@ -254,7 +254,7 @@ export function OrderDetailScreen({
           {editing && (
             <Panel title={t("editTitle")}>
               <div className="grid gap-[8px] p-[14px]">
-                <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+                <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                   {t("consentL")}
                   <Textarea
                     rows={2}
@@ -301,7 +301,7 @@ export function OrderDetailScreen({
               />
               <div
                 data-testid="wa-text"
-                className="rounded-[8px] border border-line bg-bg px-[12px] py-[10px] text-[13px] leading-[1.7] whitespace-pre-line"
+                className="rounded-[8px] border border-border bg-canvas px-[12px] py-[10px] text-[13px] leading-[1.7] whitespace-pre-line"
               >
                 {waText}
               </div>
@@ -310,7 +310,7 @@ export function OrderDetailScreen({
                   href={waHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-primary px-[14px] font-semibold text-primary-ink no-underline"
+                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-brand px-[14px] font-semibold text-on-brand no-underline"
                 >
                   {t("openWa")}
                 </a>
@@ -338,17 +338,17 @@ export function OrderDetailScreen({
                     <span className="text-[13px]">
                       {(ar ? e.actor_ar : e.actor_en) ?? t("customer")}
                     </span>
-                    <bdi dir="ltr" className="text-[12px] text-muted [unicode-bidi:isolate]">
+                    <bdi dir="ltr" className="text-[12px] text-text-muted [unicode-bidi:isolate]">
                       {[e.at.slice(0, 10), timeOfDay(e.at)].join(" ")}
                     </bdi>
                   </span>
-                  {e.note && <span className="text-[13px] text-muted">{e.note}</span>}
+                  {e.note && <span className="text-[13px] text-text-muted">{e.note}</span>}
                 </li>
               ))}
             </ol>
           </Panel>
-          <div className="grid gap-[8px] rounded-[12px] border border-dashed border-warn bg-warn-bg p-[14px]">
-            <div className="font-medium text-warn">{t("internal")}</div>
+          <div className="grid gap-[8px] rounded-[12px] border border-dashed border-warning-solid bg-warning-bg p-[14px]">
+            <div className="font-medium text-warning-text">{t("internal")}</div>
             <Textarea
               rows={3}
               value={note}
@@ -381,9 +381,9 @@ export function OrderDetailScreen({
                 })
               : ""}
           </div>
-          <div className="text-muted">{t("transitionBody")}</div>
+          <div className="text-text-muted">{t("transitionBody")}</div>
           {moving && NEEDS_REASON.includes(moving) && (
-            <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
               {t("reasonL")}
               <Textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} />
             </label>

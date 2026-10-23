@@ -229,8 +229,8 @@ export function ShiftsScreen({
             <div id="close-title" className="text-[16px] font-medium">
               {t("closeTitle", { number: shift.number })}
             </div>
-            <div className="text-muted">{t("closeBody")}</div>
-            <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+            <div className="text-text-muted">{t("closeBody")}</div>
+            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
               {t("counted")}
               <TextInput
                 dir="ltr"
@@ -239,7 +239,7 @@ export function ShiftsScreen({
                 onChange={(e) => setCounted(cleanAmount(e.target.value))}
               />
             </label>
-            <div className="grid gap-[6px] rounded-[8px] bg-warn-bg p-[12px] font-medium text-warn">
+            <div className="grid gap-[6px] rounded-[8px] bg-warning-bg p-[12px] font-medium text-warning-text">
               <div className="flex justify-between gap-[12px]">
                 <span>
                   {variance && isNegative(variance)

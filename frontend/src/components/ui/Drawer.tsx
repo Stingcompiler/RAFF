@@ -68,7 +68,7 @@ export function Drawer({ open, onClose, labelledBy, children, className }: Props
         aria-hidden={!open}
         tabIndex={-1}
         className={cn(
-          "fixed inset-y-0 end-0 z-[5] flex w-[440px] max-w-full flex-col border-s border-line bg-surface shadow-drawer outline-none",
+          "fixed inset-y-0 end-0 z-[5] flex w-[440px] max-w-full flex-col border-s border-border bg-surface-raised shadow-drawer outline-none",
           "transition-transform duration-[350ms] ease-[cubic-bezier(.2,.8,.2,1)]",
           open ? "translate-x-0" : "ltr:translate-x-[110%] rtl:-translate-x-[110%]",
           className,
@@ -83,8 +83,8 @@ export function Drawer({ open, onClose, labelledBy, children, className }: Props
 /** A key/value row inside a drawer tab. */
 export function DrawerRow({ label, children }: { label: ReactNode; children: ReactNode }) {
   return (
-    <div className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-line px-[20px] py-[8px] animate-[raff-fade_.3s_ease_both]">
-      <span className="text-muted">{label}</span>
+    <div className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-border px-[20px] py-[8px] animate-[raff-fade_.3s_ease_both]">
+      <span className="text-text-muted">{label}</span>
       <span className="font-medium tabular-nums [unicode-bidi:isolate]">{children}</span>
     </div>
   );

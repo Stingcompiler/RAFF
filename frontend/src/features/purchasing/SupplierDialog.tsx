@@ -61,7 +61,7 @@ export function SupplierDialog({
           )}
         </Field>
         {error && (
-          <div role="alert" className="text-[13px] font-medium text-danger">
+          <div role="alert" className="text-[13px] font-medium text-danger-text">
             {error}
           </div>
         )}

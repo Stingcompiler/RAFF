@@ -1,0 +1,47 @@
+name: Visual baselines (Linux)
+
+# Writes tests/e2e/__screenshots__/*-linux.png inside the same Playwright image the
+# `visual` job runs in, so CI compares like with like. Run it after an intended visual
+# change, review the images in the artifact, and commit them (CLAUDE.md rule 23).
+on:
+  workflow_dispatch:
+  push:
+    branches: [ci/baselines]
+
+permissions:
+  contents: read
+
+# Throwaway credentials for the CI database service only.
+env:
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: raff
+  POSTGRES_USER: raff
+  POSTGRES_PASSWORD: ci-only
+  DJANGO_SECRET_KEY: ci-only-not-a-secret
+
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    container: mcr.microsoft.com/playwright:v1.64.1-noble
+    env:
+      POSTGRES_HOST: postgres
+    services:
+      postgres:
+        image: postgres:17.11-bookworm
+        env:
+          POSTGRES_DB: raff
+          POSTGRES_USER: raff
+          POSTGRES_PASSWORD: ci-only
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U raff -d raff"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm visual:update
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: baselines
+          path: tests/e2e/__screenshots__/

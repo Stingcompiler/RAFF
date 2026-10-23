@@ -57,13 +57,13 @@ export function PhoneSell(props: Props) {
   const total = quoted.quote?.total ?? "0";
 
   return (
-    <div className="relative flex h-dvh flex-col overflow-hidden bg-bg text-ink">
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-canvas text-text">
       <PhoneStatus status={props.connection.status} text={props.connection.text} />
       {props.banners}
       <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] text-[26px] font-medium">{t("title")}</h1>
       {(props.catalogueSize > SEARCH_FROM || searching) && (
-        <label className="mx-[16px] mb-[8px] flex h-[48px] flex-none items-center gap-[8px] rounded-[12px] border-2 border-primary bg-surface px-[14px]">
-          <SearchIcon size={20} className="flex-none text-muted" />
+        <label className="mx-[16px] mb-[8px] flex h-[48px] flex-none items-center gap-[8px] rounded-[12px] border-2 border-brand bg-surface px-[14px]">
+          <SearchIcon size={20} className="flex-none text-text-muted" />
           <input
             type="search"
             dir="auto"
@@ -72,7 +72,7 @@ export function PhoneSell(props: Props) {
             autoComplete="off"
             value={props.query}
             onChange={(e) => props.onQuery(e.target.value)}
-            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-ink outline-none"
+            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
           />
         </label>
       )}
@@ -84,30 +84,30 @@ export function PhoneSell(props: Props) {
             disabled={props.locked}
             aria-label={t("add", { name: pick(ar, row) })}
             onClick={() => props.onAdd(row)}
-            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-[12px] border border-line bg-surface px-[14px] py-[8px] text-start font-[inherit] text-[14px] text-ink transition-[transform,background] duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
+            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-[12px] border border-border bg-surface px-[14px] py-[8px] text-start font-[inherit] text-[14px] text-text transition-[transform,background] duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
           >
             <span className="min-w-0 flex-1 truncate font-medium">
               {[pick(ar, row), row.strength].filter(Boolean).join(" ")}
             </span>
-            <span dir="ltr" className="text-muted tabular-nums">
+            <span dir="ltr" className="text-text-muted tabular-nums">
               {row.price ? cur(row.price) : ""}
             </span>
             <span
               aria-hidden="true"
-              className="grid size-[44px] flex-none place-items-center rounded-[10px] bg-accent text-[22px]"
+              className="grid size-[44px] flex-none place-items-center rounded-[10px] bg-brand-subtle text-[22px]"
             >
               {PLUS}
             </span>
           </button>
         ))}
         {items.length === 0 && (
-          <div className="px-[8px] py-[24px] text-center text-muted">{t("empty")}</div>
+          <div className="px-[8px] py-[24px] text-center text-text-muted">{t("empty")}</div>
         )}
       </div>
 
       <div
         className={cn(
-          "absolute inset-x-0 bottom-[68px] rounded-t-[20px] border-t border-line bg-surface shadow-sheet",
+          "absolute inset-x-0 bottom-[68px] rounded-t-[20px] border-t border-border bg-surface shadow-sheet",
           "transition-transform duration-[350ms] ease-[cubic-bezier(.2,.8,.2,1)]",
           open ? "translate-y-0" : "translate-y-[212px]",
         )}
@@ -117,11 +117,11 @@ export function PhoneSell(props: Props) {
           aria-expanded={open}
           aria-label={t("toggle")}
           onClick={() => setOpen((v) => !v)}
-          className="block w-full cursor-pointer border-0 bg-transparent px-[16px] pt-[10px] pb-0 text-start font-[inherit] text-[14px] text-ink"
+          className="block w-full cursor-pointer border-0 bg-transparent px-[16px] pt-[10px] pb-0 text-start font-[inherit] text-[14px] text-text"
         >
           <span
             aria-hidden="true"
-            className="mx-auto mb-[10px] block h-[4px] w-[40px] rounded-[2px] bg-line"
+            className="mx-auto mb-[10px] block h-[4px] w-[40px] rounded-[2px] bg-border"
           />
           <span className="flex h-[52px] items-center gap-[12px]">
             <span className="flex-1 font-medium">
@@ -144,7 +144,7 @@ export function PhoneSell(props: Props) {
             type="button"
             disabled={props.payDisabled}
             onClick={props.onPay}
-            className="h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-primary font-[inherit] text-[16px] font-semibold text-primary-ink transition-transform duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
+            className="h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
           >
             {t("pay")}
           </button>
@@ -158,10 +158,10 @@ export function PhoneSell(props: Props) {
             return (
               <div
                 key={l.key}
-                className="flex min-h-[44px] animate-[raff-rise_.25s_ease_both] items-center gap-[12px] border-t border-line"
+                className="flex min-h-[44px] animate-[raff-rise_.25s_ease_both] items-center gap-[12px] border-t border-border"
               >
                 <span className="min-w-0 flex-1 truncate">{pick(ar, l.item)}</span>
-                <span dir="ltr" className="text-muted">
+                <span dir="ltr" className="text-text-muted">
                   {TIMES} {l.quantity}
                 </span>
                 <span dir="ltr" className="font-semibold tabular-nums">

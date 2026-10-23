@@ -12,14 +12,16 @@ export function OrderStatusStepper({ steps }: { steps: readonly Step[] }) {
             aria-hidden="true"
             className={cn(
               "grid size-[20px] flex-none place-items-center rounded-full text-[11px] font-bold",
-              s.state === "done" && "bg-brand text-brand-ink",
-              s.state === "current" && "box-border border-2 border-brand bg-accent",
-              s.state === "todo" && "box-border border-2 border-line-strong bg-surface",
+              s.state === "done" && "bg-brand text-on-brand",
+              s.state === "current" && "box-border border-2 border-brand bg-brand-subtle",
+              s.state === "todo" && "box-border border-2 border-border-strong bg-surface",
             )}
           >
             {s.state === "done" ? "✓" : ""}
           </span>
-          <span className={s.state === "todo" ? "text-muted" : "font-semibold"}>{s.label}</span>
+          <span className={s.state === "todo" ? "text-text-muted" : "font-semibold"}>
+            {s.label}
+          </span>
         </li>
       ))}
     </ol>
