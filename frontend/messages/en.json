@@ -502,6 +502,11 @@
     "total": "Total",
     "pay": "Pay",
     "hold": "Hold",
+    "customerTitle": "Sale customer",
+    "customerHint": "Optional — recorded on the sale with any payment method",
+    "customerClear": "Sell without a customer",
+    "customerSearch": "Search by name or phone",
+    "customerPick": "Pick a customer",
     "offlineMsg": "Local server unavailable. Approval is disabled; your draft is saved on this device.",
     "reconnMsg": "Local server is reconnecting. You can keep working; approval will retry automatically.",
     "verifyMsg": "Outcome being verified — do not approve again. The request ID is checked before any retry.",
@@ -563,6 +568,8 @@
     "conv": "1 {unit} = {factor} {base}",
     "keys": {
       "search": "Search",
+      "customer": "Customer",
+      "discount": "Discount",
       "hold": "Hold",
       "resume": "Resume",
       "pay": "Pay",
@@ -1463,5 +1470,22 @@
       "viaPos": "Completes via POS invoice",
       "failed": "Couldn't change the order status."
     }
+  },
+  "sync": {
+    "synced": "Saved on the server",
+    "offline": "Offline",
+    "pending": "Waiting to send",
+    "syncing": "Sending",
+    "failed": "Couldn't send",
+    "stale": "Updated {time}",
+    "deviceOffline": "Your device is offline.",
+    "deviceOfflineBody": "Approval needs the server, so it waits for the connection. What you entered is kept on this device.",
+    "serverUnreachable": "The server can't be reached.",
+    "serverUnreachableBody": "The problem is not on your device. What you entered is kept and we retry automatically.",
+    "syncingTitle": "Back online.",
+    "syncingBody": "Sending your data now.",
+    "refresh": "Refresh",
+    "refreshNeedsConnection": "Refresh is available when the connection returns",
+    "approveNeedsServer": "Approval needs the server"
   }
 }

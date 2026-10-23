@@ -57,8 +57,10 @@ permissions:
 
 pos:
   enabled: true
-  button_grid_by_role: {}       # تُملأ في WO-15c بإجراءات موجودة فعلاً فقط
-  shortcuts: default            # F2 بحث، F4 عميل، F6/F7 خصم، F8 تعليق، F9 استرجاع، F10 مرتجع، Enter دفع (D-R0006)
+  button_grid_by_role:          # إجراءات موجودة فعلاً فقط (WO-15c)؛ الزر يظهر بحسب صلاحية الدور
+    all: [customer, hold, resume, return]
+    with_discount_permission: [discount]
+  shortcuts: default            # F2 بحث، F4 عميل، F6/F7 خصم، F8 تعليق، F9 استرجاع، F10 مرتجع، Enter دفع (D-R0006) — مُنفَّذة في WO-15c
   numpad: input-only
 
 accessibility:

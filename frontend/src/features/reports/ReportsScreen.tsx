@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Button } from "@/components/ui/Button";
 import { TextInput } from "@/components/ui/Field";
 import { Panel } from "@/components/ui/Panel";
@@ -56,6 +57,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
   const ar = useLocale() === "ar";
   const [name, setName] = useState<ReportName>(initialName);
   const [report, setReport] = useState(initial);
+  const [stamp, setStamp] = useState(() => new Date().toISOString());
   const [from, setFrom] = useState(initial.start);
   const [to, setTo] = useState(initial.end);
   const [days, setDays] = useState(String(initial.days));
@@ -73,6 +75,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
     const res = await apiGet<Report>(`/reports/${n}/?${params}`);
     if (res.ok) {
       setReport(res.data);
+      setStamp(new Date().toISOString());
       setFrom(res.data.start);
       setTo(res.data.end);
       setDays(String(res.data.days));
@@ -118,7 +121,15 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
 
   return (
     <>
-      <PageHeader title={t("title")} actions={<Button onClick={exportCsv}>{t("export")}</Button>} />
+      <PageHeader
+        title={t("title")}
+        actions={
+          <>
+            <StaleStamp at={stamp} onRefresh={() => void load(name, query(name))} />
+            <Button onClick={exportCsv}>{t("export")}</Button>
+          </>
+        }
+      />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-4 min-w-0 max-[1180px]:col-span-12">
           <Panel title={t("available")}>
