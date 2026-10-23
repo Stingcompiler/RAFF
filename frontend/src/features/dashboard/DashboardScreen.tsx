@@ -118,11 +118,11 @@ function DashboardDesktop({ initial, canAll }: Props) {
                   </>
                 );
                 return (
-                  <li key={key} className="border-b border-line last:border-b-0">
+                  <li key={key} className="border-b border-border last:border-b-0">
                     {href ? (
                       <a
                         href={href}
-                        className="flex min-h-[44px] items-center justify-between gap-[12px] px-[16px] text-ink no-underline hover:bg-sidebar"
+                        className="flex min-h-[44px] items-center justify-between gap-[12px] px-[16px] text-text no-underline hover:bg-surface-subtle"
                       >
                         {row}
                       </a>
@@ -188,12 +188,14 @@ function DashboardDesktop({ initial, canAll }: Props) {
                     <span
                       title={cur(d.total)}
                       className={cn(
-                        "block w-full rounded-t-[4px] bg-primary",
+                        "block w-full rounded-t-[4px] bg-brand",
                         i === data.week.length - 1 ? "opacity-100" : "opacity-55",
                       )}
                       style={{ height: `${Math.round((Number(d.total) / max) * BAR_MAX_PX)}px` }}
                     />
-                    <span className="text-[12px] text-muted">{(ar ? DAYS_AR : DAYS_EN)[day]}</span>
+                    <span className="text-[12px] text-text-muted">
+                      {(ar ? DAYS_AR : DAYS_EN)[day]}
+                    </span>
                   </div>
                 );
               })}

@@ -174,7 +174,7 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
             )}
           </Field>
           {error && (
-            <div role="alert" className="text-[13px] font-medium text-danger">
+            <div role="alert" className="text-[13px] font-medium text-danger-text">
               {error}
             </div>
           )}

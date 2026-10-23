@@ -33,13 +33,15 @@ export function HeldDialog({ onClose, onResume }: Props) {
           type="button"
           onClick={onClose}
           aria-label={t("dismiss")}
-          className="type-inherit cursor-pointer border-0 bg-transparent p-0 text-[12px] text-muted"
+          className="type-inherit cursor-pointer border-0 bg-transparent p-0 text-[12px] text-text-muted"
         >
           {ESC}
         </button>
       </div>
-      {rows?.length === 0 && <div className="p-[24px] text-center text-muted">{t("noHeld")}</div>}
-      <div className="overflow-hidden rounded-[10px] border border-line">
+      {rows?.length === 0 && (
+        <div className="p-[24px] text-center text-text-muted">{t("noHeld")}</div>
+      )}
+      <div className="overflow-hidden rounded-[10px] border border-border">
         {rows?.map((h) => {
           const count = Array.isArray(h.cart) ? h.cart.length : 0;
           const by = pick(ar, { name_ar: h.created_by_name_ar, name_en: h.created_by_name_en });
@@ -49,7 +51,7 @@ export function HeldDialog({ onClose, onResume }: Props) {
               key={h.id}
               type="button"
               onClick={() => onResume(h)}
-              className="type-inherit grid min-h-[52px] w-full cursor-pointer grid-cols-[60px_1fr_110px_90px] items-center gap-[12px] border-0 border-b border-line bg-transparent px-[14px] py-[8px] text-start text-ink transition-[background] duration-150 hover:bg-accent"
+              className="type-inherit grid min-h-[52px] w-full cursor-pointer grid-cols-[60px_1fr_110px_90px] items-center gap-[12px] border-0 border-b border-border bg-transparent px-[14px] py-[8px] text-start text-text transition-[background] duration-150 hover:bg-brand-subtle"
             >
               <span dir="ltr" className="tabular-nums">
                 {timeOfDay(h.created_at)}
@@ -58,7 +60,7 @@ export function HeldDialog({ onClose, onResume }: Props) {
               <span dir="ltr" className="text-end font-semibold tabular-nums">
                 {money(h.total ?? "0", ar ? "ar" : "en")}
               </span>
-              <span className="text-end font-semibold text-primary">{t("resume")}</span>
+              <span className="text-end font-semibold text-brand">{t("resume")}</span>
             </button>
           );
         })}

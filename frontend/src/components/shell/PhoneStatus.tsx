@@ -7,9 +7,9 @@ import type { ConnectionStatus } from "@/components/ui/ConnectionIndicator";
 import { cn } from "@/lib/cn";
 
 const TONE: Record<ConnectionStatus, string> = {
-  online: "text-ink",
-  reconnecting: "text-warn",
-  unavailable: "text-danger",
+  online: "text-text",
+  reconnecting: "text-warning-text",
+  unavailable: "text-danger-text",
 };
 
 const clock = () =>

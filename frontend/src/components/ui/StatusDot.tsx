@@ -1,9 +1,9 @@
 import { cn } from "@/lib/cn";
 
 const DOTS = {
-  success: "bg-success",
-  warn: "bg-warn animate-[raff-pulse_1.6s_ease-in-out_infinite]",
-  danger: "bg-danger",
+  success: "bg-success-solid",
+  warn: "bg-warning-solid animate-[raff-pulse_1.6s_ease-in-out_infinite]",
+  danger: "bg-danger-solid",
 } as const;
 
 export function StatusDot({ tone, className }: { tone: keyof typeof DOTS; className?: string }) {

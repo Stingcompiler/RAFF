@@ -27,12 +27,12 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
   ].join(" — ");
   return (
     <section className="grid max-w-[720px] gap-[20px] px-[20px] pt-[32px] pb-[48px]">
-      <div className="flex items-center gap-[12px] rounded-[12px] bg-success-bg px-[16px] py-[14px] font-semibold text-success">
+      <div className="flex items-center gap-[12px] rounded-[12px] bg-success-bg px-[16px] py-[14px] font-semibold text-success-text">
         <CheckCircleIcon size={24} />
         {t("arrived")}
       </div>
       <div>
-        <div className="text-[14px] text-muted">{t("orderNo")}</div>
+        <div className="text-[14px] text-text-muted">{t("orderNo")}</div>
         <div
           dir="ltr"
           data-testid="order-number"
@@ -46,13 +46,18 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
           role="status"
           className={cn(
             "rounded-[10px] px-[14px] py-[12px] font-medium",
-            order.status === "cancelled" ? "bg-danger-bg text-danger" : "bg-warn-bg text-warn",
+            order.status === "cancelled"
+              ? "bg-danger-bg text-danger-text"
+              : "bg-warning-bg text-warning-text",
           )}
         >
           {sideText}
         </div>
       )}
-      <ol aria-label={t("orderNo")} className="ms-[11px] grid list-none border-s-2 border-line p-0">
+      <ol
+        aria-label={t("orderNo")}
+        className="ms-[11px] grid list-none border-s-2 border-border p-0"
+      >
         {FLOW.map((step, i) => {
           const done = reached >= 0 ? i <= reached : i === 0;
           const note =
@@ -70,30 +75,32 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
               <span
                 className={cn(
                   "grid size-[24px] flex-none place-items-center rounded-full text-[13px] font-bold",
-                  done ? "bg-brand text-brand-ink" : "border-2 border-line-strong bg-surface",
+                  done ? "bg-brand text-on-brand" : "border-2 border-border-strong bg-surface",
                 )}
               >
                 {done ? CHECK : ""}
               </span>
               <div>
-                <div className={cn(done ? "font-semibold text-ink" : "font-medium text-muted")}>
+                <div
+                  className={cn(done ? "font-semibold text-text" : "font-medium text-text-muted")}
+                >
                   {t(`status.${step}`)}
                 </div>
-                {note && <div className="text-[13px] text-muted">{note}</div>}
+                {note && <div className="text-[13px] text-text-muted">{note}</div>}
               </div>
             </li>
           );
         })}
       </ol>
-      <div className="rounded-[12px] border border-line bg-surface p-[16px] leading-[1.7]">
+      <div className="rounded-[12px] border border-border bg-surface p-[16px] leading-[1.7]">
         {t("orderInfo")}
       </div>
-      <div className="rounded-[12px] border border-line bg-surface px-[16px] py-[6px]">
+      <div className="rounded-[12px] border border-border bg-surface px-[16px] py-[6px]">
         {order.lines.map((l, i) => (
           <div key={i} className="flex min-h-[44px] items-center justify-between gap-[12px]">
             <span>
               {[ar ? l.name_ar : l.name_en, l.strength].filter(Boolean).join(" ")}{" "}
-              <span dir="ltr" className="text-muted">
+              <span dir="ltr" className="text-text-muted">
                 {[TIMES, l.quantity].join(" ")}
               </span>
             </span>
@@ -104,7 +111,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
             </span>
           </div>
         ))}
-        <div className="flex min-h-[48px] items-center justify-between border-t border-line font-semibold">
+        <div className="flex min-h-[48px] items-center justify-between border-t border-border font-semibold">
           <span>{t("est")}</span>
           <span dir="ltr">{money(order.estimated_total, ar ? "ar" : "en")}</span>
         </div>
@@ -112,7 +119,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
       {order.whatsapp && (
         <a
           href={waLink(order.whatsapp, order.number)}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-brand-ink no-underline"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-on-brand no-underline"
         >
           {t("openWa")}
         </a>

@@ -105,7 +105,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
                       (x) => x.ok && setItem(x.data),
                     )
                   }
-                  className="min-h-[40px] cursor-pointer rounded-[8px] border-0 bg-transparent px-[12px] text-start type-inherit text-ink hover:bg-sidebar"
+                  className="min-h-[40px] cursor-pointer rounded-[8px] border-0 bg-transparent px-[12px] text-start type-inherit text-text hover:bg-surface-subtle"
                 >
                   {ar ? `${r.name_ar} · ${r.name_en}` : r.name_en}
                 </button>

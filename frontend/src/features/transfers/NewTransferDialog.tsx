@@ -94,7 +94,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
         <div id="new-transfer" className="text-[16px] font-medium">
           {t("newTitle")}
         </div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
           {t("to")}
           <Select value={to} onChange={(e) => setTo(e.target.value)}>
             {branches.map((b) => (
@@ -105,7 +105,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           </Select>
         </label>
         <div className="grid grid-cols-[minmax(0,1fr)_140px_90px_auto] items-end gap-[8px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("searchItem")}
             <TextInput
               value={item ? (ar ? item.name_ar : item.name_en) : query}
@@ -115,7 +115,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
               }}
             />
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("batch")}
             <Select value={batchId} onChange={(e) => setBatchId(e.target.value)} disabled={!item}>
               {batches.map((b) => (
@@ -125,7 +125,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
               ))}
             </Select>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("quantity")}
             <TextInput
               dir="ltr"
@@ -143,7 +143,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           <div
             role="listbox"
             aria-label={t("searchItem")}
-            className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-line"
+            className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-border"
           >
             {items.map((row) => (
               <button
@@ -152,10 +152,10 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
                 role="option"
                 aria-selected={false}
                 onClick={() => void choose(row)}
-                className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-line bg-transparent px-[12px] text-start text-ink hover:bg-accent"
+                className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-border bg-transparent px-[12px] text-start text-text hover:bg-brand-subtle"
               >
                 {ar ? row.name_ar : row.name_en}{" "}
-                <bdi dir="ltr" className="text-muted">
+                <bdi dir="ltr" className="text-text-muted">
                   {row.strength}
                 </bdi>
               </button>
@@ -167,7 +167,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
             {lines.map((l, i) => (
               <li
                 key={i}
-                className="flex items-center justify-between gap-[12px] rounded-[8px] border border-line px-[12px] py-[6px]"
+                className="flex items-center justify-between gap-[12px] rounded-[8px] border border-border px-[12px] py-[6px]"
               >
                 <span>{l.label}</span>
                 <span className="flex items-center gap-[12px]">
@@ -187,7 +187,10 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           </ul>
         )}
         {error && (
-          <div role="alert" className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger">
+          <div
+            role="alert"
+            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+          >
             {error}
           </div>
         )}

@@ -9,7 +9,7 @@ export async function WorkspacePlaceholder({ screen }: { screen: NavKey }) {
   return (
     <>
       <PageHeader title={t(`nav.${screen}`)} />
-      <p className="m-0 text-muted">{t("placeholder.body")}</p>
+      <p className="m-0 text-text-muted">{t("placeholder.body")}</p>
     </>
   );
 }

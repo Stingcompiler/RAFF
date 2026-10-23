@@ -34,9 +34,9 @@ export function CartScreen() {
     <section className="grid gap-[16px] px-[20px] pt-[24px] pb-[40px]">
       <h1 className="m-0 text-[30px] font-semibold">{t("cart")}</h1>
       {ready && rows.length === 0 && (
-        <div className="grid justify-items-center gap-[8px] rounded-[14px] border border-dashed border-line-strong px-[20px] py-[48px] text-center">
+        <div className="grid justify-items-center gap-[8px] rounded-[14px] border border-dashed border-border-strong px-[20px] py-[48px] text-center">
           <b>{t("emptyT")}</b>
-          <span className="text-muted">{t("emptyB")}</span>
+          <span className="text-text-muted">{t("emptyB")}</span>
           <Link
             href="/store"
             className={cn(
@@ -54,14 +54,14 @@ export function CartScreen() {
             <div
               key={line.slug}
               data-testid="store-cart-line"
-              className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-[12px] rounded-[12px] border border-line bg-surface p-[12px]"
+              className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-[12px] rounded-[12px] border border-border bg-surface p-[12px]"
             >
-              <div className="grid h-[56px] place-items-center rounded-[8px] bg-placeholder-bg text-placeholder-ink">
+              <div className="grid h-[56px] place-items-center rounded-[8px] bg-surface-subtle text-text-muted">
                 <NoImageIcon size={22} />
               </div>
               <div className="min-w-0">
                 <div className="font-semibold">{productName(ar, product)}</div>
-                <div className="text-[13px] text-muted">
+                <div className="text-[13px] text-text-muted">
                   {[
                     ar ? product.unit_ar : product.unit_en,
                     product.price ? money(product.price, ar ? "ar" : "en") : t("pharmacistReview"),
@@ -78,12 +78,12 @@ export function CartScreen() {
                 </div>
               </div>
               <div className="flex items-center gap-[8px]">
-                <span className="flex items-center overflow-hidden rounded-[8px] border border-line-strong">
+                <span className="flex items-center overflow-hidden rounded-[8px] border border-border-strong">
                   <button
                     type="button"
                     aria-label={t("decrease")}
                     onClick={() => cart.set(line.slug, line.qty - 1)}
-                    className="type-inherit grid h-[44px] w-[40px] cursor-pointer place-items-center border-0 bg-transparent text-ink"
+                    className="type-inherit grid h-[44px] w-[40px] cursor-pointer place-items-center border-0 bg-transparent text-text"
                   >
                     {MINUS}
                   </button>
@@ -94,7 +94,7 @@ export function CartScreen() {
                     type="button"
                     aria-label={t("increase")}
                     onClick={() => cart.set(line.slug, line.qty + 1)}
-                    className="type-inherit grid h-[44px] w-[40px] cursor-pointer place-items-center border-0 bg-transparent text-ink"
+                    className="type-inherit grid h-[44px] w-[40px] cursor-pointer place-items-center border-0 bg-transparent text-text"
                   >
                     {PLUS}
                   </button>
@@ -103,7 +103,7 @@ export function CartScreen() {
                   type="button"
                   aria-label={t("del")}
                   onClick={() => cart.set(line.slug, 0)}
-                  className="type-inherit grid size-[44px] cursor-pointer place-items-center border-0 bg-transparent text-muted"
+                  className="type-inherit grid size-[44px] cursor-pointer place-items-center border-0 bg-transparent text-text-muted"
                 >
                   {REMOVE}
                 </button>
@@ -113,7 +113,7 @@ export function CartScreen() {
         )}
       </div>
       {rows.length > 0 && (
-        <div className="grid max-w-[520px] gap-[10px] rounded-[14px] border border-line bg-surface p-[18px]">
+        <div className="grid max-w-[520px] gap-[10px] rounded-[14px] border border-border bg-surface p-[18px]">
           <div className="flex items-baseline justify-between">
             <span className="font-medium">{t("est")}</span>
             <span
@@ -124,7 +124,7 @@ export function CartScreen() {
               {money(estimate, ar ? "ar" : "en") || money("0", ar ? "ar" : "en")}
             </span>
           </div>
-          <div className="rounded-[8px] bg-warn-bg px-[12px] py-[10px] text-[14px] font-medium text-warn">
+          <div className="rounded-[8px] bg-warning-bg px-[12px] py-[10px] text-[14px] font-medium text-warning-text">
             {t("cartNote")}
           </div>
           <Link

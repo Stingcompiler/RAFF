@@ -55,8 +55,8 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
 
   const item = (active: boolean) =>
     cn(
-      "flex min-h-[40px] w-full cursor-pointer items-center justify-between gap-[12px] rounded-[8px] border-0 bg-transparent px-[12px] text-start type-inherit text-ink hover:bg-sidebar",
-      active && "font-semibold text-primary",
+      "flex min-h-[40px] w-full cursor-pointer items-center justify-between gap-[12px] rounded-[8px] border-0 bg-transparent px-[12px] text-start type-inherit text-text hover:bg-surface-subtle",
+      active && "font-semibold text-brand",
     );
 
   return (
@@ -67,9 +67,9 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
         aria-expanded={open}
         aria-label={t("userMenu")}
         onClick={() => setOpen((v) => !v)}
-        className="flex cursor-pointer items-center gap-[8px] border-0 bg-transparent p-0 type-inherit font-medium text-ink"
+        className="flex cursor-pointer items-center gap-[8px] border-0 bg-transparent p-0 type-inherit font-medium text-text"
       >
-        <span className="grid size-[28px] place-items-center rounded-full bg-accent text-[12px]">
+        <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-[12px]">
           {initial}
         </span>
         <span className="max-[760px]:hidden">{name}</span>
@@ -77,9 +77,9 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute end-0 top-[40px] z-[7] grid w-[220px] gap-[2px] rounded-[12px] border border-line bg-surface p-[6px] shadow-dialog"
+          className="absolute end-0 top-[40px] z-[7] grid w-[220px] gap-[2px] rounded-[12px] border border-border bg-surface-raised p-[6px] shadow-dialog"
         >
-          <div className="px-[12px] pt-[6px] pb-[2px] text-[12px] font-medium text-muted">
+          <div className="px-[12px] pt-[6px] pb-[2px] text-[12px] font-medium text-text-muted">
             {t("language")}
           </div>
           <button
@@ -100,7 +100,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           >
             {t("localeEn")}
           </button>
-          <div className="px-[12px] pt-[8px] pb-[2px] text-[12px] font-medium text-muted">
+          <div className="px-[12px] pt-[8px] pb-[2px] text-[12px] font-medium text-text-muted">
             {t("theme")}
           </div>
           <button
@@ -121,7 +121,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           >
             {t("themeDark")}
           </button>
-          <div className="my-[4px] border-t border-line" />
+          <div className="my-[4px] border-t border-border" />
           <button type="button" role="menuitem" className={item(false)} onClick={signOut}>
             {t("signOut")}
           </button>

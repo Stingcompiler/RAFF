@@ -77,8 +77,8 @@ export function PhoneSearch({ initial }: { initial: Page }) {
     <>
       <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] text-[26px] font-medium">{t("title")}</h1>
       <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr] gap-[12px] px-[16px]">
-        <label className="flex h-[48px] items-center gap-[8px] rounded-[12px] border-2 border-primary bg-surface px-[14px]">
-          <SearchIcon size={20} className="flex-none text-muted" />
+        <label className="flex h-[48px] items-center gap-[8px] rounded-[12px] border-2 border-brand bg-surface px-[14px]">
+          <SearchIcon size={20} className="flex-none text-text-muted" />
           <input
             type="search"
             dir="auto"
@@ -87,7 +87,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-ink outline-none"
+            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
           />
         </label>
         <div className="grid content-start gap-[8px] overflow-y-auto pb-[16px]">
@@ -104,9 +104,9 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                   setOpen(expanded ? null : item.id);
                 }}
                 className={cn(
-                  "grid w-full cursor-pointer gap-[4px] rounded-[12px] border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-[14px] text-ink",
+                  "grid w-full cursor-pointer gap-[4px] rounded-[12px] border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-[14px] text-text",
                   "transition-[border-color,transform] duration-200 active:scale-[.99]",
-                  expanded ? "border-primary" : "border-line",
+                  expanded ? "border-brand" : "border-border",
                 )}
               >
                 <span className="flex items-baseline justify-between gap-[8px]">
@@ -120,10 +120,10 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                     {item.price ? cur(item.price) : DASH}
                   </span>
                 </span>
-                <span className="flex items-center gap-[8px] text-[13px] whitespace-nowrap text-muted">
+                <span className="flex items-center gap-[8px] text-[13px] whitespace-nowrap text-text-muted">
                   <span>
                     {t("stock")}{" "}
-                    <b dir="ltr" className="text-ink">
+                    <b dir="ltr" className="text-text">
                       {inSaleUnit(item.stock.sellable_base, item.sale_unit?.factor)}
                     </b>
                   </span>
@@ -143,18 +143,18 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                     expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                   )}
                 >
-                  <span className="grid gap-[4px] overflow-hidden pt-[8px] text-[13px] text-muted">
+                  <span className="grid gap-[4px] overflow-hidden pt-[8px] text-[13px] text-text-muted">
                     <span>
                       {t("batch")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-ink">
+                      <b dir="ltr" className="text-text">
                         {expanded ? (batch?.batch_no ?? DASH) : DASH}
                       </b>
                     </span>
                     <span>
                       {t("exp")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-ink">
+                      <b dir="ltr" className="text-text">
                         {expanded
                           ? (batch?.expiry_date ?? item.stock.nearest_expiry ?? DASH)
                           : DASH}
@@ -163,7 +163,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                     <span>
                       {t("form")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-ink">
+                      <b dir="ltr" className="text-text">
                         {strengthForm(item) || DASH}
                       </b>
                     </span>
@@ -173,13 +173,13 @@ export function PhoneSearch({ initial }: { initial: Page }) {
             );
           })}
           {page.results.length === 0 && (
-            <div className="px-[8px] py-[24px] text-center text-muted">{t("none")}</div>
+            <div className="px-[8px] py-[24px] text-center text-text-muted">{t("none")}</div>
           )}
           {page.next && (
             <button
               type="button"
               onClick={() => void more()}
-              className="min-h-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent font-[inherit] text-[14px] text-ink"
+              className="min-h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-[inherit] text-[14px] text-text"
             >
               {tInv("more")}
             </button>

@@ -1,4 +1,4 @@
-import type { HTMLAttributes, KeyboardEvent, ReactNode } from "react";
+import type { CSSProperties, HTMLAttributes, KeyboardEvent, ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -26,14 +26,15 @@ const trackMin = (width?: string) => {
   return px ? Number(px[1]) : FLEX_MIN;
 };
 
-const gridStyle = (columns: readonly Column[]) => ({
-  gridTemplateColumns: columns.map((c) => c.width ?? "1fr").join(" "),
-  // On a phone the rows keep this width and the table scrolls inside its card (see globals.css).
-  minWidth: columns.reduce(
-    (sum, c) => sum + trackMin(c.width),
-    GUTTER + GAP * (columns.length - 1),
-  ),
-});
+const gridStyle = (columns: readonly Column[]) =>
+  ({
+    gridTemplateColumns: columns.map((c) => c.width ?? "1fr").join(" "),
+    // Phones only: rows keep this width and the table scrolls inside its card (globals.css).
+    "--row-min": `${columns.reduce(
+      (sum, c) => sum + trackMin(c.width),
+      GUTTER + GAP * (columns.length - 1),
+    )}px`,
+  }) as CSSProperties;
 
 export function TableHead({
   columns,
@@ -47,7 +48,7 @@ export function TableHead({
       role="row"
       style={gridStyle(columns)}
       className={cn(
-        "grid h-[36px] items-center gap-[12px] border-b border-line bg-surface-raised px-[16px] text-[12px] font-medium text-muted",
+        "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-[12px] font-medium text-text-muted",
         className,
       )}
     >
@@ -93,11 +94,11 @@ export function TableRow({
       onKeyDown={onKeyDown}
       style={gridStyle(columns)}
       className={cn(
-        "grid min-h-[44px] items-center gap-[12px] border-b border-line px-[16px] text-[14px]",
+        "grid min-h-[44px] items-center gap-[12px] border-b border-border px-[16px] text-[14px]",
         "transition-[filter,background] duration-150",
         interactive &&
-          "cursor-pointer hover:brightness-[.97] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_3px_var(--color-focus)]",
-        selected && "bg-accent",
+          "cursor-pointer hover:brightness-[.97] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-focus)]",
+        selected && "bg-brand-subtle",
         disabled && "opacity-60",
         className,
       )}
@@ -151,7 +152,7 @@ export function BadgeCell({ tone, children }: { tone: Tone; children: ReactNode 
 
 export function TableEmpty({ children }: { children: ReactNode }) {
   return (
-    <div className="border-t border-line p-[16px] text-center text-[13px] text-muted">
+    <div className="border-t border-border p-[16px] text-center text-[13px] text-text-muted">
       {children}
     </div>
   );
@@ -162,7 +163,7 @@ export function TableSkeletonRow({ columns }: { columns: readonly Column[] }) {
     <div
       aria-hidden="true"
       style={gridStyle(columns)}
-      className="grid h-[44px] items-center gap-[12px] border-t border-line px-[12px]"
+      className="grid h-[44px] items-center gap-[12px] border-t border-border px-[12px]"
     >
       {columns.map((_, i) => (
         <Skeleton key={i} className={i === 0 ? "size-[18px]" : i === 1 ? "w-[70%]" : "w-full"} />

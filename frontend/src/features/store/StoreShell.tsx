@@ -30,15 +30,15 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
   // The pharmacy's colour overrides the brand token only; everything else stays on tokens.
   const brand = (store.brand_color ? { "--brand": store.brand_color } : {}) as CSSProperties;
   return (
-    <div style={brand} className="min-h-dvh bg-bg text-[16px] leading-[1.5] text-ink">
-      <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-line bg-surface-raised px-[20px] py-[12px]">
+    <div style={brand} className="min-h-dvh bg-canvas text-[16px] leading-[1.5] text-text">
+      <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-border bg-surface-subtle px-[20px] py-[12px]">
         <Link
           href="/"
-          className="flex items-center gap-[10px] text-[19px] font-bold whitespace-nowrap text-ink no-underline"
+          className="flex items-center gap-[10px] text-[19px] font-bold whitespace-nowrap text-text no-underline"
         >
           <span
             aria-hidden="true"
-            className="grid size-[34px] place-items-center rounded-full bg-brand text-[20px] leading-none text-brand-ink"
+            className="grid size-[34px] place-items-center rounded-full bg-brand text-[20px] leading-none text-on-brand"
           >
             {PLUS}
           </span>
@@ -54,7 +54,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
                 aria-current={on ? "page" : undefined}
                 className={cn(
                   "inline-flex min-h-[40px] items-center rounded-[8px] px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-200",
-                  on ? "bg-accent/40 text-brand" : "text-ink hover:bg-sidebar",
+                  on ? "bg-brand-subtle/40 text-brand" : "text-text hover:bg-surface-subtle",
                 )}
               >
                 {t(`nav.${key}`)}
@@ -68,19 +68,19 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
         <Link
           href="/cart"
           aria-label={t("cartCount", { count })}
-          className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-[10px] border border-line-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-ink no-underline"
+          className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
         >
           {t("cart")}
           <span
             data-testid="cart-count"
-            className="grid h-[22px] min-w-[22px] place-items-center rounded-full bg-accent px-[4px] text-[12px] text-ink"
+            className="grid h-[22px] min-w-[22px] place-items-center rounded-full bg-brand-subtle px-[4px] text-[12px] text-text"
           >
             {count}
           </span>
         </Link>
       </header>
       <main>{children}</main>
-      <footer className="mt-[24px] grid gap-[8px] border-t border-line px-[20px] py-[24px] text-[14px] text-muted">
+      <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-[14px] text-text-muted">
         <div className="flex flex-wrap gap-[16px]">
           <Link href="/policies/privacy" className="text-brand">
             {t("policy")}
@@ -119,16 +119,16 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[44px] min-w-[180px] flex-1 items-center gap-[8px] rounded-[10px] border border-line-strong bg-surface px-[12px]"
+      className="flex h-[44px] min-w-[180px] flex-1 items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[12px]"
     >
-      <SearchIcon className="text-muted" />
+      <SearchIcon className="text-text-muted" />
       <input
         type="search"
         aria-label={t("searchPh")}
         placeholder={t("searchPh")}
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-ink outline-none"
+        className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
       />
     </form>
   );

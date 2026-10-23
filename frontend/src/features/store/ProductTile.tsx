@@ -12,15 +12,15 @@ import { cart } from "./cart";
 import { type Product, productName } from "./types";
 
 export const AVAIL_TONE = {
-  available: "text-success bg-success-bg",
-  confirm: "text-warn bg-warn-bg",
-  unavailable: "text-info bg-info-bg",
+  available: "text-success-text bg-success-bg",
+  confirm: "text-warning-text bg-warning-bg",
+  unavailable: "text-info-text bg-info-bg",
 } as const;
 
 export const BUTTON = {
-  solid: "border-0 bg-brand text-brand-ink",
+  solid: "border-0 bg-brand text-on-brand",
   outline: "border border-brand bg-transparent text-brand",
-  muted: "border border-line-strong bg-transparent text-muted",
+  muted: "border border-border-strong bg-transparent text-text-muted",
 } as const;
 
 export function ProductImage({
@@ -42,7 +42,7 @@ export function ProductImage({
   ) : (
     <div
       className={cn(
-        "grid place-content-center justify-items-center gap-[4px] bg-placeholder-bg text-[12px] text-placeholder-ink",
+        "grid place-content-center justify-items-center gap-[4px] bg-surface-subtle text-[12px] text-text-muted",
         height,
       )}
     >
@@ -60,22 +60,22 @@ export function ProductTile({ product }: { product: Product }) {
   const off = product.availability === "unavailable";
   const href = `/products/${product.slug}`;
   return (
-    <article className="grid grid-rows-[auto_1fr] overflow-hidden rounded-[14px] border border-line bg-surface transition-[box-shadow,transform] duration-200 hover:-translate-y-[2px] hover:shadow-tile">
+    <article className="grid grid-rows-[auto_1fr] overflow-hidden rounded-[14px] border border-border bg-surface transition-[box-shadow,transform] duration-200 hover:-translate-y-[2px] hover:shadow-tile">
       <Link href={href} tabIndex={-1} aria-hidden="true">
         <ProductImage product={product} height="h-[120px]" label={t("noImg")} />
       </Link>
       <div className="grid content-start gap-[8px] p-[14px]">
-        <Link href={href} className="text-ink no-underline">
+        <Link href={href} className="text-text no-underline">
           <div className="text-[16px] leading-[1.3] font-semibold">{productName(ar, product)}</div>
           {ar && (
-            <bdi dir="ltr" className="text-[12px] text-muted [unicode-bidi:isolate]">
+            <bdi dir="ltr" className="text-[12px] text-text-muted [unicode-bidi:isolate]">
               {product.name_en}
             </bdi>
           )}
         </Link>
-        <div className="text-[13px] text-muted">{ar ? product.unit_ar : product.unit_en}</div>
+        <div className="text-[13px] text-text-muted">{ar ? product.unit_ar : product.unit_en}</div>
         {product.rx ? (
-          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[13px] font-medium text-info">
+          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[13px] font-medium text-info-text">
             {t("rxShort")}
           </div>
         ) : (
@@ -85,7 +85,7 @@ export function ProductTile({ product }: { product: Product }) {
                 <span className="text-[18px] font-semibold tabular-nums">
                   {money(product.price, ar ? "ar" : "en")}
                 </span>
-                <span className="text-[12px] whitespace-nowrap text-muted">
+                <span className="text-[12px] whitespace-nowrap text-text-muted">
                   {t("updated")}{" "}
                   <bdi dir="ltr" className="[unicode-bidi:isolate]">
                     {product.price_date}

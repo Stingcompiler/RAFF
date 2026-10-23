@@ -78,8 +78,8 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
         <div id="recall-title" className="text-[16px] font-medium">
           {t("recallTitle")}
         </div>
-        <div className="text-muted">{t("recallBody")}</div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+        <div className="text-text-muted">{t("recallBody")}</div>
+        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
           {t("searchItem")}
           <TextInput
             value={item ? (ar ? item.name_ar : item.name_en) : query}
@@ -94,7 +94,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           <div
             role="listbox"
             aria-label={t("searchItem")}
-            className="grid max-h-[180px] overflow-y-auto rounded-[8px] border border-line"
+            className="grid max-h-[180px] overflow-y-auto rounded-[8px] border border-border"
           >
             {items.map((row) => (
               <button
@@ -103,10 +103,10 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
                 role="option"
                 aria-selected={false}
                 onClick={() => void choose(row)}
-                className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-line bg-transparent px-[12px] text-start text-ink hover:bg-accent"
+                className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-border bg-transparent px-[12px] text-start text-text hover:bg-brand-subtle"
               >
                 {ar ? row.name_ar : row.name_en}{" "}
-                <bdi dir="ltr" className="text-muted">
+                <bdi dir="ltr" className="text-text-muted">
                   {row.strength}
                 </bdi>
               </button>
@@ -114,7 +114,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           </div>
         )}
         {item && (
-          <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
             {t("pickBatch")}
             <Select value={batchId} onChange={(e) => setBatchId(e.target.value)}>
               {unique.map((b) => (
@@ -125,12 +125,15 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
             </Select>
           </label>
         )}
-        <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
           {t("recallReason")}
           <TextInput value={reason} onChange={(e) => setReason(e.target.value)} />
         </label>
         {error && (
-          <div role="alert" className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger">
+          <div
+            role="alert"
+            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+          >
             {error}
           </div>
         )}

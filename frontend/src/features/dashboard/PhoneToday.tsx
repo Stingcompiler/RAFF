@@ -21,10 +21,10 @@ const ACTIONS: { key: ActionKey; tone: Tone; href?: string }[] = [
   { key: "store_orders", tone: "info", href: "/orders" },
 ];
 const TONE: Record<Tone, string> = {
-  success: "text-success bg-success-bg",
-  warn: "text-warn bg-warn-bg",
-  danger: "text-danger bg-danger-bg",
-  info: "text-info bg-info-bg",
+  success: "text-success-text bg-success-bg",
+  warn: "text-warning-text bg-warning-bg",
+  danger: "text-danger-text bg-danger-bg",
+  info: "text-info-text bg-info-bg",
 };
 const TICK_MS = 30_000;
 const BAR_MIN = 4;
@@ -67,7 +67,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
     cn(
       "min-h-[44px] cursor-pointer rounded-[8px] border-0 p-[10px] text-center font-[inherit] text-[14px] font-medium",
       "transition-[background,color] duration-[250ms]",
-      on ? "bg-surface text-primary shadow-segment" : "bg-transparent text-muted",
+      on ? "bg-surface text-brand shadow-segment" : "bg-transparent text-text-muted",
     );
 
   return (
@@ -78,7 +78,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
           <div
             role="radiogroup"
             aria-label={t("scopeLabel")}
-            className="grid grid-cols-2 gap-[4px] rounded-[10px] bg-sidebar p-[4px]"
+            className="grid grid-cols-2 gap-[4px] rounded-[10px] bg-surface-subtle p-[4px]"
           >
             <button
               type="button"
@@ -102,15 +102,15 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
         )}
       </div>
       <div className="grid flex-1 content-start gap-[12px] px-[16px] pb-[16px]">
-        <section className="grid gap-[4px] rounded-[14px] border border-line bg-surface p-[16px]">
-          <span className="text-[13px] text-muted">{t("sales")}</span>
+        <section className="grid gap-[4px] rounded-[14px] border border-border bg-surface p-[16px]">
+          <span className="text-[13px] text-text-muted">{t("sales")}</span>
           <span
             dir="ltr"
             className="text-start text-[32px] font-medium tabular-nums transition-opacity duration-200"
           >
             {cur(data.sales_today)}
           </span>
-          <span className="text-[12px] text-muted">{t("updated", { minutes })}</span>
+          <span className="text-[12px] text-text-muted">{t("updated", { minutes })}</span>
           <div
             dir="ltr"
             role="img"
@@ -122,7 +122,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 key={d.date}
                 title={cur(d.total)}
                 className={cn(
-                  "flex-1 rounded-t-[4px] bg-primary transition-[height] duration-[600ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+                  "flex-1 rounded-t-[4px] bg-brand transition-[height] duration-[600ms] ease-[cubic-bezier(.2,.8,.2,1)]",
                   i === data.week.length - 1 ? "opacity-100" : "opacity-50",
                 )}
                 style={{
@@ -135,7 +135,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
             ))}
           </div>
         </section>
-        <ul className="m-0 list-none overflow-hidden rounded-[14px] border border-line bg-surface p-0">
+        <ul className="m-0 list-none overflow-hidden rounded-[14px] border border-border bg-surface p-0">
           {ACTIONS.map(({ key, tone, href }) => {
             const count = data.needs_action[key];
             const label =
@@ -156,11 +156,11 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
               </>
             );
             const cls =
-              "flex min-h-[48px] items-center gap-[12px] border-b border-line px-[16px] py-[8px]";
+              "flex min-h-[48px] items-center gap-[12px] border-b border-border px-[16px] py-[8px]";
             return (
               <li key={key}>
                 {href ? (
-                  <Link href={href} className={cn(cls, "text-ink no-underline")}>
+                  <Link href={href} className={cn(cls, "text-text no-underline")}>
                     {row}
                   </Link>
                 ) : (

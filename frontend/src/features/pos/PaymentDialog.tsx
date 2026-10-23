@@ -28,8 +28,8 @@ type Props = {
 const whole = (value: string) => value.replace(/\.0+$/, "");
 
 const FIELD =
-  "h-[44px] w-full rounded-[8px] border-2 border-primary bg-bg px-[12px] text-[18px] font-medium text-ink outline-none";
-const LABEL = "grid gap-[4px] text-[12px] font-medium text-muted";
+  "h-[44px] w-full rounded-[8px] border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none";
+const LABEL = "grid gap-[4px] text-[12px] font-medium text-text-muted";
 
 export function PaymentDialog({ open, total, busy, error, lines, onClose, onConfirm }: Props) {
   const t = useTranslations("pos");
@@ -134,7 +134,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
           value={account}
           placeholder={t("bankA")}
           onChange={(e) => setAccount(e.target.value)}
-          className="h-[44px] w-full rounded-[8px] border border-line bg-bg px-[12px] text-[14px] text-ink outline-none"
+          className="h-[44px] w-full rounded-[8px] border border-border-strong bg-canvas px-[12px] text-[14px] text-text outline-none"
         />
       </label>
     </div>
@@ -152,10 +152,10 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
           <span id="pay-title" className="text-[16px] font-medium">
             {t("payTitle")}
           </span>
-          <span className="text-[12px] text-muted">{ESC}</span>
+          <span className="text-[12px] text-text-muted">{ESC}</span>
         </div>
-        <div className="rounded-[10px] bg-surface-raised p-[12px] text-center">
-          <div className="text-[13px] text-muted">{t("total")}</div>
+        <div className="rounded-[10px] bg-surface-subtle p-[12px] text-center">
+          <div className="text-[13px] text-text-muted">{t("total")}</div>
           <div dir="ltr" className="text-[40px] font-medium tabular-nums" data-testid="pay-total">
             {cur(total)}
           </div>
@@ -170,10 +170,10 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
               disabled={busy}
               onClick={() => setMethod(m)}
               className={cn(
-                "type-inherit grid h-[56px] cursor-pointer place-items-center rounded-[10px] font-medium text-ink transition-[background,border-color] duration-200",
+                "type-inherit grid h-[56px] cursor-pointer place-items-center rounded-[10px] font-medium text-text transition-[background,border-color] duration-200",
                 method === m
-                  ? "border-2 border-primary bg-accent"
-                  : "border border-line bg-surface",
+                  ? "border-2 border-brand bg-brand-subtle"
+                  : "border border-border bg-surface",
               )}
             >
               {t(`methods.${m}`)}
@@ -200,7 +200,9 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
                 data-testid="change"
                 className={cn(
                   "flex h-[44px] items-center rounded-[8px] px-[12px] text-[18px] font-semibold",
-                  isNegative(change) ? "bg-danger-bg text-danger" : "bg-success-bg text-success",
+                  isNegative(change)
+                    ? "bg-danger-bg text-danger-text"
+                    : "bg-success-bg text-success-text",
                 )}
               >
                 {cur(change)}
@@ -212,7 +214,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
         {method === "bank" && (
           <div className="grid gap-[12px]">
             {bankFields}
-            <div className="flex items-center gap-[10px] rounded-[8px] bg-info-bg px-[12px] py-[10px] font-medium text-info">
+            <div className="flex items-center gap-[10px] rounded-[8px] bg-info-bg px-[12px] py-[10px] font-medium text-info-text">
               {t("pendingVerify")}
             </div>
           </div>
@@ -232,16 +234,16 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
               />
             </label>
             {!customer && search.trim() && (
-              <div className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-line">
+              <div className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-border">
                 {customers.length === 0 && (
-                  <div className="p-[12px] text-center text-muted">{t("noCustomers")}</div>
+                  <div className="p-[12px] text-center text-text-muted">{t("noCustomers")}</div>
                 )}
                 {customers.map((c) => (
                   <button
                     key={c.id}
                     type="button"
                     onClick={() => setCustomer(c)}
-                    className="type-inherit min-h-[44px] cursor-pointer border-0 border-b border-line bg-transparent px-[12px] text-start text-ink hover:bg-accent"
+                    className="type-inherit min-h-[44px] cursor-pointer border-0 border-b border-border bg-transparent px-[12px] text-start text-text hover:bg-brand-subtle"
                   >
                     {pick(ar, c)}
                   </button>
@@ -250,14 +252,14 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
             )}
             {customer && (
               <div className="grid grid-cols-3 gap-[8px]">
-                <div className="rounded-[8px] border border-line px-[12px] py-[10px]">
-                  <div className="text-[12px] text-muted">{t("balance")}</div>
+                <div className="rounded-[8px] border border-border px-[12px] py-[10px]">
+                  <div className="text-[12px] text-text-muted">{t("balance")}</div>
                   <div dir="ltr" className="font-semibold tabular-nums">
                     {cur(customer.balance)}
                   </div>
                 </div>
-                <div className="rounded-[8px] border border-line px-[12px] py-[10px]">
-                  <div className="text-[12px] text-muted">{t("limit")}</div>
+                <div className="rounded-[8px] border border-border px-[12px] py-[10px]">
+                  <div className="text-[12px] text-text-muted">{t("limit")}</div>
                   <div dir="ltr" className="font-semibold tabular-nums">
                     {cur(customer.credit_limit ?? "0")}
                   </div>
@@ -266,8 +268,8 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
                   className={cn(
                     "rounded-[8px] px-[12px] py-[10px]",
                     isNegative(creditLeft)
-                      ? "bg-danger-bg text-danger"
-                      : "bg-success-bg text-success",
+                      ? "bg-danger-bg text-danger-text"
+                      : "bg-success-bg text-success-text",
                   )}
                 >
                   <div className="text-[12px]">{t("remaining")}</div>
@@ -297,14 +299,14 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
                 {t("bankPart")}
                 <span
                   dir="ltr"
-                  className="flex h-[44px] items-center rounded-[8px] border border-line bg-bg px-[12px] text-[18px] font-medium text-ink"
+                  className="flex h-[44px] items-center rounded-[8px] border border-border bg-canvas px-[12px] text-[18px] font-medium text-text"
                 >
                   {cur(isNegative(bankPart) ? "0" : bankPart)}
                 </span>
               </div>
             </div>
             {bankFields}
-            <div className="flex justify-between rounded-[8px] bg-success-bg px-[12px] py-[10px] font-semibold text-success">
+            <div className="flex justify-between rounded-[8px] bg-success-bg px-[12px] py-[10px] font-semibold text-success-text">
               <span>{t("remainingPay")}</span>
               <span dir="ltr">{cur("0")}</span>
             </div>
@@ -314,7 +316,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[10px] font-medium text-danger"
+            className="rounded-[8px] bg-danger-bg px-[12px] py-[10px] font-medium text-danger-text"
           >
             {error}
           </div>
@@ -328,10 +330,10 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
             className={cn(
               "h-[48px] flex-1 rounded-[10px] border-0 text-[16px] font-semibold transition-[background] duration-200",
               busy
-                ? "cursor-progress bg-line text-muted"
+                ? "cursor-progress bg-border text-text-muted"
                 : ready
-                  ? "cursor-pointer bg-primary text-primary-ink"
-                  : "cursor-not-allowed bg-line text-muted",
+                  ? "cursor-pointer bg-brand text-on-brand"
+                  : "cursor-not-allowed bg-border text-text-muted",
             )}
           >
             {busy ? t("approving") : t("confirm")}
@@ -340,7 +342,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
             type="button"
             onClick={onClose}
             disabled={busy}
-            className="h-[48px] cursor-pointer rounded-[10px] border border-line bg-transparent px-[20px] text-[14px] font-medium text-ink"
+            className="h-[48px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent px-[20px] text-[14px] font-medium text-text"
           >
             {t("cancel")}
           </button>

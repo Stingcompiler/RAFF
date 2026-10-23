@@ -4,7 +4,7 @@ export function OrderTimeline({ entries }: { entries: readonly { time: string; t
     <div className="grid gap-[4px] text-[13px]">
       {entries.map((e, i) => (
         <div key={i}>
-          <span dir="ltr" className="text-muted">
+          <span dir="ltr" className="text-text-muted">
             {e.time}
           </span>{" "}
           {e.text}

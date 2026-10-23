@@ -6,7 +6,7 @@ export function KeyboardHint({ value, className }: { value: string; className?: 
     <kbd
       dir="ltr"
       className={cn(
-        "rounded-[5px] border border-b-2 border-line bg-surface-raised px-[6px] font-latin text-[12px] leading-[normal] font-medium text-ink",
+        "rounded-[5px] border border-b-2 border-border bg-surface-subtle px-[6px] font-latin text-[12px] leading-[normal] font-medium text-text",
         className,
       )}
     >

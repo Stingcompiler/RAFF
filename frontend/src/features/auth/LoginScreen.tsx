@@ -10,11 +10,11 @@ import type { DeviceInfo, Me } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 
 const field =
-  "h-[44px] rounded-[8px] border border-line bg-bg px-[12px] py-0 text-[14px] font-normal text-ink outline-none disabled:opacity-100 focus:border-primary focus:shadow-[0_0_0_3px_var(--color-focus)]";
-const select = cn(field, "box-content appearance-none disabled:text-muted");
+  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none disabled:opacity-100 focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+const select = cn(field, "box-content appearance-none disabled:text-text-muted");
 const primary =
-  "h-[48px] cursor-pointer rounded-[10px] border-0 bg-primary text-[16px] font-semibold text-primary-ink disabled:cursor-not-allowed disabled:bg-line disabled:text-muted";
-const label = "grid gap-[4px] text-[12px] font-medium text-muted";
+  "h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
+const label = "grid gap-[4px] text-[12px] font-medium text-text-muted";
 
 type Props = { device: DeviceInfo | null; initialMe: Me | null; next: string };
 
@@ -88,7 +88,7 @@ export function LoginScreen({ device, initialMe, next }: Props) {
       : t("deviceUnregistered");
 
   return (
-    <main className="flex min-h-dvh flex-col gap-[16px] bg-bg p-[24px] text-ink">
+    <main className="flex min-h-dvh flex-col gap-[16px] bg-canvas p-[24px] text-text">
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <div className="col-span-3 max-[760px]:hidden" />
         <section className="col-span-6 min-w-0 max-[760px]:col-span-12">
@@ -124,11 +124,11 @@ export function LoginScreen({ device, initialMe, next }: Props) {
                 {busy === "login" ? t("signingIn") : t("signIn")}
               </button>
               {error && !signedIn ? (
-                <div role="alert" className="text-[12px] font-medium text-danger">
+                <div role="alert" className="text-[12px] font-medium text-danger-text">
                   {error}
                 </div>
               ) : (
-                <div className="text-[12px] text-muted">{foot}</div>
+                <div className="text-[12px] text-text-muted">{foot}</div>
               )}
             </form>
           </Panel>
@@ -185,11 +185,11 @@ export function LoginScreen({ device, initialMe, next }: Props) {
                 {busy === "context" ? t("continuing") : t("continue")}
               </button>
               {error && signedIn ? (
-                <div role="alert" className="text-[12px] font-medium text-danger">
+                <div role="alert" className="text-[12px] font-medium text-danger-text">
                   {error}
                 </div>
               ) : (
-                <div className="text-[12px] text-muted" />
+                <div className="text-[12px] text-text-muted" />
               )}
             </form>
           </Panel>

@@ -32,7 +32,7 @@ export function PhoneNav({ activePath, className }: { activePath?: string; class
     <nav
       aria-label={t("label")}
       className={cn(
-        "grid h-[68px] flex-none grid-cols-4 border-t border-line bg-surface-raised",
+        "grid h-[68px] flex-none grid-cols-4 border-t border-border bg-surface-subtle",
         className,
       )}
     >
@@ -46,14 +46,14 @@ export function PhoneNav({ activePath, className }: { activePath?: string; class
             className={cn(
               "grid min-h-[44px] content-center place-items-center gap-[4px] text-[12px] font-medium no-underline",
               "transition-[color] duration-200",
-              active ? "text-primary" : "text-muted",
+              active ? "text-brand" : "text-text-muted",
             )}
           >
             <span
               aria-hidden="true"
               className={cn(
                 "block h-[4px] rounded-[2px]",
-                active ? "w-[28px] bg-primary" : "w-[18px] bg-line",
+                active ? "w-[28px] bg-brand" : "w-[18px] bg-border",
               )}
             />
             <span>{t(item.key)}</span>

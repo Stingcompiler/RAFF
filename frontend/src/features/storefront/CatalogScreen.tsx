@@ -93,7 +93,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
         <Panel
           title={t("catT")}
           chips={
-            <label className="ms-auto flex items-center gap-[6px] rounded-full border border-line px-[12px] py-[2px] text-[13px] text-muted focus-within:border-primary">
+            <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
               <SearchIcon size={14} />
               <input
                 type="search"
@@ -101,7 +101,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 placeholder={t("search")}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-ink outline-none"
+                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
               />
             </label>
           }
@@ -127,7 +127,10 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 <TextCell>{t(`classes.${row.classification === "rx" ? "rx" : "otc"}`)}</TextCell>
                 <span
                   role="cell"
-                  className={cn("text-[13px]", row.missing.length ? "text-warn" : "text-success")}
+                  className={cn(
+                    "text-[13px]",
+                    row.missing.length ? "text-warning-text" : "text-success-text",
+                  )}
                 >
                   {missingText(row)}
                 </span>
@@ -144,7 +147,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                     }}
                     className={cn(
                       "relative h-[24px] w-[42px] cursor-pointer rounded-full border-0 p-0 transition-[background] duration-200 disabled:cursor-not-allowed disabled:opacity-50",
-                      row.published ? "bg-primary" : "bg-line-strong",
+                      row.published ? "bg-brand" : "bg-border-strong",
                     )}
                   >
                     <span
@@ -163,12 +166,12 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
         <Panel title={t("preview")}>
           {chosen ? (
             <div className="grid gap-[12px] p-[16px]">
-              <div className="overflow-hidden rounded-[12px] border border-line">
+              <div className="overflow-hidden rounded-[12px] border border-border">
                 {chosen.image ? (
                   // eslint-disable-next-line @next/next/no-img-element -- uploaded listing image
                   <img src={chosen.image} alt="" className="block h-[120px] w-full object-cover" />
                 ) : (
-                  <div className="grid h-[80px] place-content-center justify-items-center gap-[4px] bg-sidebar text-[12px] text-muted">
+                  <div className="grid h-[80px] place-content-center justify-items-center gap-[4px] bg-surface-subtle text-[12px] text-text-muted">
                     <NoImageIcon size={22} />
                     {t("noImg")}
                   </div>
@@ -186,8 +189,8 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   )}
                 </div>
               </div>
-              <div className="text-[13px] text-muted">{t("noStock")}</div>
-              <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+              <div className="text-[13px] text-text-muted">{t("noStock")}</div>
+              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                 {t("image")}
                 <input
                   type="file"
@@ -196,7 +199,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   className="text-[13px]"
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                 {t("descAr")}
                 <Textarea
                   rows={3}
@@ -204,7 +207,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_ar: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                 {t("descEn")}
                 <Textarea
                   dir="ltr"
@@ -213,7 +216,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_en: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                 {t("slug")}
                 <TextInput
                   dir="ltr"
@@ -229,7 +232,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
               </Button>
             </div>
           ) : (
-            <p className="m-0 p-[16px] text-muted">{t("pick")}</p>
+            <p className="m-0 p-[16px] text-text-muted">{t("pick")}</p>
           )}
         </Panel>
       </div>

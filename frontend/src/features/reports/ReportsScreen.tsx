@@ -124,14 +124,14 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
           <Panel title={t("available")}>
             <ul className="m-0 list-none p-0" role="list">
               {REPORTS.map((n) => (
-                <li key={n} className="border-b border-line last:border-b-0">
+                <li key={n} className="border-b border-border last:border-b-0">
                   <button
                     type="button"
                     aria-current={n === name ? "true" : undefined}
                     onClick={() => pick(n)}
                     className={cn(
-                      "type-inherit flex min-h-[44px] w-full cursor-pointer items-center border-0 px-[16px] text-start text-ink hover:bg-sidebar",
-                      n === name ? "bg-accent font-medium" : "bg-transparent",
+                      "type-inherit flex min-h-[44px] w-full cursor-pointer items-center border-0 px-[16px] text-start text-text hover:bg-surface-subtle",
+                      n === name ? "bg-brand-subtle font-medium" : "bg-transparent",
                     )}
                   >
                     {t(`names.${n}`)}
@@ -146,11 +146,11 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
             {(PERIOD.includes(name) || DAYS.includes(name)) && (
               <form
                 onSubmit={apply}
-                className="flex flex-wrap items-end gap-[8px] border-b border-line p-[12px]"
+                className="flex flex-wrap items-end gap-[8px] border-b border-border p-[12px]"
               >
                 {PERIOD.includes(name) ? (
                   <>
-                    <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+                    <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                       {t("from")}
                       <TextInput
                         dir="ltr"
@@ -159,7 +159,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                         onChange={(e) => setFrom(e.target.value)}
                       />
                     </label>
-                    <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+                    <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                       {t("to")}
                       <TextInput
                         dir="ltr"
@@ -170,7 +170,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                     </label>
                   </>
                 ) : (
-                  <label className="grid gap-[4px] text-[12px] font-medium text-muted">
+                  <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
                     {t("daysLabel")}
                     <TextInput
                       dir="ltr"
@@ -204,10 +204,10 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
               {report.rows.length === 0 && <TableEmpty>{t("noRows")}</TableEmpty>}
             </div>
             {totals.length > 0 && report.rows.length > 0 && (
-              <dl className="m-0 flex flex-wrap justify-end gap-x-[24px] gap-y-[6px] border-t border-line px-[16px] py-[12px]">
+              <dl className="m-0 flex flex-wrap justify-end gap-x-[24px] gap-y-[6px] border-t border-border px-[16px] py-[12px]">
                 {totals.map((k) => (
                   <div key={k} className="flex gap-[8px]">
-                    <dt className="text-muted">{t(`totals.${k}`)}</dt>
+                    <dt className="text-text-muted">{t(`totals.${k}`)}</dt>
                     <dd
                       dir="ltr"
                       className="m-0 font-semibold tabular-nums"

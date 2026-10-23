@@ -102,16 +102,16 @@ export function CheckoutScreen() {
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] items-start gap-[24px] px-[20px] pt-[24px] pb-[40px]">
       <form onSubmit={submit} className="grid gap-[14px]" noValidate>
         <h1 className="m-0 text-[30px] font-semibold">{t("send")}</h1>
-        <label className="grid gap-[4px] text-[14px] font-semibold text-muted">
+        <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
           {t("nameL")}
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="h-[52px] rounded-[10px] border border-line-strong bg-surface px-[14px] text-[17px] text-ink outline-none focus:border-brand focus:shadow-[0_0_0_3px_var(--color-focus)]"
+            className="h-[52px] rounded-[10px] border border-border-strong bg-surface px-[14px] text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]"
           />
         </label>
-        <label className="grid gap-[4px] text-[14px] font-semibold text-muted">
+        <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
           {t("phoneL")}
           <input
             dir="ltr"
@@ -122,32 +122,34 @@ export function CheckoutScreen() {
             aria-invalid={phone !== "" && !phoneOk}
             onChange={(e) => setPhone(e.target.value)}
             className={cn(
-              "h-[52px] rounded-[10px] border bg-surface px-[14px] text-start text-[17px] text-ink outline-none focus:shadow-[0_0_0_3px_var(--color-focus)]",
-              phone !== "" && !phoneOk ? "border-danger" : "border-line-strong focus:border-brand",
+              "h-[52px] rounded-[10px] border bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
+              phone !== "" && !phoneOk
+                ? "border-danger-solid"
+                : "border-border-strong focus:border-brand",
             )}
           />
           {phone !== "" && !phoneOk && (
-            <span className="text-[13px] font-medium text-danger">{t("phoneErr")}</span>
+            <span className="text-[13px] font-medium text-danger-text">{t("phoneErr")}</span>
           )}
         </label>
         <div className="grid gap-[6px]">
-          <div className="text-[14px] font-semibold text-muted">{t("pickupL")}</div>
+          <div className="text-[14px] font-semibold text-text-muted">{t("pickupL")}</div>
           <div className="flex items-center gap-[12px] rounded-[12px] border-2 border-brand bg-surface p-[14px]">
             <StoreIcon size={26} className="flex-none text-brand" />
             <div>
               <div className="font-semibold">{t("pickup")}</div>
-              <div className="text-[14px] text-muted">{t("payPickup")}</div>
+              <div className="text-[14px] text-text-muted">{t("payPickup")}</div>
             </div>
           </div>
         </div>
-        <label className="grid gap-[4px] text-[14px] font-semibold text-muted">
+        <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
           {t("noteL")}
           <textarea
             rows={3}
             value={note}
             placeholder={t("notePh")}
             onChange={(e) => setNote(e.target.value)}
-            className="resize-y rounded-[10px] border border-line-strong bg-surface px-[14px] py-[12px] text-[16px] text-ink outline-none focus:border-brand"
+            className="resize-y rounded-[10px] border border-border-strong bg-surface px-[14px] py-[12px] text-[16px] text-text outline-none focus:border-brand"
           />
           <span className="text-[13px] font-normal">{t("noHealth")}</span>
         </label>
@@ -172,10 +174,10 @@ export function CheckoutScreen() {
           className={cn(
             "flex min-h-[52px] items-center justify-center gap-[10px] rounded-[12px] border-0 text-[16px] font-semibold",
             valid && !busy
-              ? "cursor-pointer bg-brand text-brand-ink"
+              ? "cursor-pointer bg-brand text-on-brand"
               : busy
-                ? "cursor-progress bg-line text-muted"
-                : "cursor-not-allowed bg-line text-muted",
+                ? "cursor-progress bg-border text-text-muted"
+                : "cursor-not-allowed bg-border text-text-muted",
           )}
         >
           {busy && <Spinner />}
@@ -184,7 +186,7 @@ export function CheckoutScreen() {
         {phase === "failed" && error && (
           <div
             role="alert"
-            className="rounded-[10px] bg-danger-bg px-[14px] py-[12px] font-medium text-danger"
+            className="rounded-[10px] bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
           >
             {error}
           </div>
@@ -192,7 +194,7 @@ export function CheckoutScreen() {
         {phase === "verifying" && key && (
           <div
             role="status"
-            className="grid gap-[4px] rounded-[10px] bg-info-bg px-[14px] py-[12px] font-medium text-info"
+            className="grid gap-[4px] rounded-[10px] bg-info-bg px-[14px] py-[12px] font-medium text-info-text"
           >
             <span>{t("toMsg")}</span>
             <span className="text-[13px] font-normal">
@@ -204,7 +206,7 @@ export function CheckoutScreen() {
           </div>
         )}
       </form>
-      <aside className="grid gap-[10px] rounded-[14px] border border-line bg-surface p-[18px]">
+      <aside className="grid gap-[10px] rounded-[14px] border border-border bg-surface p-[18px]">
         <div className="font-semibold">{t("summary")}</div>
         {ready &&
           rows.map(({ line, product }) =>
@@ -212,7 +214,7 @@ export function CheckoutScreen() {
               <div key={line.slug} className="flex justify-between gap-[12px] text-[15px]">
                 <span>
                   {productName(ar, product)}{" "}
-                  <span dir="ltr" className="text-muted">
+                  <span dir="ltr" className="text-text-muted">
                     {[TIMES, line.qty].join(" ")}
                   </span>
                 </span>
@@ -224,11 +226,11 @@ export function CheckoutScreen() {
               </div>
             ) : null,
           )}
-        <div className="flex justify-between border-t border-line pt-[10px] font-semibold">
+        <div className="flex justify-between border-t border-border pt-[10px] font-semibold">
           <span>{t("est")}</span>
           <span dir="ltr">{money(estimate, ar ? "ar" : "en") || money("0", ar ? "ar" : "en")}</span>
         </div>
-        <div className="text-[13px] text-muted">{t("sumNote")}</div>
+        <div className="text-[13px] text-text-muted">{t("sumNote")}</div>
       </aside>
     </section>
   );

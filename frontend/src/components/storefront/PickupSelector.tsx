@@ -17,13 +17,15 @@ export function PickupSelector({ options, value }: { options: readonly Option[];
             aria-disabled={o.disabled || undefined}
             className={cn(
               "flex items-center gap-[12px] rounded-[12px] p-[14px]",
-              on ? "border-2 border-brand" : "border border-dashed border-line-strong",
+              on ? "border-2 border-brand" : "border border-dashed border-border-strong",
               o.disabled && "opacity-55",
             )}
           >
             <b className="flex-1">
               {o.title}
-              <div className={cn("text-[14px] font-normal", on && "text-muted")}>{o.detail}</div>
+              <div className={cn("text-[14px] font-normal", on && "text-text-muted")}>
+                {o.detail}
+              </div>
             </b>
             {on && <span className="font-bold text-brand">{CHECK}</span>}
           </div>

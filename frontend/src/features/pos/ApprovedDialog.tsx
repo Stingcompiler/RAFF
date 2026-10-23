@@ -59,11 +59,11 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
         <div
           id="approved-title"
           role="status"
-          className="flex items-center gap-[8px] rounded-[8px] bg-success-bg px-[12px] py-[10px] font-semibold text-success"
+          className="flex items-center gap-[8px] rounded-[8px] bg-success-bg px-[12px] py-[10px] font-semibold text-success-text"
         >
           {t("approvedMsg")}
         </div>
-        <div dir="ltr" className="text-start text-[12px] text-muted">
+        <div dir="ltr" className="text-start text-[12px] text-text-muted">
           {reference}
         </div>
         <div className="flex justify-between font-semibold">
@@ -73,7 +73,7 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
           </span>
         </div>
         {sale.change !== "0" && !/^0(\.0+)?$/.test(sale.change) && (
-          <div className="flex justify-between font-semibold text-success">
+          <div className="flex justify-between font-semibold text-success-text">
             <span>{t("change")}</span>
             <span dir="ltr" className="whitespace-nowrap" data-testid="approved-change">
               {money(sale.change, ar ? "ar" : "en")}
@@ -85,14 +85,14 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
         <button
           type="button"
           onClick={() => void print(false)}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent font-medium text-ink"
+          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
         >
           {t("print")}
         </button>
         <button
           type="button"
           onClick={() => void print(true)}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-line bg-transparent font-medium text-ink"
+          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
         >
           {t("reprint")}
         </button>
@@ -100,7 +100,7 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
           type="button"
           ref={newSale}
           onClick={onNewSale}
-          className="h-[52px] cursor-pointer rounded-[10px] border-0 bg-primary text-[16px] font-semibold text-primary-ink"
+          className="h-[52px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand"
         >
           {t("newSale")}{" "}
           <span dir="ltr" className="text-[13px] opacity-85">

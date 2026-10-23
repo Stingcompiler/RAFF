@@ -49,10 +49,10 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
   const navHint = [NAV_KEYS, t("nav")].join(" ");
   const addHint = [ENTER, t("add")].join(" ");
   return (
-    <div className="flex flex-1 flex-col overflow-hidden rounded-[12px] border border-line bg-surface">
+    <div className="flex flex-1 flex-col overflow-hidden rounded-[12px] border border-border bg-surface">
       <div
         className={cn(
-          "grid h-[36px] items-center gap-[12px] border-b border-line bg-surface-raised px-[16px] text-[12px] font-medium text-muted",
+          "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-[12px] font-medium text-text-muted",
           COLS,
         )}
       >
@@ -66,7 +66,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
       {noResults && (
         <div className="grid flex-1 place-content-center justify-items-center gap-[12px] p-[24px] text-center">
           <div className="text-[16px] font-medium">{t("noRes", { query })}</div>
-          <div className="max-w-[360px] text-muted">{t("noResHint")}</div>
+          <div className="max-w-[360px] text-text-muted">{t("noResHint")}</div>
           <Button variant="outline" onClick={onLogMissing}>
             {t("logMissing")}
           </Button>
@@ -88,16 +88,16 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               onMouseEnter={() => onSelect(index)}
               onClick={() => sellable(row) && onAdd(row)}
               className={cn(
-                "grid h-[44px] items-center gap-[12px] border-b border-line px-[16px] transition-[background] duration-[180ms]",
+                "grid h-[44px] items-center gap-[12px] border-b border-border px-[16px] transition-[background] duration-[180ms]",
                 COLS,
-                on && "bg-accent text-ink",
+                on && "bg-brand-subtle text-text",
                 sellable(row) ? "cursor-pointer" : "cursor-not-allowed",
               )}
             >
               <div className="grid min-w-0 leading-[1.25]">
                 <span className="flex min-w-0 items-center gap-[6px]">
                   {row.rx && (
-                    <span className="flex-none rounded-[4px] border border-info px-[4px] font-latin text-[11px] font-semibold text-info">
+                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[11px] font-semibold text-info-text">
                       {t("rx")}
                     </span>
                   )}
@@ -107,7 +107,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
                   dir="ltr"
                   className={cn(
                     "truncate text-start text-[12px] [unicode-bidi:isolate]",
-                    on ? "text-ink" : "text-muted",
+                    on ? "text-text" : "text-text-muted",
                   )}
                 >
                   <span className="min-[1280px]:hidden">{secondary}</span>
@@ -127,7 +127,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               <span className="grid text-end leading-[1.2] whitespace-nowrap tabular-nums">
                 <span>{stock}</span>
                 {row.reserved_base > 0 && (
-                  <span className="text-[11px] font-medium text-info">
+                  <span className="text-[11px] font-medium text-info-text">
                     {t("reserved", { count: inUnit(row.reserved_base, row.unit?.factor) })}
                   </span>
                 )}
@@ -144,7 +144,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
           );
         })}
       </div>
-      <div className="mt-auto flex gap-[16px] border-t border-line px-[16px] py-[10px] text-[12px] text-muted">
+      <div className="mt-auto flex gap-[16px] border-t border-border px-[16px] py-[10px] text-[12px] text-text-muted">
         <span>{navHint}</span>
         <span>{addHint}</span>
         <span>{t("rule")}</span>
