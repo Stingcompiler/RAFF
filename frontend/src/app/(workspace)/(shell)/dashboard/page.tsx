@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { PageHeader } from "@/components/shell/PageHeader";
 import { DashboardScreen } from "@/features/dashboard/DashboardScreen";
@@ -13,5 +13,12 @@ export default async function DashboardPage() {
     ? await serverGet<Schemas["Overview"]>("/dashboard/")
     : null;
   if (!overview) return <PageHeader title={t("title")} />;
-  return <DashboardScreen initial={overview} canAll={me.branches.length > 1} />;
+  const ar = (await getLocale()) === "ar";
+  return (
+    <DashboardScreen
+      initial={overview}
+      canAll={me.branches.length > 1}
+      branchName={ar ? me.branch.name_ar : me.branch.name_en}
+    />
+  );
 }

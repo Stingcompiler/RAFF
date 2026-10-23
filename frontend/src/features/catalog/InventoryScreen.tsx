@@ -23,6 +23,7 @@ import { apiDownload, apiGet } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 import { amount } from "@/lib/format";
+import { usePhone } from "@/lib/phone";
 
 import { ItemDrawer } from "./ItemDrawer";
 import { ItemFormDialog } from "./ItemFormDialog";
@@ -37,6 +38,7 @@ import {
   type StockRow,
   strengthForm,
 } from "./labels";
+import { PhoneSearch } from "./PhoneSearch";
 import { PriceDialog } from "./PriceDialog";
 
 type Page = { count: number; next: string | null; results: StockRow[] };
@@ -50,8 +52,14 @@ type Props = {
   canReceive: boolean;
 };
 
+/** Items & stock: the table on a computer, quick item cards on a phone (Raff Mobile). */
+export function InventoryScreen(props: Props) {
+  const phone = usePhone();
+  return phone ? <PhoneSearch initial={props.initial} /> : <InventoryDesktop {...props} />;
+}
+
 /** Items & stock (Raff Screens › الأصناف والمخزون). Stock columns fill in with WO-04. */
-export function InventoryScreen({ initial, categories, canManage, canReceive }: Props) {
+function InventoryDesktop({ initial, categories, canManage, canReceive }: Props) {
   const t = useTranslations("inventory");
   const ar = useLocale() === "ar";
   const toast = useToast();

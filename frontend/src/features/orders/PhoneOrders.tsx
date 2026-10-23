@@ -1,0 +1,134 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { useState } from "react";
+
+import { useToast } from "@/components/ui/Toast";
+import { apiSend } from "@/lib/api/browser";
+import { cn } from "@/lib/cn";
+import { money, timeOfDay } from "@/lib/format";
+
+import { type OrderRow, type OrderStatus, STATUS_TONE } from "./labels";
+
+const TONE = {
+  success: "text-success bg-success-bg",
+  warn: "text-warn bg-warn-bg",
+  danger: "text-danger bg-danger-bg",
+  info: "text-info bg-info-bg",
+} as const;
+const SYMBOL = { success: "●", warn: "▲", danger: "✕", info: "■" } as const;
+
+/** The next step a phone can take without a reason (cancel and contact stay on the computer). */
+const NEXT: Partial<Record<OrderStatus, OrderStatus>> = {
+  new: "confirmed",
+  needs_contact: "confirmed",
+  confirmed: "preparing",
+  preparing: "ready",
+};
+const ARROW_AR = "←";
+const ARROW_EN = "→";
+
+const waLink = (phone: string) => `https://wa.me/${phone.replace(/^0/, "249")}`;
+
+/** Raff Mobile › 5 · طلبات المتجر (موظف): one card per order with the next step one tap away. */
+export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
+  const t = useTranslations("phone.orders");
+  const ar = useLocale() === "ar";
+  const toast = useToast();
+  const cur = (v: string) => money(v, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
+  const [rows, setRows] = useState(initial);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const fresh = rows.filter((o) => o.status === "new").length;
+
+  const advance = async (order: OrderRow, to: OrderStatus) => {
+    setBusy(order.id);
+    const res = await apiSend<{ status: OrderStatus }>("POST", `/orders/${order.id}/transition/`, {
+      to,
+      reason: "",
+    });
+    setBusy(null);
+    if (!res.ok) return toast.push("danger", t("failed"));
+    const status = res.data.status;
+    setRows((prev) => prev.map((o) => (o.id === order.id ? { ...o, status } : o)));
+  };
+
+  return (
+    <>
+      <div className="flex items-baseline justify-between px-[16px] pt-[8px] pb-[12px]">
+        <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
+        {fresh > 0 && (
+          <span className={cn("rounded-full px-[8px] py-[2px] text-[12px] font-medium", TONE.info)}>
+            {t("newCount", { count: fresh })}
+          </span>
+        )}
+      </div>
+      <div className="grid flex-1 content-start gap-[10px] overflow-auto px-[16px] pb-[16px]">
+        {rows.map((order) => {
+          const tone = STATUS_TONE[order.status];
+          const next = NEXT[order.status];
+          return (
+            <article
+              key={order.id}
+              className={cn(
+                "grid gap-[10px] rounded-[14px] border bg-surface px-[14px] py-[12px]",
+                order.status === "new" ? "border-primary" : "border-line",
+              )}
+            >
+              <div className="flex items-center justify-between gap-[8px]">
+                <b dir="ltr" className="whitespace-nowrap">
+                  {order.number}
+                </b>
+                <span
+                  className={cn(
+                    "rounded-full px-[8px] py-[2px] text-[12px] font-medium whitespace-nowrap",
+                    TONE[tone],
+                  )}
+                >
+                  {SYMBOL[tone]} {t(`status.${order.status}`)}
+                </span>
+              </div>
+              <div className="flex justify-between gap-[8px] text-[13px] text-muted">
+                <span className="flex min-w-0 gap-[6px]">
+                  <span className="min-w-0 truncate">{order.customer_name}</span>
+                  <bdi dir="ltr" className="flex-none [unicode-bidi:isolate]">
+                    {timeOfDay(order.created_at)}
+                  </bdi>
+                </span>
+                <span dir="ltr" className="flex-none font-semibold whitespace-nowrap text-ink">
+                  {cur(order.estimated_total)}
+                </span>
+              </div>
+              <div className="flex gap-[8px]">
+                <a
+                  href={waLink(order.phone)}
+                  aria-label={t("waFor", { name: order.customer_name })}
+                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-line font-medium whitespace-nowrap text-ink no-underline"
+                >
+                  {t("whatsapp")}
+                </a>
+                {next ? (
+                  <button
+                    type="button"
+                    disabled={busy === order.id}
+                    onClick={() => void advance(order, next)}
+                    className="min-h-[44px] flex-1 cursor-pointer rounded-[10px] border-0 bg-primary font-[inherit] font-semibold whitespace-nowrap text-primary-ink transition-[background] duration-200 disabled:opacity-60"
+                  >
+                    {[ar ? ARROW_AR : ARROW_EN, t(`status.${next}`)].join(" ")}
+                  </button>
+                ) : (
+                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-[10px] bg-line px-[8px] text-center font-semibold text-muted">
+                    {order.status === "ready" ? t("viaPos") : t(`status.${order.status}`)}
+                  </span>
+                )}
+              </div>
+            </article>
+          );
+        })}
+        {rows.length === 0 && (
+          <div className="px-[8px] py-[24px] text-center text-muted">{t("noOrders")}</div>
+        )}
+      </div>
+    </>
+  );
+}

@@ -9,12 +9,14 @@ import { BrandMark, CircleXIcon, SearchIcon, WarningIcon } from "@/components/ui
 import { useToast } from "@/components/ui/Toast";
 import { apiGet, apiSend } from "@/lib/api/browser";
 import { timeOfDay } from "@/lib/format";
+import { usePhone } from "@/lib/phone";
 
 import { ApprovedDialog } from "./ApprovedDialog";
 import { BatchDialog } from "./BatchDialog";
 import { CartPanel } from "./CartPanel";
 import { HeldDialog } from "./HeldDialog";
 import { PaymentDialog } from "./PaymentDialog";
+import { PhoneSell } from "./PhoneSell";
 import { ResultsTable, sellable } from "./ResultsTable";
 import { ShiftDialog } from "./ShiftDialog";
 import {
@@ -74,10 +76,12 @@ export type PosScreenProps = {
 export function PosScreen(props: PosScreenProps) {
   const t = useTranslations("pos");
   const tErr = useTranslations("pos.errors");
+  const tConn = useTranslations("connection");
   const ar = useLocale() === "ar";
   const router = useRouter();
   const toast = useToast();
   const conn = useConnection();
+  const phone = usePhone();
   const order = props.fromOrder ?? null;
   // An order's cart is kept apart from the counter's own draft.
   const cart = usePosCart(order ? `${props.deviceId}.order.${order.id}` : props.deviceId);
@@ -376,6 +380,156 @@ export function PosScreen(props: PosScreenProps) {
     ? t("shiftLabel", { number: shift.shift.number, time: timeOfDay(shift.shift.opened_at) })
     : t("noShift");
 
+  const banners = (
+    <>
+      {offline && (
+        <div
+          role="alert"
+          className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
+        >
+          <WarningIcon />
+          {t("offlineMsg")}
+        </div>
+      )}
+      {conn === "reconnecting" && (
+        <div
+          role="status"
+          className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
+        >
+          <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
+          {t("reconnMsg")}
+        </div>
+      )}
+      {phase === "verify" && cart.pendingKey && (
+        <div
+          role="alert"
+          className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
+        >
+          <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
+          <span className="flex-1">{t("verifyMsg")}</span>
+          <span dir="ltr" className="text-[12px] font-normal">
+            {requestRef(cart.pendingKey)}
+          </span>
+          <button
+            type="button"
+            onClick={() => void checkResult()}
+            className="min-h-[36px] cursor-pointer rounded-[8px] border border-current bg-transparent px-[14px] py-[2px] text-[13px] text-inherit"
+          >
+            {t("check")}
+          </button>
+        </div>
+      )}
+      {phase === "failed" && (
+        <div
+          role="alert"
+          className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
+        >
+          <CircleXIcon />
+          <span className="flex-1">{t("failMsg")}</span>
+          {cart.pendingKey && (
+            <span dir="ltr" className="text-[12px] font-normal">
+              {requestRef(cart.pendingKey)}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={retry}
+            disabled={offline}
+            className="cursor-pointer rounded-[6px] border border-current bg-transparent px-[10px] py-[2px] text-[12px] text-inherit"
+          >
+            {t("retry")}
+          </button>
+        </div>
+      )}
+    </>
+  );
+  const dialogs = (
+    <>
+      {dialog === "pay" && cart.quoted.quote && (
+        <PaymentDialog
+          open
+          total={cart.quoted.quote.total}
+          busy={phase === "approving"}
+          error={payError}
+          lines={cart.lines.map(toLineIn)}
+          onClose={() => {
+            setDialog(null);
+            focusSearch();
+          }}
+          onConfirm={(request, chosen) => {
+            setCustomer(chosen);
+            void approve(order ? { ...request, order_id: order.id } : request);
+          }}
+        />
+      )}
+      {dialog === "held" && (
+        <HeldDialog onClose={() => setDialog(null)} onResume={(h) => void resume(h)} />
+      )}
+      {dialog === "batch" && batchLine && (
+        <BatchDialog
+          line={batchLine}
+          onClose={() => setDialog(null)}
+          onChoose={(batch) => {
+            cart.setLines((prev) =>
+              prev.map((l) => (l.key === batchLine.key ? { ...l, batch } : l)),
+            );
+            setDialog(null);
+          }}
+        />
+      )}
+      {!shiftOpen && (
+        <ShiftDialog
+          canOpen={props.canOpenShift}
+          onOpened={() => void refreshShift()}
+          onLeave={() => router.push("/dashboard")}
+        />
+      )}
+      {approved && (
+        <ApprovedDialog
+          sale={approved.sale}
+          receipt={approved.receipt}
+          requestKey={approved.key}
+          onNewSale={() => {
+            setApproved(null);
+            if (order) router.replace("/pos");
+            focusSearch();
+          }}
+        />
+      )}
+    </>
+  );
+
+  if (phone) {
+    return (
+      <PhoneSell
+        connection={{
+          status: conn,
+          text:
+            conn === "online"
+              ? tConn("chipOnline")
+              : conn === "unavailable"
+                ? tConn("chipUnavailable")
+                : connText,
+        }}
+        banners={banners}
+        dialogs={dialogs}
+        rows={rows}
+        catalogueSize={props.initialItems.length}
+        query={query}
+        onQuery={setQuery}
+        lines={cart.lines}
+        quoted={cart.quoted}
+        locked={order !== null}
+        payDisabled={payDisabled}
+        onAdd={(row) => addItem(row, row.unit)}
+        onPay={() => {
+          setPayError(null);
+          setDialog("pay");
+        }}
+      />
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
       <div className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-bg text-ink">
@@ -404,65 +558,7 @@ export function PosScreen(props: PosScreenProps) {
           </div>
         </header>
 
-        {offline && (
-          <div
-            role="alert"
-            className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
-          >
-            <WarningIcon />
-            {t("offlineMsg")}
-          </div>
-        )}
-        {conn === "reconnecting" && (
-          <div
-            role="status"
-            className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
-          >
-            <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
-            {t("reconnMsg")}
-          </div>
-        )}
-        {phase === "verify" && cart.pendingKey && (
-          <div
-            role="alert"
-            className="flex flex-none items-center gap-[12px] border-b border-warn bg-warn-bg px-[16px] py-[10px] font-medium text-warn"
-          >
-            <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
-            <span className="flex-1">{t("verifyMsg")}</span>
-            <span dir="ltr" className="text-[12px] font-normal">
-              {requestRef(cart.pendingKey)}
-            </span>
-            <button
-              type="button"
-              onClick={() => void checkResult()}
-              className="min-h-[36px] cursor-pointer rounded-[8px] border border-current bg-transparent px-[14px] py-[2px] text-[13px] text-inherit"
-            >
-              {t("check")}
-            </button>
-          </div>
-        )}
-        {phase === "failed" && (
-          <div
-            role="alert"
-            className="flex flex-none items-center gap-[12px] border-b border-danger bg-danger-bg px-[16px] py-[10px] font-medium text-danger"
-          >
-            <CircleXIcon />
-            <span className="flex-1">{t("failMsg")}</span>
-            {cart.pendingKey && (
-              <span dir="ltr" className="text-[12px] font-normal">
-                {requestRef(cart.pendingKey)}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={retry}
-              disabled={offline}
-              className="cursor-pointer rounded-[6px] border border-current bg-transparent px-[10px] py-[2px] text-[12px] text-inherit"
-            >
-              {t("retry")}
-            </button>
-          </div>
-        )}
+        {banners}
 
         <div className="flex min-h-0 flex-1">
           <main className="flex min-w-0 flex-[62] flex-col gap-[12px] p-[16px]">
@@ -546,57 +642,7 @@ export function PosScreen(props: PosScreenProps) {
           ))}
         </footer>
 
-        {dialog === "pay" && cart.quoted.quote && (
-          <PaymentDialog
-            open
-            total={cart.quoted.quote.total}
-            busy={phase === "approving"}
-            error={payError}
-            lines={cart.lines.map(toLineIn)}
-            onClose={() => {
-              setDialog(null);
-              focusSearch();
-            }}
-            onConfirm={(request, chosen) => {
-              setCustomer(chosen);
-              void approve(order ? { ...request, order_id: order.id } : request);
-            }}
-          />
-        )}
-        {dialog === "held" && (
-          <HeldDialog onClose={() => setDialog(null)} onResume={(h) => void resume(h)} />
-        )}
-        {dialog === "batch" && batchLine && (
-          <BatchDialog
-            line={batchLine}
-            onClose={() => setDialog(null)}
-            onChoose={(batch) => {
-              cart.setLines((prev) =>
-                prev.map((l) => (l.key === batchLine.key ? { ...l, batch } : l)),
-              );
-              setDialog(null);
-            }}
-          />
-        )}
-        {!shiftOpen && (
-          <ShiftDialog
-            canOpen={props.canOpenShift}
-            onOpened={() => void refreshShift()}
-            onLeave={() => router.push("/dashboard")}
-          />
-        )}
-        {approved && (
-          <ApprovedDialog
-            sale={approved.sale}
-            receipt={approved.receipt}
-            requestKey={approved.key}
-            onNewSale={() => {
-              setApproved(null);
-              if (order) router.replace("/pos");
-              focusSearch();
-            }}
-          />
-        )}
+        {dialogs}
       </div>
     </div>
   );
