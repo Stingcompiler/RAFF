@@ -33,6 +33,15 @@
     font-family: inherit;
   }
 
+  /* A field's default width (its size) depends on the fonts of the machine. In a grid with an
+     implicit column it would widen the column past the screen, so the column of a field group
+     is clamped to its container. Utilities such as grid-cols-2 still win. */
+  label.grid,
+  form.grid,
+  fieldset.grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   a {
     color: var(--color-brand);
   }
