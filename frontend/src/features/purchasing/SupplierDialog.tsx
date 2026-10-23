@@ -54,8 +54,10 @@ export function SupplierDialog({
         <Field label={t("nameEn")}>
           {({ id }) => <TextInput id={id} name="name_en" dir="ltr" required />}
         </Field>
-        <Field label={t("phone")}>{({ id }) => <TextInput id={id} name="phone" dir="ltr" />}</Field>
-        <Field label={t("termsDays")}>
+        <Field label={t("phone")} mark="optional">
+          {({ id }) => <TextInput id={id} name="phone" dir="ltr" />}
+        </Field>
+        <Field label={t("termsDays")} mark="optional">
           {({ id }) => (
             <TextInput id={id} name="terms" type="number" min={0} dir="ltr" defaultValue={0} />
           )}

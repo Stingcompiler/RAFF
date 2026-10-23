@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import type { Tone } from "@/components/ui/Badge";
+import { TONE_CLASSES, type Tone } from "@/components/ui/Badge";
 import { apiGet } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
@@ -20,12 +20,6 @@ const ACTIONS: { key: ActionKey; tone: Tone; href?: string }[] = [
   { key: "transfers_awaiting", tone: "info" },
   { key: "store_orders", tone: "info", href: "/orders" },
 ];
-const TONE: Record<Tone, string> = {
-  success: "text-success-text bg-success-bg",
-  warn: "text-warning-text bg-warning-bg",
-  danger: "text-danger-text bg-danger-bg",
-  info: "text-info-text bg-info-bg",
-};
 const TICK_MS = 30_000;
 const BAR_MIN = 4;
 
@@ -65,20 +59,20 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
   const minutes = Math.max(0, Math.floor((now - stamp) / 60_000));
   const seg = (on: boolean) =>
     cn(
-      "min-h-[44px] cursor-pointer rounded-[8px] border-0 p-[10px] text-center font-[inherit] text-[14px] font-medium",
-      "transition-[background,color] duration-[250ms]",
+      "min-h-[44px] cursor-pointer rounded-control border-0 p-[10px] text-center font-[inherit] text-[14px] font-medium",
+      "transition-[background,color] duration-(--motion-feedback)",
       on ? "bg-surface text-brand shadow-segment" : "bg-transparent text-text-muted",
     );
 
   return (
     <>
       <div className="grid gap-[12px] px-[16px] pt-[8px] pb-[12px]">
-        <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
+        <h1 className="m-0 type-page">{t("title")}</h1>
         {canAll && (
           <div
             role="radiogroup"
             aria-label={t("scopeLabel")}
-            className="grid grid-cols-2 gap-[4px] rounded-[10px] bg-surface-subtle p-[4px]"
+            className="grid grid-cols-2 gap-[4px] rounded-control bg-surface-subtle p-[4px]"
           >
             <button
               type="button"
@@ -102,11 +96,11 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
         )}
       </div>
       <div className="grid flex-1 content-start gap-[12px] px-[16px] pb-[16px]">
-        <section className="grid gap-[4px] rounded-[14px] border border-border bg-surface p-[16px]">
+        <section className="grid gap-[4px] rounded-card border border-border bg-surface p-[16px]">
           <span className="text-[13px] text-text-muted">{t("sales")}</span>
           <span
             dir="ltr"
-            className="text-start text-[32px] font-medium tabular-nums transition-opacity duration-200"
+            className="text-start text-[32px] font-medium tabular-nums transition-opacity duration-(--motion-feedback)"
           >
             {cur(data.sales_today)}
           </span>
@@ -122,7 +116,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 key={d.date}
                 title={cur(d.total)}
                 className={cn(
-                  "flex-1 rounded-t-[4px] bg-brand transition-[height] duration-[600ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+                  "flex-1 rounded-t-[4px] bg-brand transition-[height] duration-(--motion-panel-in) ease-[cubic-bezier(.2,.8,.2,1)]",
                   i === data.week.length - 1 ? "opacity-100" : "opacity-50",
                 )}
                 style={{
@@ -135,7 +129,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
             ))}
           </div>
         </section>
-        <ul className="m-0 list-none overflow-hidden rounded-[14px] border border-border bg-surface p-0">
+        <ul className="m-0 list-none overflow-hidden rounded-card border border-border bg-surface p-0">
           {ACTIONS.map(({ key, tone, href }) => {
             const count = data.needs_action[key];
             const label =
@@ -147,8 +141,8 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 <span className="flex-1">{label}</span>
                 <span
                   className={cn(
-                    "rounded-full px-[8px] py-[2px] text-[12px] font-medium whitespace-nowrap",
-                    TONE[count ? tone : "success"],
+                    "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+                    TONE_CLASSES[count ? tone : "success"],
                   )}
                 >
                   {String(count)}

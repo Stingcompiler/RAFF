@@ -23,7 +23,7 @@ export function AddToCart({ product }: { product: Product }) {
       <Link
         href={`/checkout?rx=${product.slug}`}
         className={cn(
-          "inline-flex min-h-[48px] items-center rounded-[10px] px-[20px] font-semibold no-underline",
+          "inline-flex min-h-[48px] items-center rounded-control px-[20px] font-semibold no-underline",
           BUTTON.outline,
         )}
       >
@@ -37,7 +37,7 @@ export function AddToCart({ product }: { product: Product }) {
         type="button"
         onClick={() => toast.push("warn", t("unavailableToast"))}
         className={cn(
-          "min-h-[48px] cursor-pointer rounded-[10px] px-[20px] font-semibold",
+          "min-h-[48px] cursor-pointer rounded-control px-[20px] font-semibold",
           BUTTON.muted,
         )}
       >
@@ -47,7 +47,7 @@ export function AddToCart({ product }: { product: Product }) {
   }
   return (
     <div className="flex flex-wrap items-center gap-[12px]">
-      <span className="flex items-center overflow-hidden rounded-[10px] border border-border-strong bg-surface">
+      <span className="flex items-center overflow-hidden rounded-control border border-border-strong bg-surface">
         <button
           type="button"
           aria-label={t("decrease")}
@@ -75,7 +75,7 @@ export function AddToCart({ product }: { product: Product }) {
           toast.push("success", t("added"));
         }}
         className={cn(
-          "min-h-[48px] cursor-pointer rounded-[10px] px-[20px] text-[16px] font-semibold",
+          "min-h-[48px] cursor-pointer rounded-control px-[20px] text-[16px] font-semibold",
           BUTTON.solid,
         )}
       >

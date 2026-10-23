@@ -150,7 +150,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
               >
                 {PERIOD.includes(name) ? (
                   <>
-                    <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+                    <label className="grid gap-[4px] type-label text-text-secondary">
                       {t("from")}
                       <TextInput
                         dir="ltr"
@@ -159,7 +159,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                         onChange={(e) => setFrom(e.target.value)}
                       />
                     </label>
-                    <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+                    <label className="grid gap-[4px] type-label text-text-secondary">
                       {t("to")}
                       <TextInput
                         dir="ltr"
@@ -170,7 +170,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                     </label>
                   </>
                 ) : (
-                  <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+                  <label className="grid gap-[4px] type-label text-text-secondary">
                     {t("daysLabel")}
                     <TextInput
                       dir="ltr"

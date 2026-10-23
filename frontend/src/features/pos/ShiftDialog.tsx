@@ -41,20 +41,20 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
         <div className="text-text-muted">{canOpen ? t("shiftHint") : t("shiftNoPermission")}</div>
         {canOpen && (
           <>
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("opening")}
               <input
                 dir="ltr"
                 inputMode="decimal"
                 value={opening}
                 onChange={(e) => setOpening(cleanAmount(e.target.value))}
-                className="h-[44px] rounded-[8px] border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none"
+                className="h-[44px] rounded-control border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none"
               />
             </label>
             {error && (
               <div
                 role="alert"
-                className="rounded-[8px] bg-danger-bg px-[12px] py-[10px] text-danger-text"
+                className="rounded-control bg-danger-bg px-[12px] py-[10px] text-danger-text"
               >
                 {error}
               </div>
@@ -62,7 +62,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
             <button
               type="submit"
               disabled={busy || !opening}
-              className="h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+              className="h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
             >
               {t("openShift")}
             </button>
@@ -71,7 +71,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
         <button
           type="button"
           onClick={onLeave}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-medium text-text"
         >
           {t("cancel")}
         </button>

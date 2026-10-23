@@ -79,7 +79,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           {t("recallTitle")}
         </div>
         <div className="text-text-muted">{t("recallBody")}</div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("searchItem")}
           <TextInput
             value={item ? (ar ? item.name_ar : item.name_en) : query}
@@ -94,7 +94,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           <div
             role="listbox"
             aria-label={t("searchItem")}
-            className="grid max-h-[180px] overflow-y-auto rounded-[8px] border border-border"
+            className="grid max-h-[180px] overflow-y-auto rounded-control border border-border"
           >
             {items.map((row) => (
               <button
@@ -114,7 +114,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           </div>
         )}
         {item && (
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("pickBatch")}
             <Select value={batchId} onChange={(e) => setBatchId(e.target.value)}>
               {unique.map((b) => (
@@ -125,14 +125,14 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
             </Select>
           </label>
         )}
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("recallReason")}
           <TextInput value={reason} onChange={(e) => setReason(e.target.value)} />
         </label>
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+            className="rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
           >
             {error}
           </div>

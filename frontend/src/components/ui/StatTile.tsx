@@ -15,16 +15,12 @@ export function StatTile({ label, value, note, trio, className }: Props) {
   return (
     <div
       className={cn(
-        "grid gap-[4px] rounded-[12px] border border-border bg-surface p-[16px]",
-        "transition-[transform,box-shadow] duration-200 hover:-translate-y-[2px] hover:shadow-tile",
+        "grid gap-[4px] rounded-card border border-border bg-surface p-(--d-card-pad)",
         className,
       )}
     >
       <span className="text-[13px] text-text-muted">{label}</span>
-      <span
-        dir="ltr"
-        className="text-start text-[24px] font-medium tabular-nums [overflow-wrap:anywhere]"
-      >
+      <span dir="ltr" className="text-start type-metric tabular-nums [overflow-wrap:anywhere]">
         {value}
       </span>
       {trio && (

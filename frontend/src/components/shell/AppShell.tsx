@@ -46,7 +46,7 @@ export function AppShell({
           <div
             aria-hidden="true"
             onClick={() => setDrawer(false)}
-            className="fixed inset-0 z-[5] hidden bg-scrim/40 max-[760px]:block"
+            className="fixed inset-0 z-[5] hidden bg-veil max-[760px]:block"
           />
         )}
         <div className="flex min-w-0 flex-1 flex-col">

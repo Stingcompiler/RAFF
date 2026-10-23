@@ -94,7 +94,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
         <div id="new-transfer" className="text-[16px] font-medium">
           {t("newTitle")}
         </div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("to")}
           <Select value={to} onChange={(e) => setTo(e.target.value)}>
             {branches.map((b) => (
@@ -105,7 +105,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           </Select>
         </label>
         <div className="grid grid-cols-[minmax(0,1fr)_140px_90px_auto] items-end gap-[8px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("searchItem")}
             <TextInput
               value={item ? (ar ? item.name_ar : item.name_en) : query}
@@ -115,7 +115,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
               }}
             />
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("batch")}
             <Select value={batchId} onChange={(e) => setBatchId(e.target.value)} disabled={!item}>
               {batches.map((b) => (
@@ -125,7 +125,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
               ))}
             </Select>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("quantity")}
             <TextInput
               dir="ltr"
@@ -143,7 +143,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           <div
             role="listbox"
             aria-label={t("searchItem")}
-            className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-border"
+            className="grid max-h-[160px] overflow-y-auto rounded-control border border-border"
           >
             {items.map((row) => (
               <button
@@ -167,7 +167,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
             {lines.map((l, i) => (
               <li
                 key={i}
-                className="flex items-center justify-between gap-[12px] rounded-[8px] border border-border px-[12px] py-[6px]"
+                className="flex items-center justify-between gap-[12px] rounded-control border border-border px-[12px] py-[6px]"
               >
                 <span>{l.label}</span>
                 <span className="flex items-center gap-[12px]">
@@ -189,7 +189,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+            className="rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
           >
             {error}
           </div>

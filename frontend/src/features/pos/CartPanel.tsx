@@ -62,7 +62,7 @@ export function CartPanel(props: Props) {
       )}
       <div className="flex items-center justify-between border-b border-border px-[16px] py-[12px]">
         <span className="text-[16px] font-medium">{t("cart")}</span>
-        <span className="flex items-center gap-[6px] rounded-[8px] border border-border bg-surface px-[12px] py-[6px] text-[13px]">
+        <span className="flex items-center gap-[6px] rounded-control border border-border bg-surface px-[12px] py-[6px] text-[13px]">
           {customerName ?? t("customer")}
           <ChevronDownIcon size={14} />
         </span>
@@ -94,7 +94,7 @@ export function CartPanel(props: Props) {
             <div
               key={line.key}
               data-testid="cart-line"
-              className="grid gap-[8px] rounded-[10px] border border-border bg-surface px-[12px] py-[10px]"
+              className="grid gap-[8px] rounded-control border border-border bg-surface px-[12px] py-[10px]"
             >
               <div className="flex items-center gap-[8px]">
                 <button
@@ -102,7 +102,7 @@ export function CartPanel(props: Props) {
                   aria-label={t("del")}
                   disabled={line.locked}
                   onClick={() => props.onRemove(line.key)}
-                  className="type-inherit -m-[6px] grid size-[44px] flex-none cursor-pointer place-items-center rounded-[8px] border-0 bg-transparent p-0 text-text-muted transition-[background,color] duration-150 hover:bg-danger-bg hover:text-danger-text"
+                  className="type-inherit -m-[6px] grid size-[44px] flex-none cursor-pointer place-items-center rounded-control border-0 bg-transparent p-0 text-text-muted transition-[background,color] duration-(--motion-feedback) hover:bg-danger-bg hover:text-danger-text"
                 >
                   {REMOVE}
                 </button>
@@ -122,7 +122,7 @@ export function CartPanel(props: Props) {
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-[8px] text-[12px] whitespace-nowrap text-text-muted">
-                <label className="relative rounded-[6px] border border-border px-[8px] py-[3px] text-text">
+                <label className="relative rounded-control border border-border px-[8px] py-[3px] text-text">
                   {unitChip}
                   <select
                     aria-label={t("hUnit")}
@@ -145,7 +145,7 @@ export function CartPanel(props: Props) {
                   type="button"
                   disabled={line.locked}
                   onClick={() => props.onBatch(line.key)}
-                  className="type-inherit cursor-pointer rounded-[6px] border border-dashed border-border bg-transparent px-[8px] py-[3px] text-text"
+                  className="type-inherit cursor-pointer rounded-control border border-dashed border-border bg-transparent px-[8px] py-[3px] text-text"
                 >
                   {line.locked
                     ? t("locked")
@@ -158,7 +158,7 @@ export function CartPanel(props: Props) {
                 </span>
                 <label
                   className={cn(
-                    "flex items-center gap-[2px] rounded-[6px] border px-[8px] py-[3px]",
+                    "flex items-center gap-[2px] rounded-control border px-[8px] py-[3px]",
                     line.discountPct
                       ? "border-success-solid text-success-text"
                       : "border-border text-text",
@@ -184,7 +184,7 @@ export function CartPanel(props: Props) {
                     {t("conv", { unit: unitName, factor: line.unit.factor, base: pick(ar, base) })}
                   </span>
                 )}
-                <span className="ms-auto flex items-center overflow-hidden rounded-[8px] border border-border text-[14px] text-text">
+                <span className="ms-auto flex items-center overflow-hidden rounded-control border border-border text-[14px] text-text">
                   <button
                     type="button"
                     aria-label={t("decrease")}
@@ -264,7 +264,7 @@ export function CartPanel(props: Props) {
           onClick={props.onPay}
           disabled={payDisabled}
           className={cn(
-            "flex h-[52px] items-center justify-center gap-[12px] rounded-[10px] border-0 text-[18px] font-semibold",
+            "flex h-[52px] items-center justify-center gap-[12px] rounded-control border-0 text-[18px] font-semibold",
             payDisabled
               ? "cursor-not-allowed bg-border text-text-muted"
               : "cursor-pointer bg-brand text-on-brand",
@@ -278,7 +278,7 @@ export function CartPanel(props: Props) {
         <button
           type="button"
           onClick={props.onHold}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent text-[14px] font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-[14px] font-medium text-text"
         >
           {t("hold")}{" "}
           <span dir="ltr" className="text-[12px] text-text-muted">

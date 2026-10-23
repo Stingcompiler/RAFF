@@ -137,7 +137,7 @@ export function ItemDrawer({
               type="button"
               onClick={onClose}
               aria-label={t("close")}
-              className="size-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent text-[18px] text-text"
+              className="size-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-[18px] text-text"
             >
               {CLOSE}
             </button>
@@ -154,7 +154,7 @@ export function ItemDrawer({
                 aria-selected={i === tab}
                 onClick={() => setTab(i)}
                 className={cn(
-                  "cursor-pointer border-0 bg-transparent px-[2px] py-[12px] text-[13px] font-medium whitespace-nowrap transition-[color,box-shadow] duration-200 [font-family:inherit]",
+                  "cursor-pointer border-0 bg-transparent px-[2px] py-[12px] text-[13px] font-medium whitespace-nowrap transition-[color,box-shadow] duration-(--motion-feedback) [font-family:inherit]",
                   i === tab
                     ? "text-brand shadow-[inset_0_-2px_0_var(--color-brand)]"
                     : "text-text-muted shadow-[inset_0_-2px_0_transparent]",

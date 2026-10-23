@@ -214,7 +214,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                             },
                           }))
                         }
-                        className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
+                        className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                       />
                     ) : (
                       <span className="block text-end tabular-nums">
@@ -255,7 +255,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                           },
                         }))
                       }
-                      className="h-[30px] w-full rounded-[6px] border border-border-strong bg-surface px-[8px] text-[13px] text-text"
+                      className="h-[30px] w-full rounded-control border border-border-strong bg-surface px-[8px] text-[13px] text-text"
                     />
                   </div>
                 )}

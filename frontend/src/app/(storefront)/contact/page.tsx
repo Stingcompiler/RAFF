@@ -34,13 +34,13 @@ export default async function ContactPage() {
         {store?.whatsapp && (
           <a
             href={waLink(store.whatsapp)}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-on-brand no-underline"
+            className="inline-flex min-h-[52px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
           >
             {t("waLong")}
           </a>
         )}
       </div>
-      <div className="grid h-[300px] place-items-center rounded-[16px] bg-surface-subtle text-text-muted">
+      <div className="grid h-[300px] place-items-center rounded-panel bg-surface-subtle text-text-muted">
         {t("imgPh")}
       </div>
     </section>

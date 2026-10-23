@@ -108,7 +108,7 @@ export function CheckoutScreen() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="h-[52px] rounded-[10px] border border-border-strong bg-surface px-[14px] text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]"
+            className="h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]"
           />
         </label>
         <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
@@ -122,7 +122,7 @@ export function CheckoutScreen() {
             aria-invalid={phone !== "" && !phoneOk}
             onChange={(e) => setPhone(e.target.value)}
             className={cn(
-              "h-[52px] rounded-[10px] border bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
+              "h-[52px] rounded-control border bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
               phone !== "" && !phoneOk
                 ? "border-danger-solid"
                 : "border-border-strong focus:border-brand",
@@ -134,7 +134,7 @@ export function CheckoutScreen() {
         </label>
         <div className="grid gap-[6px]">
           <div className="text-[14px] font-semibold text-text-muted">{t("pickupL")}</div>
-          <div className="flex items-center gap-[12px] rounded-[12px] border-2 border-brand bg-surface p-[14px]">
+          <div className="flex items-center gap-[12px] rounded-card border-2 border-brand bg-surface p-[14px]">
             <StoreIcon size={26} className="flex-none text-brand" />
             <div>
               <div className="font-semibold">{t("pickup")}</div>
@@ -149,7 +149,7 @@ export function CheckoutScreen() {
             value={note}
             placeholder={t("notePh")}
             onChange={(e) => setNote(e.target.value)}
-            className="resize-y rounded-[10px] border border-border-strong bg-surface px-[14px] py-[12px] text-[16px] text-text outline-none focus:border-brand"
+            className="resize-y rounded-control border border-border-strong bg-surface px-[14px] py-[12px] text-[16px] text-text outline-none focus:border-brand"
           />
           <span className="text-[13px] font-normal">{t("noHealth")}</span>
         </label>
@@ -172,7 +172,7 @@ export function CheckoutScreen() {
           disabled={!valid || busy}
           aria-busy={busy}
           className={cn(
-            "flex min-h-[52px] items-center justify-center gap-[10px] rounded-[12px] border-0 text-[16px] font-semibold",
+            "flex min-h-[52px] items-center justify-center gap-[10px] rounded-card border-0 text-[16px] font-semibold",
             valid && !busy
               ? "cursor-pointer bg-brand text-on-brand"
               : busy
@@ -186,7 +186,7 @@ export function CheckoutScreen() {
         {phase === "failed" && error && (
           <div
             role="alert"
-            className="rounded-[10px] bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
+            className="rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
           >
             {error}
           </div>
@@ -194,7 +194,7 @@ export function CheckoutScreen() {
         {phase === "verifying" && key && (
           <div
             role="status"
-            className="grid gap-[4px] rounded-[10px] bg-info-bg px-[14px] py-[12px] font-medium text-info-text"
+            className="grid gap-[4px] rounded-control bg-info-bg px-[14px] py-[12px] font-medium text-info-text"
           >
             <span>{t("toMsg")}</span>
             <span className="text-[13px] font-normal">
@@ -206,7 +206,7 @@ export function CheckoutScreen() {
           </div>
         )}
       </form>
-      <aside className="grid gap-[10px] rounded-[14px] border border-border bg-surface p-[18px]">
+      <aside className="grid gap-[10px] rounded-card border border-border bg-surface p-[18px]">
         <div className="font-semibold">{t("summary")}</div>
         {ready &&
           rows.map(({ line, product }) =>

@@ -24,7 +24,7 @@ type TextKey =
   | "whatsapp"
   | "telegram_chat_id";
 type LongKey = "hero_lead_ar" | "hero_lead_en" | "about_ar" | "about_en" | "blocked_phones";
-const LABEL = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+const LABEL = "grid gap-[4px] type-label text-text-secondary";
 
 /** Storefront settings (§5.4): identity, contact, pickup branch, limits. */
 export function StoreSettingsScreen({
@@ -111,7 +111,7 @@ export function StoreSettingsScreen({
               >
                 <span
                   className={cn(
-                    "absolute top-[3px] size-[18px] rounded-full bg-surface transition-[inset-inline-start] duration-200",
+                    "absolute top-[3px] size-[18px] rounded-full bg-surface transition-[inset-inline-start] duration-(--motion-feedback)",
                     s.enabled ? "start-[21px]" : "start-[3px]",
                   )}
                 />
@@ -138,7 +138,7 @@ export function StoreSettingsScreen({
                 aria-label={t("brandC")}
                 value={s.brand_color ?? ""}
                 onChange={(e) => set("brand_color", e.target.value)}
-                className="h-[40px] w-[80px] cursor-pointer rounded-[8px] border border-border-strong bg-surface"
+                className="h-[40px] w-[80px] cursor-pointer rounded-control border border-border-strong bg-surface"
               />
             </label>
             {text("name_ar", t("nameAr"))}

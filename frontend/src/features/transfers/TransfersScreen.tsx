@@ -222,7 +222,7 @@ export function TransfersScreen({ initial, branchId, branches }: Props) {
                             onChange={(e) =>
                               setReceived((prev) => ({ ...prev, [li.id]: e.target.value }))
                             }
-                            className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
+                            className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                           />
                         ) : (
                           <span className="block text-end tabular-nums">

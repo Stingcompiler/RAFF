@@ -27,7 +27,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
   ].join(" — ");
   return (
     <section className="grid max-w-[720px] gap-[20px] px-[20px] pt-[32px] pb-[48px]">
-      <div className="flex items-center gap-[12px] rounded-[12px] bg-success-bg px-[16px] py-[14px] font-semibold text-success-text">
+      <div className="flex items-center gap-[12px] rounded-card bg-success-bg px-[16px] py-[14px] font-semibold text-success-text">
         <CheckCircleIcon size={24} />
         {t("arrived")}
       </div>
@@ -45,7 +45,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
         <div
           role="status"
           className={cn(
-            "rounded-[10px] px-[14px] py-[12px] font-medium",
+            "rounded-control px-[14px] py-[12px] font-medium",
             order.status === "cancelled"
               ? "bg-danger-bg text-danger-text"
               : "bg-warning-bg text-warning-text",
@@ -92,10 +92,10 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
           );
         })}
       </ol>
-      <div className="rounded-[12px] border border-border bg-surface p-[16px] leading-[1.7]">
+      <div className="rounded-card border border-border bg-surface p-[16px] leading-[1.7]">
         {t("orderInfo")}
       </div>
-      <div className="rounded-[12px] border border-border bg-surface px-[16px] py-[6px]">
+      <div className="rounded-card border border-border bg-surface px-[16px] py-[6px]">
         {order.lines.map((l, i) => (
           <div key={i} className="flex min-h-[44px] items-center justify-between gap-[12px]">
             <span>
@@ -119,7 +119,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
       {order.whatsapp && (
         <a
           href={waLink(order.whatsapp, order.number)}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-[12px] bg-brand font-semibold text-on-brand no-underline"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
         >
           {t("openWa")}
         </a>

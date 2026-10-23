@@ -16,7 +16,7 @@ export function PickupSelector({ options, value }: { options: readonly Option[];
             aria-checked={on}
             aria-disabled={o.disabled || undefined}
             className={cn(
-              "flex items-center gap-[12px] rounded-[12px] p-[14px]",
+              "flex items-center gap-[12px] rounded-card p-[14px]",
               on ? "border-2 border-brand" : "border border-dashed border-border-strong",
               o.disabled && "opacity-55",
             )}

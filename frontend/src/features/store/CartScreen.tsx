@@ -34,13 +34,13 @@ export function CartScreen() {
     <section className="grid gap-[16px] px-[20px] pt-[24px] pb-[40px]">
       <h1 className="m-0 text-[30px] font-semibold">{t("cart")}</h1>
       {ready && rows.length === 0 && (
-        <div className="grid justify-items-center gap-[8px] rounded-[14px] border border-dashed border-border-strong px-[20px] py-[48px] text-center">
+        <div className="grid justify-items-center gap-[8px] rounded-card border border-dashed border-border-strong px-[20px] py-[48px] text-center">
           <b>{t("emptyT")}</b>
           <span className="text-text-muted">{t("emptyB")}</span>
           <Link
             href="/store"
             className={cn(
-              "inline-flex min-h-[44px] items-center rounded-[10px] px-[20px] font-semibold no-underline",
+              "inline-flex min-h-[44px] items-center rounded-control px-[20px] font-semibold no-underline",
               BUTTON.outline,
             )}
           >
@@ -54,9 +54,9 @@ export function CartScreen() {
             <div
               key={line.slug}
               data-testid="store-cart-line"
-              className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-[12px] rounded-[12px] border border-border bg-surface p-[12px]"
+              className="grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-[12px] rounded-card border border-border bg-surface p-[12px]"
             >
-              <div className="grid h-[56px] place-items-center rounded-[8px] bg-surface-subtle text-text-muted">
+              <div className="grid h-[56px] place-items-center rounded-control bg-surface-subtle text-text-muted">
                 <NoImageIcon size={22} />
               </div>
               <div className="min-w-0">
@@ -78,7 +78,7 @@ export function CartScreen() {
                 </div>
               </div>
               <div className="flex items-center gap-[8px]">
-                <span className="flex items-center overflow-hidden rounded-[8px] border border-border-strong">
+                <span className="flex items-center overflow-hidden rounded-control border border-border-strong">
                   <button
                     type="button"
                     aria-label={t("decrease")}
@@ -113,7 +113,7 @@ export function CartScreen() {
         )}
       </div>
       {rows.length > 0 && (
-        <div className="grid max-w-[520px] gap-[10px] rounded-[14px] border border-border bg-surface p-[18px]">
+        <div className="grid max-w-[520px] gap-[10px] rounded-card border border-border bg-surface p-[18px]">
           <div className="flex items-baseline justify-between">
             <span className="font-medium">{t("est")}</span>
             <span
@@ -124,13 +124,13 @@ export function CartScreen() {
               {money(estimate, ar ? "ar" : "en") || money("0", ar ? "ar" : "en")}
             </span>
           </div>
-          <div className="rounded-[8px] bg-warning-bg px-[12px] py-[10px] text-[14px] font-medium text-warning-text">
+          <div className="rounded-control bg-warning-bg px-[12px] py-[10px] text-[14px] font-medium text-warning-text">
             {t("cartNote")}
           </div>
           <Link
             href="/checkout"
             className={cn(
-              "inline-flex min-h-[52px] items-center justify-center rounded-[12px] text-[16px] font-semibold no-underline",
+              "inline-flex min-h-[52px] items-center justify-center rounded-card text-[16px] font-semibold no-underline",
               BUTTON.solid,
             )}
           >

@@ -15,17 +15,17 @@ export default async function AboutPage() {
         <p className="m-0 text-[17px] leading-[1.8] text-text-secondary">
           {store ? (ar ? store.about_ar : store.about_en) : ""}
         </p>
-        <div className="rounded-[10px] bg-warning-bg px-[14px] py-[12px] text-[14px] font-medium text-warning-text">
+        <div className="rounded-control bg-warning-bg px-[14px] py-[12px] text-[14px] font-medium text-warning-text">
           {t("aboutNote")}
         </div>
         <Link
           href="/contact"
-          className="inline-flex min-h-[48px] items-center justify-self-start rounded-[10px] border border-border-strong bg-surface px-[20px] font-semibold text-brand no-underline"
+          className="inline-flex min-h-[48px] items-center justify-self-start rounded-control border border-border-strong bg-surface px-[20px] font-semibold text-brand no-underline"
         >
           {t("contactUs")}
         </Link>
       </div>
-      <div className="grid h-[320px] place-items-center rounded-[16px] bg-surface-subtle text-text-muted">
+      <div className="grid h-[320px] place-items-center rounded-panel bg-surface-subtle text-text-muted">
         {t("imgPh")}
       </div>
     </section>

@@ -60,7 +60,7 @@ export function ProductTile({ product }: { product: Product }) {
   const off = product.availability === "unavailable";
   const href = `/products/${product.slug}`;
   return (
-    <article className="grid grid-rows-[auto_1fr] overflow-hidden rounded-[14px] border border-border bg-surface transition-[box-shadow,transform] duration-200 hover:-translate-y-[2px] hover:shadow-tile">
+    <article className="grid grid-rows-[auto_1fr] overflow-hidden rounded-card border border-border bg-surface transition-[box-shadow,transform] duration-(--motion-feedback) hover:-translate-y-[2px] hover:shadow-tile">
       <Link href={href} tabIndex={-1} aria-hidden="true">
         <ProductImage product={product} height="h-[120px]" label={t("noImg")} />
       </Link>
@@ -75,7 +75,7 @@ export function ProductTile({ product }: { product: Product }) {
         </Link>
         <div className="text-[13px] text-text-muted">{ar ? product.unit_ar : product.unit_en}</div>
         {product.rx ? (
-          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[13px] font-medium text-info-text">
+          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-[13px] font-medium text-info-text">
             {t("rxShort")}
           </div>
         ) : (
@@ -109,7 +109,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={`/checkout?rx=${product.slug}`}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-[10px] px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
               BUTTON.outline,
             )}
           >
@@ -119,7 +119,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={href}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-[10px] px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
               BUTTON.muted,
             )}
           >
@@ -133,7 +133,7 @@ export function ProductTile({ product }: { product: Product }) {
               toast.push("success", t("added"));
             }}
             className={cn(
-              "min-h-[44px] cursor-pointer rounded-[10px] px-[16px] text-[15px] font-semibold whitespace-nowrap transition-[transform] duration-100 active:scale-[.98]",
+              "min-h-[44px] cursor-pointer rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap transition-[transform] duration-(--motion-feedback) active:scale-[.98]",
               BUTTON.solid,
             )}
           >

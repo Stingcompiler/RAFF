@@ -31,7 +31,7 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
         "z-[6] flex w-[232px] flex-none flex-col gap-[4px] border-e border-border bg-surface-subtle px-[12px] py-[16px]",
         "max-[1180px]:w-[40px]",
         "max-[760px]:fixed max-[760px]:inset-y-0 max-[760px]:start-0 max-[760px]:w-[232px] max-[760px]:shadow-drawer",
-        "max-[760px]:transition-transform max-[760px]:duration-300",
+        "max-[760px]:transition-transform max-[760px]:duration-(--motion-panel-in)",
         open
           ? "max-[760px]:translate-x-0"
           : "max-[760px]:ltr:-translate-x-[110%] max-[760px]:rtl:translate-x-[110%]",
@@ -53,15 +53,15 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
             aria-current={active ? "page" : undefined}
             title={t(`nav.${item.key}`)}
             className={cn(
-              "flex min-h-[40px] items-center gap-[12px] overflow-hidden rounded-[8px] px-[12px] font-medium text-ellipsis whitespace-nowrap text-text no-underline",
-              "transition-[background,color,transform,filter] duration-200 hover:brightness-95 active:scale-[.98]",
+              "flex min-h-[40px] items-center gap-[12px] overflow-hidden rounded-control px-[12px] font-medium text-ellipsis whitespace-nowrap text-text no-underline",
+              "transition-[background,color,transform,filter] duration-(--motion-feedback) hover:brightness-95",
               "max-[1180px]:justify-center max-[1180px]:px-0 max-[760px]:justify-start max-[760px]:px-[12px]",
               active && "bg-brand-subtle font-semibold",
             )}
           >
             <Icon
               className={cn(
-                "flex-none transition-[color,transform] duration-200",
+                "flex-none transition-[color,transform] duration-(--motion-feedback)",
                 active ? "scale-[1.12] text-brand" : "text-text-muted",
               )}
             />

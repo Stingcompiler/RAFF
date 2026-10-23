@@ -18,14 +18,14 @@ export function WhatsAppAction({
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-brand font-semibold whitespace-nowrap text-brand no-underline"
+        className="flex min-h-[44px] flex-1 items-center justify-center rounded-control border border-brand font-semibold whitespace-nowrap text-brand no-underline"
       >
         {openLabel}
       </a>
       <button
         type="button"
         onClick={() => void navigator.clipboard?.writeText(message)}
-        className="min-h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent px-[16px] whitespace-nowrap text-text"
+        className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent px-[16px] whitespace-nowrap text-text"
       >
         {copyLabel}
       </button>

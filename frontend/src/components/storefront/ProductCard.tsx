@@ -20,7 +20,7 @@ type Props = {
 
 export function ProductCard(props: Props) {
   return (
-    <div className="overflow-hidden rounded-[14px] border border-border bg-surface">
+    <div className="overflow-hidden rounded-card border border-border bg-surface">
       <div
         style={{ height: props.imageHeight ?? 72 }}
         className="grid place-items-center bg-surface-subtle text-[12px] text-text-muted"
@@ -47,9 +47,9 @@ export function ProductCard(props: Props) {
 /** Storefront button looks: solid brand, outlined brand, and muted details. */
 export const storeButton = {
   solid:
-    "min-h-[44px] cursor-pointer rounded-[10px] border-0 bg-brand px-[16px] font-semibold whitespace-nowrap text-on-brand",
+    "min-h-[44px] cursor-pointer rounded-control border-0 bg-brand px-[16px] font-semibold whitespace-nowrap text-on-brand",
   outline:
-    "min-h-[44px] cursor-pointer rounded-[10px] border border-brand bg-transparent px-[16px] font-semibold whitespace-nowrap text-brand",
+    "min-h-[44px] cursor-pointer rounded-control border border-brand bg-transparent px-[16px] font-semibold whitespace-nowrap text-brand",
   muted:
-    "min-h-[44px] rounded-[10px] border border-border-strong bg-transparent font-semibold text-text-muted",
+    "min-h-[44px] rounded-control border border-border-strong bg-transparent font-semibold text-text-muted",
 };

@@ -168,7 +168,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                           qty: Math.max(0, Math.min(line.returnable, Number(e.target.value) || 0)),
                         })
                       }
-                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
                     />
                   </span>
                   <span role="cell">
@@ -176,7 +176,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       aria-label={`${t("colReason")} ${line.name_en}`}
                       value={c?.reason ?? "damaged"}
                       onChange={(e) => set(line.id, { reason: e.target.value as Choice["reason"] })}
-                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface text-[13px] text-text"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-[13px] text-text"
                     >
                       {REASONS.map((r) => (
                         <option key={r} value={r}>
@@ -192,7 +192,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       onChange={(e) =>
                         set(line.id, { condition: e.target.value as Choice["condition"] })
                       }
-                      className="h-[32px] w-full rounded-[6px] border border-border-strong bg-surface text-[13px] text-text"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-[13px] text-text"
                     >
                       {CONDITIONS.map((r) => (
                         <option key={r} value={r}>
@@ -207,7 +207,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
             {sale.lines.length === 0 && <TableEmpty>{t("pickInvoice")}</TableEmpty>}
           </div>
           <div className="flex flex-wrap items-end gap-[12px] p-[12px]">
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("refund")}
               <Select
                 value={refund}
@@ -232,7 +232,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
       {error && (
         <div
           role="alert"
-          className="mx-[12px] mb-[12px] rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+          className="mx-[12px] mb-[12px] rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
         >
           {error}
         </div>

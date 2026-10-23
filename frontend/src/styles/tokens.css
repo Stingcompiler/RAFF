@@ -49,6 +49,7 @@
   --c-chart-4: #be185d;
   --c-chart-5: #64748b;
   --c-scrim: #0f172a;
+  --scrim-alpha: 45%;
   --elev-1: 0 1px 2px rgba(15, 23, 42, 0.06);
   --elev-2: 0 4px 12px rgba(15, 23, 42, 0.08);
   --elev-3: 0 12px 32px rgba(15, 23, 42, 0.14);
@@ -98,6 +99,7 @@
   --c-chart-4: #f472b6;
   --c-chart-5: #94a3b8;
   --c-scrim: #000000;
+  --scrim-alpha: 60%;
   --elev-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --elev-2: 0 4px 12px rgba(0, 0, 0, 0.45);
   --elev-3: 0 12px 32px rgba(0, 0, 0, 0.6);
@@ -112,6 +114,116 @@
   --elev-receipt: 0 10px 30px rgba(0, 0, 0, 0.18);
   --elev-scan: 0 0 12px 2px rgba(220, 235, 157, 0.7);
   --elev-sheet: 0 -10px 30px rgba(15, 23, 42, 0.14);
+  --motion-feedback: 100ms;
+  --motion-popover-in: 140ms;
+  --motion-popover-out: 100ms;
+  --motion-panel-in: 220ms;
+  --motion-panel-out: 160ms;
+  --motion-scene: 160ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --d-row: 40px;
+  --d-pad: 16px;
+  --d-gap: 16px;
+  --d-card-pad: 20px;
+  --d-font: 14px;
+}
+
+[data-density="compact"] {
+  --d-row: 32px;
+  --d-pad: 8px;
+  --d-gap: 8px;
+  --d-card-pad: 12px;
+  --d-font: 13px;
+}
+
+[data-density="default"] {
+  --d-row: 40px;
+  --d-pad: 16px;
+  --d-gap: 16px;
+  --d-card-pad: 20px;
+  --d-font: 14px;
+}
+
+[data-density="comfortable"] {
+  --d-row: 48px;
+  --d-pad: 20px;
+  --d-gap: 24px;
+  --d-card-pad: 24px;
+  --d-font: 15px;
+}
+
+@media (max-width: 760px) {
+  :root:not([data-density]) {
+    --d-row: 48px;
+    --d-pad: 20px;
+    --d-gap: 24px;
+    --d-card-pad: 24px;
+    --d-font: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-feedback: 0ms;
+    --motion-popover-in: 0ms;
+    --motion-popover-out: 0ms;
+    --motion-panel-in: 0ms;
+    --motion-panel-out: 0ms;
+    --motion-scene: 0ms;
+  }
+}
+
+@utility type-caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+@utility type-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility type-body-large {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility type-label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+@utility type-section {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+@utility type-page {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+@utility type-metric {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+@utility type-total {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+@utility bg-veil {
+  background-color: color-mix(in oklab, var(--c-scrim) var(--scrim-alpha), transparent);
 }
 
 @theme inline {
@@ -165,6 +277,11 @@
   --color-camera-ink: var(--c-camera-ink);
   --color-transparent: transparent;
   --color-current: currentColor;
+
+  --radius-control: 8px;
+  --radius-card: 14px;
+  --radius-panel: 16px;
+  --radius-pill: 999px;
 
   --shadow-1: var(--elev-1);
   --shadow-2: var(--elev-2);

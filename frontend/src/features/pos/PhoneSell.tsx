@@ -60,9 +60,9 @@ export function PhoneSell(props: Props) {
     <div className="relative flex h-dvh flex-col overflow-hidden bg-canvas text-text">
       <PhoneStatus status={props.connection.status} text={props.connection.text} />
       {props.banners}
-      <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] text-[26px] font-medium">{t("title")}</h1>
+      <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] type-page">{t("title")}</h1>
       {(props.catalogueSize > SEARCH_FROM || searching) && (
-        <label className="mx-[16px] mb-[8px] flex h-[48px] flex-none items-center gap-[8px] rounded-[12px] border-2 border-brand bg-surface px-[14px]">
+        <label className="mx-[16px] mb-[8px] flex h-[48px] flex-none items-center gap-[8px] rounded-card border-2 border-brand bg-surface px-[14px]">
           <SearchIcon size={20} className="flex-none text-text-muted" />
           <input
             type="search"
@@ -84,7 +84,7 @@ export function PhoneSell(props: Props) {
             disabled={props.locked}
             aria-label={t("add", { name: pick(ar, row) })}
             onClick={() => props.onAdd(row)}
-            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-[12px] border border-border bg-surface px-[14px] py-[8px] text-start font-[inherit] text-[14px] text-text transition-[transform,background] duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
+            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-card border border-border bg-surface px-[14px] py-[8px] text-start font-[inherit] text-[14px] text-text transition-[transform,background] duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
           >
             <span className="min-w-0 flex-1 truncate font-medium">
               {[pick(ar, row), row.strength].filter(Boolean).join(" ")}
@@ -94,7 +94,7 @@ export function PhoneSell(props: Props) {
             </span>
             <span
               aria-hidden="true"
-              className="grid size-[44px] flex-none place-items-center rounded-[10px] bg-brand-subtle text-[22px]"
+              className="grid size-[44px] flex-none place-items-center rounded-control bg-brand-subtle text-[22px]"
             >
               {PLUS}
             </span>
@@ -107,8 +107,8 @@ export function PhoneSell(props: Props) {
 
       <div
         className={cn(
-          "absolute inset-x-0 bottom-[68px] rounded-t-[20px] border-t border-border bg-surface shadow-sheet",
-          "transition-transform duration-[350ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+          "absolute inset-x-0 bottom-[68px] rounded-t-panel border-t border-border bg-surface shadow-sheet",
+          "transition-transform duration-(--motion-panel-in) ease-[cubic-bezier(.2,.8,.2,1)]",
           open ? "translate-y-0" : "translate-y-[212px]",
         )}
       >
@@ -144,7 +144,7 @@ export function PhoneSell(props: Props) {
             type="button"
             disabled={props.payDisabled}
             onClick={props.onPay}
-            className="h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-[120ms] active:scale-[.98] disabled:cursor-default disabled:opacity-60"
+            className="h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
           >
             {t("pay")}
           </button>

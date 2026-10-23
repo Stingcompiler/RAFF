@@ -48,7 +48,7 @@ export function TableHead({
       role="row"
       style={gridStyle(columns)}
       className={cn(
-        "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-[12px] font-medium text-text-muted",
+        "grid h-(--d-row) items-center gap-[12px] border-b border-border bg-surface-subtle px-(--d-pad) type-label text-text-secondary",
         className,
       )}
     >
@@ -94,11 +94,12 @@ export function TableRow({
       onKeyDown={onKeyDown}
       style={gridStyle(columns)}
       className={cn(
-        "grid min-h-[44px] items-center gap-[12px] border-b border-border px-[16px] text-[14px]",
-        "transition-[filter,background] duration-150",
+        "relative grid min-h-(--d-row) items-center gap-[12px] border-b border-border px-(--d-pad) text-(length:--d-font)",
+        "transition-[filter,background] duration-(--motion-feedback)",
         interactive &&
           "cursor-pointer hover:brightness-[.97] focus-visible:outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-focus)]",
-        selected && "bg-brand-subtle",
+        selected &&
+          "bg-selection-bg before:absolute before:inset-y-0 before:start-0 before:w-[3px] before:bg-selection-border",
         disabled && "opacity-60",
         className,
       )}
@@ -163,7 +164,7 @@ export function TableSkeletonRow({ columns }: { columns: readonly Column[] }) {
     <div
       aria-hidden="true"
       style={gridStyle(columns)}
-      className="grid h-[44px] items-center gap-[12px] border-t border-border px-[12px]"
+      className="grid h-(--d-row) items-center gap-[12px] border-t border-border px-(--d-pad)"
     >
       {columns.map((_, i) => (
         <Skeleton key={i} className={i === 0 ? "size-[18px]" : i === 1 ? "w-[70%]" : "w-full"} />

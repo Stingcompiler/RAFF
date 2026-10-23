@@ -43,7 +43,7 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
         {t("batchTitle", { item: `${pick(ar, line.item)} ${line.item.strength}`.trim() })}
       </div>
       <div
-        className="overflow-hidden rounded-[10px] border border-border"
+        className="overflow-hidden rounded-control border border-border"
         role="radiogroup"
         aria-labelledby="batch-title"
       >
@@ -99,14 +99,14 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
         <button
           type="button"
           onClick={() => onChoose(null)}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent px-[20px] font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent px-[20px] font-medium text-text"
         >
           {t("fefo")}
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent px-[20px] font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent px-[20px] font-medium text-text"
         >
           {t("cancel")}
         </button>
@@ -114,7 +114,7 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
           type="button"
           disabled={!row}
           onClick={() => row && onChoose({ id: row.batch_id, no: row.batch_no })}
-          className="h-[44px] cursor-pointer rounded-[10px] border-0 bg-brand px-[20px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+          className="h-[44px] cursor-pointer rounded-control border-0 bg-brand px-[20px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
         >
           {t("useBatch")}
         </button>

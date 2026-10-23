@@ -6,12 +6,14 @@ import type {
 } from "react";
 import { useId } from "react";
 
+import { useTranslations } from "next-intl";
+
 import { cn } from "@/lib/cn";
 
 /** Shared look of text inputs: 44px content height, line border, bg fill. */
 export const controlClasses = cn(
-  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text",
-  "outline-none transition-[border-color,box-shadow] duration-200",
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text",
+  "outline-none transition-[border-color,box-shadow] duration-(--motion-feedback)",
   "focus:border-2 focus:border-brand focus:px-[11px] focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
   "aria-[invalid=true]:border-2 aria-[invalid=true]:border-danger-solid aria-[invalid=true]:px-[11px]",
   "disabled:bg-surface-subtle disabled:text-text-muted",
@@ -19,6 +21,11 @@ export const controlClasses = cn(
 
 type FieldProps = {
   label: string;
+  /**
+   * One convention per form (v2.2 §15.2): when most fields are required mark the optional
+   * ones, when most are optional (setup forms) mark the required ones.
+   */
+  mark?: "optional" | "required";
   /** Helper text, or the error when `error` is set. */
   help?: string;
   error?: string;
@@ -27,16 +34,21 @@ type FieldProps = {
 };
 
 /** Label + control + helper/error text. Errors carry the ✕ symbol, never color alone. */
-export function Field({ label, help, error, children, className }: FieldProps) {
+export function Field({ label, mark, help, error, children, className }: FieldProps) {
+  const t = useTranslations("common");
   const id = useId();
   const helpId = `${id}-help`;
   const message = error ? `✕ ${error}` : help;
   return (
-    <label
-      htmlFor={id}
-      className={cn("grid gap-[4px] text-[12px] font-medium text-text-muted", className)}
-    >
-      {label}
+    <label htmlFor={id} className={cn("grid gap-[4px] type-label text-text-secondary", className)}>
+      <span>
+        {label}
+        {mark && (
+          <span className="ms-[4px] font-normal text-text-muted">
+            {t(mark === "optional" ? "optionalMark" : "requiredMark")}
+          </span>
+        )}
+      </span>
       {children({ id, describedBy: message ? helpId : undefined, invalid: !!error })}
       {message && (
         <span id={helpId} className={error ? "text-danger-text" : "font-normal text-text-muted"}>

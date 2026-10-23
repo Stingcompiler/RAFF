@@ -32,7 +32,11 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "signOut": "Sign out",
-    "deviceLine": "Device registered as: {device}"
+    "deviceLine": "Device registered as: {device}",
+    "density": "Density",
+    "density_compact": "Compact",
+    "density_default": "Default",
+    "density_comfortable": "Comfortable"
   },
   "connection": {
     "online": "Server: online",
@@ -46,7 +50,12 @@
     "back": "Back",
     "approve": "Approve",
     "approving": "Approving…",
-    "sample": "Sample"
+    "sample": "Sample",
+    "optionalMark": "(optional)",
+    "requiredMark": "(required)",
+    "unsavedChanges": "Unsaved changes",
+    "discardChanges": "Discard",
+    "saveChanges": "Save"
   },
   "dev": {
     "gallery": {

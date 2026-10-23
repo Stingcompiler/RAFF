@@ -3,20 +3,13 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { TONE_CLASSES, TONE_SYMBOL } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
 import { apiSend } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { money, timeOfDay } from "@/lib/format";
 
 import { type OrderRow, type OrderStatus, STATUS_TONE } from "./labels";
-
-const TONE = {
-  success: "text-success-text bg-success-bg",
-  warn: "text-warning-text bg-warning-bg",
-  danger: "text-danger-text bg-danger-bg",
-  info: "text-info-text bg-info-bg",
-} as const;
-const SYMBOL = { success: "●", warn: "▲", danger: "✕", info: "■" } as const;
 
 /** The next step a phone can take without a reason (cancel and contact stay on the computer). */
 const NEXT: Partial<Record<OrderStatus, OrderStatus>> = {
@@ -56,9 +49,14 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
   return (
     <>
       <div className="flex items-baseline justify-between px-[16px] pt-[8px] pb-[12px]">
-        <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
+        <h1 className="m-0 type-page">{t("title")}</h1>
         {fresh > 0 && (
-          <span className={cn("rounded-full px-[8px] py-[2px] text-[12px] font-medium", TONE.info)}>
+          <span
+            className={cn(
+              "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium",
+              TONE_CLASSES.info,
+            )}
+          >
             {t("newCount", { count: fresh })}
           </span>
         )}
@@ -71,7 +69,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
             <article
               key={order.id}
               className={cn(
-                "grid gap-[10px] rounded-[14px] border bg-surface px-[14px] py-[12px]",
+                "grid gap-[10px] rounded-card border bg-surface px-[14px] py-[12px]",
                 order.status === "new" ? "border-brand" : "border-border",
               )}
             >
@@ -81,11 +79,11 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                 </b>
                 <span
                   className={cn(
-                    "rounded-full px-[8px] py-[2px] text-[12px] font-medium whitespace-nowrap",
-                    TONE[tone],
+                    "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+                    TONE_CLASSES[tone],
                   )}
                 >
-                  {SYMBOL[tone]} {t(`status.${order.status}`)}
+                  {TONE_SYMBOL[tone]} {t(`status.${order.status}`)}
                 </span>
               </div>
               <div className="flex justify-between gap-[8px] text-[13px] text-text-muted">
@@ -103,7 +101,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                 <a
                   href={waLink(order.phone)}
                   aria-label={t("waFor", { name: order.customer_name })}
-                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-border-strong font-medium whitespace-nowrap text-text no-underline"
+                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-control border border-border-strong font-medium whitespace-nowrap text-text no-underline"
                 >
                   {t("whatsapp")}
                 </a>
@@ -112,12 +110,12 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                     type="button"
                     disabled={busy === order.id}
                     onClick={() => void advance(order, next)}
-                    className="min-h-[44px] flex-1 cursor-pointer rounded-[10px] border-0 bg-brand font-[inherit] font-semibold whitespace-nowrap text-on-brand transition-[background] duration-200 disabled:opacity-60"
+                    className="min-h-[44px] flex-1 cursor-pointer rounded-control border-0 bg-brand font-[inherit] font-semibold whitespace-nowrap text-on-brand transition-[background] duration-(--motion-feedback) disabled:opacity-60"
                   >
                     {[ar ? ARROW_AR : ARROW_EN, t(`status.${next}`)].join(" ")}
                   </button>
                 ) : (
-                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-[10px] bg-border px-[8px] text-center font-semibold text-text-muted">
+                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-control bg-border px-[8px] text-center font-semibold text-text-muted">
                     {order.status === "ready" ? t("viaPos") : t(`status.${order.status}`)}
                   </span>
                 )}

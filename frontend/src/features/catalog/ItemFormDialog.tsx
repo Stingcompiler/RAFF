@@ -114,7 +114,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
         </div>
         <div className="grid max-h-[60dvh] grid-cols-2 gap-[12px] overflow-auto p-[2px]">
           {!editing && (
-            <Field label={t("fCode")}>
+            <Field label={t("fCode")} mark="required">
               {({ id }) => <TextInput id={id} name="code" dir="ltr" required maxLength={40} />}
             </Field>
           )}
@@ -126,12 +126,12 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
               </Select>
             )}
           </Field>
-          <Field label={t("fNameAr")}>
+          <Field label={t("fNameAr")} mark="required">
             {({ id }) => (
               <TextInput id={id} name="name_ar" dir="rtl" required defaultValue={v("name_ar")} />
             )}
           </Field>
-          <Field label={t("fNameEn")}>
+          <Field label={t("fNameEn")} mark="required">
             {({ id }) => (
               <TextInput id={id} name="name_en" dir="ltr" required defaultValue={v("name_en")} />
             )}
@@ -165,10 +165,10 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           </Field>
           {!editing && (
             <>
-              <Field label={t("fBaseAr")}>
+              <Field label={t("fBaseAr")} mark="required">
                 {({ id }) => <TextInput id={id} name="base_ar" dir="rtl" required />}
               </Field>
-              <Field label={t("fBaseEn")}>
+              <Field label={t("fBaseEn")} mark="required">
                 {({ id }) => <TextInput id={id} name="base_en" dir="ltr" required />}
               </Field>
               <Field label={t("fSaleAr")}>

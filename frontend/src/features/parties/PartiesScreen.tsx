@@ -209,7 +209,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
         <div className="text-text-muted">
           {kind === "customer" ? t("payBodyCustomer") : t("payBodySupplier")}
         </div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("party")}
           <Select value={partyId} onChange={(e) => setPartyId(e.target.value)}>
             {parties.map((p) => (
@@ -220,14 +220,14 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
           </Select>
         </label>
         <div className="grid grid-cols-2 gap-[12px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("method")}
             <Select value={method} onChange={(e) => setMethod(e.target.value as "cash" | "bank")}>
               <option value="cash">{t("cash")}</option>
               <option value="bank">{t("bankMethod")}</option>
             </Select>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("amount")}
             <TextInput
               dir="ltr"
@@ -238,13 +238,13 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
           </label>
         </div>
         {method === "bank" && (
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("reference")}
             <TextInput dir="ltr" value={reference} onChange={(e) => setReference(e.target.value)} />
           </label>
         )}
         {party && value && (
-          <div className="flex justify-between gap-[12px] rounded-[8px] bg-warning-bg p-[12px] font-medium text-warning-text">
+          <div className="flex justify-between gap-[12px] rounded-control bg-warning-bg p-[12px] font-medium text-warning-text">
             <span>{t("newBalance")}</span>
             <span dir="ltr" className="tabular-nums">
               {money(subtract(party.balance, value), ar ? "ar" : "en")}
@@ -254,7 +254,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+            className="rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
           >
             {error}
           </div>

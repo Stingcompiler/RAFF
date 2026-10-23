@@ -108,7 +108,7 @@ export function QuarantinePanel({ rows, canDecide, onChanged }: Props) {
                       key={d}
                       type="button"
                       onClick={() => setPending({ row, decision: d, key: crypto.randomUUID() })}
-                      className="type-inherit cursor-pointer rounded-[6px] border border-border-strong bg-transparent px-[8px] py-[2px] text-[12px] text-text hover:bg-surface-subtle"
+                      className="type-inherit cursor-pointer rounded-control border border-border-strong bg-transparent px-[8px] py-[2px] text-[12px] text-text hover:bg-surface-subtle"
                     >
                       {t(`decision.${d}`)}
                     </button>

@@ -7,7 +7,7 @@ import { type FormEvent, useState } from "react";
 import { apiSend } from "@/lib/api/browser";
 
 const FIELD =
-  "h-[52px] rounded-[10px] border border-border-strong bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+  "h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
 
 /** Order number + phone → the order page (the number alone never opens an order). */
 export function TrackScreen() {
@@ -63,7 +63,7 @@ export function TrackScreen() {
         <button
           type="submit"
           disabled={busy || !number || !phone}
-          className="min-h-[52px] cursor-pointer rounded-[12px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+          className="min-h-[52px] cursor-pointer rounded-card border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
         >
           {t("trackBtn")}
         </button>
@@ -71,7 +71,7 @@ export function TrackScreen() {
       {error && (
         <div
           role="alert"
-          className="rounded-[10px] bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
+          className="rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
         >
           {t("trackErr")}
         </div>

@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
 import { Badge } from "@/components/ui/Badge";
+import { UnsavedBar } from "@/components/ui/UnsavedBar";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/Dialog";
 import { Panel } from "@/components/ui/Panel";
@@ -39,8 +40,8 @@ const ERRORS = [
 ] as const;
 
 const field =
-  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)] disabled:opacity-100";
-const label = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)] disabled:opacity-100";
+const label = "grid gap-[4px] type-label text-text-secondary";
 
 type Props = { initial: Receipt | null; suppliers: Supplier[] };
 
@@ -159,6 +160,21 @@ export function ReceiptEditor({ initial, suppliers: initialSuppliers }: Props) {
     { header: t("colStatus"), width: "150px" },
   ];
   const held = lines.filter((l) => !l.expiry_date).length;
+  // Lines save as they change; only the header can be left unsaved.
+  const dirty =
+    !posted &&
+    (receipt
+      ? supplierId !== receipt.supplier.id ||
+        invoiceNo !== receipt.supplier_invoice_no ||
+        date !== receipt.invoice_date ||
+        terms !== receipt.payment_terms_days
+      : invoiceNo !== "" || supplierId !== "");
+  const discard = () => {
+    setSupplierId(receipt?.supplier.id ?? "");
+    setInvoiceNo(receipt?.supplier_invoice_no ?? "");
+    setDate(receipt?.invoice_date ?? new Date().toISOString().slice(0, 10));
+    setTerms(receipt?.payment_terms_days ?? 30);
+  };
 
   return (
     <>
@@ -188,6 +204,13 @@ export function ReceiptEditor({ initial, suppliers: initialSuppliers }: Props) {
           )
         }
       />
+      {dirty && (
+        <UnsavedBar
+          busy={busy}
+          onDiscard={discard}
+          onSave={() => void persist(lines).then((r) => r && toast.push("success", t("saved")))}
+        />
+      )}
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-4 min-w-0 max-[1180px]:col-span-12">
           <Panel title={t("header")}>
@@ -261,7 +284,7 @@ export function ReceiptEditor({ initial, suppliers: initialSuppliers }: Props) {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-progress"
+                  className="h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-progress"
                 >
                   {t("saveHeader")}
                 </button>

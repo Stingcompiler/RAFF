@@ -10,11 +10,11 @@ import type { DeviceInfo, Me } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 
 const field =
-  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none disabled:opacity-100 focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none disabled:opacity-100 focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
 const select = cn(field, "box-content appearance-none disabled:text-text-muted");
 const primary =
-  "h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
-const label = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+  "h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
+const label = "grid gap-[4px] type-label text-text-secondary";
 
 type Props = { device: DeviceInfo | null; initialMe: Me | null; next: string };
 

@@ -49,7 +49,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
   const navHint = [NAV_KEYS, t("nav")].join(" ");
   const addHint = [ENTER, t("add")].join(" ");
   return (
-    <div className="flex flex-1 flex-col overflow-hidden rounded-[12px] border border-border bg-surface">
+    <div className="flex flex-1 flex-col overflow-hidden rounded-card border border-border bg-surface">
       <div
         className={cn(
           "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-[12px] font-medium text-text-muted",
@@ -88,7 +88,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               onMouseEnter={() => onSelect(index)}
               onClick={() => sellable(row) && onAdd(row)}
               className={cn(
-                "grid h-[44px] items-center gap-[12px] border-b border-border px-[16px] transition-[background] duration-[180ms]",
+                "grid h-[44px] items-center gap-[12px] border-b border-border px-[16px] transition-[background] duration-(--motion-feedback)",
                 COLS,
                 on && "bg-brand-subtle text-text",
                 sellable(row) ? "cursor-pointer" : "cursor-not-allowed",

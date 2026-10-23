@@ -45,7 +45,7 @@ export function PhoneNav({ activePath, className }: { activePath?: string; class
             aria-current={active ? "page" : undefined}
             className={cn(
               "grid min-h-[44px] content-center place-items-center gap-[4px] text-[12px] font-medium no-underline",
-              "transition-[color] duration-200",
+              "transition-[color] duration-(--motion-feedback)",
               active ? "text-brand" : "text-text-muted",
             )}
           >

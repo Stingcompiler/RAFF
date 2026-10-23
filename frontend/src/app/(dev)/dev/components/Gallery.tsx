@@ -88,7 +88,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   };
 
   const inputBox =
-    "flex h-[44px] items-center rounded-[8px] bg-canvas px-[12px] text-[14px] font-normal text-text";
+    "flex h-[44px] items-center rounded-control bg-canvas px-[12px] text-[14px] font-normal text-text";
   const rows: [string, string, Tone, string][] = [
     [t("r1"), "210", "success", t("rGood")],
     [t("r2"), "18", "warn", t("rLow")],
@@ -104,7 +104,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   return (
     <section
       data-theme={theme}
-      className="grid min-w-0 content-start gap-[24px] rounded-[14px] border border-border bg-canvas p-[24px] text-text"
+      className="grid min-w-0 content-start gap-[24px] rounded-card border border-border bg-canvas p-[24px] text-text"
     >
       <div className="flex items-baseline justify-between">
         <h2 className="m-0 text-[16px] font-medium">
@@ -141,7 +141,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         <div className="flex items-center gap-[8px]">
           <span
             aria-label={t("search")}
-            className="grid size-[44px] place-items-center rounded-[10px] border border-border bg-surface"
+            className="grid size-[44px] place-items-center rounded-control border border-border bg-surface"
           >
             <SearchIcon />
           </span>
@@ -155,12 +155,12 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.inputs}</div>
         <div className="grid grid-cols-2 gap-[12px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("name")}
             <span className={cn(inputBox, "border border-border")}>{t("nameV")}</span>
             <span className="font-normal text-text-muted">{t("helper")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("qtyFocus")}
             <span
               className={cn(
@@ -172,12 +172,12 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             </span>
             <span />
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("qtyError")}
             <span className={cn(inputBox, "border-2 border-danger-solid")}>{CAPTION.qty120}</span>
             <span className="text-danger-text">{t("qtyErrorMsg")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("disabled")}
             <span
               className={cn(inputBox, "border border-border bg-surface-subtle text-text-muted")}
@@ -266,7 +266,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             />
           }
         />
-        <div className="overflow-hidden rounded-[10px] border border-border bg-surface">
+        <div className="overflow-hidden rounded-control border border-border bg-surface">
           <TableHead columns={head} className="border-b-0 px-[12px]" />
           {rows.map(([name, qty, tone, label], i) => {
             const on = selected.includes(i);
@@ -283,7 +283,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
                 <span
                   className={cn(
                     "grid size-[18px] place-items-center rounded-[5px] border-2 text-[12px] font-bold text-on-brand",
-                    "transition-[background,border-color] duration-200",
+                    "transition-[background,border-color] duration-(--motion-feedback)",
                     on ? "border-brand bg-brand" : "border-border bg-transparent",
                   )}
                 >
@@ -306,15 +306,15 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
 
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.dialog}</div>
-        <div className="grid place-items-center rounded-[10px] bg-scrim/45 p-[20px]">
+        <div className="grid place-items-center rounded-control bg-veil p-[20px]">
           <div
             role="dialog"
             aria-label={t("dTitle")}
-            className="grid w-full max-w-[380px] gap-[12px] rounded-[12px] border border-border bg-surface p-[20px] shadow-dialog"
+            className="grid w-full max-w-[380px] gap-[12px] rounded-card border border-border bg-surface p-[20px] shadow-dialog"
           >
             <div className="text-[16px] font-medium">{t("dTitle")}</div>
             <div className="text-text-muted">{t("dBody")}</div>
-            <div className="flex justify-between rounded-[8px] bg-warning-bg px-[12px] py-[10px] font-medium text-warning-text">
+            <div className="flex justify-between rounded-control bg-warning-bg px-[12px] py-[10px] font-medium text-warning-text">
               <span>{t("impact")}</span>
               <span dir="ltr">{CAPTION.amount}</span>
             </div>
@@ -358,7 +358,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
 function StorefrontSection() {
   const t = useTranslations("dev.store");
   const card =
-    "grid content-start gap-[12px] rounded-[12px] border border-border bg-surface p-[16px]";
+    "grid content-start gap-[12px] rounded-card border border-border bg-surface p-[16px]";
   return (
     <div data-theme="light" className="grid gap-[16px] px-[24px] pt-[8px] pb-[24px]">
       <h2 className="m-0 text-[16px] font-medium text-text">{t("heading")}</h2>

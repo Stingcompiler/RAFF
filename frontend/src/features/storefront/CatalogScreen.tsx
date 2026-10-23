@@ -146,13 +146,13 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                       void patch(row, { published: !row.published });
                     }}
                     className={cn(
-                      "relative h-[24px] w-[42px] cursor-pointer rounded-full border-0 p-0 transition-[background] duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+                      "relative h-[24px] w-[42px] cursor-pointer rounded-full border-0 p-0 transition-[background] duration-(--motion-feedback) disabled:cursor-not-allowed disabled:opacity-50",
                       row.published ? "bg-brand" : "bg-border-strong",
                     )}
                   >
                     <span
                       className={cn(
-                        "absolute top-[3px] size-[18px] rounded-full bg-surface transition-[inset-inline-start] duration-200",
+                        "absolute top-[3px] size-[18px] rounded-full bg-surface transition-[inset-inline-start] duration-(--motion-feedback)",
                         row.published ? "start-[21px]" : "start-[3px]",
                       )}
                     />
@@ -166,7 +166,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
         <Panel title={t("preview")}>
           {chosen ? (
             <div className="grid gap-[12px] p-[16px]">
-              <div className="overflow-hidden rounded-[12px] border border-border">
+              <div className="overflow-hidden rounded-card border border-border">
                 {chosen.image ? (
                   // eslint-disable-next-line @next/next/no-img-element -- uploaded listing image
                   <img src={chosen.image} alt="" className="block h-[120px] w-full object-cover" />
@@ -190,7 +190,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 </div>
               </div>
               <div className="text-[13px] text-text-muted">{t("noStock")}</div>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("image")}
                 <input
                   type="file"
@@ -199,7 +199,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   className="text-[13px]"
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("descAr")}
                 <Textarea
                   rows={3}
@@ -207,7 +207,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_ar: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("descEn")}
                 <Textarea
                   dir="ltr"
@@ -216,7 +216,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_en: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("slug")}
                 <TextInput
                   dir="ltr"
