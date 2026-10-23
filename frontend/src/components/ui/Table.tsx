@@ -16,8 +16,23 @@ export type Column = {
   numeric?: boolean;
 };
 
+/** Narrowest a flexible track may get before the table scrolls instead of squeezing it. */
+const FLEX_MIN = 140;
+const GAP = 12;
+const GUTTER = 32;
+
+const trackMin = (width?: string) => {
+  const px = /^(\d+(?:\.\d+)?)px$/.exec(width ?? "");
+  return px ? Number(px[1]) : FLEX_MIN;
+};
+
 const gridStyle = (columns: readonly Column[]) => ({
   gridTemplateColumns: columns.map((c) => c.width ?? "1fr").join(" "),
+  // On a phone the rows keep this width and the table scrolls inside its card (see globals.css).
+  minWidth: columns.reduce(
+    (sum, c) => sum + trackMin(c.width),
+    GUTTER + GAP * (columns.length - 1),
+  ),
 });
 
 export function TableHead({

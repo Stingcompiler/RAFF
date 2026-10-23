@@ -41,6 +41,11 @@
     color: var(--color-ink);
   }
 
+  /* Grid rows keep a minimum width (components/ui/Table.tsx); narrower screens scroll the table. */
+  [role="table"] {
+    overflow-x: auto;
+  }
+
   :focus-visible {
     outline: 3px solid var(--color-focus);
     outline-offset: 2px;
