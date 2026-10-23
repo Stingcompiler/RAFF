@@ -81,3 +81,51 @@ def test_double_click_records_one_sale(world: World) -> None:
     assert results[0] == results[1]
     with org_context(world.org.id):
         assert Sale.objects.count() == 1
+
+
+def test_a_sale_locks_its_balances_and_nothing_they_join(world: World) -> None:
+    """Regression: `select_for_update()` next to `select_related("batch")` and a filter on the
+    location also locked those rows, so a goods receipt's COMMIT-time foreign key check
+    (`FOR KEY SHARE`) deadlocked with a sale on the same shelf (seen in e2e)."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from django.db import OperationalError, connection, transaction
+
+    from apps.inventory.models import Batch, Location
+    from apps.sales.services.posting import lock_candidates
+
+    with org_context(world.org.id):
+        item = stocked(world, boxes=2)
+        batch_ids = list(Batch.objects.filter(item=item).values_list("pk", flat=True))
+        location_ids = list(
+            StockBalance.objects.filter(item=item).values_list("location_id", flat=True)
+        )
+
+    def try_lock(table: str, ids: list[uuid.UUID], mode: str) -> bool:
+        """Another connection asks for a lock on these rows and refuses to wait."""
+        try:
+            with transaction.atomic(), connection.cursor() as cursor:
+                cursor.execute(
+                    f"SELECT 1 FROM {table} WHERE id = ANY(%s) FOR {mode} NOWAIT",  # noqa: S608
+                    [ids],
+                )
+            return True
+        except OperationalError:
+            return False
+        finally:
+            connection.close()
+
+    balance_table = StockBalance._meta.db_table
+    with org_context(world.org.id), transaction.atomic():
+        balances = lock_candidates(world.khartoum.pk, {item.pk})
+        balance_ids = [b.pk for b in balances[item.pk]]
+        with ThreadPoolExecutor(max_workers=1) as pool:
+
+            def probe(table: str, ids: list[uuid.UUID], mode: str) -> bool:
+                return pool.submit(try_lock, table, ids, mode).result()
+
+            # The sale holds its balance rows ...
+            assert not probe(balance_table, balance_ids, "UPDATE")
+            # ... but not the shelf or the batch, which other postings reference.
+            assert probe(Location._meta.db_table, location_ids, "KEY SHARE")
+            assert probe(Batch._meta.db_table, batch_ids, "KEY SHARE")
