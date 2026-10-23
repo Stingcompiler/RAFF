@@ -153,7 +153,7 @@ def decide(
     if decision not in DECISIONS:
         raise QuarantineError("invalid_decision")
     entry = (
-        QuarantineEntry.objects.select_for_update()
+        QuarantineEntry.objects.select_for_update(of=("self",))
         .select_related("branch", "batch")
         .get(pk=entry_id)
     )

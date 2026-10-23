@@ -138,7 +138,7 @@ def _send(transfer: Transfer, user: User) -> dict[str, Any]:
 @transaction.atomic
 def send(transfer_id: uuid.UUID, *, idempotency_key: str | None, user: User) -> dict[str, Any]:
     transfer = (
-        Transfer.objects.select_for_update()
+        Transfer.objects.select_for_update(of=("self",))
         .select_related("from_branch", "to_branch")
         .get(pk=transfer_id)
     )
@@ -219,7 +219,7 @@ def receive(
     transfer_id: uuid.UUID, received: dict[str, int], *, idempotency_key: str | None, user: User
 ) -> dict[str, Any]:
     transfer = (
-        Transfer.objects.select_for_update()
+        Transfer.objects.select_for_update(of=("self",))
         .select_related("from_branch", "to_branch")
         .get(pk=transfer_id)
     )
