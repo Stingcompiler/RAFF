@@ -50,12 +50,12 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
       onClose={onNewSale}
       labelledBy="approved-title"
       initialFocus={newSale}
-      className="grid max-h-[80vh] w-[680px] grid-cols-[302px_1fr] grid-rows-[minmax(0,1fr)_auto] gap-x-[24px] gap-y-[16px] overflow-hidden"
+      className="grid max-h-[80vh] w-[680px] grid-cols-[302px_1fr] grid-rows-[minmax(0,1fr)_auto] gap-x-[24px] gap-y-[16px] overflow-hidden max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:grid-cols-1 max-[760px]:grid-rows-[auto_minmax(0,1fr)_auto] max-[760px]:overflow-hidden"
     >
-      <div className="row-span-2 min-h-0 overflow-y-auto">
+      <div className="row-span-2 min-h-0 overflow-y-auto max-[760px]:order-2 max-[760px]:row-span-1">
         <ReceiptPreview data={receipt} className="box-border animate-[raff-fade_.4s_ease_both]" />
       </div>
-      <div className="grid content-start gap-[12px]">
+      <div className="grid content-start gap-[12px] max-[760px]:order-1">
         <div
           id="approved-title"
           role="status"
@@ -81,7 +81,7 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
           </div>
         )}
       </div>
-      <div className="col-start-2 grid gap-[8px] self-end">
+      <div className="col-start-2 grid gap-[8px] self-end max-[760px]:order-3 max-[760px]:col-start-1">
         <button
           type="button"
           onClick={() => void print(false)}

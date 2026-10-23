@@ -1,15 +1,24 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 
 import { ToastProvider } from "@/components/ui/Toast";
+import { cn } from "@/lib/cn";
+import { usePhone } from "@/lib/phone";
 
+import { isPhoneScreen, PhoneNav } from "./PhoneNav";
+import { PhoneStatus } from "./PhoneStatus";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import type { ShellContext } from "./types";
 
-/** Workspace frame: sidebar + top bar + independently scrolling content. */
+/**
+ * Workspace frame: sidebar + top bar + independently scrolling content.
+ * At ≤760px every screen gets the bottom navigation; the four screens drawn in
+ * Raff Mobile also swap the top bar for the status strip.
+ */
 export function AppShell({
   context,
   children,
@@ -21,6 +30,9 @@ export function AppShell({
 }) {
   const [drawer, setDrawer] = useState(false);
   const t = useTranslations("common");
+  const phone = usePhone();
+  const pathname = usePathname();
+  const phoneScreen = phone && isPhoneScreen(activePath ?? pathname);
   return (
     <ToastProvider dismissLabel={t("dismiss")}>
       <div className="relative flex h-dvh overflow-hidden bg-bg text-ink">
@@ -38,8 +50,24 @@ export function AppShell({
           />
         )}
         <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar context={context} onMenu={() => setDrawer(true)} />
-          <main className="flex flex-1 flex-col gap-[16px] overflow-auto p-[24px]">{children}</main>
+          {phoneScreen ? (
+            <PhoneStatus
+              status={context.connection.status}
+              text={context.connection.text}
+              onMenu={() => setDrawer(true)}
+            />
+          ) : (
+            <TopBar context={context} onMenu={() => setDrawer(true)} />
+          )}
+          <main
+            className={cn(
+              "flex min-h-0 flex-1 flex-col overflow-auto",
+              phoneScreen ? "gap-0" : "gap-[16px] p-[24px]",
+            )}
+          >
+            {children}
+          </main>
+          {phone && <PhoneNav activePath={activePath} />}
         </div>
       </div>
     </ToastProvider>

@@ -22,12 +22,24 @@ import {
 import { apiSend } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
 import { amount, timeOfDay } from "@/lib/format";
+import { usePhone } from "@/lib/phone";
 
 import { scopeLabel, type Take, type TakeDetail } from "./labels";
+import { PhoneCount } from "./PhoneCount";
 
 type Props = { takes: Take[]; categories: Schemas["Category"][]; canCount: boolean };
 
-export function StocktakeList({ takes, categories, canCount }: Props) {
+/** Counts on a computer; the camera count on a phone (Raff Mobile). */
+export function StocktakeList(props: Props) {
+  const phone = usePhone();
+  return phone ? (
+    <PhoneCount takes={props.takes} canCount={props.canCount} />
+  ) : (
+    <StocktakeDesktop {...props} />
+  );
+}
+
+function StocktakeDesktop({ takes, categories, canCount }: Props) {
   const t = useTranslations("stocktake");
   const tCommon = useTranslations("common");
   const ar = useLocale() === "ar";

@@ -22,6 +22,9 @@ import { apiGet } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 import { money, timeOfDay } from "@/lib/format";
+import { usePhone } from "@/lib/phone";
+
+import { PhoneToday } from "./PhoneToday";
 
 type Overview = Schemas["Overview"];
 type ActionKey = keyof Overview["needs_action"];
@@ -40,10 +43,16 @@ const DAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
 const DAYS_EN = ["S", "M", "T", "W", "T", "F", "S"];
 const BAR_MAX_PX = 140;
 
-type Props = { initial: Overview; canAll: boolean };
+type Props = { initial: Overview; canAll: boolean; branchName: string };
+
+/** Overview on a computer; the owner summary on a phone (Raff Mobile). */
+export function DashboardScreen(props: Props) {
+  const phone = usePhone();
+  return phone ? <PhoneToday {...props} /> : <DashboardDesktop {...props} />;
+}
 
 /** Overview (Raff Screens › نظرة عامة). Every figure comes from the server. */
-export function DashboardScreen({ initial, canAll }: Props) {
+function DashboardDesktop({ initial, canAll }: Props) {
   const t = useTranslations("dashboard");
   const ar = useLocale() === "ar";
   const cur = (v: string) => money(v, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");

@@ -20,15 +20,23 @@ import {
 import { apiGet } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { amount, timeOfDay } from "@/lib/format";
+import { usePhone } from "@/lib/phone";
 
 import { type OrderRow, type OrderStatus, STATUS_TONE, STATUSES } from "./labels";
+import { PhoneOrders } from "./PhoneOrders";
 
 type Period = "today" | "week" | "all";
 const PERIODS: Period[] = ["today", "week", "all"];
 const DASH = "—";
 
-/** Storefront orders (STOREFRONT-DESIGN-CHANGES §5.1). */
+/** Storefront orders: a table on a computer, order cards on a phone (Raff Mobile). */
 export function OrdersScreen({ initial }: { initial: OrderRow[] }) {
+  const phone = usePhone();
+  return phone ? <PhoneOrders initial={initial} /> : <OrdersDesktop initial={initial} />;
+}
+
+/** Storefront orders (STOREFRONT-DESIGN-CHANGES §5.1). */
+function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
   const t = useTranslations("orders");
   const ar = useLocale() === "ar";
   const router = useRouter();

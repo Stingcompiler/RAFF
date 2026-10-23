@@ -212,3 +212,43 @@ test.describe("point of sale", () => {
     expect(done.sale_number).toMatch(/^INV-/);
   });
 });
+
+test.describe("point of sale on a phone", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test("tap an item, pay from the cart sheet, approve once and see the whole receipt", async ({
+    page,
+  }) => {
+    await atCounter(page);
+    await expect(page.getByRole("heading", { level: 1, name: "بيع" })).toBeVisible();
+    await expect(page.getByTestId("phone-cart-count")).toHaveText("0");
+    await expect(page.getByRole("button", { name: "الدفع", exact: true })).toBeDisabled();
+
+    await page.getByRole("searchbox", { name: "اسم أو باركود" }).fill("Paracetamol");
+    await page.getByRole("button", { name: "إضافة باراسيتامول" }).click();
+    await page.getByRole("button", { name: "إضافة باراسيتامول" }).click();
+    await expect(page.getByTestId("phone-cart-count")).toHaveText("2");
+    await expect(page.getByTestId("phone-cart-total")).toHaveText("1,600 ج.س"); // server quote
+
+    await page.getByRole("button", { name: "عرض السلة" }).click();
+    await expect(page.getByText("× 2")).toBeVisible();
+
+    const before = await salesCount(page);
+    await page.getByRole("button", { name: "الدفع", exact: true }).click();
+    const pay = page.getByRole("dialog", { name: "الدفع" });
+    await expect(pay.getByTestId("pay-total")).toHaveText("1,600 ج.س");
+    await pay.getByRole("button", { name: "اعتماد البيع" }).dblclick();
+    const approved = page.getByRole("dialog", { name: "اعتُمد البيع" });
+    await expect(approved).toBeVisible();
+    await expect(approved.getByTestId("approved-total")).toHaveText("1,600 ج.س");
+    expect(await salesCount(page)).toBe(before + 1); // one posting for the double tap
+
+    // The receipt fits the screen: nothing is cut at either edge.
+    const box = await approved.getByText("شكراً لزيارتكم").boundingBox();
+    expect(box?.x).toBeGreaterThanOrEqual(0);
+    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(390);
+
+    await approved.getByRole("button", { name: /بيع جديد/ }).click();
+    await expect(page.getByTestId("phone-cart-count")).toHaveText("0");
+  });
+});

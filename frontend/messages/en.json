@@ -1368,5 +1368,91 @@
     "chip": "Storefront: {state} · {count} new orders",
     "on": "on",
     "off": "off"
+  },
+  "phone": {
+    "nav": {
+      "label": "Bottom navigation",
+      "search": "Search",
+      "count": "Count",
+      "today": "Today",
+      "sell": "Sell"
+    },
+    "search": {
+      "title": "Search",
+      "ph": "Name or barcode",
+      "stock": "Stock",
+      "batch": "Batch",
+      "exp": "Expiry",
+      "form": "Form",
+      "none": "No results. Try the generic name."
+    },
+    "count": {
+      "title": "Count",
+      "scope": "{scope} · {counted} of {total}",
+      "aim": "Point the camera at the barcode",
+      "system": "System",
+      "confirm": "Confirm count",
+      "counted": "{count} items counted so far",
+      "match": "Matches system",
+      "short": "Short by {n}",
+      "over": "Over by {n}",
+      "camTitle": "Camera access denied",
+      "camBody": "Enable permission in browser settings, or type the barcode.",
+      "camManual": "Enter manually",
+      "manualLabel": "Barcode or item name",
+      "find": "Find",
+      "notFound": "No item with this barcode in this count.",
+      "noTake": "No open count.",
+      "startTake": "Start a whole-branch count",
+      "starting": "Starting…",
+      "pick": "Scan an item's barcode to count it.",
+      "saved": "Count saved",
+      "decrease": "Decrease",
+      "increase": "Increase",
+      "allDone": "Every item is counted. Approve from a computer.",
+      "approved": "This count is approved and locked.",
+      "noPermission": "You can't count stock.",
+      "failed": "Couldn't save the count. Try again.",
+      "reasonNeeded": "A variance needs a reason when approving from a computer.",
+      "countLabel": "Counted quantity"
+    },
+    "today": {
+      "title": "Today",
+      "scopeLabel": "Summary scope",
+      "all": "All branches",
+      "sales": "Sales today",
+      "updated": "{minutes, plural, =0 {Updated just now} one {Updated 1 min ago} other {Updated # min ago}}",
+      "week": "Sales over the last 7 days",
+      "storeOrders": "New store orders"
+    },
+    "sell": {
+      "title": "Sell",
+      "cart": "Cart",
+      "pay": "Pay",
+      "add": "Add {name}",
+      "search": "Name or barcode",
+      "empty": "No items available to sell.",
+      "toggle": "Show cart"
+    },
+    "orders": {
+      "title": "Orders",
+      "newCount": "{count} new",
+      "whatsapp": "WhatsApp",
+      "waFor": "WhatsApp {name}",
+      "noOrders": "No orders yet.",
+      "forbidden": "You can't manage orders.",
+      "status": {
+        "new": "New",
+        "needs_contact": "Needs contact",
+        "confirmed": "Confirmed",
+        "preparing": "Preparing",
+        "ready": "Ready",
+        "out_for_delivery": "Out for delivery",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "viaPos": "Completes via POS invoice",
+      "failed": "Couldn't change the order status."
+    }
   }
 }
