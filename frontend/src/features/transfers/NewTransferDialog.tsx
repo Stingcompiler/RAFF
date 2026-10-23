@@ -104,7 +104,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
             ))}
           </Select>
         </label>
-        <div className="grid grid-cols-[minmax(0,1fr)_140px_90px_auto] items-end gap-[8px]">
+        <div className="grid grid-cols-[minmax(0,1fr)_140px_90px_auto] items-end gap-[8px] max-[600px]:grid-cols-2">
           <label className="grid gap-[4px] type-label text-text-secondary">
             {t("searchItem")}
             <TextInput

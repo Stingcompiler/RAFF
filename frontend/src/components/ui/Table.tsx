@@ -53,7 +53,11 @@ export function TableHead({
       )}
     >
       {columns.map((c, i) => (
-        <span key={i} role="columnheader" className={c.numeric ? "text-end" : undefined}>
+        <span
+          key={i}
+          role="columnheader"
+          className={cn("min-w-0 truncate", c.numeric && "text-end")}
+        >
           {c.header}
         </span>
       ))}

@@ -152,7 +152,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
           <span id="pay-title" className="text-[16px] font-medium">
             {t("payTitle")}
           </span>
-          <span className="text-[12px] text-text-muted">{ESC}</span>
+          <span className="text-[12px] text-text-muted max-[760px]:hidden">{ESC}</span>
         </div>
         <div className="rounded-control bg-surface-subtle p-[12px] text-center">
           <div className="text-[13px] text-text-muted">{t("total")}</div>

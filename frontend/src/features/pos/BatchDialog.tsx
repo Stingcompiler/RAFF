@@ -35,7 +35,8 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
     });
   }, [line.item.id, line.batch]);
 
-  const grid = "grid grid-cols-[1fr_110px_70px_130px] items-center gap-[12px] px-[12px]";
+  const grid =
+    "grid grid-cols-[1fr_110px_70px_130px] items-center gap-[12px] px-[12px] max-[560px]:min-w-[430px]";
   const row = rows?.find((b) => b.batch_id === chosen);
   return (
     <Dialog open onClose={onClose} labelledBy="batch-title" className="w-[560px] gap-[12px]">
@@ -43,7 +44,7 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
         {t("batchTitle", { item: `${pick(ar, line.item)} ${line.item.strength}`.trim() })}
       </div>
       <div
-        className="overflow-hidden rounded-control border border-border"
+        className="overflow-x-auto rounded-control border border-border"
         role="radiogroup"
         aria-labelledby="batch-title"
       >

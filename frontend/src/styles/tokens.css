@@ -222,6 +222,16 @@
   line-height: 1.1;
 }
 
+@utility hit-44 {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((100% - 44px) / 2));
+    inset-inline: min(0px, calc((100% - 44px) / 2));
+  }
+}
+
 @utility bg-veil {
   background-color: color-mix(in oklab, var(--c-scrim) var(--scrim-alpha), transparent);
 }

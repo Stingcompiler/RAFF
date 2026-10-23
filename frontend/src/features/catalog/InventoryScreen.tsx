@@ -15,7 +15,6 @@ import {
   TableEmpty,
   TableHead,
   TableRow,
-  TextCell,
   type Column,
 } from "@/components/ui/Table";
 import { useToast } from "@/components/ui/Toast";
@@ -232,14 +231,14 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                     setDrawer(item.id);
                   }}
                 >
-                  <TextCell>
-                    {itemLabel(ar, item)}
+                  <span role="cell" className="flex min-w-0 items-center gap-[6px]">
+                    <span className="truncate">{itemLabel(ar, item)}</span>
                     {item.classification === "rx" && (
-                      <span className="ms-[6px] rounded-[4px] border border-info-solid px-[4px] text-[11px] font-semibold text-info-text">
+                      <span className="flex-none rounded-[4px] border border-info-solid px-[4px] text-[11px] font-semibold text-info-text">
                         {t("rx")}
                       </span>
                     )}
-                  </TextCell>
+                  </span>
                   <CodeCell>{strengthForm(item)}</CodeCell>
                   <NumberCell>
                     {inSaleUnit(item.stock.sellable_base, item.sale_unit?.factor)}

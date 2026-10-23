@@ -109,7 +109,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={`/checkout?rx=${product.slug}`}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
               BUTTON.outline,
             )}
           >
@@ -119,7 +119,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={href}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
               BUTTON.muted,
             )}
           >
@@ -133,7 +133,7 @@ export function ProductTile({ product }: { product: Product }) {
               toast.push("success", t("added"));
             }}
             className={cn(
-              "min-h-[44px] cursor-pointer rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap transition-[transform] duration-(--motion-feedback) active:scale-[.98]",
+              "min-h-[44px] cursor-pointer rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center transition-[transform] duration-(--motion-feedback) active:scale-[.98]",
               BUTTON.solid,
             )}
           >

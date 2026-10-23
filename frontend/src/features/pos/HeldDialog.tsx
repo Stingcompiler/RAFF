@@ -41,7 +41,7 @@ export function HeldDialog({ onClose, onResume }: Props) {
       {rows?.length === 0 && (
         <div className="p-[24px] text-center text-text-muted">{t("noHeld")}</div>
       )}
-      <div className="overflow-hidden rounded-control border border-border">
+      <div className="overflow-x-auto rounded-control border border-border">
         {rows?.map((h) => {
           const count = Array.isArray(h.cart) ? h.cart.length : 0;
           const by = pick(ar, { name_ar: h.created_by_name_ar, name_en: h.created_by_name_en });
@@ -51,7 +51,7 @@ export function HeldDialog({ onClose, onResume }: Props) {
               key={h.id}
               type="button"
               onClick={() => onResume(h)}
-              className="type-inherit grid min-h-[52px] w-full cursor-pointer grid-cols-[60px_1fr_110px_90px] items-center gap-[12px] border-0 border-b border-border bg-transparent px-[14px] py-[8px] text-start text-text transition-[background] duration-(--motion-feedback) hover:bg-brand-subtle"
+              className="type-inherit grid min-h-[52px] w-full cursor-pointer grid-cols-[60px_1fr_110px_90px] items-center gap-[12px] max-[560px]:min-w-[430px] border-0 border-b border-border bg-transparent px-[14px] py-[8px] text-start text-text transition-[background] duration-(--motion-feedback) hover:bg-brand-subtle"
             >
               <span dir="ltr" className="tabular-nums">
                 {timeOfDay(h.created_at)}

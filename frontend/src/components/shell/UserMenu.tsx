@@ -74,7 +74,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
         aria-expanded={open}
         aria-label={t("userMenu")}
         onClick={() => setOpen((v) => !v)}
-        className="flex cursor-pointer items-center gap-[8px] border-0 bg-transparent p-0 type-inherit font-medium text-text"
+        className="hit-44 flex cursor-pointer items-center gap-[8px] border-0 bg-transparent p-0 type-inherit font-medium text-text"
       >
         <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-[12px]">
           {initial}

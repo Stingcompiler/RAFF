@@ -115,9 +115,18 @@ export function ImportScreen({ ar }: { ar: boolean }) {
         }
       />
       <Panel title={t("pick")}>
-        <form onSubmit={preview} className="grid gap-[12px] p-[16px]">
-          <input type="file" name="file" accept=".csv,text/csv" required className="text-[14px]" />
-          <div dir="ltr" className="text-start text-[12px] text-text-muted">
+        <form onSubmit={preview} className="grid grid-cols-[minmax(0,1fr)] gap-[12px] p-[16px]">
+          <input
+            type="file"
+            name="file"
+            accept=".csv,text/csv"
+            required
+            className="max-w-full text-[14px]"
+          />
+          <div
+            dir="ltr"
+            className="text-start text-[12px] text-text-muted [overflow-wrap:anywhere]"
+          >
             {t("help")}
           </div>
           <div className="flex flex-wrap gap-[8px]">
@@ -126,6 +135,7 @@ export function ImportScreen({ ar }: { ar: boolean }) {
             </Button>
             <Button
               variant="quiet"
+              className="h-auto min-h-[40px] max-w-full py-[6px] whitespace-normal"
               onClick={() => void apiDownload("/catalog/export/", "items.csv")}
             >
               {t("download")}
@@ -140,7 +150,7 @@ export function ImportScreen({ ar }: { ar: boolean }) {
       </Panel>
       {batch && (
         <>
-          <div className="grid grid-cols-4 gap-[16px]">
+          <div className="grid grid-cols-4 gap-[16px] max-[900px]:grid-cols-2 max-[480px]:grid-cols-1">
             {(["create", "update", "duplicate", "error"] as const).map((a) => (
               <StatTile key={a} label={t(a)} value={(summary[a] ?? 0).toLocaleString("en-US")} />
             ))}

@@ -177,6 +177,13 @@ def build() -> str:
             f"@utility type-{role} {{\n  font-size: {size}px;\n  font-weight: {weight};\n"
             f"  line-height: {leading};\n}}"
         )
+    # A control smaller than 44px keeps its look but gets a 44px hit area (CLAUDE.md rule 14).
+    parts.append(
+        "@utility hit-44 {\n  position: relative;\n  &::after {\n    content: \"\";\n"
+        "    position: absolute;\n"
+        "    inset-block: min(0px, calc((100% - 44px) / 2));\n"
+        "    inset-inline: min(0px, calc((100% - 44px) / 2));\n  }\n}"
+    )
     # The dim layer behind dialogs and drawers: one color, an alpha that depends on the theme.
     parts.append(
         "@utility bg-veil {\n"

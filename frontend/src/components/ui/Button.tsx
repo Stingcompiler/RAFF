@@ -53,7 +53,7 @@ export function buttonClasses({
 }: StyleOptions) {
   const v = VARIANTS[variant];
   return cn(
-    "inline-flex items-center justify-center gap-[6px] rounded-control whitespace-nowrap cursor-pointer",
+    "hit-44 inline-flex items-center justify-center gap-[6px] rounded-control whitespace-nowrap cursor-pointer",
     "transition-[background,box-shadow,transform,filter] duration-(--motion-feedback)",
     "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
     "disabled:cursor-not-allowed disabled:border-0 disabled:bg-border disabled:text-text-muted disabled:active:scale-100",
