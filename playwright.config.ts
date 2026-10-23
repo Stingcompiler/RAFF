@@ -27,7 +27,8 @@ const backendEnv = {
 
 export default defineConfig({
   testDir: "tests/e2e",
-  snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}{ext}",
+  // Linux baselines (from CI) are committed; macOS ones are local and gitignored.
+  snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-{platform}{ext}",
   fullyParallel: true,
   // One dev server answers every worker; more than three locally only adds queueing.
   workers: process.env.CI ? undefined : 3,
