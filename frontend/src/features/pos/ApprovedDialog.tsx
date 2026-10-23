@@ -53,7 +53,7 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
       className="grid max-h-[80vh] w-[680px] grid-cols-[302px_1fr] grid-rows-[minmax(0,1fr)_auto] gap-x-[24px] gap-y-[16px] overflow-hidden"
     >
       <div className="row-span-2 min-h-0 overflow-y-auto">
-        <ReceiptPreview data={receipt} className="animate-[raff-fade_.4s_ease_both]" />
+        <ReceiptPreview data={receipt} className="box-border animate-[raff-fade_.4s_ease_both]" />
       </div>
       <div className="grid content-start gap-[12px]">
         <div
