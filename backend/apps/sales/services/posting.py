@@ -46,7 +46,7 @@ def lock_candidates(
     """Lock every sellable, unexpired balance of these items in one ordered statement
     (LOCKING.md step 3), so two sales with the same items never deadlock."""
     rows = list(
-        StockBalance.objects.select_for_update()
+        StockBalance.objects.select_for_update(of=("self",))
         .select_related("batch")
         .filter(
             branch_id=branch_id,

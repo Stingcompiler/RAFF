@@ -123,7 +123,7 @@ def close_shift(
     shift_id: uuid.UUID, counted: Decimal, *, idempotency_key: str | None, user: User
 ) -> dict[str, Any]:
     """Count the cash and close. Lock order: the shift (the document) first."""
-    shift = Shift.objects.select_for_update().select_related("branch").get(pk=shift_id)
+    shift = Shift.objects.select_for_update(of=("self",)).select_related("branch").get(pk=shift_id)
     return run_once(
         "close_shift",
         idempotency_key,

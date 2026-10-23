@@ -228,7 +228,11 @@ def post_receipt(
 
     Lock order (LOCKING.md): the receipt row first, then the idempotency record.
     """
-    receipt = GoodsReceipt.objects.select_for_update().select_related("branch").get(pk=receipt_id)
+    receipt = (
+        GoodsReceipt.objects.select_for_update(of=("self",))
+        .select_related("branch")
+        .get(pk=receipt_id)
+    )
     return run_once(
         "post_receipt", idempotency_key, {"receipt": str(receipt_id)}, lambda: _post(receipt, user)
     )

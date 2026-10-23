@@ -217,7 +217,9 @@ def _approve(take: Stocktake, user: User) -> dict[str, Any]:
 
 @transaction.atomic
 def approve(take_id: uuid.UUID, *, idempotency_key: str | None, user: User) -> dict[str, Any]:
-    take = Stocktake.objects.select_for_update().select_related("branch").get(pk=take_id)
+    take = (
+        Stocktake.objects.select_for_update(of=("self",)).select_related("branch").get(pk=take_id)
+    )
     return run_once(
         "stocktake_approve",
         idempotency_key,

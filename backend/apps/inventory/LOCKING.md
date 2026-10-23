@@ -20,6 +20,11 @@ Taking them in a fixed order is what makes concurrent postings deadlock-free.
 
 Rules:
 
+- A lock covers only the row it names. `select_for_update()` next to `select_related()` (or a
+  filter that joins a table) also locks the joined rows, so always write
+  `select_for_update(of=("self",))`; otherwise the branch, batch or location row is locked
+  and a goods receipt's COMMIT-time foreign key check deadlocks with a sale on the same shelf.
+  `tests/test_lock_scope.py` fails the build on a missing `of=`.
 - Never lock a balance row for item B and then go back for item A < B. Collect every
   touched `(location, batch)` first, then call `lock_balances` once.
 - Never read-modify-write a balance without its lock: `apply_movement` asserts the row was
