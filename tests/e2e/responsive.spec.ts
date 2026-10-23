@@ -23,6 +23,24 @@ const WORKSPACE = [
 ];
 const PUBLIC = ["/store", "/cart", "/checkout", "/orders/track", "/about", "/contact"];
 
+/**
+ * A text field's default width depends on the machine's fonts (Linux CI is wider than a Mac).
+ * Every field gets a generous default so the guard does not depend on where it runs.
+ */
+async function wideFields(page: Page) {
+  await page.addInitScript(() => {
+    const widen = () => {
+      for (const el of document.querySelectorAll<HTMLInputElement>("input:not([size])")) {
+        if (["text", "search", "tel", "email", "number", "password"].includes(el.type))
+          el.size = 40;
+      }
+      for (const el of document.querySelectorAll<HTMLTextAreaElement>("textarea")) el.cols = 60;
+    };
+    new MutationObserver(widen).observe(document, { childList: true, subtree: true });
+    document.addEventListener("DOMContentLoaded", widen);
+  });
+}
+
 /** What goes beyond the screen: the scroll area, or a control the user can no longer reach. */
 async function overflow(page: Page): Promise<string[]> {
   return page.evaluate(() => {
@@ -57,20 +75,28 @@ for (const width of WIDTHS) {
     test.use({ viewport: { width, height: width < 768 ? 800 : 1024 }, hasTouch: width < 768 });
 
     test("workspace screens fit", async ({ page }) => {
+      await wideFields(page);
       await signIn(page, "admin");
+      const bad: Record<string, string[]> = {};
       for (const path of WORKSPACE) {
         await page.goto(path);
         await page.waitForLoadState("networkidle");
-        expect(await overflow(page), `${path} at ${width}px`).toEqual([]);
+        const found = await overflow(page);
+        if (found.length) bad[`${path} at ${width}px`] = found;
       }
+      expect(bad).toEqual({});
     });
 
     test("public storefront screens fit", async ({ page }) => {
+      await wideFields(page);
+      const bad: Record<string, string[]> = {};
       for (const path of PUBLIC) {
         await page.goto(path);
         await page.waitForLoadState("networkidle");
-        expect(await overflow(page), `${path} at ${width}px`).toEqual([]);
+        const found = await overflow(page);
+        if (found.length) bad[`${path} at ${width}px`] = found;
       }
+      expect(bad).toEqual({});
     });
   });
 }
