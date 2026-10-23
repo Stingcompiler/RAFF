@@ -50,7 +50,12 @@
     "back": "رجوع",
     "approve": "اعتماد",
     "approving": "جارٍ الاعتماد…",
-    "sample": "مثال تجريبي"
+    "sample": "مثال تجريبي",
+    "optionalMark": "(اختياري)",
+    "requiredMark": "(إلزامي)",
+    "unsavedChanges": "تغييرات غير محفوظة",
+    "discardChanges": "تجاهل",
+    "saveChanges": "حفظ"
   },
   "dev": {
     "gallery": {

@@ -20,10 +20,7 @@ export function StatTile({ label, value, note, trio, className }: Props) {
       )}
     >
       <span className="text-[13px] text-text-muted">{label}</span>
-      <span
-        dir="ltr"
-        className="text-start text-[24px] font-medium tabular-nums [overflow-wrap:anywhere]"
-      >
+      <span dir="ltr" className="text-start type-metric tabular-nums [overflow-wrap:anywhere]">
         {value}
       </span>
       {trio && (

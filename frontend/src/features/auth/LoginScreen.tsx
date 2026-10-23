@@ -14,7 +14,7 @@ const field =
 const select = cn(field, "box-content appearance-none disabled:text-text-muted");
 const primary =
   "h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
-const label = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+const label = "grid gap-[4px] type-label text-text-secondary";
 
 type Props = { device: DeviceInfo | null; initialMe: Me | null; next: string };
 

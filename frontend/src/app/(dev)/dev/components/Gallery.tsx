@@ -155,12 +155,12 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.inputs}</div>
         <div className="grid grid-cols-2 gap-[12px]">
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("name")}
             <span className={cn(inputBox, "border border-border")}>{t("nameV")}</span>
             <span className="font-normal text-text-muted">{t("helper")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("qtyFocus")}
             <span
               className={cn(
@@ -172,12 +172,12 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             </span>
             <span />
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("qtyError")}
             <span className={cn(inputBox, "border-2 border-danger-solid")}>{CAPTION.qty120}</span>
             <span className="text-danger-text">{t("qtyErrorMsg")}</span>
           </label>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("disabled")}
             <span
               className={cn(inputBox, "border border-border bg-surface-subtle text-text-muted")}

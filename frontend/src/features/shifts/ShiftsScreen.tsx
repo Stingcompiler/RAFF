@@ -230,7 +230,7 @@ export function ShiftsScreen({
               {t("closeTitle", { number: shift.number })}
             </div>
             <div className="text-text-muted">{t("closeBody")}</div>
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("counted")}
               <TextInput
                 dir="ltr"

@@ -60,7 +60,7 @@ export function PhoneSell(props: Props) {
     <div className="relative flex h-dvh flex-col overflow-hidden bg-canvas text-text">
       <PhoneStatus status={props.connection.status} text={props.connection.text} />
       {props.banners}
-      <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] text-[26px] font-medium">{t("title")}</h1>
+      <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] type-page">{t("title")}</h1>
       {(props.catalogueSize > SEARCH_FROM || searching) && (
         <label className="mx-[16px] mb-[8px] flex h-[48px] flex-none items-center gap-[8px] rounded-card border-2 border-brand bg-surface px-[14px]">
           <SearchIcon size={20} className="flex-none text-text-muted" />

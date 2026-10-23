@@ -50,7 +50,12 @@
     "back": "Back",
     "approve": "Approve",
     "approving": "Approving…",
-    "sample": "Sample"
+    "sample": "Sample",
+    "optionalMark": "(optional)",
+    "requiredMark": "(required)",
+    "unsavedChanges": "Unsaved changes",
+    "discardChanges": "Discard",
+    "saveChanges": "Save"
   },
   "dev": {
     "gallery": {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
-import type { Tone } from "@/components/ui/Badge";
+import { TONE_CLASSES, type Tone } from "@/components/ui/Badge";
 import { apiGet } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
@@ -20,12 +20,6 @@ const ACTIONS: { key: ActionKey; tone: Tone; href?: string }[] = [
   { key: "transfers_awaiting", tone: "info" },
   { key: "store_orders", tone: "info", href: "/orders" },
 ];
-const TONE: Record<Tone, string> = {
-  success: "text-success-text bg-success-bg",
-  warn: "text-warning-text bg-warning-bg",
-  danger: "text-danger-text bg-danger-bg",
-  info: "text-info-text bg-info-bg",
-};
 const TICK_MS = 30_000;
 const BAR_MIN = 4;
 
@@ -73,7 +67,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
   return (
     <>
       <div className="grid gap-[12px] px-[16px] pt-[8px] pb-[12px]">
-        <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
+        <h1 className="m-0 type-page">{t("title")}</h1>
         {canAll && (
           <div
             role="radiogroup"
@@ -147,8 +141,8 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 <span className="flex-1">{label}</span>
                 <span
                   className={cn(
-                    "rounded-full px-[8px] py-[2px] text-[12px] font-medium whitespace-nowrap",
-                    TONE[count ? tone : "success"],
+                    "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+                    TONE_CLASSES[count ? tone : "success"],
                   )}
                 >
                   {String(count)}

@@ -24,7 +24,7 @@ type TextKey =
   | "whatsapp"
   | "telegram_chat_id";
 type LongKey = "hero_lead_ar" | "hero_lead_en" | "about_ar" | "about_en" | "blocked_phones";
-const LABEL = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+const LABEL = "grid gap-[4px] type-label text-text-secondary";
 
 /** Storefront settings (§5.4): identity, contact, pickup branch, limits. */
 export function StoreSettingsScreen({

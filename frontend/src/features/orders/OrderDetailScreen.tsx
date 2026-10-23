@@ -134,7 +134,7 @@ export function OrderDetailScreen({
         >
           {t("back")}
         </Link>
-        <h1 dir="ltr" className="m-0 text-[26px] font-medium">
+        <h1 dir="ltr" className="m-0 type-page">
           {order.number}
         </h1>
         <Badge tone={STATUS_TONE[order.status]} dense>
@@ -254,7 +254,7 @@ export function OrderDetailScreen({
           {editing && (
             <Panel title={t("editTitle")}>
               <div className="grid gap-[8px] p-[14px]">
-                <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+                <label className="grid gap-[4px] type-label text-text-secondary">
                   {t("consentL")}
                   <Textarea
                     rows={2}
@@ -383,7 +383,7 @@ export function OrderDetailScreen({
           </div>
           <div className="text-text-muted">{t("transitionBody")}</div>
           {moving && NEEDS_REASON.includes(moving) && (
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("reasonL")}
               <Textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} />
             </label>

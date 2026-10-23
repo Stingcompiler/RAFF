@@ -106,7 +106,7 @@ function StocktakeDesktop({ takes, categories, canCount }: Props) {
             {t("startTitle")}
           </div>
           <div className="text-text-muted">{t("startBody")}</div>
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("category")}
             <Select value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">{t("scopeAll")}</option>

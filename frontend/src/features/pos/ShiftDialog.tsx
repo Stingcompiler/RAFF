@@ -41,7 +41,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
         <div className="text-text-muted">{canOpen ? t("shiftHint") : t("shiftNoPermission")}</div>
         {canOpen && (
           <>
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("opening")}
               <input
                 dir="ltr"

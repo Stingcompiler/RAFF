@@ -207,7 +207,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
             {sale.lines.length === 0 && <TableEmpty>{t("pickInvoice")}</TableEmpty>}
           </div>
           <div className="flex flex-wrap items-end gap-[12px] p-[12px]">
-            <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+            <label className="grid gap-[4px] type-label text-text-secondary">
               {t("refund")}
               <Select
                 value={refund}

@@ -17,7 +17,7 @@ export function Panel({ title, note, chips, children, className }: Props) {
     <div className={cn("overflow-hidden rounded-panel border border-border bg-surface", className)}>
       {(title || note) && (
         <div className="flex items-center justify-between gap-[12px] border-b border-border px-(--d-pad) py-[12px]">
-          <span className="text-[16px] font-medium whitespace-nowrap">{title}</span>
+          <span className="type-section whitespace-nowrap">{title}</span>
           {note && <span className="text-end text-[12px] text-text-muted">{note}</span>}
         </div>
       )}

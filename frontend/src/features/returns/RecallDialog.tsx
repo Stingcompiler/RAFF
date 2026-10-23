@@ -79,7 +79,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           {t("recallTitle")}
         </div>
         <div className="text-text-muted">{t("recallBody")}</div>
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("searchItem")}
           <TextInput
             value={item ? (ar ? item.name_ar : item.name_en) : query}
@@ -114,7 +114,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
           </div>
         )}
         {item && (
-          <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+          <label className="grid gap-[4px] type-label text-text-secondary">
             {t("pickBatch")}
             <Select value={batchId} onChange={(e) => setBatchId(e.target.value)}>
               {unique.map((b) => (
@@ -125,7 +125,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
             </Select>
           </label>
         )}
-        <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid gap-[4px] type-label text-text-secondary">
           {t("recallReason")}
           <TextInput value={reason} onChange={(e) => setReason(e.target.value)} />
         </label>

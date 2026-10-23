@@ -190,7 +190,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 </div>
               </div>
               <div className="text-[13px] text-text-muted">{t("noStock")}</div>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("image")}
                 <input
                   type="file"
@@ -199,7 +199,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   className="text-[13px]"
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("descAr")}
                 <Textarea
                   rows={3}
@@ -207,7 +207,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_ar: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("descEn")}
                 <Textarea
                   dir="ltr"
@@ -216,7 +216,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   onChange={(e) => setDraft((d) => ({ ...d, description_en: e.target.value }))}
                 />
               </label>
-              <label className="grid gap-[4px] text-[12px] font-medium text-text-muted">
+              <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("slug")}
                 <TextInput
                   dir="ltr"

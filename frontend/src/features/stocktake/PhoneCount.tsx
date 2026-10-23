@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
-import type { Tone } from "@/components/ui/Badge";
+import { TONE_CLASSES, type Tone } from "@/components/ui/Badge";
 import { TONE_SYMBOL } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
 import { apiGet, apiSend } from "@/lib/api/browser";
@@ -12,12 +12,6 @@ import { cn } from "@/lib/cn";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { inUnits, scopeLabel, type Take, type TakeDetail, type TakeLine } from "./labels";
 
-const TONES: Record<Tone, string> = {
-  success: "text-success-text bg-success-bg",
-  warn: "text-warning-text bg-warning-bg",
-  danger: "text-danger-text bg-danger-bg",
-  info: "text-info-text bg-info-bg",
-};
 type Cam = "on" | "denied";
 type Found = { results: { id: string }[] };
 
@@ -138,7 +132,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
   return (
     <>
       <div className="px-[16px] pt-[8px] pb-[12px]">
-        <h1 className="m-0 text-[26px] font-medium">{t("title")}</h1>
+        <h1 className="m-0 type-page">{t("title")}</h1>
         {take && (
           <div className="text-[13px] text-text-muted">
             {t("scope", {
@@ -263,8 +257,8 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   </div>
                   <div
                     className={cn(
-                      "justify-self-center rounded-full px-[12px] py-[4px] text-[13px] font-medium transition-[background,color] duration-(--motion-feedback)",
-                      TONES[diffTone],
+                      "justify-self-center rounded-pill border px-[11px] py-[3px] text-[13px] font-medium transition-[background,color] duration-(--motion-feedback)",
+                      TONE_CLASSES[diffTone],
                     )}
                   >
                     {TONE_SYMBOL[diffTone]} {diffText}

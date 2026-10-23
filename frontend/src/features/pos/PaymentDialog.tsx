@@ -29,7 +29,7 @@ const whole = (value: string) => value.replace(/\.0+$/, "");
 
 const FIELD =
   "h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none";
-const LABEL = "grid gap-[4px] text-[12px] font-medium text-text-muted";
+const LABEL = "grid gap-[4px] type-label text-text-secondary";
 
 export function PaymentDialog({ open, total, busy, error, lines, onClose, onConfirm }: Props) {
   const t = useTranslations("pos");
