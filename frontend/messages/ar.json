@@ -32,7 +32,11 @@
     "themeLight": "فاتح",
     "themeDark": "داكن",
     "signOut": "تسجيل الخروج",
-    "deviceLine": "الجهاز مسجَّل باسم: {device}"
+    "deviceLine": "الجهاز مسجَّل باسم: {device}",
+    "density": "الكثافة",
+    "density_compact": "مدمجة",
+    "density_default": "افتراضية",
+    "density_comfortable": "مريحة"
   },
   "connection": {
     "online": "الخادم: متصل",

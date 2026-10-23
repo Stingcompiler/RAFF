@@ -89,14 +89,14 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                 <Chip active={status === s}>{t(`status.${s}`)}</Chip>
               </button>
             ))}
-            <span className="ms-auto flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
+            <span className="ms-auto flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
               {PERIODS.map((p) => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => setPeriod(p)}
                   className={cn(
-                    "type-inherit cursor-pointer rounded-[6px] border-0 px-[10px] py-[4px] text-[13px]",
+                    "type-inherit cursor-pointer rounded-control border-0 px-[10px] py-[4px] text-[13px]",
                     period === p
                       ? "bg-surface font-medium text-brand"
                       : "bg-transparent text-text-muted",

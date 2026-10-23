@@ -53,7 +53,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
                 href={href}
                 aria-current={on ? "page" : undefined}
                 className={cn(
-                  "inline-flex min-h-[40px] items-center rounded-[8px] px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-200",
+                  "inline-flex min-h-[40px] items-center rounded-control px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
                   on ? "bg-brand-subtle/40 text-brand" : "text-text hover:bg-surface-subtle",
                 )}
               >
@@ -68,7 +68,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
         <Link
           href="/cart"
           aria-label={t("cartCount", { count })}
-          className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
+          className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
         >
           {t("cart")}
           <span
@@ -119,7 +119,7 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[44px] min-w-[180px] flex-1 items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[12px]"
+      className="flex h-[44px] min-w-[180px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px]"
     >
       <SearchIcon className="text-text-muted" />
       <input

@@ -80,7 +80,7 @@ export function Dialog({
   return (
     <div
       className={cn(
-        "inset-0 z-[8] grid place-items-center bg-scrim/50 animate-[raff-fade_.2s_ease_both]",
+        "inset-0 z-[8] grid place-items-center bg-veil animate-[raff-fade_var(--motion-scene)_ease_both]",
         contained ? "absolute" : "fixed",
       )}
       onMouseDown={(e) => {
@@ -94,10 +94,10 @@ export function Dialog({
         aria-labelledby={labelledBy}
         tabIndex={-1}
         className={cn(
-          "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-[12px] border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
+          "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-panel border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
           // Phones: nearly full width, scrolling inside when the content is taller than the screen.
           "max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
-          "animate-[raff-fade_.3s_cubic-bezier(.2,.8,.2,1)_both]",
+          "animate-[raff-fade_var(--motion-scene)_cubic-bezier(.2,.8,.2,1)_both]",
           className,
         )}
       >
@@ -150,7 +150,7 @@ export function ConfirmDialog({
       </div>
       <div className="text-text-muted">{body}</div>
       {impact && impact.length > 0 && (
-        <div className="grid gap-[6px] rounded-[8px] bg-warning-bg p-[12px] font-medium text-warning-text">
+        <div className="grid gap-[6px] rounded-control bg-warning-bg p-[12px] font-medium text-warning-text">
           {impact.map((i) => (
             <div key={i.label} className="flex justify-between gap-[12px]">
               <span>{i.label}</span>

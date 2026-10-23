@@ -11,12 +11,12 @@ type Filters = { q?: string; category?: string; availability?: string; sort?: st
 
 const chip = (on: boolean) =>
   cn(
-    "inline-flex min-h-[40px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-200",
+    "inline-flex min-h-[40px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-(--motion-feedback)",
     on ? "border-brand bg-brand text-on-brand" : "border-border-strong bg-surface text-text",
   );
 const seg = (on: boolean) =>
   cn(
-    "rounded-[6px] px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-200",
+    "rounded-control px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
     on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-text-muted",
   );
 
@@ -84,7 +84,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         <span className="h-0 basis-full" />
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
           <span className="text-[13px] font-medium text-text-muted">{t("availability")}</span>
-          <span className="flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
+          <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
             <Link href={href({ availability: "" })} className={seg(!filters.availability)}>
               {t("all")}
             </Link>
@@ -104,7 +104,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         </span>
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
           <span className="text-[13px] font-medium text-text-muted">{t("sort")}</span>
-          <span className="flex gap-[2px] rounded-[8px] bg-surface-subtle p-[3px]">
+          <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
             <Link href={href({ sort: "" })} className={seg(filters.sort !== "price")}>
               {t("byName")}
             </Link>
@@ -118,7 +118,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         </span>
       </div>
       {products.length === 0 && (
-        <div className="mt-[24px] grid justify-items-center gap-[8px] rounded-[12px] border border-dashed border-border-strong px-[20px] py-[40px] text-center text-text-muted">
+        <div className="mt-[24px] grid justify-items-center gap-[8px] rounded-card border border-dashed border-border-strong px-[20px] py-[40px] text-center text-text-muted">
           <b className="text-text">{t("noRes")}</b>
           {t("noResB")}
           {store?.whatsapp && (

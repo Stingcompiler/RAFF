@@ -27,7 +27,7 @@ export function Toast({
     <div
       role={tone === "danger" ? "alert" : "status"}
       className={cn(
-        "flex items-center gap-[10px] rounded-[10px] border px-[14px] py-[10px]",
+        "flex items-center gap-[10px] rounded-control border px-[14px] py-[10px]",
         "animate-[raff-in_.35s_cubic-bezier(.2,.8,.2,1)_both]",
         TONE[tone],
       )}

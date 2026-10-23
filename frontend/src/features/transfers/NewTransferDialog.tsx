@@ -143,7 +143,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           <div
             role="listbox"
             aria-label={t("searchItem")}
-            className="grid max-h-[160px] overflow-y-auto rounded-[8px] border border-border"
+            className="grid max-h-[160px] overflow-y-auto rounded-control border border-border"
           >
             {items.map((row) => (
               <button
@@ -167,7 +167,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
             {lines.map((l, i) => (
               <li
                 key={i}
-                className="flex items-center justify-between gap-[12px] rounded-[8px] border border-border px-[12px] py-[6px]"
+                className="flex items-center justify-between gap-[12px] rounded-control border border-border px-[12px] py-[6px]"
               >
                 <span>{l.label}</span>
                 <span className="flex items-center gap-[12px]">
@@ -189,7 +189,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+            className="rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
           >
             {error}
           </div>

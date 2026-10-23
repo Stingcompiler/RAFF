@@ -18,7 +18,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
   if (!product) notFound();
   return (
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-[28px] px-[20px] py-[24px]">
-      <div className="overflow-hidden rounded-[16px]">
+      <div className="overflow-hidden rounded-panel">
         <ProductImage product={product} height="h-[340px]" label={t("noImgL")} />
       </div>
       <div className="grid content-start gap-[12px]">
@@ -34,7 +34,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           {ar ? product.unit_ar : product.unit_en}
         </div>
         {product.rx ? (
-          <div className="rounded-[8px] bg-info-bg px-[10px] py-[8px] text-[14px] font-medium text-info-text">
+          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-[14px] font-medium text-info-text">
             {t("rxLong")}
           </div>
         ) : (

@@ -39,7 +39,7 @@ const ERRORS = [
 ] as const;
 
 const field =
-  "h-[44px] rounded-[8px] border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)] disabled:opacity-100";
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)] disabled:opacity-100";
 const label = "grid gap-[4px] text-[12px] font-medium text-text-muted";
 
 type Props = { initial: Receipt | null; suppliers: Supplier[] };
@@ -261,7 +261,7 @@ export function ReceiptEditor({ initial, suppliers: initialSuppliers }: Props) {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="h-[48px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-progress"
+                  className="h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-progress"
                 >
                   {t("saveHeader")}
                 </button>

@@ -16,7 +16,7 @@ export function TopBar({ context, onMenu }: { context: ShellContext; onMenu: () 
         type="button"
         aria-label={t("menu")}
         onClick={onMenu}
-        className="hidden size-[44px] cursor-pointer place-items-center rounded-[10px] border border-border-strong bg-transparent text-text max-[760px]:grid"
+        className="hidden size-[44px] cursor-pointer place-items-center rounded-control border border-border-strong bg-transparent text-text max-[760px]:grid"
       >
         <Menu size={18} aria-hidden="true" />
       </button>

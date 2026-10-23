@@ -171,12 +171,12 @@ export function OrderDetailScreen({
         </span>
       </div>
       {order.sale_number && (
-        <div className="rounded-[8px] bg-success-bg px-[14px] py-[10px] font-medium text-success-text">
+        <div className="rounded-control bg-success-bg px-[14px] py-[10px] font-medium text-success-text">
           {[t("linked"), order.sale_number].join(" ")}
         </div>
       )}
       {order.status === "ready" && !order.sale_number && (
-        <div className="rounded-[8px] bg-info-bg px-[14px] py-[10px] font-medium text-info-text">
+        <div className="rounded-control bg-info-bg px-[14px] py-[10px] font-medium text-info-text">
           {t("readyNote")}
         </div>
       )}
@@ -184,8 +184,8 @@ export function OrderDetailScreen({
         <div
           className={
             order.status === "cancelled"
-              ? "rounded-[8px] bg-danger-bg px-[14px] py-[10px] font-medium text-danger-text"
-              : "rounded-[8px] bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
+              ? "rounded-control bg-danger-bg px-[14px] py-[10px] font-medium text-danger-text"
+              : "rounded-control bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
           }
         >
           {order.reason}
@@ -211,7 +211,7 @@ export function OrderDetailScreen({
                     <NumberCell>{l.available_units}</NumberCell>
                     <span role="cell" className="flex justify-end">
                       {editing ? (
-                        <span className="flex items-center overflow-hidden rounded-[8px] border border-border">
+                        <span className="flex items-center overflow-hidden rounded-control border border-border">
                           <button
                             type="button"
                             aria-label={MINUS}
@@ -301,7 +301,7 @@ export function OrderDetailScreen({
               />
               <div
                 data-testid="wa-text"
-                className="rounded-[8px] border border-border bg-canvas px-[12px] py-[10px] text-[13px] leading-[1.7] whitespace-pre-line"
+                className="rounded-control border border-border bg-canvas px-[12px] py-[10px] text-[13px] leading-[1.7] whitespace-pre-line"
               >
                 {waText}
               </div>
@@ -310,7 +310,7 @@ export function OrderDetailScreen({
                   href={waHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] bg-brand px-[14px] font-semibold text-on-brand no-underline"
+                  className="inline-flex min-h-[44px] items-center rounded-control bg-brand px-[14px] font-semibold text-on-brand no-underline"
                 >
                   {t("openWa")}
                 </a>
@@ -347,7 +347,7 @@ export function OrderDetailScreen({
               ))}
             </ol>
           </Panel>
-          <div className="grid gap-[8px] rounded-[12px] border border-dashed border-warning-solid bg-warning-bg p-[14px]">
+          <div className="grid gap-[8px] rounded-card border border-dashed border-warning-solid bg-warning-bg p-[14px]">
             <div className="font-medium text-warning-text">{t("internal")}</div>
             <Textarea
               rows={3}

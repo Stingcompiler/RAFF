@@ -41,7 +41,7 @@ export function ConnectionIndicator({ status, label, detail, variant = "chip", c
     <div
       role="status"
       className={cn(
-        "flex items-center gap-[10px] rounded-[8px] px-[12px] py-[8px] text-[13px]",
+        "flex items-center gap-[10px] rounded-control px-[12px] py-[8px] text-[13px]",
         TONE[status],
         className,
       )}

@@ -34,7 +34,7 @@ export function Tabs<T extends string>({
               onClick={() => onChange(item.id)}
               className={cn(
                 "min-h-[20px] cursor-pointer border-0 bg-transparent px-[4px] py-[8px] type-inherit font-medium",
-                "transition-[color,box-shadow] duration-200",
+                "transition-[color,box-shadow] duration-(--motion-feedback)",
                 active
                   ? "text-brand shadow-[inset_0_-2px_0_var(--color-brand)]"
                   : "text-text-muted shadow-[inset_0_-2px_0_transparent]",

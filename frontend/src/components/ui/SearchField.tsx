@@ -17,7 +17,7 @@ export function SearchField({ shortcut, label, className, wrapperClassName, ...p
   return (
     <div
       className={cn(
-        "flex h-[48px] items-center gap-[8px] rounded-[10px] border border-border-strong bg-surface px-[14px]",
+        "flex h-[48px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px]",
         "focus-within:border-brand focus-within:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
         wrapperClassName,
       )}

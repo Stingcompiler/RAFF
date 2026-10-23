@@ -25,14 +25,14 @@ export function PublishToggle({
         disabled={disabled}
         onClick={() => onChange?.(!checked)}
         className={cn(
-          "relative h-[26px] w-[44px] flex-none rounded-full border-0 p-0 transition-[background] duration-[250ms]",
+          "relative h-[26px] w-[44px] flex-none rounded-full border-0 p-0 transition-[background] duration-(--motion-feedback)",
           checked ? "bg-brand" : "bg-border",
           disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         )}
       >
         <span
           className={cn(
-            "absolute top-[3px] size-[20px] rounded-full bg-surface transition-[inset-inline-start] duration-[250ms]",
+            "absolute top-[3px] size-[20px] rounded-full bg-surface transition-[inset-inline-start] duration-(--motion-feedback)",
             checked ? "start-[21px]" : "start-[3px]",
           )}
         />

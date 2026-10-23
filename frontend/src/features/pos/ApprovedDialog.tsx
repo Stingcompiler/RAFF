@@ -53,13 +53,16 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
       className="grid max-h-[80vh] w-[680px] grid-cols-[302px_1fr] grid-rows-[minmax(0,1fr)_auto] gap-x-[24px] gap-y-[16px] overflow-hidden max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:grid-cols-1 max-[760px]:grid-rows-[auto_minmax(0,1fr)_auto] max-[760px]:overflow-hidden"
     >
       <div className="row-span-2 min-h-0 overflow-y-auto max-[760px]:order-2 max-[760px]:row-span-1">
-        <ReceiptPreview data={receipt} className="box-border animate-[raff-fade_.4s_ease_both]" />
+        <ReceiptPreview
+          data={receipt}
+          className="box-border animate-[raff-fade_var(--motion-scene)_ease_both]"
+        />
       </div>
       <div className="grid content-start gap-[12px] max-[760px]:order-1">
         <div
           id="approved-title"
           role="status"
-          className="flex items-center gap-[8px] rounded-[8px] bg-success-bg px-[12px] py-[10px] font-semibold text-success-text"
+          className="flex items-center gap-[8px] rounded-control bg-success-bg px-[12px] py-[10px] font-semibold text-success-text"
         >
           {t("approvedMsg")}
         </div>
@@ -85,14 +88,14 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
         <button
           type="button"
           onClick={() => void print(false)}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-medium text-text"
         >
           {t("print")}
         </button>
         <button
           type="button"
           onClick={() => void print(true)}
-          className="h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-medium text-text"
         >
           {t("reprint")}
         </button>
@@ -100,7 +103,7 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
           type="button"
           ref={newSale}
           onClick={onNewSale}
-          className="h-[52px] cursor-pointer rounded-[10px] border-0 bg-brand text-[16px] font-semibold text-on-brand"
+          className="h-[52px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand"
         >
           {t("newSale")}{" "}
           <span dir="ltr" className="text-[13px] opacity-85">

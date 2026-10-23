@@ -15,8 +15,7 @@ export function StatTile({ label, value, note, trio, className }: Props) {
   return (
     <div
       className={cn(
-        "grid gap-[4px] rounded-[12px] border border-border bg-surface p-[16px]",
-        "transition-[transform,box-shadow] duration-200 hover:-translate-y-[2px] hover:shadow-tile",
+        "grid gap-[4px] rounded-card border border-border bg-surface p-(--d-card-pad)",
         className,
       )}
     >

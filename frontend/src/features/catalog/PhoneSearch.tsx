@@ -77,7 +77,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
     <>
       <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] text-[26px] font-medium">{t("title")}</h1>
       <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr] gap-[12px] px-[16px]">
-        <label className="flex h-[48px] items-center gap-[8px] rounded-[12px] border-2 border-brand bg-surface px-[14px]">
+        <label className="flex h-[48px] items-center gap-[8px] rounded-card border-2 border-brand bg-surface px-[14px]">
           <SearchIcon size={20} className="flex-none text-text-muted" />
           <input
             type="search"
@@ -104,8 +104,8 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                   setOpen(expanded ? null : item.id);
                 }}
                 className={cn(
-                  "grid w-full cursor-pointer gap-[4px] rounded-[12px] border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-[14px] text-text",
-                  "transition-[border-color,transform] duration-200 active:scale-[.99]",
+                  "grid w-full cursor-pointer gap-[4px] rounded-card border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-[14px] text-text",
+                  "transition-[border-color,transform] duration-(--motion-feedback)",
                   expanded ? "border-brand" : "border-border",
                 )}
               >
@@ -139,7 +139,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                 </span>
                 <span
                   className={cn(
-                    "grid transition-[grid-template-rows,opacity] duration-300",
+                    "grid transition-[grid-template-rows,opacity] duration-(--motion-panel-in)",
                     expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                   )}
                 >
@@ -179,7 +179,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
             <button
               type="button"
               onClick={() => void more()}
-              className="min-h-[44px] cursor-pointer rounded-[10px] border border-border-strong bg-transparent font-[inherit] text-[14px] text-text"
+              className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-[inherit] text-[14px] text-text"
             >
               {tInv("more")}
             </button>

@@ -244,7 +244,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
           </label>
         )}
         {party && value && (
-          <div className="flex justify-between gap-[12px] rounded-[8px] bg-warning-bg p-[12px] font-medium text-warning-text">
+          <div className="flex justify-between gap-[12px] rounded-control bg-warning-bg p-[12px] font-medium text-warning-text">
             <span>{t("newBalance")}</span>
             <span dir="ltr" className="tabular-nums">
               {money(subtract(party.balance, value), ar ? "ar" : "en")}
@@ -254,7 +254,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
         {error && (
           <div
             role="alert"
-            className="rounded-[8px] bg-danger-bg px-[12px] py-[8px] text-danger-text"
+            className="rounded-control bg-danger-bg px-[12px] py-[8px] text-danger-text"
           >
             {error}
           </div>

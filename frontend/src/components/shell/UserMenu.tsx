@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { apiSend } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
+import { DENSITY_COOKIE, densities } from "@/lib/density/cookie";
 import { LOCALE_COOKIE } from "@/lib/i18n/config";
 import { THEME_COOKIE } from "@/lib/theme/cookie";
 
@@ -22,6 +23,12 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const theme =
     typeof document === "undefined" ? "light" : (document.documentElement.dataset.theme ?? "light");
+  // Without a choice the device follows the screen: comfortable on a phone, default elsewhere.
+  const density =
+    typeof document === "undefined"
+      ? "default"
+      : (document.documentElement.dataset.density ??
+        (window.matchMedia("(max-width: 760px)").matches ? "comfortable" : "default"));
 
   useEffect(() => {
     if (!open) return;
@@ -55,7 +62,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
 
   const item = (active: boolean) =>
     cn(
-      "flex min-h-[40px] w-full cursor-pointer items-center justify-between gap-[12px] rounded-[8px] border-0 bg-transparent px-[12px] text-start type-inherit text-text hover:bg-surface-subtle",
+      "flex min-h-[40px] w-full cursor-pointer items-center justify-between gap-[12px] rounded-control border-0 bg-transparent px-[12px] text-start type-inherit text-text hover:bg-surface-subtle",
       active && "font-semibold text-brand",
     );
 
@@ -77,7 +84,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute end-0 top-[40px] z-[7] grid w-[220px] gap-[2px] rounded-[12px] border border-border bg-surface-raised p-[6px] shadow-dialog"
+          className="absolute end-0 top-[40px] z-[7] grid w-[220px] gap-[2px] rounded-card border border-border bg-surface-raised p-[6px] shadow-dialog"
         >
           <div className="px-[12px] pt-[6px] pb-[2px] text-[12px] font-medium text-text-muted">
             {t("language")}
@@ -121,6 +128,21 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           >
             {t("themeDark")}
           </button>
+          <div className="px-[12px] pt-[8px] pb-[2px] text-[12px] font-medium text-text-muted">
+            {t("density")}
+          </div>
+          {densities.map((d) => (
+            <button
+              key={d}
+              type="button"
+              role="menuitemradio"
+              aria-checked={density === d}
+              className={item(density === d)}
+              onClick={() => choose(DENSITY_COOKIE, d)}
+            >
+              {t(`density_${d}`)}
+            </button>
+          ))}
           <div className="my-[4px] border-t border-border" />
           <button type="button" role="menuitem" className={item(false)} onClick={signOut}>
             {t("signOut")}

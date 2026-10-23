@@ -56,7 +56,7 @@ export function Drawer({ open, onClose, labelledBy, children, className }: Props
         aria-hidden="true"
         onClick={onClose}
         className={cn(
-          "fixed inset-0 z-[4] bg-scrim/40 transition-opacity duration-300",
+          "fixed inset-0 z-[4] bg-veil transition-opacity duration-(--motion-panel-in)",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       />
@@ -69,7 +69,7 @@ export function Drawer({ open, onClose, labelledBy, children, className }: Props
         tabIndex={-1}
         className={cn(
           "fixed inset-y-0 end-0 z-[5] flex w-[440px] max-w-full flex-col border-s border-border bg-surface-raised shadow-drawer outline-none",
-          "transition-transform duration-[350ms] ease-[cubic-bezier(.2,.8,.2,1)]",
+          "transition-transform duration-(--motion-panel-in) ease-[cubic-bezier(.2,.8,.2,1)]",
           open ? "translate-x-0" : "ltr:translate-x-[110%] rtl:-translate-x-[110%]",
           className,
         )}
@@ -83,7 +83,7 @@ export function Drawer({ open, onClose, labelledBy, children, className }: Props
 /** A key/value row inside a drawer tab. */
 export function DrawerRow({ label, children }: { label: ReactNode; children: ReactNode }) {
   return (
-    <div className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-border px-[20px] py-[8px] animate-[raff-fade_.3s_ease_both]">
+    <div className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-border px-[20px] py-[8px] animate-[raff-fade_var(--motion-scene)_ease_both]">
       <span className="text-text-muted">{label}</span>
       <span className="font-medium tabular-nums [unicode-bidi:isolate]">{children}</span>
     </div>

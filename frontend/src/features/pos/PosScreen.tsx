@@ -413,7 +413,7 @@ export function PosScreen(props: PosScreenProps) {
           <button
             type="button"
             onClick={() => void checkResult()}
-            className="min-h-[36px] cursor-pointer rounded-[8px] border border-current bg-transparent px-[14px] py-[2px] text-[13px] text-inherit"
+            className="min-h-[36px] cursor-pointer rounded-control border border-current bg-transparent px-[14px] py-[2px] text-[13px] text-inherit"
           >
             {t("check")}
           </button>
@@ -435,7 +435,7 @@ export function PosScreen(props: PosScreenProps) {
             type="button"
             onClick={retry}
             disabled={offline}
-            className="cursor-pointer rounded-[6px] border border-current bg-transparent px-[10px] py-[2px] text-[12px] text-inherit"
+            className="cursor-pointer rounded-control border border-current bg-transparent px-[10px] py-[2px] text-[12px] text-inherit"
           >
             {t("retry")}
           </button>
@@ -532,7 +532,10 @@ export function PosScreen(props: PosScreenProps) {
 
   return (
     <div className="overflow-x-auto">
-      <div className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-canvas text-text">
+      <div
+        data-density="compact"
+        className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-canvas text-text"
+      >
         <header className="flex h-[52px] flex-none items-center gap-[20px] border-b border-border bg-surface-subtle px-[16px]">
           <div className="flex items-center gap-[8px] text-[18px] font-bold text-brand">
             <BrandMark />
@@ -562,7 +565,7 @@ export function PosScreen(props: PosScreenProps) {
 
         <div className="flex min-h-0 flex-1">
           <main className="flex min-w-0 flex-[62] flex-col gap-[12px] p-[16px]">
-            <div className="flex h-[56px] items-center gap-[12px] rounded-[12px] border-2 border-brand bg-surface px-[16px] shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]">
+            <div className="flex h-[56px] items-center gap-[12px] rounded-card border-2 border-brand bg-surface px-[16px] shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]">
               <SearchIcon size={22} className="text-text-muted" />
               {mult > 1 && (
                 <span
@@ -591,7 +594,7 @@ export function PosScreen(props: PosScreenProps) {
               />
               <span
                 dir="ltr"
-                className="rounded-[6px] border border-b-2 border-border px-[8px] py-[2px] font-latin text-[12px] font-medium text-text-muted"
+                className="rounded-control border border-b-2 border-border px-[8px] py-[2px] font-latin text-[12px] font-medium text-text-muted"
               >
                 {F2}
               </span>

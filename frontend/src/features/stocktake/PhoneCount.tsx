@@ -151,14 +151,14 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
       </div>
       <div className="grid flex-1 content-start gap-[12px] px-[16px] pb-[16px]">
         {!loading && !take && (
-          <div className="grid justify-items-center gap-[12px] rounded-[14px] border border-border bg-surface p-[24px] text-center">
+          <div className="grid justify-items-center gap-[12px] rounded-card border border-border bg-surface p-[24px] text-center">
             <p className="m-0 text-text-muted">{canCount ? t("noTake") : t("noPermission")}</p>
             {canCount && (
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void start()}
-                className="min-h-[52px] w-full cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand disabled:opacity-60"
+                className="min-h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand disabled:opacity-60"
               >
                 {busy ? t("starting") : t("startTake")}
               </button>
@@ -166,7 +166,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
           </div>
         )}
         {take && !editable && (
-          <div className="rounded-[14px] border border-border bg-surface p-[16px] text-center text-text-muted">
+          <div className="rounded-card border border-border bg-surface p-[16px] text-center text-text-muted">
             {canCount ? t("approved") : t("noPermission")}
           </div>
         )}
@@ -178,7 +178,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 onUnavailable={() => setCam("denied")}
               />
             ) : (
-              <div className="grid h-[180px] animate-[raff-fade_.3s_ease_both] content-center justify-items-center gap-[8px] rounded-[14px] bg-danger-bg p-[16px] text-center text-danger-text">
+              <div className="grid h-[180px] animate-[raff-fade_var(--motion-scene)_ease_both] content-center justify-items-center gap-[8px] rounded-card bg-danger-bg p-[16px] text-center text-danger-text">
                 <div className="font-semibold">
                   {TONE_SYMBOL.danger} {t("camTitle")}
                 </div>
@@ -186,7 +186,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 <button
                   type="button"
                   onClick={() => setManual(true)}
-                  className="min-h-[44px] cursor-pointer rounded-[10px] border border-danger-solid bg-transparent px-[16px] font-[inherit] font-medium text-danger-text"
+                  className="min-h-[44px] cursor-pointer rounded-control border border-danger-solid bg-transparent px-[16px] font-[inherit] font-medium text-danger-text"
                 >
                   {t("camManual")}
                 </button>
@@ -206,11 +206,11 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   placeholder={t("manualLabel")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="h-[48px] min-w-0 flex-1 rounded-[12px] border-2 border-brand bg-surface px-[14px] text-[16px] text-text outline-none"
+                  className="h-[48px] min-w-0 flex-1 rounded-card border-2 border-brand bg-surface px-[14px] text-[16px] text-text outline-none"
                 />
                 <button
                   type="submit"
-                  className="min-h-[48px] cursor-pointer rounded-[12px] border-0 bg-brand px-[16px] font-[inherit] font-semibold text-on-brand"
+                  className="min-h-[48px] cursor-pointer rounded-card border-0 bg-brand px-[16px] font-[inherit] font-semibold text-on-brand"
                 >
                   {t("find")}
                 </button>
@@ -223,7 +223,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
             )}
             {line ? (
               <>
-                <section className="grid gap-[12px] rounded-[14px] border border-border bg-surface p-[14px]">
+                <section className="grid gap-[12px] rounded-card border border-border bg-surface p-[14px]">
                   <div className="flex items-center justify-between gap-[8px]">
                     <span className="min-w-0 font-medium">
                       {[ar ? line.name_ar : line.name_en, line.strength].filter(Boolean).join(" ")}
@@ -240,7 +240,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       type="button"
                       aria-label={t("decrease")}
                       onClick={() => step(-1)}
-                      className="size-[56px] cursor-pointer rounded-[14px] border border-border bg-surface-subtle text-[26px] text-text transition-transform duration-[120ms] active:scale-[.92]"
+                      className="size-[56px] cursor-pointer rounded-card border border-border bg-surface-subtle text-[26px] text-text transition-transform duration-(--motion-feedback)"
                     >
                       {MINUS}
                     </button>
@@ -256,14 +256,14 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       type="button"
                       aria-label={t("increase")}
                       onClick={() => step(1)}
-                      className="size-[56px] cursor-pointer rounded-[14px] border-0 bg-brand text-[26px] text-on-brand transition-transform duration-[120ms] active:scale-[.92]"
+                      className="size-[56px] cursor-pointer rounded-card border-0 bg-brand text-[26px] text-on-brand transition-transform duration-(--motion-feedback)"
                     >
                       {PLUS}
                     </button>
                   </div>
                   <div
                     className={cn(
-                      "justify-self-center rounded-full px-[12px] py-[4px] text-[13px] font-medium transition-[background,color] duration-[250ms]",
+                      "justify-self-center rounded-full px-[12px] py-[4px] text-[13px] font-medium transition-[background,color] duration-(--motion-feedback)",
                       TONES[diffTone],
                     )}
                   >
@@ -274,13 +274,13 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   type="button"
                   disabled={busy || !valid}
                   onClick={() => void confirm()}
-                  className="h-[52px] cursor-pointer rounded-[12px] border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-[120ms] active:scale-[.98] disabled:opacity-60"
+                  className="h-[52px] cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:opacity-60"
                 >
                   {t("confirm")}
                 </button>
               </>
             ) : (
-              <div className="rounded-[14px] border border-border bg-surface p-[16px] text-center text-text-muted">
+              <div className="rounded-card border border-border bg-surface p-[16px] text-center text-text-muted">
                 {allDone ? t("allDone") : t("pick")}
               </div>
             )}

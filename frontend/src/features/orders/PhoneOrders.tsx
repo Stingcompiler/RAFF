@@ -71,7 +71,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
             <article
               key={order.id}
               className={cn(
-                "grid gap-[10px] rounded-[14px] border bg-surface px-[14px] py-[12px]",
+                "grid gap-[10px] rounded-card border bg-surface px-[14px] py-[12px]",
                 order.status === "new" ? "border-brand" : "border-border",
               )}
             >
@@ -103,7 +103,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                 <a
                   href={waLink(order.phone)}
                   aria-label={t("waFor", { name: order.customer_name })}
-                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-[10px] border border-border-strong font-medium whitespace-nowrap text-text no-underline"
+                  className="flex min-h-[44px] flex-1 items-center justify-center rounded-control border border-border-strong font-medium whitespace-nowrap text-text no-underline"
                 >
                   {t("whatsapp")}
                 </a>
@@ -112,12 +112,12 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                     type="button"
                     disabled={busy === order.id}
                     onClick={() => void advance(order, next)}
-                    className="min-h-[44px] flex-1 cursor-pointer rounded-[10px] border-0 bg-brand font-[inherit] font-semibold whitespace-nowrap text-on-brand transition-[background] duration-200 disabled:opacity-60"
+                    className="min-h-[44px] flex-1 cursor-pointer rounded-control border-0 bg-brand font-[inherit] font-semibold whitespace-nowrap text-on-brand transition-[background] duration-(--motion-feedback) disabled:opacity-60"
                   >
                     {[ar ? ARROW_AR : ARROW_EN, t(`status.${next}`)].join(" ")}
                   </button>
                 ) : (
-                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-[10px] bg-border px-[8px] text-center font-semibold text-text-muted">
+                  <span className="grid min-h-[44px] flex-1 place-items-center rounded-control bg-border px-[8px] text-center font-semibold text-text-muted">
                     {order.status === "ready" ? t("viaPos") : t(`status.${order.status}`)}
                   </span>
                 )}
