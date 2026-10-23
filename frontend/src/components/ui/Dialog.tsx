@@ -95,6 +95,8 @@ export function Dialog({
         tabIndex={-1}
         className={cn(
           "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-[12px] border border-line bg-surface p-[24px] shadow-dialog outline-none",
+          // Phones: nearly full width, scrolling inside when the content is taller than the screen.
+          "max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
           "animate-[raff-fade_.3s_cubic-bezier(.2,.8,.2,1)_both]",
           className,
         )}

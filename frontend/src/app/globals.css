@@ -120,6 +120,16 @@
   }
 }
 
+@keyframes raff-scan {
+  0%,
+  100% {
+    top: 8%;
+  }
+  50% {
+    top: 88%;
+  }
+}
+
 @keyframes raff-grow {
   from {
     transform: scaleY(0);
