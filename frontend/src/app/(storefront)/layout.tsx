@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
@@ -28,9 +29,17 @@ const FALLBACK: Store = {
   about_en: "",
 };
 
+const loadStore = async () =>
+  (await serverGet<Store>("/public/store/").catch(() => null)) ?? FALLBACK;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [locale, store, t] = await Promise.all([getLocale(), loadStore(), getTranslations("app")]);
+  return { title: (locale === "ar" ? store.name_ar : store.name_en) || t("name") };
+}
+
 export default async function StorefrontLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
-  const store = (await serverGet<Store>("/public/store/").catch(() => null)) ?? FALLBACK;
+  const store = await loadStore();
   const t = await getTranslations("common");
   return (
     <RootDocument locale={isLocale(locale) ? locale : defaultLocale} theme={await getTheme()}>

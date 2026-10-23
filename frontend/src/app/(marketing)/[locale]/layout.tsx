@@ -1,13 +1,23 @@
-import { getLocale, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { RootDocument } from "@/components/RootDocument";
-import { isLocale, locales } from "@/lib/i18n/config";
+import { defaultLocale, isLocale, locales } from "@/lib/i18n/config";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale: isLocale(locale) ? locale : defaultLocale,
+    namespace: "app",
+  });
+  return { title: t("name") };
 }
 
 // Product landing: locale from the URL (/ar, /en), always light.

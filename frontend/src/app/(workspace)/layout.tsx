@@ -1,4 +1,5 @@
-import { getLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { RootDocument } from "@/components/RootDocument";
@@ -7,6 +8,11 @@ import { requireMe } from "@/lib/session";
 import { getTheme } from "@/lib/theme/config";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("app");
+  return { title: t("name") };
+}
 
 export default async function WorkspaceLayout({ children }: { children: ReactNode }) {
   await requireMe();
