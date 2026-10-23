@@ -1,0 +1,81 @@
+# رَفّ — ملف تخصيص المشروع لـ Design Reference v2.2.
+# الاستثناءات عن المرجع لا تُكتب هنا بل في DECISIONS.md.
+
+project:
+  name: "رَفّ — نظام الصيدليات"
+  domain: pharmacy
+  summary: "كاشير وصيدلي ومسؤول مخزون ومحاسب ومالك يديرون البيع والمخزون والمشتريات والمتجر العام"
+
+users:
+  roles: [owner, pharmacist, cashier, accountant]
+  top_tasks: [sell, receive_stock, count_stock]
+  expertise: mixed
+
+platform:
+  targets: [web, mobile]        # mobile = شاشات الهاتف الخمس (DECISIONS D-R0008)
+  min_viewport: 1024x768
+  touch_primary: false
+  print: true                   # إيصال حراري 80mm، فاتح دائماً
+
+locale:
+  languages: [ar, en]
+  direction: rtl
+  numerals: western
+  date_format: "YYYY-MM-DD"
+  time_format: "HH:mm"
+  currency: SDG
+  currency_display: suffix
+
+brand:
+  primary: "#245C4F"            # أخضر رَفّ (D-R0001)
+  logo: ""
+  display_font: ""
+
+appearance:
+  default_theme: light
+  themes_available: [light, dark]
+  default_density: default      # نقطة البيع compact، والهاتف ≤760 comfortable (D-R0003)
+  density_user_switchable: true
+
+navigation:
+  pattern: sidebar
+  sections: [dashboard, orders, inventory, purchases, returns, stocktake, shifts, parties, transfers, reports, settings]
+
+data:
+  record_types: [sale, return, goods_receipt, stocktake, shift, transfer, order, party_payment]
+  metrics: []                   # تُعرَّف مع WO-15d (الوحدة والفترة وفترة الأساس لكل مقياس)
+  statuses: []                  # جدول الحالات الدوائية في DECISIONS D-R0009
+
+connectivity:
+  offline_first: false          # يصير true مع WO-11 (D-R0002)
+  queue_visible_in_header: false
+  conflict_policy: ask
+
+permissions:
+  destructive_actions_confirm: true
+  roles_matrix: "backend/apps/accounts (الأدوار والصلاحيات)"
+
+pos:
+  enabled: true
+  button_grid_by_role: {}       # تُملأ في WO-15c بإجراءات موجودة فعلاً فقط
+  shortcuts: default            # F2 بحث، F4 عميل، F6/F7 خصم، F8 تعليق، F9 استرجاع، F10 مرتجع، Enter دفع (D-R0006)
+  numpad: input-only
+
+accessibility:
+  wcag_level: AA
+  reduced_motion: respect
+  min_touch_target: 44
+
+market:
+  primary_contact_channel: whatsapp
+  contact_value: ""             # من إعدادات المتجر
+  prefilled_message: ""
+  trust_signals: []
+  trust_values: {}
+  payment_methods: []
+  network_budget: low
+  price_display: show
+
+landing: []                     # صفحة التعريف /ar /en والمتجر تُدقَّقان في WO-15d
+
+exceptions: []                  # انظر DECISIONS.md
