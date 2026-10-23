@@ -76,7 +76,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
   return (
     <>
       <h1 className="m-0 px-[16px] pt-[8px] pb-[12px] type-page">{t("title")}</h1>
-      <div className="grid min-h-0 flex-1 grid-rows-[auto_1fr] gap-[12px] px-[16px]">
+      <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)] grid-rows-[auto_1fr] gap-[12px] px-[16px]">
         <label className="flex h-[48px] items-center gap-[8px] rounded-card border-2 border-brand bg-surface px-[14px]">
           <SearchIcon size={20} className="flex-none text-text-muted" />
           <input

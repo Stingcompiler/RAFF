@@ -100,7 +100,7 @@ export function CheckoutScreen() {
 
   return (
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] items-start gap-[24px] px-[20px] pt-[24px] pb-[40px]">
-      <form onSubmit={submit} className="grid gap-[14px]" noValidate>
+      <form onSubmit={submit} className="grid grid-cols-[minmax(0,1fr)] gap-[14px]" noValidate>
         <h1 className="m-0 text-[30px] font-semibold">{t("send")}</h1>
         <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
           {t("nameL")}
