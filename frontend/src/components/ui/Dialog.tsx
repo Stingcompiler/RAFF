@@ -96,7 +96,7 @@ export function Dialog({
         className={cn(
           "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-panel border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
           // Phones: nearly full width, scrolling inside when the content is taller than the screen.
-          "max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
+          "max-[760px]:box-border max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
           "animate-[raff-fade_var(--motion-scene)_cubic-bezier(.2,.8,.2,1)_both]",
           className,
         )}

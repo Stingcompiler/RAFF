@@ -29,7 +29,7 @@ export function SystemTiles({ backup }: { backup: Schemas["BackupStatus"] | null
   const ok = backup?.last_ok;
   const drill = backup?.last_restore_test;
   return (
-    <div className="mb-[16px] grid grid-cols-3 gap-[16px]">
+    <div className="mb-[16px] grid grid-cols-3 gap-[16px] max-[600px]:grid-cols-1">
       <StatTile
         label={t("lastBackup")}
         value={ok ? [ok.at.slice(0, 10), timeOfDay(ok.at)].join(" ") : t("notYet")}
@@ -145,7 +145,7 @@ export function ReceiptPanel({ locale, branch }: { locale: "ar" | "en"; branch: 
   const ar = locale === "ar";
   return (
     <Panel title={t("receipt")} note={t("receiptLocale", { locale: ar ? "العربية" : "English" })}>
-      <div className="grid place-items-center bg-surface-subtle p-[16px]">
+      <div className="grid place-items-center overflow-x-auto bg-surface-subtle p-[16px]">
         <ReceiptPreview
           data={{
             locale,

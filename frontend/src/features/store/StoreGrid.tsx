@@ -11,12 +11,12 @@ type Filters = { q?: string; category?: string; availability?: string; sort?: st
 
 const chip = (on: boolean) =>
   cn(
-    "inline-flex min-h-[40px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-(--motion-feedback)",
+    "inline-flex min-h-[44px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-(--motion-feedback)",
     on ? "border-brand bg-brand text-on-brand" : "border-border-strong bg-surface text-text",
   );
 const seg = (on: boolean) =>
   cn(
-    "rounded-control px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
+    "hit-44 rounded-control px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
     on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-text-muted",
   );
 
@@ -128,7 +128,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
           )}
         </div>
       )}
-      <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2">
+      <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[360px]:grid-cols-1">
         {products.map((p) => (
           <ProductTile key={p.slug} product={p} />
         ))}

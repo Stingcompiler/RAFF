@@ -34,7 +34,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
       <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-border bg-surface-subtle px-[20px] py-[12px]">
         <Link
           href="/"
-          className="flex items-center gap-[10px] text-[19px] font-bold whitespace-nowrap text-text no-underline"
+          className="hit-44 flex items-center gap-[10px] text-[19px] font-bold whitespace-nowrap text-text no-underline"
         >
           <span
             aria-hidden="true"
@@ -53,7 +53,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
                 href={href}
                 aria-current={on ? "page" : undefined}
                 className={cn(
-                  "inline-flex min-h-[40px] items-center rounded-control px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
+                  "inline-flex min-h-[44px] items-center rounded-control px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
                   on ? "bg-brand-subtle/40 text-brand" : "text-text hover:bg-surface-subtle",
                 )}
               >
@@ -82,16 +82,16 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
       <main>{children}</main>
       <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-[14px] text-text-muted">
         <div className="flex flex-wrap gap-[16px]">
-          <Link href="/policies/privacy" className="text-brand">
+          <Link href="/policies/privacy" className="hit-44 text-brand">
             {t("policy")}
           </Link>
-          <Link href="/about" className="text-brand">
+          <Link href="/about" className="hit-44 text-brand">
             {t("nav.about")}
           </Link>
-          <Link href="/contact" className="text-brand">
+          <Link href="/contact" className="hit-44 text-brand">
             {t("nav.contact")}
           </Link>
-          <Link href="/orders/track" className="text-brand">
+          <Link href="/orders/track" className="hit-44 text-brand">
             {t("nav.track")}
           </Link>
         </div>

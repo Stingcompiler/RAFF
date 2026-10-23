@@ -150,7 +150,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
           )
         }
       />
-      <div className="mb-[16px] grid grid-cols-3 gap-[16px]">
+      <div className="mb-[16px] grid grid-cols-3 gap-[16px] max-[600px]:grid-cols-1">
         <StatTile
           label={t("tileScope")}
           value={scopeLabel(take, ar, t)}

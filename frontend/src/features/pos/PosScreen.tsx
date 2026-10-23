@@ -534,14 +534,14 @@ export function PosScreen(props: PosScreenProps) {
     <div className="overflow-x-auto">
       <div
         data-density="compact"
-        className="relative flex h-dvh min-h-[560px] min-w-[1024px] flex-col overflow-hidden bg-canvas text-text"
+        className="relative flex h-dvh min-h-[560px] min-w-0 flex-col overflow-hidden bg-canvas text-text"
       >
         <header className="flex h-[52px] flex-none items-center gap-[20px] border-b border-border bg-surface-subtle px-[16px]">
           <div className="flex items-center gap-[8px] text-[18px] font-bold text-brand">
             <BrandMark />
             {t("brand")}
           </div>
-          <div className="flex flex-1 gap-[16px] text-[13px] text-text-muted">
+          <div className="flex min-w-0 flex-1 gap-[16px] overflow-hidden text-[13px] whitespace-nowrap text-text-muted">
             <span>{props.branchName}</span>
             <span>{SEP}</span>
             <span>{props.counterName}</span>
@@ -557,14 +557,14 @@ export function PosScreen(props: PosScreenProps) {
             <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-[12px] text-text">
               {props.user.initial}
             </span>
-            {props.user.name}
+            <span className="max-[1023px]:hidden">{props.user.name}</span>
           </div>
         </header>
 
         {banners}
 
-        <div className="flex min-h-0 flex-1">
-          <main className="flex min-w-0 flex-[62] flex-col gap-[12px] p-[16px]">
+        <div className="flex min-h-0 flex-1 max-[1023px]:flex-col">
+          <main className="flex min-w-0 flex-[62] flex-col gap-[12px] p-[16px] max-[1023px]:min-h-0 max-[1023px]:flex-[1_1_50%]">
             <div className="flex h-[56px] items-center gap-[12px] rounded-card border-2 border-brand bg-surface px-[16px] shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]">
               <SearchIcon size={22} className="text-text-muted" />
               {mult > 1 && (
@@ -631,7 +631,7 @@ export function PosScreen(props: PosScreenProps) {
           />
         </div>
 
-        <footer className="flex h-[36px] flex-none items-center gap-[20px] border-t border-border bg-surface-subtle px-[16px] text-[12px] text-text-muted">
+        <footer className="flex h-[36px] flex-none items-center gap-[20px] border-t max-[1023px]:hidden border-border bg-surface-subtle px-[16px] text-[12px] text-text-muted">
           {KEYS.map(([key, label]) => (
             <span key={key} className="flex items-center gap-[6px]">
               <span

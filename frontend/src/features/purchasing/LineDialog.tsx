@@ -118,7 +118,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
             <div className="font-medium">
               {ar ? `${item.name_ar} · ${item.name_en}` : item.name_en}
             </div>
-            <div className="grid grid-cols-2 gap-[12px]">
+            <div className="grid grid-cols-2 gap-[12px] max-[480px]:grid-cols-1">
               <Field label={t("unit")}>
                 {({ id }) => (
                   <Select id={id} name="unit" defaultValue={line?.unit_id ?? item.sale_unit?.id}>

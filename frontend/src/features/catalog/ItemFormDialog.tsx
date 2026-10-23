@@ -112,7 +112,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
         <div id="item-form-title" className="text-[16px] font-medium">
           {editing ? t("edit") : t("newItem")}
         </div>
-        <div className="grid max-h-[60dvh] grid-cols-2 gap-[12px] overflow-auto p-[2px]">
+        <div className="grid max-h-[60dvh] grid-cols-2 gap-[12px] overflow-auto p-[2px] max-[600px]:grid-cols-1">
           {!editing && (
             <Field label={t("fCode")} mark="required">
               {({ id }) => <TextInput id={id} name="code" dir="ltr" required maxLength={40} />}

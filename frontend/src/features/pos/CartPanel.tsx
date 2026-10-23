@@ -45,7 +45,7 @@ export function CartPanel(props: Props) {
   const q = quoted.quote;
 
   return (
-    <aside className="flex min-w-[420px] flex-[38] flex-col border-s border-border bg-surface-subtle">
+    <aside className="flex min-w-[420px] flex-[38] flex-col border-s border-border bg-surface-subtle max-[1023px]:min-h-0 max-[1023px]:min-w-0 max-[1023px]:flex-[1_1_50%] max-[1023px]:border-s-0 max-[1023px]:border-t">
       {props.fromOrder && (
         <div
           data-testid="from-order"
