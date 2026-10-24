@@ -700,7 +700,7 @@ export function PosScreen(props: PosScreenProps) {
             <span key={key} className="flex items-center gap-[6px]">
               <span
                 dir="ltr"
-                className="rounded-[5px] border border-b-2 border-border px-[6px] font-latin text-[11px] font-medium text-text"
+                className="rounded-[5px] border border-b-2 border-border px-[6px] font-latin text-[12px] font-medium text-text"
               >
                 {key}
               </span>

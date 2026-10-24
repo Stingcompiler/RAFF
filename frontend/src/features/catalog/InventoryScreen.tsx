@@ -238,7 +238,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                   <span role="cell" className="flex min-w-0 items-center gap-[6px]">
                     <span className="truncate">{itemLabel(ar, item)}</span>
                     {item.classification === "rx" && (
-                      <span className="flex-none rounded-[4px] border border-info-solid px-[4px] text-[11px] font-semibold text-info-text">
+                      <span className="flex-none rounded-[4px] border border-info-solid px-[4px] text-[12px] font-semibold text-info-text">
                         {t("rx")}
                       </span>
                     )}

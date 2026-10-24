@@ -15,6 +15,8 @@ test.describe("overview, parties, transfers, reports", () => {
     await expect(actions).toBeVisible();
     await expect(page.getByText("مبيعات اليوم")).toBeVisible();
     await expect(page.getByRole("table", { name: "آخر العمليات" })).toBeVisible();
+    // The week chart says its takeaway in the title, or says there is no data (never a zero chart).
+    await expect(page.getByText(/المبيعات — الأعلى يوم|لا بيانات للفترة/)).toBeVisible();
     await actions.click();
     await expect(page).toHaveURL(/\/reports\?r=expiry$/);
     const expiry = page.getByRole("table", { name: "الصلاحيات" });

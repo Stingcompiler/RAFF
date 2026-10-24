@@ -116,7 +116,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 key={d.date}
                 title={cur(d.total)}
                 className={cn(
-                  "flex-1 rounded-t-[4px] bg-brand transition-[height] duration-(--motion-panel-in) ease-[cubic-bezier(.2,.8,.2,1)]",
+                  "flex-1 rounded-t-[4px] bg-chart-1 transition-[height] duration-(--motion-panel-in) ease-[cubic-bezier(.2,.8,.2,1)]",
                   i === data.week.length - 1 ? "opacity-100" : "opacity-50",
                 )}
                 style={{

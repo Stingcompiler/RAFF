@@ -14,6 +14,8 @@ import { RxNotice } from "@/components/storefront/RxNotice";
 import { StorefrontStatusChip } from "@/components/storefront/StorefrontStatusChip";
 import { WhatsAppAction } from "@/components/storefront/WhatsAppAction";
 import { Badge, type Tone } from "@/components/ui/Badge";
+import { BarChart } from "@/components/ui/BarChart";
+import { ChartCard, type ChartState } from "@/components/ui/ChartCard";
 import { Button, type ButtonVariant } from "@/components/ui/Button";
 import { ConnectionBar } from "@/components/ui/ConnectionBar";
 import { ConnectionIndicator } from "@/components/ui/ConnectionIndicator";
@@ -49,7 +51,23 @@ const SYNC_STATES: readonly SyncState[] = [
 
 const VARIANTS: readonly ButtonVariant[] = ["primary", "outline", "quiet", "danger"];
 const STATES = ["default", "hover", "focus", "disabled", "loading"] as const;
+const CHART_STATES: readonly ChartState[] = ["ready", "loading", "empty", "failed"];
+const CHART_TITLE = "Sales — highest on Thursday: 4,200";
+const CHART_NOTE = "SDG thousands · last 7 days";
+const CHART_BARS = [
+  { id: "1", label: "S", value: 2100, text: "2,100" },
+  { id: "2", label: "M", value: 3000, text: "3,000" },
+  { id: "3", label: "T", value: 1500, text: "1,500" },
+  { id: "4", label: "W", value: 3900, text: "3,900" },
+  { id: "5", label: "T", value: 4200, text: "4,200" },
+  { id: "6", label: "F", value: 800, text: "800" },
+  { id: "7", label: "S", value: 2700, text: "2,700" },
+] as const;
+const CHART_MAX = 4200;
+const THOUSAND = 1000;
+
 const CAPTION = {
+  chart: "ChartCard · BarChart",
   button: "Button",
   inputs: "Input · Select · Textarea · SearchField",
   status: "Badge · StatusDot · KeyboardHint · ConnectionIndicator",
@@ -263,6 +281,28 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
           <ConnectionBar kind="syncing" progress={{ done: 3, total: 8 }} />
         </div>
         <StaleStamp at="2026-10-22T05:30:00Z" onRefresh={() => undefined} />
+      </div>
+
+      <div className="grid gap-[12px]">
+        <div className={caption}>{CAPTION.chart}</div>
+        <div className="grid gap-[12px]">
+          {CHART_STATES.map((state) => (
+            <ChartCard
+              key={state}
+              title={CHART_TITLE}
+              note={CHART_NOTE}
+              state={state}
+              onRetry={() => undefined}
+              staleAt={state === "ready" ? "2026-10-22T05:30:00Z" : undefined}
+            >
+              <BarChart
+                ariaLabel={CHART_TITLE}
+                bars={CHART_BARS}
+                tick={(f) => String(Math.round((CHART_MAX * f) / THOUSAND))}
+              />
+            </ChartCard>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-[12px]">

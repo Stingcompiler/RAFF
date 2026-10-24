@@ -153,7 +153,7 @@ export function CartPanel(props: Props) {
                     {line.item.strength}
                   </bdi>{" "}
                   {line.item.rx && (
-                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[11px] font-semibold text-info-text">
+                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[12px] font-semibold text-info-text">
                       {t("rx")}
                     </span>
                   )}
