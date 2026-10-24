@@ -125,8 +125,8 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               <span dir="ltr" className="text-end num">
                 {money(row.price, ar ? "ar" : "en")}
               </span>
-              <span className="grid text-end leading-tight whitespace-nowrap num">
-                <span>{stock}</span>
+              <span className="grid text-end leading-tight whitespace-nowrap">
+                <span className="num">{stock}</span>
                 {row.reserved_base > 0 && (
                   <span className="text-caption font-medium text-info-text">
                     {t("reserved", { count: inUnit(row.reserved_base, row.unit?.factor) })}

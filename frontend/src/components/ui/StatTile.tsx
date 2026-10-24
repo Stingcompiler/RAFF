@@ -27,7 +27,9 @@ export function StatTile({ label, value, note, trio, className }: Props) {
         <div className="grid grid-cols-3 gap-[8px]">
           {trio.map((t, i) => (
             <div key={i} className="grid gap-[2px]">
-              <span className="text-section font-medium num">{t.value}</span>
+              <span className="text-section font-medium">
+                <span className="num">{t.value}</span>
+              </span>
               <span className="text-caption text-text-muted">{t.label}</span>
             </div>
           ))}
