@@ -4,7 +4,7 @@
 
 ## العائلة والأوزان
 
-IBM Plex Sans Arabic للعربية وIBM Plex Sans للاتينية، الأوزان 400/500/600/700، محلية من `@fontsource` (المقطعان `arabic` و`latin` فقط)، `font-display: swap`، احتياط `system-ui`. المتغيرات في `:root` (مولّدة في `tokens.css`): `--font-ui` و`--font-mono` و`--font-display`، والأخيران يساويان الأول. في نص إنجليزي (`:lang(en)`) تُقلَب الأولوية إلى اللاتينية.
+IBM Plex Sans Arabic للعربية وIBM Plex Sans للاتينية، الأوزان 400/500/600/700، محلية: woff2 مقلَّمة من حزمة Plex Sans Arabic بـ`design/system/subset_fonts.py` إلى عائلتين بمدى منفصل («IBM Plex Sans Arabic» للحرف العربي U+0600-06FF، و«IBM Plex Sans» للاتينية والعلامات)، فلا يُحمَّل الاثنان لحرف واحد، `font-display: swap`، احتياط `system-ui`. المتغيرات في `:root` (مولّدة في `tokens.css`): `--font-ui` و`--font-mono` و`--font-display`، والأخيران يساويان الأول. في نص إنجليزي (`:lang(en)`) تُقلَب الأولوية إلى اللاتينية.
 
 ## السلّم
 

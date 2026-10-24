@@ -26,27 +26,54 @@ const WORKSPACE = [
 ];
 const PUBLIC = ["/", "/store", "/cart", "/checkout", "/about", "/contact", "/orders/track"];
 
+/** The font files this page loaded: name and bytes (woff2 only: the browser takes one format). */
+const fontFiles = (page: Page) =>
+  page.evaluate(async () => {
+    await document.fonts.ready;
+    return performance
+      .getEntriesByType("resource")
+      .filter((r) => /\.woff2(\?|$)/.test(r.name))
+      .map(
+        (r) =>
+          [
+            r.name.split("/").pop()!.split(".")[0],
+            (r as PerformanceResourceTiming).encodedBodySize,
+          ] as const,
+      );
+  });
+
 test.describe("fonts", () => {
-  test("only the decided families and weights are declared, and the first screen is light", async ({
-    page,
-  }) => {
+  test("only the decided families and weights are declared", async ({ page }) => {
     await page.goto("/login");
     await page.evaluate(() => document.fonts.ready);
-    const info = await page.evaluate(() => ({
-      faces: [...document.fonts].map((f) => ({
-        family: f.family.replaceAll('"', ""),
-        weight: f.weight,
-      })),
-      bytes: performance
-        .getEntriesByType("resource")
-        .filter((r) => /\.woff2?(\?|$)/.test(r.name))
-        .reduce((sum, r) => sum + (r as PerformanceResourceTiming).encodedBodySize, 0),
-    }));
-    for (const face of info.faces) {
+    const faces = await page.evaluate(() =>
+      [...document.fonts].map((f) => ({ family: f.family.replaceAll('"', ""), weight: f.weight })),
+    );
+    expect(faces.length).toBeGreaterThan(0);
+    for (const face of faces) {
       expect(FAMILIES, `family ${face.family}`).toContain(face.family);
       expect(WEIGHTS, `weight ${face.weight} of ${face.family}`).toContain(face.weight);
     }
-    expect(info.bytes, "font bytes on the first screen").toBeLessThanOrEqual(FONT_BUDGET_BYTES);
+  });
+
+  test("every first screen stays under 200KB of fonts, in both languages", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    test.setTimeout(120_000); // ten cold page loads
+    const heavy: Record<string, unknown> = {};
+    await signIn(page, "admin");
+    for (const locale of ["ar", "en"]) {
+      await context.addCookies([{ name: "NEXT_LOCALE", value: locale, url: baseURL! }]);
+      for (const path of ["/login", "/dashboard", "/inventory", "/", "/store"]) {
+        await page.goto(path);
+        const files = await fontFiles(page);
+        const bytes = files.reduce((sum, [, size]) => sum + size, 0);
+        if (bytes > FONT_BUDGET_BYTES) heavy[`${locale} ${path}`] = { bytes, files };
+      }
+    }
+    expect(heavy).toEqual({});
   });
 
   test("the three family variables exist and nothing else names a family", async ({ page }) => {
