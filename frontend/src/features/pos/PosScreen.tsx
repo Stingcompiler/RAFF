@@ -4,16 +4,20 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { ConnectionBar } from "@/components/ui/ConnectionBar";
 import { ConnectionIndicator } from "@/components/ui/ConnectionIndicator";
-import { BrandMark, CircleXIcon, SearchIcon, WarningIcon } from "@/components/ui/icons";
+import { BrandMark, SearchIcon } from "@/components/ui/icons";
+import { SyncBadge } from "@/components/ui/SyncBadge";
 import { useToast } from "@/components/ui/Toast";
 import { apiGet, apiSend } from "@/lib/api/browser";
+import { useDeviceOnline } from "@/lib/connectivity";
 import { timeOfDay } from "@/lib/format";
 import { usePhone } from "@/lib/phone";
 
 import { ApprovedDialog } from "./ApprovedDialog";
 import { BatchDialog } from "./BatchDialog";
 import { CartPanel } from "./CartPanel";
+import { CustomerDialog } from "./CustomerDialog";
 import { HeldDialog } from "./HeldDialog";
 import { PaymentDialog } from "./PaymentDialog";
 import { PhoneSell } from "./PhoneSell";
@@ -46,10 +50,12 @@ const TIMES = "×";
 const SEP = "·";
 const KEYS = [
   ["F2", "search"],
-  ["F4", "hold"],
-  ["F6", "resume"],
-  ["F8", "pay"],
-  ["F9", "return"],
+  ["F4", "customer"],
+  ["F6", "discount"],
+  ["F8", "hold"],
+  ["F9", "resume"],
+  ["F10", "return"],
+  ["Enter", "pay"],
   ["Esc", "cancel"],
 ] as const;
 
@@ -57,7 +63,7 @@ const searchItems = (query: string) =>
   apiGet<PosItem[]>(`/pos/items/?q=${encodeURIComponent(query.trim())}`);
 
 type Phase = "idle" | "approving" | "verify" | "failed";
-type Dialogs = "pay" | "held" | "batch" | null;
+type Dialogs = "pay" | "held" | "batch" | "customer" | null;
 
 export type PosScreenProps = {
   deviceId: string;
@@ -77,10 +83,12 @@ export function PosScreen(props: PosScreenProps) {
   const t = useTranslations("pos");
   const tErr = useTranslations("pos.errors");
   const tConn = useTranslations("connection");
+  const tSync = useTranslations("sync");
   const ar = useLocale() === "ar";
   const router = useRouter();
   const toast = useToast();
   const conn = useConnection();
+  const deviceOnline = useDeviceOnline();
   const phone = usePhone();
   const order = props.fromOrder ?? null;
   // An order's cart is kept apart from the counter's own draft.
@@ -93,6 +101,11 @@ export function PosScreen(props: PosScreenProps) {
   // The query `rows` answer; Enter never acts on results for an older query.
   const [rowsFor, setRowsFor] = useState("");
   const [sel, setSel] = useState(0);
+  // Arrow keys on the results mean "I am choosing a row"; until then Enter on an empty box pays.
+  const [navigated, setNavigated] = useState(false);
+  const [discountSignal, setDiscountSignal] = useState(0);
+  // Status bar clock (§9); set after mount so the server render and the first client render agree.
+  const [clock, setClock] = useState<string | null>(null);
   const [shift, setShift] = useState<ShiftSummary>(props.initialShift);
   const [dialog, setDialog] = useState<Dialogs>(null);
   const [batchFor, setBatchFor] = useState<string | null>(null);
@@ -138,6 +151,16 @@ export function PosScreen(props: PosScreenProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.id]);
 
+  useEffect(() => {
+    const tick = () => setClock(timeOfDay(new Date().toISOString()));
+    const first = setTimeout(tick, 0);
+    const timer = setInterval(tick, 15_000);
+    return () => {
+      clearTimeout(first);
+      clearInterval(timer);
+    };
+  }, []);
+
   const focusSearch = useCallback(() => setTimeout(() => input.current?.focus(), 0), []);
 
   // Results follow the query (the server searches Arabic and English names, generic names, codes).
@@ -180,6 +203,7 @@ export function PosScreen(props: PosScreenProps) {
       });
       setMult(1);
       setQuery("");
+      setNavigated(false);
       focusSearch();
     },
     [cart, mult, focusSearch, order],
@@ -187,6 +211,13 @@ export function PosScreen(props: PosScreenProps) {
 
   const onEnter = async () => {
     const code = query.trim();
+    if (!code && !navigated && cart.lines.length > 0) {
+      if (!payDisabled) {
+        setPayError(null);
+        setDialog("pay");
+      }
+      return;
+    }
     if (code && !/\s/.test(code)) {
       const res = await apiGet<PosItem>(`/pos/barcode/?code=${encodeURIComponent(code)}`);
       if (res.ok) return addItem(res.data, res.data.unit);
@@ -309,7 +340,9 @@ export function PosScreen(props: PosScreenProps) {
   };
 
   const shiftOpen = shift.shift !== null;
-  const offline = conn === "unavailable";
+  // Approval needs the server (D-R0002): no network on this device, or a server that does not answer.
+  const serverDown = conn === "unavailable";
+  const offline = serverDown || !deviceOnline;
   const payDisabled =
     offline || !cart.ready || !shiftOpen || phase === "verify" || phase === "approving";
   const anyDialog = dialog !== null || approved !== null || !shiftOpen;
@@ -323,14 +356,17 @@ export function PosScreen(props: PosScreenProps) {
         input.current?.focus();
       } else if (e.key === "F4") {
         e.preventDefault();
-        void hold();
-      } else if (e.key === "F6") {
+        setDialog("customer");
+      } else if (e.key === "F6" || e.key === "F7") {
         e.preventDefault();
-        setDialog("held");
+        if (props.canDiscount && !order) setDiscountSignal((n) => n + 1);
       } else if (e.key === "F8") {
         e.preventDefault();
-        if (!payDisabled) setDialog("pay");
+        void hold();
       } else if (e.key === "F9") {
+        e.preventDefault();
+        setDialog("held");
+      } else if (e.key === "F10") {
         e.preventDefault();
         router.push("/returns");
       } else if (e.key === "Escape") {
@@ -340,7 +376,7 @@ export function PosScreen(props: PosScreenProps) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [anyDialog, hold, payDisabled, router]);
+  }, [anyDialog, hold, payDisabled, router, props.canDiscount, order]);
 
   useEffect(() => {
     if (!anyDialog) input.current?.focus();
@@ -349,9 +385,11 @@ export function PosScreen(props: PosScreenProps) {
   const onQueryKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
+      setNavigated(true);
       setSel((s) => Math.min(s + 1, Math.max(0, rows.length - 1)));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
+      setNavigated(true);
       setSel((s) => Math.max(0, s - 1));
     } else if (e.key === "Enter") {
       e.preventDefault();
@@ -371,26 +409,22 @@ export function PosScreen(props: PosScreenProps) {
   const multText = [TIMES, mult].join(" ");
   const batchLine = cart.lines.find((l) => l.key === batchFor) ?? null;
   const pending = phase === "verify" || phase === "failed" ? 1 : 0;
-  const connText = {
-    online: t("connOnline"),
-    reconnecting: t("connReconnecting"),
-    unavailable: t("connOffline"),
-  }[conn];
+  const chipStatus = deviceOnline ? conn : "unavailable";
+  const connText = !deviceOnline
+    ? tSync("offline")
+    : {
+        online: t("connOnline"),
+        reconnecting: t("connReconnecting"),
+        unavailable: t("connOffline"),
+      }[conn];
   const shiftText = shift.shift
     ? t("shiftLabel", { number: shift.shift.number, time: timeOfDay(shift.shift.opened_at) })
     : t("noShift");
 
   const banners = (
     <>
-      {offline && (
-        <div
-          role="alert"
-          className="flex flex-none items-center gap-[12px] border-b border-danger-solid bg-danger-bg px-[16px] py-[10px] font-medium text-danger-text"
-        >
-          <WarningIcon />
-          {t("offlineMsg")}
-        </div>
-      )}
+      {!deviceOnline && <ConnectionBar kind="device-offline" />}
+      {deviceOnline && serverDown && <ConnectionBar kind="server-unreachable" />}
       {conn === "reconnecting" && (
         <div
           role="status"
@@ -405,7 +439,7 @@ export function PosScreen(props: PosScreenProps) {
           role="alert"
           className="flex flex-none items-center gap-[12px] border-b border-warning-solid bg-warning-bg px-[16px] py-[10px] font-medium text-warning-text"
         >
-          <span className="size-[10px] animate-[raff-pulse_1.4s_ease-in-out_infinite] rounded-full bg-current" />
+          <SyncBadge state="syncing" className="border-current bg-transparent" />
           <span className="flex-1">{t("verifyMsg")}</span>
           <span dir="ltr" className="text-[12px] font-normal">
             {requestRef(cart.pendingKey)}
@@ -424,7 +458,7 @@ export function PosScreen(props: PosScreenProps) {
           role="alert"
           className="flex flex-none items-center gap-[12px] border-b border-danger-solid bg-danger-bg px-[16px] py-[10px] font-medium text-danger-text"
         >
-          <CircleXIcon />
+          <SyncBadge state="failed" className="border-current bg-transparent" />
           <span className="flex-1">{t("failMsg")}</span>
           {cart.pendingKey && (
             <span dir="ltr" className="text-[12px] font-normal">
@@ -452,6 +486,7 @@ export function PosScreen(props: PosScreenProps) {
           busy={phase === "approving"}
           error={payError}
           lines={cart.lines.map(toLineIn)}
+          customer={customer}
           onClose={() => {
             setDialog(null);
             focusSearch();
@@ -459,6 +494,20 @@ export function PosScreen(props: PosScreenProps) {
           onConfirm={(request, chosen) => {
             setCustomer(chosen);
             void approve(order ? { ...request, order_id: order.id } : request);
+          }}
+        />
+      )}
+      {dialog === "customer" && (
+        <CustomerDialog
+          current={customer}
+          onClose={() => {
+            setDialog(null);
+            focusSearch();
+          }}
+          onChoose={(chosen) => {
+            setCustomer(chosen);
+            setDialog(null);
+            focusSearch();
           }}
         />
       )}
@@ -503,9 +552,10 @@ export function PosScreen(props: PosScreenProps) {
     return (
       <PhoneSell
         connection={{
-          status: conn,
-          text:
-            conn === "online"
+          status: chipStatus,
+          text: !deviceOnline
+            ? tSync("offline")
+            : conn === "online"
               ? tConn("chipOnline")
               : conn === "unavailable"
                 ? tConn("chipUnavailable")
@@ -547,9 +597,17 @@ export function PosScreen(props: PosScreenProps) {
             <span>{props.counterName}</span>
             <span>{SEP}</span>
             <span data-testid="shift-label">{shiftText}</span>
+            {clock && (
+              <>
+                <span>{SEP}</span>
+                <bdi dir="ltr" data-testid="clock" className="[unicode-bidi:isolate]">
+                  {clock}
+                </bdi>
+              </>
+            )}
           </div>
           <ConnectionIndicator
-            status={conn}
+            status={chipStatus}
             label={connText}
             detail={t("pending", { count: pending })}
           />
@@ -613,8 +671,10 @@ export function PosScreen(props: PosScreenProps) {
             lines={cart.lines}
             quoted={cart.quoted}
             customerName={customer ? (ar ? customer.name_ar : customer.name_en) : null}
+            onCustomer={() => setDialog("customer")}
             canDiscount={props.canDiscount}
             payDisabled={payDisabled}
+            payBlockedReason={offline ? tSync("approveNeedsServer") : null}
             onChange={(key, patch) =>
               cart.setLines((prev) => prev.map((l) => (l.key === key ? { ...l, ...patch } : l)))
             }
@@ -628,6 +688,10 @@ export function PosScreen(props: PosScreenProps) {
               setDialog("pay");
             }}
             onHold={() => void hold()}
+            onDiscount={() => setDiscountSignal((n) => n + 1)}
+            onResume={() => setDialog("held")}
+            onReturn={() => router.push("/returns")}
+            discountSignal={discountSignal}
           />
         </div>
 

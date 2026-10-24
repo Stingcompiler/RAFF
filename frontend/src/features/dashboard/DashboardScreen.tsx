@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Badge, type Tone } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Panel } from "@/components/ui/Panel";
@@ -101,7 +102,7 @@ function DashboardDesktop({ initial, canAll }: Props) {
       />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-5 min-w-0 max-[1180px]:col-span-12">
-          <Panel title={t("needsAction")} note={t("updated", { time: timeOfDay(stamp) })}>
+          <Panel title={t("needsAction")} note={<StaleStamp at={stamp} />}>
             <ul className="m-0 list-none p-0">
               {ACTIONS.map(({ key, tone, href }) => {
                 const label =

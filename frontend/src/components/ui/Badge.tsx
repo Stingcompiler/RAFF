@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 /** `pending` is only for a record saved on this device and waiting to be sent (v2.2 §1, §8). */
-export type Tone = "success" | "warn" | "danger" | "info" | "pending";
+export type Tone = "success" | "warn" | "danger" | "info" | "pending" | "neutral";
 
 /** State is always symbol + text, never color alone. */
 export const TONE_SYMBOL: Record<Tone, string> = {
@@ -12,6 +12,7 @@ export const TONE_SYMBOL: Record<Tone, string> = {
   danger: "✕",
   info: "■",
   pending: "◌",
+  neutral: "○",
 };
 
 /** Text, fill and border of each status role; `pending` also gets a dashed border. */
@@ -21,6 +22,7 @@ export const TONE_CLASSES: Record<Tone, string> = {
   danger: "text-danger-text bg-danger-bg border-danger-border",
   info: "text-info-text bg-info-bg border-info-border",
   pending: "text-pending-text bg-pending-bg border-pending-border border-dashed",
+  neutral: "text-text-secondary bg-surface-subtle border-border",
 };
 
 type Props = {

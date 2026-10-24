@@ -20,6 +20,8 @@ type Props = {
   busy: boolean;
   error: string | null;
   lines: SaleRequest["lines"];
+  /** Customer chosen on the counter (F4); recorded with any method, required for credit. */
+  customer: Customer | null;
   onClose: () => void;
   onConfirm: (request: SaleRequest, customer: Customer | null) => void;
 };
@@ -31,7 +33,16 @@ const FIELD =
   "h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none";
 const LABEL = "grid gap-[4px] type-label text-text-secondary";
 
-export function PaymentDialog({ open, total, busy, error, lines, onClose, onConfirm }: Props) {
+export function PaymentDialog({
+  open,
+  total,
+  busy,
+  error,
+  lines,
+  customer: chosen,
+  onClose,
+  onConfirm,
+}: Props) {
   const t = useTranslations("pos");
   const ar = useLocale() === "ar";
   const cur = (v: string) => money(v, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
@@ -42,7 +53,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
   const [cashPart, setCashPart] = useState("");
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [customer, setCustomer] = useState<Customer | null>(chosen);
 
   useEffect(() => {
     if (method !== "credit" || !search.trim() || customer) return;
@@ -110,10 +121,7 @@ export function PaymentDialog({ open, total, busy, error, lines, onClose, onConf
     e.preventDefault();
     const p = payments();
     if (!p || busy) return;
-    onConfirm(
-      { lines, payments: p, customer_id: method === "credit" ? (customer?.id ?? null) : null },
-      method === "credit" ? customer : null,
-    );
+    onConfirm({ lines, payments: p, customer_id: customer?.id ?? null }, customer);
   };
 
   const bankFields = (

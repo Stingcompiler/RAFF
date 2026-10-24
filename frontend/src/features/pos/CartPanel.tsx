@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 
 import { ChevronDownIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
@@ -14,8 +15,14 @@ const MINUS = "−";
 const PLUS = "+";
 const PERCENT = "%";
 const CARET = "▾";
-const F8 = "F8";
-const F4 = "F4";
+const ENTER = "Enter";
+const GRID_KEYS = {
+  customer: "F4",
+  discount: "F6",
+  hold: "F8",
+  resume: "F9",
+  return: "F10",
+} as const;
 const MAX_QTY = 999;
 
 type Props = {
@@ -23,13 +30,21 @@ type Props = {
   lines: CartLine[];
   quoted: QuoteState;
   customerName: string | null;
+  onCustomer: () => void;
   canDiscount: boolean;
   payDisabled: boolean;
+  /** Why approval is blocked (no server), shown beside the button instead of hiding it. */
+  payBlockedReason?: string | null;
   onChange: (key: string, patch: Partial<CartLine>) => void;
   onRemove: (key: string) => void;
   onBatch: (key: string) => void;
   onPay: () => void;
   onHold: () => void;
+  onDiscount: () => void;
+  onResume: () => void;
+  onReturn: () => void;
+  /** Bumps when F6 is pressed: focus the discount of the last line. */
+  discountSignal: number;
 };
 
 const digits = (text: string, max: number) =>
@@ -43,6 +58,21 @@ export function CartPanel(props: Props) {
   const cur = (v: string | null | undefined) =>
     money(v ?? "0", ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
   const q = quoted.quote;
+  const list = useRef<HTMLDivElement>(null);
+  const signal = props.discountSignal;
+  useEffect(() => {
+    if (!signal) return;
+    const inputs = list.current?.querySelectorAll<HTMLInputElement>("input[data-discount]:enabled");
+    inputs?.item(inputs.length - 1)?.select();
+  }, [signal]);
+
+  const actions = [
+    { id: "customer", label: t("keys.customer"), run: props.onCustomer },
+    ...(canDiscount ? [{ id: "discount", label: t("keys.discount"), run: props.onDiscount }] : []),
+    { id: "hold", label: t("hold"), run: props.onHold },
+    { id: "resume", label: t("keys.resume"), run: props.onResume },
+    { id: "return", label: t("keys.return"), run: props.onReturn },
+  ] as { id: keyof typeof GRID_KEYS; label: string; run: () => void }[];
 
   return (
     <aside className="flex min-w-[420px] flex-[38] flex-col border-s border-border bg-surface-subtle max-[1023px]:min-h-0 max-[1023px]:min-w-0 max-[1023px]:flex-[1_1_50%] max-[1023px]:border-s-0 max-[1023px]:border-t">
@@ -62,12 +92,23 @@ export function CartPanel(props: Props) {
       )}
       <div className="flex items-center justify-between border-b border-border px-[16px] py-[12px]">
         <span className="text-[16px] font-medium">{t("cart")}</span>
-        <span className="flex items-center gap-[6px] rounded-control border border-border bg-surface px-[12px] py-[6px] text-[13px]">
-          {customerName ?? t("customer")}
+        <button
+          type="button"
+          onClick={props.onCustomer}
+          aria-label={t("customerTitle")}
+          className="type-inherit hit-44 flex max-w-[60%] cursor-pointer items-center gap-[6px] rounded-control border border-border bg-surface px-[12px] py-[6px] text-[13px] text-text"
+        >
+          <span className="min-w-0 truncate">{customerName ?? t("customer")}</span>
+          <span dir="ltr" className="text-[12px] text-text-muted">
+            {GRID_KEYS.customer}
+          </span>
           <ChevronDownIcon size={14} />
-        </span>
+        </button>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-[8px] overflow-y-auto px-[12px] py-[8px]">
+      <div
+        ref={list}
+        className="flex min-h-0 flex-1 flex-col gap-[8px] overflow-y-auto px-[12px] py-[8px]"
+      >
         {lines.length === 0 && (
           <div className="grid flex-1 place-content-center gap-[8px] text-center text-text-muted">
             <div className="text-[16px] font-medium text-text">{t("emptyCart")}</div>
@@ -170,6 +211,7 @@ export function CartPanel(props: Props) {
                     type="text"
                     inputMode="numeric"
                     aria-label={t("discL")}
+                    data-discount=""
                     value={line.discountPct}
                     disabled={!canDiscount || line.locked}
                     onChange={(e) =>
@@ -255,7 +297,7 @@ export function CartPanel(props: Props) {
         </div>
         <div className="flex items-baseline justify-between">
           <span className="font-medium">{t("total")}</span>
-          <span dir="ltr" className="text-[32px] font-medium tabular-nums" data-testid="cart-total">
+          <span dir="ltr" className="type-total tabular-nums" data-testid="cart-total">
             {cur(q?.total)}
           </span>
         </div>
@@ -272,19 +314,29 @@ export function CartPanel(props: Props) {
         >
           {t("pay")}{" "}
           <span dir="ltr" className="text-[13px] opacity-85">
-            {F8}
+            {ENTER}
           </span>
         </button>
-        <button
-          type="button"
-          onClick={props.onHold}
-          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-[14px] font-medium text-text"
-        >
-          {t("hold")}{" "}
-          <span dir="ltr" className="text-[12px] text-text-muted">
-            {F4}
-          </span>
-        </button>
+        {props.payBlockedReason && (
+          <div role="note" className="text-center text-[13px] font-medium text-warning-text">
+            {props.payBlockedReason}
+          </div>
+        )}
+        <div className="grid grid-cols-4 gap-[8px]" data-testid="button-grid">
+          {actions.map(({ id, label, run }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={run}
+              className="type-inherit hit-44 grid min-h-[44px] cursor-pointer place-items-center content-center rounded-control border border-border-strong bg-transparent px-[4px] py-[4px] text-[13px] font-medium text-text"
+            >
+              {label}
+              <span dir="ltr" className="text-[12px] text-text-muted">
+                {GRID_KEYS[id]}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
     </aside>
   );

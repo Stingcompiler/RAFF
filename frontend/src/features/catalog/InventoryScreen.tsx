@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Badge } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { SearchIcon } from "@/components/ui/icons";
@@ -69,6 +70,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
   const [batches, setBatches] = useState<BatchRow[]>([]);
   const [drawer, setDrawer] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
+  const [stamp, setStamp] = useState(() => new Date().toISOString());
   const [form, setForm] = useState<{ open: boolean; item: ItemDetail | null }>({
     open: false,
     item: null,
@@ -86,6 +88,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
       if (category) params.set("category", category);
       const res = await apiGet<Page>(`/inventory/items/?${params}`);
       if (res.ok) {
+        setStamp(new Date().toISOString());
         setPage((prev) =>
           offset ? { ...res.data, results: [...prev.results, ...res.data.results] } : res.data,
         );
@@ -141,6 +144,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
         title={t("title")}
         actions={
           <>
+            <StaleStamp at={stamp} onRefresh={() => void load(0)} />
             <Button
               variant="outline"
               onClick={() => void apiDownload("/catalog/export/", "items.csv")}

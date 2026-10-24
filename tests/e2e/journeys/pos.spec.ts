@@ -45,7 +45,7 @@ test.describe("point of sale", () => {
     await expect(lines(page)).toHaveCount(2);
     await expect(total(page)).toHaveText("2,700 ج.س");
 
-    await page.keyboard.press("F8");
+    await search(page).press("Enter"); // empty box + cart: Enter pays
     const pay = page.getByRole("dialog", { name: "الدفع" });
     await expect(pay.getByTestId("pay-total")).toHaveText("2,700 ج.س");
     await pay.getByLabel("المدفوع").fill("5000");
@@ -78,7 +78,7 @@ test.describe("point of sale", () => {
       await route.abort("timedout");
     });
     const before = await salesCount(page);
-    await page.keyboard.press("F8");
+    await search(page).press("Enter");
     await page
       .getByRole("dialog", { name: "الدفع" })
       .getByRole("button", { name: "اعتماد البيع" })
@@ -99,11 +99,11 @@ test.describe("point of sale", () => {
     await search(page).press("Enter");
     await expect(lines(page)).toHaveCount(1);
 
-    await page.keyboard.press("F4");
+    await page.keyboard.press("F8");
     await expect(page.getByText("عُلّق البيع")).toBeVisible();
     await expect(lines(page)).toHaveCount(0);
 
-    await page.keyboard.press("F6");
+    await page.keyboard.press("F9");
     const held = page.getByRole("dialog", { name: "المبيعات المعلّقة" });
     await held
       .getByRole("button", { name: /استئناف/ })
@@ -125,7 +125,7 @@ test.describe("point of sale", () => {
     await qty.fill("6");
     await expect(total(page)).toHaveText("75,000 ج.س");
 
-    await page.keyboard.press("F8");
+    await search(page).press("Enter"); // empty box + cart: Enter pays
     const pay = page.getByRole("dialog", { name: "الدفع" });
     await pay.getByRole("radio", { name: "آجل" }).click();
     await pay.getByLabel("بحث عن عميل آجل").fill("الأمل");
@@ -138,7 +138,7 @@ test.describe("point of sale", () => {
 
     await qty.fill("5");
     await expect(total(page)).toHaveText("62,500 ج.س");
-    await page.keyboard.press("F8");
+    await search(page).press("Enter");
     await pay.getByRole("radio", { name: "آجل" }).click();
     await pay.getByLabel("بحث عن عميل آجل").fill("الأمل");
     await pay.getByRole("button", { name: /الأمل/ }).click();
@@ -200,7 +200,7 @@ test.describe("point of sale", () => {
     await expect(lines(page)).toHaveCount(1);
     await expect(lines(page).first().getByRole("button", { name: "حذف السطر" })).toBeDisabled();
     await expect(total(page)).toHaveText("1,600 ج.س");
-    await page.keyboard.press("F8");
+    await search(page).press("Enter");
     await page
       .getByRole("dialog", { name: "الدفع" })
       .getByRole("button", { name: "اعتماد البيع" })
@@ -210,6 +210,51 @@ test.describe("point of sale", () => {
     const done = await (await page.request.get(`/api/v1/orders/${row.id}/`)).json();
     expect(done.status).toBe("completed");
     expect(done.sale_number).toMatch(/^INV-/);
+  });
+
+  test("F4 picks a customer who stays on the sale for any payment method", async ({ page }) => {
+    await atCounter(page);
+    await search(page).fill("ORS");
+    await search(page).press("Enter");
+    const chip = page.getByRole("button", { name: "عميل البيع" });
+    await expect(chip).toContainText("عميل نقدي");
+
+    await page.keyboard.press("F4");
+    const dialog = page.getByRole("dialog", { name: "عميل البيع" });
+    await dialog.getByRole("textbox", { name: "ابحث بالاسم أو الهاتف" }).fill("الأمل");
+    await dialog.getByRole("button", { name: /الأمل/ }).click();
+    await expect(dialog).toBeHidden();
+    await expect(chip).toContainText("الأمل");
+
+    await search(page).press("Enter");
+    const pay = page.getByRole("dialog", { name: "الدفع" });
+    await pay.getByRole("button", { name: "اعتماد البيع" }).click(); // cash
+    await expect(page.getByRole("dialog", { name: "اعتُمد البيع" })).toBeVisible();
+    await page.keyboard.press("Enter");
+    await expect(chip).toContainText("عميل نقدي");
+  });
+
+  test("a device without a network cannot approve and says why, then recovers", async ({
+    page,
+    context,
+  }) => {
+    await atCounter(page);
+    await search(page).fill("ORS");
+    await search(page).press("Enter");
+    await expect(lines(page)).toHaveCount(1);
+    const pay = page.getByRole("button", { name: /^الدفع/ });
+    await expect(pay).toBeEnabled();
+
+    await context.setOffline(true);
+    await expect(page.getByText("جهازك غير متصل الآن.")).toBeVisible();
+    await expect(pay).toBeDisabled();
+    await expect(page.getByRole("note")).toContainText("الاعتماد يحتاج الخادم");
+    await expect(lines(page)).toHaveCount(1); // what was entered is kept
+
+    await context.setOffline(false);
+    await expect(page.getByText("جهازك غير متصل الآن.")).toBeHidden();
+    await expect(pay).toBeEnabled();
+    await lines(page).first().getByRole("button", { name: "حذف السطر" }).click();
   });
 });
 

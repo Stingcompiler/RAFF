@@ -15,6 +15,7 @@ import { StorefrontStatusChip } from "@/components/storefront/StorefrontStatusCh
 import { WhatsAppAction } from "@/components/storefront/WhatsAppAction";
 import { Badge, type Tone } from "@/components/ui/Badge";
 import { Button, type ButtonVariant } from "@/components/ui/Button";
+import { ConnectionBar } from "@/components/ui/ConnectionBar";
 import { ConnectionIndicator } from "@/components/ui/ConnectionIndicator";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SearchIcon } from "@/components/ui/icons";
@@ -22,6 +23,8 @@ import { KeyboardHint } from "@/components/ui/KeyboardHint";
 import { ReceiptPreview, type ReceiptData } from "@/components/ui/ReceiptPreview";
 import { SearchField } from "@/components/ui/SearchField";
 import { Segmented } from "@/components/ui/Segmented";
+import { StaleStamp } from "@/components/ui/StaleStamp";
+import { SyncBadge, type SyncState } from "@/components/ui/SyncBadge";
 import { StatusDot } from "@/components/ui/StatusDot";
 import {
   TableEmpty,
@@ -35,6 +38,15 @@ import { Toast, type ToastTone } from "@/components/ui/Toast";
 import { cn } from "@/lib/cn";
 
 // Technical identifiers shown as-is in both locales (component and state names).
+const SYNC_STATES: readonly SyncState[] = [
+  "synced",
+  "offline",
+  "pending",
+  "syncing",
+  "failed",
+  "stale",
+];
+
 const VARIANTS: readonly ButtonVariant[] = ["primary", "outline", "quiet", "danger"];
 const STATES = ["default", "hover", "focus", "disabled", "loading"] as const;
 const CAPTION = {
@@ -240,6 +252,17 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             detail={t("cUnavD")}
           />
         </div>
+        <div className="flex flex-wrap items-center gap-[8px]">
+          {SYNC_STATES.map((state) => (
+            <SyncBadge key={state} state={state} time="07:30" />
+          ))}
+        </div>
+        <div className="grid gap-[8px]">
+          <ConnectionBar kind="device-offline" />
+          <ConnectionBar kind="server-unreachable" />
+          <ConnectionBar kind="syncing" progress={{ done: 3, total: 8 }} />
+        </div>
+        <StaleStamp at="2026-10-22T05:30:00Z" onRefresh={() => undefined} />
       </div>
 
       <div className="grid gap-[12px]">
