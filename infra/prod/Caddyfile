@@ -2,6 +2,12 @@
 # SITE_ADDRESS is the domain (HTTPS) or ":80" for a plain-HTTP drill on a test machine.
 {
 	email {$ACME_EMAIL:admin@localhost}
+
+	# Behind another proxy (shared server) its X-Forwarded-* headers are believed, so Django
+	# sees https and the real client address. Default: nobody is trusted.
+	servers {
+		trusted_proxies static {$RAFF_TRUSTED_PROXIES:127.0.0.1/32}
+	}
 }
 
 {$SITE_ADDRESS} {
