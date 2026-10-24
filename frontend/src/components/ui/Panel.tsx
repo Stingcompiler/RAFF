@@ -18,7 +18,7 @@ export function Panel({ title, note, chips, children, className }: Props) {
       {(title || note) && (
         <div className="flex flex-wrap items-center justify-between gap-[12px] border-b border-border px-(--d-pad) py-[12px]">
           <span className="type-section whitespace-nowrap">{title}</span>
-          {note && <span className="text-end text-[12px] text-text-muted">{note}</span>}
+          {note && <span className="text-end text-caption text-text-muted">{note}</span>}
         </div>
       )}
       {chips && (
@@ -36,7 +36,7 @@ export function Chip({ active, children }: { active?: boolean; children: ReactNo
   return (
     <span
       className={cn(
-        "rounded-full border border-border px-[12px] py-[4px] text-[13px]",
+        "rounded-full border border-border px-[12px] py-[4px] text-label",
         active ? "bg-brand-subtle font-medium" : "text-text-muted",
       )}
     >

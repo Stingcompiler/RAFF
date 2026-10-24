@@ -23,7 +23,7 @@ export function ProductCard(props: Props) {
     <div className="overflow-hidden rounded-card border border-border bg-surface">
       <div
         style={{ height: props.imageHeight ?? 72 }}
-        className="grid place-items-center bg-surface-subtle text-[12px] text-text-muted"
+        className="grid place-items-center bg-surface-subtle text-caption text-text-muted"
       >
         {props.noImageLabel}
       </div>

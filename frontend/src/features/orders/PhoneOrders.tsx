@@ -53,7 +53,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
         {fresh > 0 && (
           <span
             className={cn(
-              "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium",
+              "rounded-pill border px-[7px] py-[1px] text-caption font-medium",
               TONE_CLASSES.info,
             )}
           >
@@ -74,26 +74,26 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
               )}
             >
               <div className="flex items-center justify-between gap-[8px]">
-                <b dir="ltr" className="whitespace-nowrap">
+                <b dir="ltr" className="whitespace-nowrap num">
                   {order.number}
                 </b>
                 <span
                   className={cn(
-                    "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+                    "rounded-pill border px-[7px] py-[1px] text-caption font-medium whitespace-nowrap",
                     TONE_CLASSES[tone],
                   )}
                 >
                   {TONE_SYMBOL[tone]} {t(`status.${order.status}`)}
                 </span>
               </div>
-              <div className="flex justify-between gap-[8px] text-[13px] text-text-muted">
+              <div className="flex justify-between gap-[8px] text-label text-text-muted">
                 <span className="flex min-w-0 gap-[6px]">
                   <span className="min-w-0 truncate">{order.customer_name}</span>
-                  <bdi dir="ltr" className="flex-none [unicode-bidi:isolate]">
+                  <bdi dir="ltr" className="flex-none num">
                     {timeOfDay(order.created_at)}
                   </bdi>
                 </span>
-                <span dir="ltr" className="flex-none font-semibold whitespace-nowrap text-text">
+                <span dir="ltr" className="flex-none font-semibold whitespace-nowrap text-text num">
                   {cur(order.estimated_total)}
                 </span>
               </div>

@@ -26,40 +26,46 @@ export function ReceiptPreview({ data, className }: { data: ReceiptData; classNa
       dir={ar ? "rtl" : "ltr"}
       lang={data.locale}
       className={cn(
-        "w-[302px] bg-receipt-paper px-[16px] pt-[20px] pb-[28px] text-[13px] leading-[1.5] text-receipt-ink shadow-receipt",
-        ar ? "font-sans" : "font-latin",
+        "w-[302px] bg-receipt-paper px-[16px] pt-[20px] pb-[28px] text-label leading-body text-receipt-ink shadow-receipt",
+        "font-ui",
         className,
       )}
     >
-      <div className="text-center text-[16px] font-bold">{data.shop}</div>
-      <div className="text-center text-[12px]">{data.branch}</div>
+      <div className="text-center text-lead font-bold">{data.shop}</div>
+      <div className="text-center text-caption">{data.branch}</div>
       {rule}
-      <div className="flex justify-between text-[12px]">
+      <div className="flex justify-between text-caption">
         <span>{data.number}</span>
-        <span dir="ltr">{data.issuedAt}</span>
+        <span className="num" dir="ltr">
+          {data.issuedAt}
+        </span>
       </div>
       {rule}
       {data.lines.map((l, i) => (
         <div key={i} className="flex justify-between gap-[8px]">
           <span>{l.name}</span>
-          <span dir="ltr" className="tabular-nums">
+          <span dir="ltr" className="num">
             {l.total}
           </span>
         </div>
       ))}
       {rule}
-      <div className="flex justify-between text-[16px] font-bold">
+      <div className="flex justify-between text-lead font-bold">
         <span>{data.totalLabel}</span>
-        <span dir="ltr">{data.total}</span>
+        <span className="num" dir="ltr">
+          {data.total}
+        </span>
       </div>
       {data.payments.map((p) => (
-        <div key={p.label} className="flex justify-between text-[12px]">
+        <div key={p.label} className="flex justify-between text-caption">
           <span>{p.label}</span>
-          <span dir="ltr">{p.amount}</span>
+          <span className="num" dir="ltr">
+            {p.amount}
+          </span>
         </div>
       ))}
       {rule}
-      <div className="text-center text-[12px]">{data.footer}</div>
+      <div className="text-center text-caption">{data.footer}</div>
     </div>
   );
 }

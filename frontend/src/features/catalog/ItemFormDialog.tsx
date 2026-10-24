@@ -109,13 +109,15 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
       className="w-[620px]"
     >
       <form onSubmit={submit} className="grid gap-[12px]">
-        <div id="item-form-title" className="text-[16px] font-medium">
+        <div id="item-form-title" className="text-lead font-medium">
           {editing ? t("edit") : t("newItem")}
         </div>
         <div className="grid max-h-[60dvh] grid-cols-2 gap-[12px] overflow-auto p-[2px] max-[600px]:grid-cols-1">
           {!editing && (
             <Field label={t("fCode")} mark="required">
-              {({ id }) => <TextInput id={id} name="code" dir="ltr" required maxLength={40} />}
+              {({ id }) => (
+                <TextInput className="num" id={id} name="code" dir="ltr" required maxLength={40} />
+              )}
             </Field>
           )}
           <Field label={t("fClass")}>
@@ -133,12 +135,25 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           </Field>
           <Field label={t("fNameEn")} mark="required">
             {({ id }) => (
-              <TextInput id={id} name="name_en" dir="ltr" required defaultValue={v("name_en")} />
+              <TextInput
+                className="num"
+                id={id}
+                name="name_en"
+                dir="ltr"
+                required
+                defaultValue={v("name_en")}
+              />
             )}
           </Field>
           <Field label={t("fGeneric")}>
             {({ id }) => (
-              <TextInput id={id} name="generic_name" dir="ltr" defaultValue={v("generic_name")} />
+              <TextInput
+                className="num"
+                id={id}
+                name="generic_name"
+                dir="ltr"
+                defaultValue={v("generic_name")}
+              />
             )}
           </Field>
           <Field label={t("fCategory")}>
@@ -155,12 +170,24 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           </Field>
           <Field label={t("fStrength")}>
             {({ id }) => (
-              <TextInput id={id} name="strength" dir="ltr" defaultValue={v("strength")} />
+              <TextInput
+                className="num"
+                id={id}
+                name="strength"
+                dir="ltr"
+                defaultValue={v("strength")}
+              />
             )}
           </Field>
           <Field label={t("fForm")}>
             {({ id }) => (
-              <TextInput id={id} name="dosage_form" dir="ltr" defaultValue={v("dosage_form")} />
+              <TextInput
+                className="num"
+                id={id}
+                name="dosage_form"
+                dir="ltr"
+                defaultValue={v("dosage_form")}
+              />
             )}
           </Field>
           {!editing && (
@@ -169,17 +196,20 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
                 {({ id }) => <TextInput id={id} name="base_ar" dir="rtl" required />}
               </Field>
               <Field label={t("fBaseEn")} mark="required">
-                {({ id }) => <TextInput id={id} name="base_en" dir="ltr" required />}
+                {({ id }) => (
+                  <TextInput className="num" id={id} name="base_en" dir="ltr" required />
+                )}
               </Field>
               <Field label={t("fSaleAr")}>
                 {({ id }) => <TextInput id={id} name="sale_ar" dir="rtl" />}
               </Field>
               <Field label={t("fSaleEn")}>
-                {({ id }) => <TextInput id={id} name="sale_en" dir="ltr" />}
+                {({ id }) => <TextInput className="num" id={id} name="sale_en" dir="ltr" />}
               </Field>
               <Field label={t("fFactor")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="factor"
                     type="number"
@@ -190,11 +220,21 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
                 )}
               </Field>
               <Field label={t("fBarcode")}>
-                {({ id }) => <TextInput id={id} name="barcode" dir="ltr" inputMode="numeric" />}
+                {({ id }) => (
+                  <TextInput className="num" id={id} name="barcode" dir="ltr" inputMode="numeric" />
+                )}
               </Field>
               <Field label={t("fPrice")}>
                 {({ id }) => (
-                  <TextInput id={id} name="price" type="number" min={0} step="0.01" dir="ltr" />
+                  <TextInput
+                    className="num"
+                    id={id}
+                    name="price"
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    dir="ltr"
+                  />
                 )}
               </Field>
             </>
@@ -202,6 +242,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           <Field label={t("fReorder")}>
             {({ id }) => (
               <TextInput
+                className="num"
                 id={id}
                 name="reorder"
                 type="number"
@@ -212,7 +253,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
             )}
           </Field>
           {editing && (
-            <label className="flex items-center gap-[8px] text-[14px]">
+            <label className="flex items-center gap-[8px] text-body">
               <input
                 type="checkbox"
                 name="is_active"
@@ -224,7 +265,7 @@ export function ItemFormDialog({ open, onClose, onSaved, categories, ar, item }:
           )}
         </div>
         {error && (
-          <div role="alert" className="text-[13px] font-medium text-danger-text">
+          <div role="alert" className="text-label font-medium text-danger-text">
             {error}
           </div>
         )}

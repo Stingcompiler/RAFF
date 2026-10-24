@@ -13,7 +13,7 @@ export function EmptyState({ title, body, action, className }: Props) {
       )}
     >
       <span className="font-medium">{title}</span>
-      {body && <span className="text-[13px] text-text-muted">{body}</span>}
+      {body && <span className="text-label text-text-muted">{body}</span>}
       {action}
     </div>
   );

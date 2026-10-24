@@ -172,7 +172,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
             placeholder={t("filter")}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="ms-auto h-[30px] w-[200px] rounded-full border border-border-strong bg-transparent px-[12px] text-[13px] text-text outline-none focus:border-brand"
+            className="ms-auto h-[30px] w-[200px] rounded-full border border-border-strong bg-transparent px-[12px] text-label text-text outline-none focus:border-brand"
           />
         }
       >
@@ -192,7 +192,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                 <TableRow columns={columns}>
                   <TextCell>
                     {name}{" "}
-                    <bdi dir="ltr" className="text-[12px] text-text-muted">
+                    <bdi dir="ltr" className="text-caption text-text-muted num">
                       {line.strength}
                     </bdi>
                   </TextCell>
@@ -214,10 +214,10 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                             },
                           }))
                         }
-                        className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
+                        className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text num"
                       />
                     ) : (
-                      <span className="block text-end tabular-nums">
+                      <span className="block text-end num">
                         {line.counted_base === null
                           ? DASH
                           : inUnits(line.counted_base, line.factor)}
@@ -255,7 +255,7 @@ export function StocktakeEditor({ initial, canCount }: { initial: TakeDetail; ca
                           },
                         }))
                       }
-                      className="h-[30px] w-full rounded-control border border-border-strong bg-surface px-[8px] text-[13px] text-text"
+                      className="h-[30px] w-full rounded-control border border-border-strong bg-surface px-[8px] text-label text-text"
                     />
                   </div>
                 )}

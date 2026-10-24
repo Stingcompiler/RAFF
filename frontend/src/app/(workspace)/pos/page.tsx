@@ -33,7 +33,7 @@ export default async function PosPage({ searchParams }: PageProps<"/pos">) {
   if (!me.device || !me.permissions.includes("pos.sell")) {
     return (
       <main className="grid min-h-dvh place-content-center justify-items-center gap-[16px] bg-canvas p-[24px] text-center text-text">
-        <p className="text-[16px] font-medium">{t("noCounter")}</p>
+        <p className="text-lead font-medium">{t("noCounter")}</p>
         <Link href="/login?step=context" className={cn(buttonClasses({}), "no-underline")}>
           {t("chooseCounter")}
         </Link>

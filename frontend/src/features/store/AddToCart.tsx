@@ -52,18 +52,18 @@ export function AddToCart({ product }: { product: Product }) {
           type="button"
           aria-label={t("decrease")}
           onClick={() => setQty((q) => Math.max(1, q - 1))}
-          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-text"
+          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-section text-text"
         >
           {MINUS}
         </button>
-        <span dir="ltr" aria-label={t("qty")} className="w-[44px] text-center font-semibold">
+        <span dir="ltr" aria-label={t("qty")} className="w-[44px] text-center font-semibold num">
           {qty}
         </span>
         <button
           type="button"
           aria-label={t("increase")}
           onClick={() => setQty((q) => Math.min(20, q + 1))}
-          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-[20px] text-text"
+          className="type-inherit grid h-[48px] w-[44px] cursor-pointer place-items-center border-0 bg-transparent text-section text-text"
         >
           {PLUS}
         </button>
@@ -75,7 +75,7 @@ export function AddToCart({ product }: { product: Product }) {
           toast.push("success", t("added"));
         }}
         className={cn(
-          "min-h-[48px] cursor-pointer rounded-control px-[20px] text-[16px] font-semibold",
+          "min-h-[48px] cursor-pointer rounded-control px-[20px] text-lead font-semibold",
           BUTTON.solid,
         )}
       >

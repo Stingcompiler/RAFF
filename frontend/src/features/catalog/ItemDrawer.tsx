@@ -122,12 +122,12 @@ export function ItemDrawer({
         <>
           <div className="flex items-center gap-[12px] border-b border-border px-[20px] py-[16px]">
             <div className="min-w-0 flex-1">
-              <div id="item-drawer-title" className="text-[16px] font-medium">
+              <div id="item-drawer-title" className="text-lead font-medium">
                 {ar
                   ? `${current.name_ar} · ${current.name_en}`
                   : `${current.name_en} · ${current.generic_name}`}
               </div>
-              <div dir="ltr" className="text-start text-[13px] text-text-muted">
+              <div dir="ltr" className="text-start text-label text-text-muted num">
                 {[strengthForm(current), current.sale_unit?.barcodes[0]]
                   .filter(Boolean)
                   .join(" · ")}
@@ -137,7 +137,7 @@ export function ItemDrawer({
               type="button"
               onClick={onClose}
               aria-label={t("close")}
-              className="size-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-[18px] text-text"
+              className="size-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-lead text-text"
             >
               {CLOSE}
             </button>
@@ -154,7 +154,7 @@ export function ItemDrawer({
                 aria-selected={i === tab}
                 onClick={() => setTab(i)}
                 className={cn(
-                  "cursor-pointer border-0 bg-transparent px-[2px] py-[12px] text-[13px] font-medium whitespace-nowrap transition-[color,box-shadow] duration-(--motion-feedback) [font-family:inherit]",
+                  "cursor-pointer border-0 bg-transparent px-[2px] py-[12px] text-label font-medium whitespace-nowrap transition-[color,box-shadow] duration-(--motion-feedback) [font-family:inherit]",
                   i === tab
                     ? "text-brand shadow-[inset_0_-2px_0_var(--color-brand)]"
                     : "text-text-muted shadow-[inset_0_-2px_0_transparent]",
@@ -168,10 +168,14 @@ export function ItemDrawer({
             {tab === 0 && (
               <>
                 <DrawerRow label={t("code")}>
-                  <span dir="ltr">{current.code}</span>
+                  <span className="num" dir="ltr">
+                    {current.code}
+                  </span>
                 </DrawerRow>
                 <DrawerRow label={t("generic")}>
-                  <span dir="ltr">{current.generic_name}</span>
+                  <span className="num" dir="ltr">
+                    {current.generic_name}
+                  </span>
                 </DrawerRow>
                 <DrawerRow label={t("category")}>
                   {current.category ? pick(ar, current.category) : ""}
@@ -194,7 +198,7 @@ export function ItemDrawer({
               current.units.map((u) => (
                 <div key={u.id}>
                   <DrawerRow label={pick(ar, u)}>
-                    <span dir="ltr">
+                    <span className="num" dir="ltr">
                       {u.is_base
                         ? "1"
                         : t("unitEq", { factor: u.factor, base: base?.name_en ?? "" })}
@@ -202,7 +206,9 @@ export function ItemDrawer({
                   </DrawerRow>
                   {u.barcodes.map((code) => (
                     <DrawerRow key={code} label={`${t("barcode")} · ${pick(ar, u)}`}>
-                      <span dir="ltr">{code}</span>
+                      <span className="num" dir="ltr">
+                        {code}
+                      </span>
                     </DrawerRow>
                   ))}
                 </div>
@@ -220,7 +226,11 @@ export function ItemDrawer({
                   return (
                     <DrawerRow
                       key={`${b.batch_id}-${b.location}`}
-                      label={<span dir="ltr">{label}</span>}
+                      label={
+                        <span className="num" dir="ltr">
+                          {label}
+                        </span>
+                      }
                     >
                       <span className="flex items-center gap-[8px]">
                         <Badge tone={BATCH_TONE[b.status]} dense>
@@ -252,7 +262,14 @@ export function ItemDrawer({
                     sign + inSaleUnit(Math.abs(m.quantity_base), current.sale_unit?.factor),
                   ].join(" ");
                   return (
-                    <DrawerRow key={m.id} label={<span dir="ltr">{when}</span>}>
+                    <DrawerRow
+                      key={m.id}
+                      label={
+                        <span className="num" dir="ltr">
+                          {when}
+                        </span>
+                      }
+                    >
                       {text}
                     </DrawerRow>
                   );
@@ -270,14 +287,21 @@ export function ItemDrawer({
                 <DrawerRow label={t("margin")}>
                   {stock?.stock.margin_pct ? `${stock.stock.margin_pct}%` : DASH}
                 </DrawerRow>
-                <div className="px-[20px] pt-[16px] pb-[4px] text-[12px] font-medium text-text-muted">
+                <div className="px-[20px] pt-[16px] pb-[4px] text-caption font-medium text-text-muted">
                   {t("priceHistory")}
                 </div>
                 {current.prices.map((p) => {
                   const list = p.price_list === "retail" ? t("retail") : t("wholesale");
                   const text = [list, amount(p.price)].join(" · ");
                   return (
-                    <DrawerRow key={p.id} label={<span dir="ltr">{p.effective_from}</span>}>
+                    <DrawerRow
+                      key={p.id}
+                      label={
+                        <span className="num" dir="ltr">
+                          {p.effective_from}
+                        </span>
+                      }
+                    >
                       {text}
                     </DrawerRow>
                   );
@@ -304,14 +328,16 @@ export function ItemDrawer({
       )}
       <Dialog open={!!releasing} onClose={() => setReleasing(null)} labelledBy="release-title">
         <form onSubmit={release} className="grid gap-[12px]">
-          <div id="release-title" className="text-[16px] font-medium">
+          <div id="release-title" className="text-lead font-medium">
             {t("releaseTitle")}
           </div>
-          <div dir="ltr" className="text-start text-text-muted">
+          <div dir="ltr" className="text-start text-text-muted num">
             {releasing?.batch_no}
           </div>
           <Field label={t("expiry")}>
-            {({ id }) => <TextInput id={id} name="expiry" type="date" dir="ltr" required />}
+            {({ id }) => (
+              <TextInput className="num" id={id} name="expiry" type="date" dir="ltr" required />
+            )}
           </Field>
           <div className="flex justify-end gap-[8px]">
             <Button variant="outline" size="lg" onClick={() => setReleasing(null)}>

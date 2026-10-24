@@ -7,7 +7,7 @@ import { type FormEvent, useState } from "react";
 import { apiSend } from "@/lib/api/browser";
 
 const FIELD =
-  "h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-[17px] text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+  "h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
 
 /** Order number + phone → the order page (the number alone never opens an order). */
 export function TrackScreen() {
@@ -30,10 +30,10 @@ export function TrackScreen() {
   };
   return (
     <section className="grid max-w-[480px] gap-[16px] px-[20px] pt-[32px] pb-[48px]">
-      <h1 className="m-0 text-[30px] font-semibold">{t("trackT")}</h1>
+      <h1 className="m-0 text-land-section font-semibold">{t("trackT")}</h1>
       <p className="m-0 text-text-secondary">{t("trackB")}</p>
       <form onSubmit={submit} className="grid gap-[16px]">
-        <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
+        <label className="grid gap-[4px] text-body font-semibold text-text-muted">
           {t("orderNo")}
           <input
             dir="ltr"
@@ -46,7 +46,7 @@ export function TrackScreen() {
             className={FIELD}
           />
         </label>
-        <label className="grid gap-[4px] text-[14px] font-semibold text-text-muted">
+        <label className="grid gap-[4px] text-body font-semibold text-text-muted">
           {t("phoneL")}
           <input
             dir="ltr"
@@ -63,7 +63,7 @@ export function TrackScreen() {
         <button
           type="submit"
           disabled={busy || !number || !phone}
-          className="min-h-[52px] cursor-pointer rounded-card border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+          className="min-h-[52px] cursor-pointer rounded-card border-0 bg-brand text-lead font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
         >
           {t("trackBtn")}
         </button>

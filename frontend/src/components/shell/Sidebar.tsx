@@ -37,7 +37,7 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
           : "max-[760px]:ltr:-translate-x-[110%] max-[760px]:rtl:translate-x-[110%]",
       )}
     >
-      <div className="flex items-center gap-[8px] px-[8px] pt-[4px] pb-[16px] text-[18px] font-bold text-brand">
+      <div className="flex items-center gap-[8px] px-[8px] pt-[4px] pb-[16px] text-lead font-bold text-brand">
         <BrandMark className="flex-none" />
         <span className="max-[1180px]:hidden max-[760px]:inline">{t("app.name")}</span>
       </div>
@@ -69,14 +69,14 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
               {t(`nav.${item.key}`)}
             </span>
             {badge ? (
-              <span className="grid h-[22px] min-w-[22px] flex-none place-items-center rounded-full bg-brand text-[12px] font-semibold text-on-brand max-[1180px]:hidden max-[760px]:grid">
+              <span className="grid h-[22px] min-w-[22px] flex-none place-items-center rounded-full bg-brand text-caption font-semibold text-on-brand max-[1180px]:hidden max-[760px]:grid">
                 {badge}
               </span>
             ) : null}
           </Link>
         );
       })}
-      <div className="mt-auto border-t border-border p-[8px] text-[12px] text-text-muted max-[1180px]:hidden max-[760px]:block">
+      <div className="mt-auto border-t border-border p-[8px] text-caption text-text-muted max-[1180px]:hidden max-[760px]:block">
         {context.deviceLine}
       </div>
     </nav>

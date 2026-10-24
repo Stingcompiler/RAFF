@@ -35,7 +35,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
   return (
     <Dialog open labelledBy="shift-title" className="w-[440px] gap-[16px]">
       <form onSubmit={submit} className="grid gap-[16px]">
-        <div id="shift-title" className="text-[16px] font-medium">
+        <div id="shift-title" className="text-lead font-medium">
           {t("openShift")}
         </div>
         <div className="text-text-muted">{canOpen ? t("shiftHint") : t("shiftNoPermission")}</div>
@@ -48,7 +48,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
                 inputMode="decimal"
                 value={opening}
                 onChange={(e) => setOpening(cleanAmount(e.target.value))}
-                className="h-[44px] rounded-control border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none"
+                className="h-[44px] rounded-control border-2 border-brand bg-canvas px-[12px] text-lead font-medium text-text outline-none num"
               />
             </label>
             {error && (
@@ -62,7 +62,7 @@ export function ShiftDialog({ canOpen, onOpened, onLeave }: Props) {
             <button
               type="submit"
               disabled={busy || !opening}
-              className="h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+              className="h-[48px] cursor-pointer rounded-control border-0 bg-brand text-lead font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
             >
               {t("openShift")}
             </button>

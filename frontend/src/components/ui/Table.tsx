@@ -126,8 +126,8 @@ export function TextCell({ children }: { children: ReactNode }) {
 /** Number cell: end-aligned, tabular, isolated direction. */
 export function NumberCell({ children }: { children: ReactNode }) {
   return (
-    <span role="cell" className="text-end tabular-nums [unicode-bidi:isolate]">
-      {children}
+    <span role="cell" className="text-end">
+      <span className="num">{children}</span>
     </span>
   );
 }
@@ -135,11 +135,7 @@ export function NumberCell({ children }: { children: ReactNode }) {
 /** Code-like cell: dates, batches, barcodes — 13px tabular, isolated LTR. */
 export function CodeCell({ children }: { children: ReactNode }) {
   return (
-    <span
-      role="cell"
-      dir="ltr"
-      className="text-start text-[13px] tabular-nums [unicode-bidi:isolate]"
-    >
+    <span role="cell" dir="ltr" className="text-start text-label num">
       {children}
     </span>
   );
@@ -157,7 +153,7 @@ export function BadgeCell({ tone, children }: { tone: Tone; children: ReactNode 
 
 export function TableEmpty({ children }: { children: ReactNode }) {
   return (
-    <div className="border-t border-border p-[16px] text-center text-[13px] text-text-muted">
+    <div className="border-t border-border p-[16px] text-center text-label text-text-muted">
       {children}
     </div>
   );

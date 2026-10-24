@@ -125,9 +125,14 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
       note={customer ? t("customer", { name: customer }) : undefined}
     >
       <form onSubmit={find} className="flex items-end gap-[8px] p-[12px]">
-        <label className="grid flex-1 gap-[4px] text-[12px] font-medium text-text-muted">
+        <label className="grid flex-1 gap-[4px] text-caption font-medium text-text-muted">
           {t("invoiceNo")}
-          <TextInput dir="ltr" value={number} onChange={(e) => setNumber(e.target.value)} />
+          <TextInput
+            className="num"
+            dir="ltr"
+            value={number}
+            onChange={(e) => setNumber(e.target.value)}
+          />
         </label>
         <Button type="submit" variant="outline" disabled={!number.trim()}>
           {t("find")}
@@ -148,7 +153,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                 <TableRow key={line.id} columns={columns}>
                   <TextCell>
                     {ar ? line.name_ar : line.name_en}{" "}
-                    <bdi dir="ltr" className="text-[12px] text-text-muted">
+                    <bdi dir="ltr" className="text-caption text-text-muted num">
                       {line.strength}
                     </bdi>
                   </TextCell>
@@ -168,7 +173,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                           qty: Math.max(0, Math.min(line.returnable, Number(e.target.value) || 0)),
                         })
                       }
-                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text tabular-nums"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface px-[6px] text-end text-text num"
                     />
                   </span>
                   <span role="cell">
@@ -176,7 +181,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       aria-label={`${t("colReason")} ${line.name_en}`}
                       value={c?.reason ?? "damaged"}
                       onChange={(e) => set(line.id, { reason: e.target.value as Choice["reason"] })}
-                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-[13px] text-text"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-label text-text"
                     >
                       {REASONS.map((r) => (
                         <option key={r} value={r}>
@@ -192,7 +197,7 @@ export function ReturnForm({ onPosted }: { onPosted: () => void }) {
                       onChange={(e) =>
                         set(line.id, { condition: e.target.value as Choice["condition"] })
                       }
-                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-[13px] text-text"
+                      className="h-[32px] w-full rounded-control border border-border-strong bg-surface text-label text-text"
                     >
                       {CONDITIONS.map((r) => (
                         <option key={r} value={r}>

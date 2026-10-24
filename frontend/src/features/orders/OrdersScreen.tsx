@@ -96,7 +96,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                   type="button"
                   onClick={() => setPeriod(p)}
                   className={cn(
-                    "type-inherit cursor-pointer rounded-control border-0 px-[10px] py-[4px] text-[13px]",
+                    "type-inherit cursor-pointer rounded-control border-0 px-[10px] py-[4px] text-label",
                     period === p
                       ? "bg-surface font-medium text-brand"
                       : "bg-transparent text-text-muted",
@@ -106,7 +106,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                 </button>
               ))}
             </span>
-            <label className="flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
+            <label className="flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-label text-text-muted focus-within:border-brand">
               <SearchIcon size={14} />
               <input
                 type="search"
@@ -114,7 +114,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
                 placeholder={t("search")}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
+                className="w-[160px] border-0 bg-transparent p-0 text-label text-text outline-none"
               />
             </label>
           </>

@@ -32,7 +32,7 @@ export function CartScreen() {
   );
   return (
     <section className="grid gap-[16px] px-[20px] pt-[24px] pb-[40px]">
-      <h1 className="m-0 text-[30px] font-semibold">{t("cart")}</h1>
+      <h1 className="m-0 text-land-section font-semibold">{t("cart")}</h1>
       {ready && rows.length === 0 && (
         <div className="grid justify-items-center gap-[8px] rounded-card border border-dashed border-border-strong px-[20px] py-[48px] text-center">
           <b>{t("emptyT")}</b>
@@ -61,16 +61,16 @@ export function CartScreen() {
               </div>
               <div className="min-w-0">
                 <div className="font-semibold">{productName(ar, product)}</div>
-                <div className="text-[13px] text-text-muted">
+                <div className="text-label text-text-muted">
                   {[
                     ar ? product.unit_ar : product.unit_en,
                     product.price ? money(product.price, ar ? "ar" : "en") : t("pharmacistReview"),
                   ].join(SEP)}
                   {product.price_date && (
-                    <span className="text-[12px] whitespace-nowrap">
+                    <span className="text-caption whitespace-nowrap">
                       {SEP}
                       {t("updated")}{" "}
-                      <bdi dir="ltr" className="[unicode-bidi:isolate]">
+                      <bdi dir="ltr" className="num">
                         {product.price_date}
                       </bdi>
                     </span>
@@ -87,7 +87,7 @@ export function CartScreen() {
                   >
                     {MINUS}
                   </button>
-                  <span dir="ltr" className="w-[32px] text-center font-semibold">
+                  <span dir="ltr" className="w-[32px] text-center font-semibold num">
                     {line.qty}
                   </span>
                   <button
@@ -119,18 +119,18 @@ export function CartScreen() {
             <span
               dir="ltr"
               data-testid="store-estimate"
-              className="text-[26px] font-semibold tabular-nums"
+              className="text-land-section font-semibold num"
             >
               {money(estimate, ar ? "ar" : "en") || money("0", ar ? "ar" : "en")}
             </span>
           </div>
-          <div className="rounded-control bg-warning-bg px-[12px] py-[10px] text-[14px] font-medium text-warning-text">
+          <div className="rounded-control bg-warning-bg px-[12px] py-[10px] text-body font-medium text-warning-text">
             {t("cartNote")}
           </div>
           <Link
             href="/checkout"
             className={cn(
-              "inline-flex min-h-[52px] items-center justify-center rounded-card text-[16px] font-semibold no-underline",
+              "inline-flex min-h-[52px] items-center justify-center rounded-card text-lead font-semibold no-underline",
               BUTTON.solid,
             )}
           >

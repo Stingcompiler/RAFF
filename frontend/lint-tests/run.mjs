@@ -30,6 +30,8 @@ const cases = [
   ["bad-physical.tsx", "eslint", "raff/no-physical-properties", [5, 6, 7, 8, 9, 10]],
   ["bad-text.tsx", "eslint", "react/jsx-no-literals", [5, 6]],
   ["bad-legacy.tsx", "eslint", "raff/no-legacy-token", [5, 6, 7, 8, 9]],
+  ["bad-font.tsx", "eslint", "raff/no-raw-font", [5, 6, 7, 8]],
+  ["good.tsx", "eslint", "raff/no-raw-font", []],
   ["good.tsx", "eslint", "raff/no-legacy-token", []],
   ["good.tsx", "eslint", "raff/no-raw-color", []],
   ["good.tsx", "eslint", "raff/no-physical-properties", []],

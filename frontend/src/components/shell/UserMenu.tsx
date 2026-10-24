@@ -76,7 +76,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
         onClick={() => setOpen((v) => !v)}
         className="hit-44 flex cursor-pointer items-center gap-[8px] border-0 bg-transparent p-0 type-inherit font-medium text-text"
       >
-        <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-[12px]">
+        <span className="grid size-[28px] place-items-center rounded-full bg-brand-subtle text-caption">
           {initial}
         </span>
         <span className="max-[760px]:hidden">{name}</span>
@@ -86,7 +86,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           role="menu"
           className="absolute end-0 top-[40px] z-[7] grid w-[220px] gap-[2px] rounded-card border border-border bg-surface-raised p-[6px] shadow-dialog"
         >
-          <div className="px-[12px] pt-[6px] pb-[2px] text-[12px] font-medium text-text-muted">
+          <div className="px-[12px] pt-[6px] pb-[2px] text-caption font-medium text-text-muted">
             {t("language")}
           </div>
           <button
@@ -107,7 +107,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           >
             {t("localeEn")}
           </button>
-          <div className="px-[12px] pt-[8px] pb-[2px] text-[12px] font-medium text-text-muted">
+          <div className="px-[12px] pt-[8px] pb-[2px] text-caption font-medium text-text-muted">
             {t("theme")}
           </div>
           <button
@@ -128,7 +128,7 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
           >
             {t("themeDark")}
           </button>
-          <div className="px-[12px] pt-[8px] pb-[2px] text-[12px] font-medium text-text-muted">
+          <div className="px-[12px] pt-[8px] pb-[2px] text-caption font-medium text-text-muted">
             {t("density")}
           </div>
           {densities.map((d) => (

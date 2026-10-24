@@ -87,7 +87,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
             autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
+            className="min-w-0 flex-1 border-0 bg-transparent text-lead text-text outline-none"
           />
         </label>
         <div className="grid content-start gap-[8px] overflow-y-auto pb-[16px]">
@@ -104,7 +104,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                   setOpen(expanded ? null : item.id);
                 }}
                 className={cn(
-                  "grid w-full cursor-pointer gap-[4px] rounded-card border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-[14px] text-text",
+                  "grid w-full cursor-pointer gap-[4px] rounded-card border bg-surface px-[14px] py-[12px] text-start font-[inherit] text-body text-text",
                   "transition-[border-color,transform] duration-(--motion-feedback)",
                   expanded ? "border-brand" : "border-border",
                 )}
@@ -113,17 +113,14 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                   <span className="min-w-0 truncate font-medium">
                     {[pick(ar, item), item.strength].filter(Boolean).join(" ")}
                   </span>
-                  <span
-                    dir="ltr"
-                    className="flex-none font-semibold whitespace-nowrap tabular-nums"
-                  >
+                  <span dir="ltr" className="flex-none font-semibold whitespace-nowrap num">
                     {item.price ? cur(item.price) : DASH}
                   </span>
                 </span>
-                <span className="flex items-center gap-[8px] text-[13px] whitespace-nowrap text-text-muted">
+                <span className="flex items-center gap-[8px] text-label whitespace-nowrap text-text-muted">
                   <span>
                     {t("stock")}{" "}
-                    <b dir="ltr" className="text-text">
+                    <b dir="ltr" className="text-text num">
                       {inSaleUnit(item.stock.sellable_base, item.sale_unit?.factor)}
                     </b>
                   </span>
@@ -143,18 +140,18 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                     expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                   )}
                 >
-                  <span className="grid gap-[4px] overflow-hidden pt-[8px] text-[13px] text-text-muted">
+                  <span className="grid gap-[4px] overflow-hidden pt-[8px] text-label text-text-muted">
                     <span>
                       {t("batch")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-text">
+                      <b dir="ltr" className="text-text num">
                         {expanded ? (batch?.batch_no ?? DASH) : DASH}
                       </b>
                     </span>
                     <span>
                       {t("exp")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-text">
+                      <b dir="ltr" className="text-text num">
                         {expanded
                           ? (batch?.expiry_date ?? item.stock.nearest_expiry ?? DASH)
                           : DASH}
@@ -163,7 +160,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
                     <span>
                       {t("form")}
                       {COLON}{" "}
-                      <b dir="ltr" className="text-text">
+                      <b dir="ltr" className="text-text num">
                         {strengthForm(item) || DASH}
                       </b>
                     </span>
@@ -179,7 +176,7 @@ export function PhoneSearch({ initial }: { initial: Page }) {
             <button
               type="button"
               onClick={() => void more()}
-              className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-[inherit] text-[14px] text-text"
+              className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent font-[inherit] text-body text-text"
             >
               {tInv("more")}
             </button>

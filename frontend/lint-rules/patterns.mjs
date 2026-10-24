@@ -150,3 +150,31 @@ export function findPhysicalInCssText(text) {
   }
   return null;
 }
+
+/**
+ * Type values written in a component instead of the named scale (WO-19 / D-R0014):
+ * text-[14px], leading-[1.7], tracking-[…], font-[600], [font-family:…], [font-size:…].
+ * `inherit` is not a value: a control may take its parent's font.
+ */
+const RAW_FONT_CLASS = /(?:^|[\s:"'`])(?:text|leading|tracking|font)-\[([^\]]*)\]/g;
+const RAW_FONT_DECL =
+  /\[(?:font-family|font-size|font-weight|line-height|letter-spacing):([^\]]*)\]/g;
+export function findRawFont(text) {
+  for (const re of [RAW_FONT_CLASS, RAW_FONT_DECL]) {
+    for (const m of text.matchAll(re)) {
+      const value = m[1].trim().toLowerCase();
+      if (value === "inherit" || value === "") continue;
+      // text-[color:var(--x)] and text-[length:…] style hints are not type sizes here.
+      return m[0].trim();
+    }
+  }
+  return null;
+}
+
+export const RAW_FONT_STYLE_PROPS = new Set([
+  "fontSize",
+  "fontFamily",
+  "fontWeight",
+  "lineHeight",
+  "letterSpacing",
+]);

@@ -87,19 +87,19 @@ export function CartPanel(props: Props) {
               name: props.fromOrder.customer_name,
             })}
           </span>
-          <span className="text-[12px] whitespace-nowrap">{t("locked")}</span>
+          <span className="text-caption whitespace-nowrap">{t("locked")}</span>
         </div>
       )}
       <div className="flex items-center justify-between border-b border-border px-[16px] py-[12px]">
-        <span className="text-[16px] font-medium">{t("cart")}</span>
+        <span className="text-lead font-medium">{t("cart")}</span>
         <button
           type="button"
           onClick={props.onCustomer}
           aria-label={t("customerTitle")}
-          className="type-inherit hit-44 flex max-w-[60%] cursor-pointer items-center gap-[6px] rounded-control border border-border bg-surface px-[12px] py-[6px] text-[13px] text-text"
+          className="type-inherit hit-44 flex max-w-[60%] cursor-pointer items-center gap-[6px] rounded-control border border-border bg-surface px-[12px] py-[6px] text-label text-text"
         >
           <span className="min-w-0 truncate">{customerName ?? t("customer")}</span>
-          <span dir="ltr" className="text-[12px] text-text-muted">
+          <span dir="ltr" className="text-caption text-text-muted num">
             {GRID_KEYS.customer}
           </span>
           <ChevronDownIcon size={14} />
@@ -111,7 +111,7 @@ export function CartPanel(props: Props) {
       >
         {lines.length === 0 && (
           <div className="grid flex-1 place-content-center gap-[8px] text-center text-text-muted">
-            <div className="text-[16px] font-medium text-text">{t("emptyCart")}</div>
+            <div className="text-lead font-medium text-text">{t("emptyCart")}</div>
             <div>{t("emptyHint")}</div>
           </div>
         )}
@@ -149,20 +149,20 @@ export function CartPanel(props: Props) {
                 </button>
                 <span className="min-w-0 flex-1 font-medium">
                   {pick(ar, line.item)}{" "}
-                  <bdi dir="ltr" className="text-[12px] text-text-muted [unicode-bidi:isolate]">
+                  <bdi dir="ltr" className="text-caption text-text-muted num">
                     {line.item.strength}
                   </bdi>{" "}
                   {line.item.rx && (
-                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[12px] font-semibold text-info-text">
+                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] num text-caption font-semibold text-info-text">
                       {t("rx")}
                     </span>
                   )}
                 </span>
-                <span dir="ltr" className="font-semibold tabular-nums" data-testid="line-total">
+                <span dir="ltr" className="font-semibold num" data-testid="line-total">
                   {ql ? cur(ql.line_total) : ""}
                 </span>
               </div>
-              <div className="flex flex-wrap items-center gap-[8px] text-[12px] whitespace-nowrap text-text-muted">
+              <div className="flex flex-wrap items-center gap-[8px] text-caption whitespace-nowrap text-text-muted">
                 <label className="relative rounded-control border border-border px-[8px] py-[3px] text-text">
                   {unitChip}
                   <select
@@ -194,7 +194,7 @@ export function CartPanel(props: Props) {
                       ? line.batch.no || t("batchChosen")
                       : t("fefo")}
                 </button>
-                <span dir="ltr" className="tabular-nums">
+                <span dir="ltr" className="num">
                   {ql ? cur(ql.unit_price) : ""}
                 </span>
                 <label
@@ -217,16 +217,16 @@ export function CartPanel(props: Props) {
                     onChange={(e) =>
                       props.onChange(line.key, { discountPct: digits(e.target.value, 100) })
                     }
-                    className="w-[30px] border-0 bg-transparent p-0 text-center text-inherit outline-none [font:inherit]"
+                    className="w-[30px] border-0 bg-transparent p-0 text-center text-inherit outline-none [font:inherit] num"
                   />
                   {PERCENT}
                 </label>
                 {line.unit.factor > 1 && base && (
-                  <span className="text-[12px]">
+                  <span className="text-caption">
                     {t("conv", { unit: unitName, factor: line.unit.factor, base: pick(ar, base) })}
                   </span>
                 )}
-                <span className="ms-auto flex items-center overflow-hidden rounded-control border border-border text-[14px] text-text">
+                <span className="ms-auto flex items-center overflow-hidden rounded-control border border-border text-body text-text">
                   <button
                     type="button"
                     aria-label={t("decrease")}
@@ -249,10 +249,11 @@ export function CartPanel(props: Props) {
                       props.onChange(line.key, { quantity: digits(e.target.value, MAX_QTY) })
                     }
                     className={cn(
-                      "h-[40px] w-[48px] border-0 text-center font-sans text-[14px] font-semibold tabular-nums outline-none",
+                      "h-[40px] w-[48px] border-0 text-center text-body font-semibold num outline-none",
                       error && !lineError
                         ? "bg-danger-bg text-danger-text"
                         : "bg-surface text-text",
+                      "num",
                     )}
                   />
                   <button
@@ -272,7 +273,7 @@ export function CartPanel(props: Props) {
                 {error && (
                   <span
                     role="alert"
-                    className="basis-full text-[12px] font-medium text-danger-text"
+                    className="basis-full text-caption font-medium text-danger-text"
                   >
                     {error}
                   </span>
@@ -285,19 +286,19 @@ export function CartPanel(props: Props) {
       <div className="grid gap-[8px] border-t border-border bg-surface p-[16px]">
         <div className="flex justify-between text-text-muted">
           <span>{t("sub")}</span>
-          <span dir="ltr" className="tabular-nums">
+          <span dir="ltr" className="num">
             {cur(q?.subtotal)}
           </span>
         </div>
         <div className="flex justify-between text-text-muted">
           <span>{t("disc")}</span>
-          <span dir="ltr" className="tabular-nums">
+          <span dir="ltr" className="num">
             {cur(q?.discount_total)}
           </span>
         </div>
         <div className="flex items-baseline justify-between">
           <span className="font-medium">{t("total")}</span>
-          <span dir="ltr" className="type-total tabular-nums" data-testid="cart-total">
+          <span dir="ltr" className="type-total num" data-testid="cart-total">
             {cur(q?.total)}
           </span>
         </div>
@@ -306,19 +307,19 @@ export function CartPanel(props: Props) {
           onClick={props.onPay}
           disabled={payDisabled}
           className={cn(
-            "flex h-[52px] items-center justify-center gap-[12px] rounded-control border-0 text-[18px] font-semibold",
+            "flex h-[52px] items-center justify-center gap-[12px] rounded-control border-0 text-lead font-semibold",
             payDisabled
               ? "cursor-not-allowed bg-border text-text-muted"
               : "cursor-pointer bg-brand text-on-brand",
           )}
         >
           {t("pay")}{" "}
-          <span dir="ltr" className="text-[13px] opacity-85">
+          <span dir="ltr" className="text-label opacity-85 num">
             {ENTER}
           </span>
         </button>
         {props.payBlockedReason && (
-          <div role="note" className="text-center text-[13px] font-medium text-warning-text">
+          <div role="note" className="text-center text-label font-medium text-warning-text">
             {props.payBlockedReason}
           </div>
         )}
@@ -328,10 +329,10 @@ export function CartPanel(props: Props) {
               key={id}
               type="button"
               onClick={run}
-              className="type-inherit hit-44 grid min-h-[44px] cursor-pointer place-items-center content-center rounded-control border border-border-strong bg-transparent px-[4px] py-[4px] text-[13px] font-medium text-text"
+              className="type-inherit hit-44 grid min-h-[44px] cursor-pointer place-items-center content-center rounded-control border border-border-strong bg-transparent px-[4px] py-[4px] text-label font-medium text-text"
             >
               {label}
-              <span dir="ltr" className="text-[12px] text-text-muted">
+              <span dir="ltr" className="text-caption text-text-muted num">
                 {GRID_KEYS[id]}
               </span>
             </button>

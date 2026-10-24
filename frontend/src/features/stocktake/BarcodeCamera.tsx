@@ -87,7 +87,7 @@ export function BarcodeCamera({ onCode, onUnavailable }: Props) {
       />
       <div className="absolute inset-x-[40px] inset-y-[24px] rounded-control border-2 border-camera-ink/90" />
       <div className="absolute inset-x-[40px] h-[2px] animate-[raff-scan_2.4s_ease-in-out_infinite] bg-camera-ink shadow-scan" />
-      <div className="absolute inset-x-0 bottom-[10px] text-center text-[12px] text-camera-ink">
+      <div className="absolute inset-x-0 bottom-[10px] text-center text-caption text-camera-ink">
         {t("aim")}
       </div>
     </div>

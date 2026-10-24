@@ -164,6 +164,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                     <label className="grid gap-[4px] type-label text-text-secondary">
                       {t("from")}
                       <TextInput
+                        className="num"
                         dir="ltr"
                         type="date"
                         value={from}
@@ -173,6 +174,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                     <label className="grid gap-[4px] type-label text-text-secondary">
                       {t("to")}
                       <TextInput
+                        className="num"
                         dir="ltr"
                         type="date"
                         value={to}
@@ -184,6 +186,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                   <label className="grid gap-[4px] type-label text-text-secondary">
                     {t("daysLabel")}
                     <TextInput
+                      className="num"
                       dir="ltr"
                       type="number"
                       min={1}
@@ -219,11 +222,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
                 {totals.map((k) => (
                   <div key={k} className="flex gap-[8px]">
                     <dt className="text-text-muted">{t(`totals.${k}`)}</dt>
-                    <dd
-                      dir="ltr"
-                      className="m-0 font-semibold tabular-nums"
-                      data-testid={`total-${k}`}
-                    >
+                    <dd dir="ltr" className="m-0 font-semibold num" data-testid={`total-${k}`}>
                       {k === "margin"
                         ? [amount(String(report.totals[k])), PERCENT].join("")
                         : amount(String(report.totals[k]))}

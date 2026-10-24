@@ -37,7 +37,7 @@ export function Badge({ tone, children, dense, className }: Props) {
   return (
     <span
       className={cn(
-        "rounded-pill border py-[1px] text-[12px] font-medium whitespace-nowrap",
+        "rounded-pill border py-[1px] text-caption font-medium whitespace-nowrap",
         dense ? "px-[7px]" : "px-[9px]",
         TONE_CLASSES[tone],
         className,

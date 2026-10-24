@@ -145,7 +145,7 @@ export function ConfirmDialog({
       labelledBy="confirm-title"
       contained={contained}
     >
-      <div id="confirm-title" className="text-[16px] font-medium">
+      <div id="confirm-title" className="text-lead font-medium">
         {title}
       </div>
       <div className="text-text-muted">{body}</div>
@@ -154,7 +154,7 @@ export function ConfirmDialog({
           {impact.map((i) => (
             <div key={i.label} className="flex justify-between gap-[12px]">
               <span>{i.label}</span>
-              <span dir="ltr" className="tabular-nums">
+              <span dir="ltr" className="num">
                 {i.value}
               </span>
             </div>

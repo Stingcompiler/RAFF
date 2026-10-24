@@ -134,7 +134,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
       <div className="px-[16px] pt-[8px] pb-[12px]">
         <h1 className="m-0 type-page">{t("title")}</h1>
         {take && (
-          <div className="text-[13px] text-text-muted">
+          <div className="text-label text-text-muted">
             {t("scope", {
               scope: scopeLabel(take, ar, tStock),
               counted: take.counted,
@@ -152,7 +152,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 type="button"
                 disabled={busy}
                 onClick={() => void start()}
-                className="min-h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand disabled:opacity-60"
+                className="min-h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-lead font-semibold text-on-brand disabled:opacity-60"
               >
                 {busy ? t("starting") : t("startTake")}
               </button>
@@ -176,7 +176,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 <div className="font-semibold">
                   {TONE_SYMBOL.danger} {t("camTitle")}
                 </div>
-                <div className="text-[13px]">{t("camBody")}</div>
+                <div className="text-label">{t("camBody")}</div>
                 <button
                   type="button"
                   onClick={() => setManual(true)}
@@ -200,7 +200,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   placeholder={t("manualLabel")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="h-[48px] min-w-0 flex-1 rounded-card border-2 border-brand bg-surface px-[14px] text-[16px] text-text outline-none"
+                  className="h-[48px] min-w-0 flex-1 rounded-card border-2 border-brand bg-surface px-[14px] text-lead text-text outline-none"
                 />
                 <button
                   type="submit"
@@ -211,7 +211,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
               </form>
             )}
             {note && (
-              <div role="status" className="text-center text-[13px] text-warning-text">
+              <div role="status" className="text-center text-label text-warning-text">
                 {TONE_SYMBOL.warn} {note}
               </div>
             )}
@@ -222,9 +222,9 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                     <span className="min-w-0 font-medium">
                       {[ar ? line.name_ar : line.name_en, line.strength].filter(Boolean).join(" ")}
                     </span>
-                    <span className="flex-none text-[13px] whitespace-nowrap text-text-muted">
+                    <span className="flex-none text-label whitespace-nowrap text-text-muted">
                       {t("system")}{" "}
-                      <b dir="ltr" className="text-text">
+                      <b dir="ltr" className="text-text num">
                         {inUnits(line.system_base, factor)}
                       </b>
                     </span>
@@ -234,7 +234,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       type="button"
                       aria-label={t("decrease")}
                       onClick={() => step(-1)}
-                      className="size-[56px] cursor-pointer rounded-card border border-border bg-surface-subtle text-[26px] text-text transition-transform duration-(--motion-feedback)"
+                      className="size-[56px] cursor-pointer rounded-card border border-border bg-surface-subtle text-page text-text transition-transform duration-(--motion-feedback)"
                     >
                       {MINUS}
                     </button>
@@ -244,20 +244,20 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                       aria-label={t("countLabel")}
                       value={units}
                       onChange={(e) => setUnits(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                      className="w-[90px] border-0 bg-transparent p-0 text-center text-[44px] font-medium text-text tabular-nums outline-none"
+                      className="w-[90px] border-0 bg-transparent p-0 text-center text-total font-medium text-text outline-none num"
                     />
                     <button
                       type="button"
                       aria-label={t("increase")}
                       onClick={() => step(1)}
-                      className="size-[56px] cursor-pointer rounded-card border-0 bg-brand text-[26px] text-on-brand transition-transform duration-(--motion-feedback)"
+                      className="size-[56px] cursor-pointer rounded-card border-0 bg-brand text-page text-on-brand transition-transform duration-(--motion-feedback)"
                     >
                       {PLUS}
                     </button>
                   </div>
                   <div
                     className={cn(
-                      "justify-self-center rounded-pill border px-[11px] py-[3px] text-[13px] font-medium transition-[background,color] duration-(--motion-feedback)",
+                      "justify-self-center rounded-pill border px-[11px] py-[3px] text-label font-medium transition-[background,color] duration-(--motion-feedback)",
                       TONE_CLASSES[diffTone],
                     )}
                   >
@@ -268,7 +268,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                   type="button"
                   disabled={busy || !valid}
                   onClick={() => void confirm()}
-                  className="h-[52px] cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:opacity-60"
+                  className="h-[52px] cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-lead font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:opacity-60"
                 >
                   {t("confirm")}
                 </button>
@@ -278,7 +278,7 @@ export function PhoneCount({ takes, canCount }: { takes: Take[]; canCount: boole
                 {allDone ? t("allDone") : t("pick")}
               </div>
             )}
-            <div className="text-center text-[12px] text-text-muted">
+            <div className="text-center text-caption text-text-muted">
               {t("counted", { count: take.counted })}
             </div>
           </>

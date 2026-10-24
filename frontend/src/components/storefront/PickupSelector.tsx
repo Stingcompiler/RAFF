@@ -23,9 +23,7 @@ export function PickupSelector({ options, value }: { options: readonly Option[];
           >
             <b className="flex-1">
               {o.title}
-              <div className={cn("text-[14px] font-normal", on && "text-text-muted")}>
-                {o.detail}
-              </div>
+              <div className={cn("text-body font-normal", on && "text-text-muted")}>{o.detail}</div>
             </b>
             {on && <span className="font-bold text-brand">{CHECK}</span>}
           </div>

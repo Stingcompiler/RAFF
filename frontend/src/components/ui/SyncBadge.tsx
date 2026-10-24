@@ -34,7 +34,7 @@ export function SyncBadge({ state, time, className }: Props) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-[6px] rounded-pill border px-[9px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+        "inline-flex items-center gap-[6px] rounded-pill border px-[9px] py-[1px] text-caption font-medium whitespace-nowrap",
         TONE_CLASSES[tone],
         className,
       )}

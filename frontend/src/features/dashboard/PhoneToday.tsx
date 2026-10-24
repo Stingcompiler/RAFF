@@ -59,7 +59,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
   const minutes = Math.max(0, Math.floor((now - stamp) / 60_000));
   const seg = (on: boolean) =>
     cn(
-      "min-h-[44px] cursor-pointer rounded-control border-0 p-[10px] text-center font-[inherit] text-[14px] font-medium",
+      "min-h-[44px] cursor-pointer rounded-control border-0 p-[10px] text-center font-[inherit] text-body font-medium",
       "transition-[background,color] duration-(--motion-feedback)",
       on ? "bg-surface text-brand shadow-segment" : "bg-transparent text-text-muted",
     );
@@ -97,19 +97,19 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
       </div>
       <div className="grid flex-1 content-start gap-[12px] px-[16px] pb-[16px]">
         <section className="grid gap-[4px] rounded-card border border-border bg-surface p-[16px]">
-          <span className="text-[13px] text-text-muted">{t("sales")}</span>
+          <span className="text-label text-text-muted">{t("sales")}</span>
           <span
             dir="ltr"
-            className="text-start text-[32px] font-medium tabular-nums transition-opacity duration-(--motion-feedback)"
+            className="text-start text-metric font-medium transition-opacity duration-(--motion-feedback) num"
           >
             {cur(data.sales_today)}
           </span>
-          <span className="text-[12px] text-text-muted">{t("updated", { minutes })}</span>
+          <span className="text-caption text-text-muted">{t("updated", { minutes })}</span>
           <div
             dir="ltr"
             role="img"
             aria-label={t("week")}
-            className="mt-[8px] flex h-[80px] items-end gap-[6px]"
+            className="mt-[8px] flex h-[80px] items-end gap-[6px] num"
           >
             {data.week.map((d, i) => (
               <span
@@ -141,7 +141,7 @@ export function PhoneToday({ initial, canAll, branchName }: Props) {
                 <span className="flex-1">{label}</span>
                 <span
                   className={cn(
-                    "rounded-pill border px-[7px] py-[1px] text-[12px] font-medium whitespace-nowrap",
+                    "rounded-pill border px-[7px] py-[1px] text-caption font-medium whitespace-nowrap",
                     TONE_CLASSES[count ? tone : "success"],
                   )}
                 >

@@ -51,9 +51,9 @@ export function CustomerDialog({ current, onClose, onChoose }: Props) {
         <span id="customer-title" className="type-section">
           {t("customerTitle")}
         </span>
-        <span className="text-[12px] text-text-muted max-[760px]:hidden">{ESC}</span>
+        <span className="text-caption text-text-muted max-[760px]:hidden">{ESC}</span>
       </div>
-      <p className="m-0 text-[13px] text-text-muted">{t("customerHint")}</p>
+      <p className="m-0 text-label text-text-muted">{t("customerHint")}</p>
       <input
         ref={input}
         dir="auto"
@@ -61,7 +61,7 @@ export function CustomerDialog({ current, onClose, onChoose }: Props) {
         placeholder={t("customerSearch")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-[16px] text-text outline-none"
+        className="h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-lead text-text outline-none"
       />
       {search.trim() && (
         <div className="grid max-h-[220px] overflow-y-auto rounded-control border border-border">
@@ -84,7 +84,7 @@ export function CustomerDialog({ current, onClose, onChoose }: Props) {
         <button
           type="button"
           onClick={() => onChoose(null)}
-          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-[14px] font-medium text-text"
+          className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-transparent text-body font-medium text-text"
         >
           {t("customerClear")}
         </button>

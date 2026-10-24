@@ -102,7 +102,7 @@ function StocktakeDesktop({ takes, categories, canCount }: Props) {
         labelledBy="start-title"
       >
         <form onSubmit={start} className="grid gap-[14px]">
-          <div id="start-title" className="text-[16px] font-medium">
+          <div id="start-title" className="text-lead font-medium">
             {t("startTitle")}
           </div>
           <div className="text-text-muted">{t("startBody")}</div>

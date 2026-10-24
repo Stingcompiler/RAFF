@@ -19,21 +19,23 @@ export function StatTile({ label, value, note, trio, className }: Props) {
         className,
       )}
     >
-      <span className="text-[13px] text-text-muted">{label}</span>
-      <span dir="ltr" className="text-start type-metric tabular-nums [overflow-wrap:anywhere]">
+      <span className="text-label text-text-muted">{label}</span>
+      <span dir="ltr" className="text-start type-metric [overflow-wrap:anywhere] num">
         {value}
       </span>
       {trio && (
         <div className="grid grid-cols-3 gap-[8px]">
           {trio.map((t, i) => (
             <div key={i} className="grid gap-[2px]">
-              <span className="text-[24px] font-medium tabular-nums">{t.value}</span>
-              <span className="text-[12px] text-text-muted">{t.label}</span>
+              <span className="text-section font-medium">
+                <span className="num">{t.value}</span>
+              </span>
+              <span className="text-caption text-text-muted">{t.label}</span>
             </div>
           ))}
         </div>
       )}
-      <span className="text-[12px] text-text-muted">{note}</span>
+      <span className="text-caption text-text-muted">{note}</span>
     </div>
   );
 }

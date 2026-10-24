@@ -122,17 +122,25 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
         labelledBy="new-user-title"
       >
         <form onSubmit={create} className="grid gap-[12px]">
-          <div id="new-user-title" className="text-[16px] font-medium">
+          <div id="new-user-title" className="text-lead font-medium">
             {t("newUser")}
           </div>
           <Field label={t("username")}>
             {({ id }) => (
-              <TextInput id={id} name="username" dir="ltr" required autoComplete="off" />
+              <TextInput
+                className="num"
+                id={id}
+                name="username"
+                dir="ltr"
+                required
+                autoComplete="off"
+              />
             )}
           </Field>
           <Field label={t("password")} help={t("passwordHelp")}>
             {({ id, describedBy }) => (
               <TextInput
+                className="num"
                 id={id}
                 name="password"
                 type="password"
@@ -148,7 +156,7 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
             {({ id }) => <TextInput id={id} name="name_ar" dir="rtl" required />}
           </Field>
           <Field label={t("nameEn")}>
-            {({ id }) => <TextInput id={id} name="name_en" dir="ltr" required />}
+            {({ id }) => <TextInput className="num" id={id} name="name_en" dir="ltr" required />}
           </Field>
           <Field label={t("role")}>
             {({ id }) => (
@@ -174,7 +182,7 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
             )}
           </Field>
           {error && (
-            <div role="alert" className="text-[13px] font-medium text-danger-text">
+            <div role="alert" className="text-label font-medium text-danger-text">
               {error}
             </div>
           )}

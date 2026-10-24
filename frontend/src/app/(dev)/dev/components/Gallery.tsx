@@ -88,7 +88,7 @@ const CAPTION = {
   qty120: "120",
   plus: "+",
 } as const;
-const caption = "text-[12px] font-semibold uppercase tracking-[.04em] text-text-muted";
+const caption = "text-caption font-semibold uppercase tracking-wide text-text-muted";
 const tableCols: readonly Column[] = [
   { header: "", width: "36px" },
   { header: "", width: "1fr" },
@@ -118,7 +118,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   };
 
   const inputBox =
-    "flex h-[44px] items-center rounded-control bg-canvas px-[12px] text-[14px] font-normal text-text";
+    "flex h-[44px] items-center rounded-control bg-canvas px-[12px] text-body font-normal text-text";
   const rows: [string, string, Tone, string][] = [
     [t("r1"), "210", "success", t("rGood")],
     [t("r2"), "18", "warn", t("rLow")],
@@ -137,15 +137,15 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
       className="grid min-w-0 content-start gap-[24px] rounded-card border border-border bg-canvas p-[24px] text-text"
     >
       <div className="flex items-baseline justify-between">
-        <h2 className="m-0 text-[16px] font-medium">
+        <h2 className="m-0 text-lead font-medium">
           {theme === "light" ? t("themeLight") : t("themeDark")}
         </h2>
-        <span className="text-[12px] text-text-muted">{t("hint")}</span>
+        <span className="text-caption text-text-muted">{t("hint")}</span>
       </div>
 
       <div className="grid gap-[12px]">
         <div className={caption}>{CAPTION.button}</div>
-        <div className="grid grid-cols-[70px_repeat(5,minmax(0,1fr))] items-center gap-[8px] text-[12px] text-text-muted">
+        <div className="grid grid-cols-[70px_repeat(5,minmax(0,1fr))] items-center gap-[8px] text-caption text-text-muted">
           <span />
           {STATES.map((s) => (
             <span key={s}>{s}</span>
@@ -160,7 +160,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
                   forceState={s === "hover" || s === "focus" ? s : undefined}
                   disabled={s === "disabled"}
                   loading={s === "loading"}
-                  className="min-w-0 px-[8px] text-[13px] font-semibold"
+                  className="min-w-0 px-[8px] text-label font-semibold"
                 >
                   {s === "loading" ? t("saving") : t("btn")}
                 </Button>
@@ -175,7 +175,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
           >
             <SearchIcon />
           </span>
-          <span className="text-[12px] text-text-muted">
+          <span className="text-caption text-text-muted">
             {CAPTION.iconButton}
             {t("iconNote")}
           </span>
@@ -230,7 +230,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
           <Badge tone="danger">{t("bQuar")}</Badge>
           <Badge tone="info">{t("bTransit")}</Badge>
         </div>
-        <div className="flex flex-wrap items-center gap-[16px] text-[13px]">
+        <div className="flex flex-wrap items-center gap-[16px] text-label">
           {(
             [
               ["success", t("dOnline")],
@@ -345,7 +345,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
               >
                 <span
                   className={cn(
-                    "grid size-[18px] place-items-center rounded-[5px] border-2 text-[12px] font-bold text-on-brand",
+                    "grid size-[18px] place-items-center rounded-[5px] border-2 text-caption font-bold text-on-brand",
                     "transition-[background,border-color] duration-(--motion-feedback)",
                     on ? "border-brand bg-brand" : "border-border bg-transparent",
                   )}
@@ -353,7 +353,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
                   {on ? "✓" : ""}
                 </span>
                 <span>{name}</span>
-                <span dir="ltr" className="text-end tabular-nums">
+                <span dir="ltr" className="text-end num">
                   {qty}
                 </span>
                 <span className="justify-self-start">
@@ -375,11 +375,13 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
             aria-label={t("dTitle")}
             className="grid w-full max-w-[380px] gap-[12px] rounded-card border border-border bg-surface p-[20px] shadow-dialog"
           >
-            <div className="text-[16px] font-medium">{t("dTitle")}</div>
+            <div className="text-lead font-medium">{t("dTitle")}</div>
             <div className="text-text-muted">{t("dBody")}</div>
             <div className="flex justify-between rounded-control bg-warning-bg px-[12px] py-[10px] font-medium text-warning-text">
               <span>{t("impact")}</span>
-              <span dir="ltr">{CAPTION.amount}</span>
+              <span className="num" dir="ltr">
+                {CAPTION.amount}
+              </span>
             </div>
             <div className="flex justify-end gap-[8px]">
               <Button variant="outline">{t("cancel")}</Button>
@@ -424,7 +426,7 @@ function StorefrontSection() {
     "grid content-start gap-[12px] rounded-card border border-border bg-surface p-[16px]";
   return (
     <div data-theme="light" className="grid gap-[16px] px-[24px] pt-[8px] pb-[24px]">
-      <h2 className="m-0 text-[16px] font-medium text-text">{t("heading")}</h2>
+      <h2 className="m-0 text-lead font-medium text-text">{t("heading")}</h2>
       <div
         dir="rtl"
         className="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-[16px]"
@@ -490,8 +492,8 @@ function StorefrontSection() {
             updatedOn="2026-10-21"
             size="lg"
           />
-          <div className="text-[12px] font-medium text-warning-text">{t("confirmOnReview")}</div>
-          <div className="text-[13px] text-text-muted">{t("noStock")}</div>
+          <div className="text-caption font-medium text-warning-text">{t("confirmOnReview")}</div>
+          <div className="text-label text-text-muted">{t("noStock")}</div>
         </div>
         <div className={card}>
           <div className={caption}>{CAPTION.pickup}</div>
@@ -534,7 +536,7 @@ function StorefrontSection() {
           <div className={caption}>{CAPTION.publish}</div>
           <PublishToggle label={t("published")} checked />
           <PublishToggle label={t("published")} checked={false} disabled />
-          <div className="grid gap-[2px] text-[13px]">
+          <div className="grid gap-[2px] text-label">
             <span className="text-success-text">{t("cPrice")}</span>
             <span className="text-success-text">{t("cClass")}</span>
             <span className="text-warning-text">{t("cImage")}</span>
@@ -544,7 +546,7 @@ function StorefrontSection() {
         <div className={card}>
           <div className={caption}>{CAPTION.whatsapp}</div>
           <WhatsAppAction href="#" message="" openLabel={t("openWa")} copyLabel={t("copyMsg")} />
-          <div className="grid gap-[4px] text-[13px] text-text-muted">
+          <div className="grid gap-[4px] text-label text-text-muted">
             <span>{t("templates")}</span>
           </div>
         </div>
@@ -564,7 +566,7 @@ export function Gallery({ receipts }: { receipts: readonly ReceiptData[] }) {
       <StorefrontSection />
       <div className="grid gap-[16px] px-[24px] pt-[8px] pb-[48px]">
         <div className="flex items-center gap-[16px]">
-          <h2 className="m-0 text-[16px] font-medium text-text">
+          <h2 className="m-0 text-lead font-medium text-text">
             {CAPTION.receipt}
             {t("always")}
           </h2>

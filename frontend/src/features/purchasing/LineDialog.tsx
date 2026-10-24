@@ -78,7 +78,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
   return (
     <Dialog open={open} onClose={close} labelledBy="line-title" className="w-[560px]">
       <form onSubmit={submit} className="grid gap-[12px]">
-        <div id="line-title" className="text-[16px] font-medium">
+        <div id="line-title" className="text-lead font-medium">
           {t("lineTitle")}
         </div>
         {!line && !item && (
@@ -133,6 +133,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("quantity")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="quantity"
                     type="number"
@@ -146,6 +147,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("bonusQty")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="bonus"
                     type="number"
@@ -158,6 +160,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("unitCost")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="cost"
                     type="number"
@@ -172,6 +175,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("discount")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="discount"
                     type="number"
@@ -185,6 +189,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("batch")}>
                 {({ id }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="batch"
                     dir="ltr"
@@ -196,6 +201,7 @@ export function LineDialog({ open, line, onClose, onSave, onRemove }: Props) {
               <Field label={t("expiry")} help={t("expiryHelp")} className="col-span-2">
                 {({ id, describedBy }) => (
                   <TextInput
+                    className="num"
                     id={id}
                     name="expiry"
                     type="date"

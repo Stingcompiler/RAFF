@@ -17,14 +17,14 @@ export function PriceWithDate({
     <div
       className={cn("flex flex-wrap items-baseline", size === "lg" ? "gap-[10px]" : "gap-[8px]")}
     >
-      <span className={cn("font-semibold", size === "lg" ? "text-[22px]" : "text-[17px]")}>
+      <span className={cn("font-semibold", size === "lg" ? "text-land-feature" : "text-land-lead")}>
         {price}
       </span>
-      <span className="text-[12px] text-text-muted">
+      <span className="text-caption text-text-muted">
         {updatedLabel && updatedOn ? (
           <>
             {updatedLabel}{" "}
-            <span dir="ltr" className="[unicode-bidi:isolate]">
+            <span dir="ltr" className="num">
               {updatedOn}
             </span>
           </>

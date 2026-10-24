@@ -87,7 +87,7 @@ export function QuarantinePanel({ rows, canDecide, onChanged }: Props) {
             <TableRow key={row.id} columns={columns}>
               <TextCell>
                 {name}{" "}
-                <bdi dir="ltr" className="text-[12px] text-text-muted">
+                <bdi dir="ltr" className="text-caption text-text-muted num">
                   {row.strength}
                 </bdi>
               </TextCell>
@@ -100,7 +100,7 @@ export function QuarantinePanel({ rows, canDecide, onChanged }: Props) {
                   </Badge>
                 )}
                 {row.expired && (
-                  <span className="text-[12px] text-danger-text">{t("suggestDestroy")}</span>
+                  <span className="text-caption text-danger-text">{t("suggestDestroy")}</span>
                 )}
                 {canDecide ? (
                   DECISIONS.filter((d) => !(d === "restock" && row.expired)).map((d) => (
@@ -108,7 +108,7 @@ export function QuarantinePanel({ rows, canDecide, onChanged }: Props) {
                       key={d}
                       type="button"
                       onClick={() => setPending({ row, decision: d, key: crypto.randomUUID() })}
-                      className="type-inherit cursor-pointer rounded-control border border-border-strong bg-transparent px-[8px] py-[2px] text-[12px] text-text hover:bg-surface-subtle"
+                      className="type-inherit cursor-pointer rounded-control border border-border-strong bg-transparent px-[8px] py-[2px] text-caption text-text hover:bg-surface-subtle"
                     >
                       {t(`decision.${d}`)}
                     </button>

@@ -96,7 +96,7 @@ export function StoreSettingsScreen({
             <div className="flex items-center justify-between gap-[12px]">
               <div>
                 <div className="font-medium">{t("enable")}</div>
-                <div className="text-[13px] text-text-muted">{t("enableD")}</div>
+                <div className="text-label text-text-muted">{t("enableD")}</div>
               </div>
               <button
                 type="button"
@@ -165,6 +165,7 @@ export function StoreSettingsScreen({
               <label className={LABEL}>
                 {t("perHour")}
                 <TextInput
+                  className="num"
                   dir="ltr"
                   type="number"
                   min={1}

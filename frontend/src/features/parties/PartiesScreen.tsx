@@ -203,7 +203,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
   return (
     <Dialog open onClose={busy ? undefined : onClose} labelledBy="pay-title">
       <form onSubmit={submit} className="grid gap-[14px]">
-        <div id="pay-title" className="text-[16px] font-medium">
+        <div id="pay-title" className="text-lead font-medium">
           {t("payTitle")}
         </div>
         <div className="text-text-muted">
@@ -230,6 +230,7 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
           <label className="grid gap-[4px] type-label text-text-secondary">
             {t("amount")}
             <TextInput
+              className="num"
               dir="ltr"
               inputMode="decimal"
               value={value}
@@ -240,13 +241,18 @@ function PaymentDialog({ kind, parties, initial, onClose, onDone }: DialogProps)
         {method === "bank" && (
           <label className="grid gap-[4px] type-label text-text-secondary">
             {t("reference")}
-            <TextInput dir="ltr" value={reference} onChange={(e) => setReference(e.target.value)} />
+            <TextInput
+              className="num"
+              dir="ltr"
+              value={reference}
+              onChange={(e) => setReference(e.target.value)}
+            />
           </label>
         )}
         {party && value && (
           <div className="flex justify-between gap-[12px] rounded-control bg-warning-bg p-[12px] font-medium text-warning-text">
             <span>{t("newBalance")}</span>
-            <span dir="ltr" className="tabular-nums">
+            <span dir="ltr" className="num">
               {money(subtract(party.balance, value), ar ? "ar" : "en")}
             </span>
           </div>

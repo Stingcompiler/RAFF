@@ -11,12 +11,12 @@ type Filters = { q?: string; category?: string; availability?: string; sort?: st
 
 const chip = (on: boolean) =>
   cn(
-    "inline-flex min-h-[44px] items-center rounded-full border px-[14px] text-[14px] font-medium whitespace-nowrap no-underline transition-[background,color] duration-(--motion-feedback)",
+    "inline-flex min-h-[44px] items-center rounded-full border px-[14px] text-body font-medium whitespace-nowrap no-underline transition-[background,color] duration-(--motion-feedback)",
     on ? "border-brand bg-brand text-on-brand" : "border-border-strong bg-surface text-text",
   );
 const seg = (on: boolean) =>
   cn(
-    "hit-44 rounded-control px-[12px] py-[6px] text-[13px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
+    "hit-44 rounded-control px-[12px] py-[6px] text-label font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
     on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-text-muted",
   );
 
@@ -61,10 +61,10 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
   return (
     <section className="px-[20px] pt-[24px] pb-[8px]">
       <div className="flex flex-wrap items-baseline justify-between gap-[12px]">
-        <h1 className="m-0 text-[26px] font-semibold">
+        <h1 className="m-0 text-land-section font-semibold">
           {filters.q ? t("searchResults") : t("storeTitle")}
         </h1>
-        <span className="text-[14px] whitespace-nowrap text-text-muted">
+        <span className="text-body whitespace-nowrap text-text-muted">
           {t("published", { count: total })}
         </span>
       </div>
@@ -83,7 +83,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         ))}
         <span className="h-0 basis-full" />
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
-          <span className="text-[13px] font-medium text-text-muted">{t("availability")}</span>
+          <span className="text-label font-medium text-text-muted">{t("availability")}</span>
           <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
             <Link href={href({ availability: "" })} className={seg(!filters.availability)}>
               {t("all")}
@@ -103,7 +103,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
           </span>
         </span>
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
-          <span className="text-[13px] font-medium text-text-muted">{t("sort")}</span>
+          <span className="text-label font-medium text-text-muted">{t("sort")}</span>
           <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
             <Link href={href({ sort: "" })} className={seg(filters.sort !== "price")}>
               {t("byName")}
@@ -113,7 +113,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
             </Link>
           </span>
         </span>
-        <span aria-live="polite" className="ms-auto text-[14px] font-semibold whitespace-nowrap">
+        <span aria-live="polite" className="ms-auto text-body font-semibold whitespace-nowrap">
           {t("results", { count: products.length })}
         </span>
       </div>

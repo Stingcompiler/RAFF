@@ -226,13 +226,14 @@ export function ShiftsScreen({
           labelledBy="close-title"
         >
           <form onSubmit={close} className="grid gap-[14px]">
-            <div id="close-title" className="text-[16px] font-medium">
+            <div id="close-title" className="text-lead font-medium">
               {t("closeTitle", { number: shift.number })}
             </div>
             <div className="text-text-muted">{t("closeBody")}</div>
             <label className="grid gap-[4px] type-label text-text-secondary">
               {t("counted")}
               <TextInput
+                className="num"
                 dir="ltr"
                 inputMode="decimal"
                 value={counted}
@@ -248,13 +249,13 @@ export function ShiftsScreen({
                       ? t("overage")
                       : t("even")}
                 </span>
-                <span dir="ltr" className="tabular-nums">
+                <span dir="ltr" className="num">
                   {variance ? cur(variance) : DASH}
                 </span>
               </div>
               <div className="flex justify-between gap-[12px]">
                 <span>{t("expected")}</span>
-                <span dir="ltr" className="tabular-nums">
+                <span dir="ltr" className="num">
                   {cur(summary?.expected_cash)}
                 </span>
               </div>
