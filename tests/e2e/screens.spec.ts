@@ -28,7 +28,9 @@ const WORKSPACE = [
   ["settings", "/settings"],
 ] as const;
 const PUBLIC = [
+  ["home", "/"],
   ["store", "/store"],
+  ["contact", "/contact"],
   ["cart", "/cart"],
   ["checkout", "/checkout"],
   ["about", "/about"],

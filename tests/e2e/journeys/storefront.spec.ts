@@ -6,6 +6,34 @@ test.describe.configure({ mode: "serial" });
 
 const PHONE = "0912345678";
 
+test.describe("storefront home as a landing page", () => {
+  test("one action with the same words, a text link beside it, no placeholder photo", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const action = page.getByRole("link", { name: "تصفّح المتجر", exact: true });
+    await expect(action).toHaveCount(3); // hero, after the featured items, at the end
+    await expect(page.getByRole("link", { name: "تواصل معنا" })).toHaveCSS(
+      "text-decoration-line",
+      "underline",
+    ); // the channel is a text link, not a second button
+    await expect(page.getByText("صورة", { exact: true })).toHaveCount(0);
+    await page.goto("/about");
+    await expect(page.getByText("صورة", { exact: true })).toHaveCount(0);
+  });
+
+  test("on a phone the action stays in reach once the hero is scrolled away", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const bar = page.getByTestId("sticky-cta");
+    await expect(bar).toHaveCount(0);
+    await page.evaluate(() => window.scrollTo(0, 900));
+    await expect(bar).toBeVisible();
+    await expect(bar.getByRole("link", { name: "تصفّح المتجر" })).toBeVisible();
+    await expect(bar.getByRole("link", { name: "تواصل معنا" })).toBeVisible();
+  });
+});
+
 test.describe("public storefront", () => {
   test("a guest finds an item, sends an order once and tracks it", async ({ page }) => {
     await page.goto("/");

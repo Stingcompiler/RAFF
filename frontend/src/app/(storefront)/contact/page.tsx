@@ -40,9 +40,6 @@ export default async function ContactPage() {
           </a>
         )}
       </div>
-      <div className="grid h-[300px] place-items-center rounded-panel bg-surface-subtle text-text-muted">
-        {t("imgPh")}
-      </div>
     </section>
   );
 }
