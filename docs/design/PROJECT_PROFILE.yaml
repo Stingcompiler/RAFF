@@ -78,6 +78,16 @@ market:
   network_budget: low
   price_display: show
 
-landing: []                     # صفحة التعريف /ar /en والمتجر تُدقَّقان في WO-15d
+landing:                        # صفحة المتجر الرئيسية دُقّقت في WO-15d (BACKLOG 136–141)؛ /ar /en للمنتج لم تُبنَ
+  - page: store-home
+    type: consumer
+    goal: purchase
+    traffic_source: organic
+    headline: ""                # من إعدادات المتجر (hero_title_*)
+    subhead: ""                 # من إعدادات المتجر (hero_lead_*)
+    cta_label: "تصفّح المتجر"
+    evidence: []                # لا دليل موثق بعد؛ لا يُختلق (BACKLOG 139)
+    sections: [hero, featured, how-we-work, how-to-order, faq]
+    form_first_field: ""        # لا نموذج التقاط؛ الطلب في /checkout
 
 exceptions: []                  # انظر DECISIONS.md
