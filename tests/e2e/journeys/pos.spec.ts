@@ -216,6 +216,7 @@ test.describe("point of sale", () => {
     await atCounter(page);
     await search(page).fill("ORS");
     await search(page).press("Enter");
+    await expect(total(page)).toHaveText("300 ج.س"); // the server's quote is in; Enter can pay
     const chip = page.getByRole("button", { name: "عميل البيع" });
     await expect(chip).toContainText("عميل نقدي");
 
