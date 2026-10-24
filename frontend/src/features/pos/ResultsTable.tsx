@@ -97,7 +97,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               <div className="grid min-w-0 leading-[1.25]">
                 <span className="flex min-w-0 items-center gap-[6px]">
                   {row.rx && (
-                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[11px] font-semibold text-info-text">
+                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[12px] font-semibold text-info-text">
                       {t("rx")}
                     </span>
                   )}
@@ -127,7 +127,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               <span className="grid text-end leading-[1.2] whitespace-nowrap tabular-nums">
                 <span>{stock}</span>
                 {row.reserved_base > 0 && (
-                  <span className="text-[11px] font-medium text-info-text">
+                  <span className="text-[12px] font-medium text-info-text">
                     {t("reserved", { count: inUnit(row.reserved_base, row.unit?.factor) })}
                   </span>
                 )}

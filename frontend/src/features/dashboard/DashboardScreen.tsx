@@ -6,7 +6,9 @@ import { useState } from "react";
 import { PageHeader } from "@/components/shell/PageHeader";
 import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Badge, type Tone } from "@/components/ui/Badge";
+import { BarChart } from "@/components/ui/BarChart";
 import { Button } from "@/components/ui/Button";
+import { ChartCard, type ChartState } from "@/components/ui/ChartCard";
 import { Panel } from "@/components/ui/Panel";
 import { StatTile } from "@/components/ui/StatTile";
 import {
@@ -21,7 +23,6 @@ import {
 } from "@/components/ui/Table";
 import { apiGet } from "@/lib/api/browser";
 import type { Schemas } from "@/lib/api/types";
-import { cn } from "@/lib/cn";
 import { money, timeOfDay } from "@/lib/format";
 import { usePhone } from "@/lib/phone";
 
@@ -42,7 +43,7 @@ const ACTIONS: { key: ActionKey; tone: Tone; href?: string }[] = [
 const STATUS_TONE = { approved: "success", verifying: "info", to_inspect: "warn" } as const;
 const DAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
 const DAYS_EN = ["S", "M", "T", "W", "T", "F", "S"];
-const BAR_MAX_PX = 140;
+const THOUSAND = 1000;
 
 type Props = { initial: Overview; canAll: boolean; branchName: string };
 
@@ -61,15 +62,46 @@ function DashboardDesktop({ initial, canAll }: Props) {
   const [all, setAll] = useState(false);
   const [stamp, setStamp] = useState(() => new Date().toISOString());
 
+  const [chart, setChart] = useState<"ok" | "loading" | "failed">("ok");
+
   const load = async (scopeAll: boolean) => {
+    setChart("loading");
     const res = await apiGet<Overview>(`/dashboard/?scope=${scopeAll ? "all" : "branch"}`);
     if (res.ok) {
       setData(res.data);
       setStamp(new Date().toISOString());
-    }
+      setChart("ok");
+    } else setChart("failed");
   };
 
   const max = Math.max(1, ...data.week.map((d) => Number(d.total)));
+  // The axis is scaled in thousands for display only; every figure shown comes from the server.
+  const weekdays = new Intl.DateTimeFormat(ar ? "ar" : "en", { weekday: "long", timeZone: "UTC" });
+  const bars = data.week.map((d) => ({
+    id: d.date,
+    label: (ar ? DAYS_AR : DAYS_EN)[new Date(`${d.date}T12:00:00Z`).getUTCDay()] ?? d.date,
+    value: Number(d.total),
+    text: cur(d.total),
+  }));
+  const top = data.week.reduce<(typeof data.week)[number] | null>(
+    (a, d) => (a && Number(a.total) >= Number(d.total) ? a : d),
+    null,
+  );
+  const chartState: ChartState =
+    chart === "loading"
+      ? "loading"
+      : chart === "failed"
+        ? "failed"
+        : data.week.every((d) => Number(d.total) === 0)
+          ? "empty"
+          : "ready";
+  const weekTitle =
+    top && chartState === "ready"
+      ? t("weekHeadline", {
+          day: weekdays.format(new Date(`${top.date}T12:00:00Z`)),
+          amount: cur(top.total),
+        })
+      : t("week");
   const columns: Column[] = [
     { header: t("colTime"), width: "70px" },
     { header: t("colOperation"), width: "minmax(0,1fr)" },
@@ -176,32 +208,18 @@ function DashboardDesktop({ initial, canAll }: Props) {
           />
         </section>
         <section className="col-span-6 min-w-0 max-[1180px]:col-span-12">
-          <Panel title={t("week")} note={t("weekNote")}>
-            <div
-              role="img"
-              aria-label={t("week")}
-              className="flex h-[180px] items-end gap-[12px] px-[16px] pt-[16px] pb-[8px]"
-            >
-              {data.week.map((d, i) => {
-                const day = new Date(`${d.date}T12:00:00Z`).getUTCDay();
-                return (
-                  <div key={d.date} className="flex flex-1 flex-col items-center gap-[6px]">
-                    <span
-                      title={cur(d.total)}
-                      className={cn(
-                        "block w-full rounded-t-[4px] bg-brand",
-                        i === data.week.length - 1 ? "opacity-100" : "opacity-55",
-                      )}
-                      style={{ height: `${Math.round((Number(d.total) / max) * BAR_MAX_PX)}px` }}
-                    />
-                    <span className="text-[12px] text-text-muted">
-                      {(ar ? DAYS_AR : DAYS_EN)[day]}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </Panel>
+          <ChartCard
+            title={weekTitle}
+            note={t("weekNote")}
+            state={chartState}
+            onRetry={() => void load(all)}
+          >
+            <BarChart
+              ariaLabel={t("week")}
+              bars={bars}
+              tick={(f) => String(Math.round((max * f) / THOUSAND))}
+            />
+          </ChartCard>
         </section>
         <section className="col-span-6 min-w-0 max-[1180px]:col-span-12">
           <Panel title={t("latest")}>

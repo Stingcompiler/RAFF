@@ -784,7 +784,8 @@
     "confirmed": "Confirmed",
     "completed": "Completed",
     "week": "Sales — last 7 days",
-    "weekNote": "SDG thousands",
+    "weekNote": "SDG thousands · last 7 days",
+    "weekHeadline": "Sales — highest on {day}: {amount}",
     "latest": "Latest operations",
     "colTime": "Time",
     "colOperation": "Operation",
@@ -1470,6 +1471,13 @@
       "viaPos": "Completes via POS invoice",
       "failed": "Couldn't change the order status."
     }
+  },
+  "chart": {
+    "loading": "Loading chart",
+    "empty": "No data for this period",
+    "emptyHint": "Try a longer period or another branch.",
+    "failed": "Couldn't load this chart",
+    "retry": "Try again"
   },
   "sync": {
     "synced": "Saved on the server",

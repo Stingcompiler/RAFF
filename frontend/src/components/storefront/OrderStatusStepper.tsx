@@ -11,7 +11,7 @@ export function OrderStatusStepper({ steps }: { steps: readonly Step[] }) {
           <span
             aria-hidden="true"
             className={cn(
-              "grid size-[20px] flex-none place-items-center rounded-full text-[11px] font-bold",
+              "grid size-[20px] flex-none place-items-center rounded-full text-[12px] font-bold",
               s.state === "done" && "bg-brand text-on-brand",
               s.state === "current" && "box-border border-2 border-brand bg-brand-subtle",
               s.state === "todo" && "box-border border-2 border-border-strong bg-surface",
