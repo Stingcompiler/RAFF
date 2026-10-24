@@ -16,6 +16,10 @@ import { serverGet } from "@/lib/api/server";
 const ICONS = [TagIcon, CheckCircleIcon, UserCheckIcon, MessageIcon, StoreIcon, ShieldIcon];
 const PLUS = "+";
 
+/** The one action of the page, with the same words every time it appears (LANDING §2). */
+const CTA =
+  "inline-flex min-h-[52px] items-center rounded-card bg-brand px-[24px] text-[16px] font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-(--motion-feedback) hover:-translate-y-[2px]";
+
 /** The pharmacy's home (PHARMACY-WEBSITE §4): hero, featured items, how it works, FAQ. */
 export default async function StorefrontHome() {
   const t = await getTranslations("store");
@@ -45,25 +49,19 @@ export default async function StorefrontHome() {
             </p>
           )}
           <div className="mt-[24px] flex flex-wrap gap-[12px]">
-            <Link
-              href="/store"
-              className="inline-flex min-h-[52px] items-center rounded-card bg-brand px-[24px] text-[16px] font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-(--motion-feedback) hover:-translate-y-[2px]"
-            >
+            <Link href="/store" className={CTA}>
               {t("browse")}
             </Link>
             {store?.whatsapp && (
               <a
                 href={waLink(store.whatsapp)}
-                className="inline-flex min-h-[52px] items-center rounded-card border border-border-strong bg-surface px-[20px] font-medium whitespace-nowrap text-text no-underline"
+                className="inline-flex min-h-[52px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
               >
                 {t("contactUs")}
               </a>
             )}
           </div>
           {address && <div className="mt-[20px] text-[14px] text-text-muted">{address}</div>}
-        </div>
-        <div className="grid h-[340px] place-items-center rounded-panel bg-surface-subtle text-text-muted">
-          {t("imgPh")}
         </div>
       </section>
 
@@ -75,11 +73,8 @@ export default async function StorefrontHome() {
           ))}
         </div>
         <div className="mt-[20px]">
-          <Link
-            href="/store"
-            className="inline-flex min-h-[44px] items-center rounded-control border border-border-strong px-[20px] font-semibold text-brand no-underline"
-          >
-            {t("viewAll")}
+          <Link href="/store" className={CTA}>
+            {t("browse")}
           </Link>
         </div>
       </section>
@@ -148,6 +143,12 @@ export default async function StorefrontHome() {
             </details>
           ))}
         </div>
+      </section>
+
+      <section className="grid justify-items-start gap-[12px] px-[20px] pt-[32px] pb-[16px]">
+        <Link href="/store" className={CTA}>
+          {t("browse")}
+        </Link>
       </section>
     </>
   );

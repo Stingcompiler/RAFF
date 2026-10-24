@@ -25,9 +25,6 @@ export default async function AboutPage() {
           {t("contactUs")}
         </Link>
       </div>
-      <div className="grid h-[320px] place-items-center rounded-panel bg-surface-subtle text-text-muted">
-        {t("imgPh")}
-      </div>
     </section>
   );
 }

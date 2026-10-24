@@ -3,13 +3,20 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type CSSProperties, type FormEvent, type ReactNode, Suspense, useState } from "react";
+import {
+  type CSSProperties,
+  type FormEvent,
+  type ReactNode,
+  Suspense,
+  useEffect,
+  useState,
+} from "react";
 
 import { SearchIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
 import { useCart } from "./cart";
-import { pick, type Store } from "./types";
+import { pick, type Store, waLink } from "./types";
 
 const PLUS = "+";
 const NAV = [
@@ -19,6 +26,45 @@ const NAV = [
   ["/contact", "contact"],
   ["/orders/track", "track"],
 ] as const;
+
+const SCROLLED_PX = 480;
+
+/**
+ * On a phone, once the hero's button has scrolled away, the page's one action stays in reach
+ * with the pharmacy's channel beside it (LANDING §2: a pinned bar shows the button on scroll).
+ */
+function StickyCta({ whatsapp }: { whatsapp: string }) {
+  const t = useTranslations("store");
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShown(window.scrollY > SCROLLED_PX);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!shown) return null;
+  return (
+    <div
+      data-testid="sticky-cta"
+      className="fixed inset-x-0 bottom-0 z-[5] hidden items-center gap-[12px] border-t border-border bg-surface px-[20px] py-[10px] max-[760px]:flex"
+    >
+      <Link
+        href="/store"
+        className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
+      >
+        {t("browse")}
+      </Link>
+      {whatsapp && (
+        <a
+          href={waLink(whatsapp)}
+          className="inline-flex min-h-[48px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
+        >
+          {t("contactUs")}
+        </a>
+      )}
+    </div>
+  );
+}
 
 /** Public storefront frame: the pharmacy's brand, never Raff's (STOREFRONT-DESIGN-CHANGES §2). */
 export function StoreShell({ store, children }: { store: Store; children: ReactNode }) {
@@ -30,7 +76,13 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
   // The pharmacy's colour overrides the brand token only; everything else stays on tokens.
   const brand = (store.brand_color ? { "--brand": store.brand_color } : {}) as CSSProperties;
   return (
-    <div style={brand} className="min-h-dvh bg-canvas text-[16px] leading-[1.5] text-text">
+    <div
+      style={brand}
+      className={cn(
+        "min-h-dvh bg-canvas text-[16px] leading-[1.5] text-text",
+        path === "/" && "max-[760px]:pb-[72px]",
+      )}
+    >
       <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-border bg-surface-subtle px-[20px] py-[12px]">
         <Link
           href="/"
@@ -80,6 +132,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
         </Link>
       </header>
       <main>{children}</main>
+      {path === "/" && <StickyCta whatsapp={store.whatsapp ?? ""} />}
       <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-[14px] text-text-muted">
         <div className="flex flex-wrap gap-[16px]">
           <Link href="/policies/privacy" className="hit-44 text-brand">
