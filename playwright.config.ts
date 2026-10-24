@@ -23,6 +23,8 @@ const backendEnv = {
   RAFF_DEMO_PASSWORD: DEMO_PASSWORD,
   // Every journey signs in from 127.0.0.1; the production rate (30/min) would throttle them.
   RAFF_THROTTLE_LOGIN: "10000/min",
+  // The layout guards and the screen shots load the storefront many times a minute from one address.
+  RAFF_THROTTLE_STOREFRONT: "10000/min",
 };
 
 export default defineConfig({
