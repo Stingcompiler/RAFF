@@ -42,7 +42,7 @@ export function ProductImage({
   ) : (
     <div
       className={cn(
-        "grid place-content-center justify-items-center gap-[4px] bg-surface-subtle text-[12px] text-text-muted",
+        "grid place-content-center justify-items-center gap-[4px] bg-surface-subtle text-caption text-text-muted",
         height,
       )}
     >
@@ -66,28 +66,28 @@ export function ProductTile({ product }: { product: Product }) {
       </Link>
       <div className="grid content-start gap-[8px] p-[14px]">
         <Link href={href} className="text-text no-underline">
-          <div className="text-[16px] leading-[1.3] font-semibold">{productName(ar, product)}</div>
+          <div className="text-lead leading-tight font-semibold">{productName(ar, product)}</div>
           {ar && (
-            <bdi dir="ltr" className="text-[12px] text-text-muted [unicode-bidi:isolate]">
+            <bdi dir="ltr" className="text-caption text-text-muted num">
               {product.name_en}
             </bdi>
           )}
         </Link>
-        <div className="text-[13px] text-text-muted">{ar ? product.unit_ar : product.unit_en}</div>
+        <div className="text-label text-text-muted">{ar ? product.unit_ar : product.unit_en}</div>
         {product.rx ? (
-          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-[13px] font-medium text-info-text">
+          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-label font-medium text-info-text">
             {t("rxShort")}
           </div>
         ) : (
           <>
             {product.price && (
               <div className="flex flex-wrap items-baseline gap-[10px]">
-                <span className="text-[18px] font-semibold tabular-nums">
+                <span className="text-land-lead font-semibold num">
                   {money(product.price, ar ? "ar" : "en")}
                 </span>
-                <span className="text-[12px] whitespace-nowrap text-text-muted">
+                <span className="text-caption whitespace-nowrap text-text-muted">
                   {t("updated")}{" "}
-                  <bdi dir="ltr" className="[unicode-bidi:isolate]">
+                  <bdi dir="ltr" className="num">
                     {product.price_date}
                   </bdi>
                 </span>
@@ -96,7 +96,7 @@ export function ProductTile({ product }: { product: Product }) {
             {product.availability && (
               <span
                 className={cn(
-                  "justify-self-start rounded-full px-[10px] py-[3px] text-[13px] font-semibold whitespace-nowrap",
+                  "justify-self-start rounded-full px-[10px] py-[3px] text-label font-semibold whitespace-nowrap",
                   AVAIL_TONE[product.availability],
                 )}
               >
@@ -109,7 +109,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={`/checkout?rx=${product.slug}`}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-land-body font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-body max-[480px]:leading-tight max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
               BUTTON.outline,
             )}
           >
@@ -119,7 +119,7 @@ export function ProductTile({ product }: { product: Product }) {
           <Link
             href={href}
             className={cn(
-              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
+              "inline-flex min-h-[44px] items-center justify-center rounded-control px-[16px] text-land-body font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-body max-[480px]:leading-tight max-[480px]:whitespace-normal max-[480px]:text-center no-underline",
               BUTTON.muted,
             )}
           >
@@ -133,7 +133,7 @@ export function ProductTile({ product }: { product: Product }) {
               toast.push("success", t("added"));
             }}
             className={cn(
-              "min-h-[44px] cursor-pointer rounded-control px-[16px] text-[15px] font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-[14px] max-[480px]:leading-[1.3] max-[480px]:whitespace-normal max-[480px]:text-center transition-[transform] duration-(--motion-feedback) active:scale-[.98]",
+              "min-h-[44px] cursor-pointer rounded-control px-[16px] text-land-body font-semibold whitespace-nowrap max-[480px]:px-[8px] max-[480px]:py-[8px] max-[480px]:text-body max-[480px]:leading-tight max-[480px]:whitespace-normal max-[480px]:text-center transition-[transform] duration-(--motion-feedback) active:scale-[.98]",
               BUTTON.solid,
             )}
           >

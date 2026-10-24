@@ -7,11 +7,11 @@ export function OrderStatusStepper({ steps }: { steps: readonly Step[] }) {
   return (
     <ol className="m-0 grid list-none gap-[12px] p-0">
       {steps.map((s) => (
-        <li key={s.label} className="flex items-center gap-[10px] text-[14px]">
+        <li key={s.label} className="flex items-center gap-[10px] text-body">
           <span
             aria-hidden="true"
             className={cn(
-              "grid size-[20px] flex-none place-items-center rounded-full text-[12px] font-bold",
+              "grid size-[20px] flex-none place-items-center rounded-full text-caption font-bold",
               s.state === "done" && "bg-brand text-on-brand",
               s.state === "current" && "box-border border-2 border-brand bg-brand-subtle",
               s.state === "todo" && "box-border border-2 border-border-strong bg-surface",

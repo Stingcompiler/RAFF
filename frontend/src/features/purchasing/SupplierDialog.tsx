@@ -42,28 +42,36 @@ export function SupplierDialog({
   return (
     <Dialog open={open} onClose={onClose} labelledBy="supplier-title">
       <form onSubmit={submit} className="grid gap-[12px]">
-        <div id="supplier-title" className="text-[16px] font-medium">
+        <div id="supplier-title" className="text-lead font-medium">
           {t("supplierTitle")}
         </div>
         <Field label={t("code")}>
-          {({ id }) => <TextInput id={id} name="code" dir="ltr" required />}
+          {({ id }) => <TextInput className="num" id={id} name="code" dir="ltr" required />}
         </Field>
         <Field label={t("nameAr")}>
           {({ id }) => <TextInput id={id} name="name_ar" dir="rtl" required />}
         </Field>
         <Field label={t("nameEn")}>
-          {({ id }) => <TextInput id={id} name="name_en" dir="ltr" required />}
+          {({ id }) => <TextInput className="num" id={id} name="name_en" dir="ltr" required />}
         </Field>
         <Field label={t("phone")} mark="optional">
-          {({ id }) => <TextInput id={id} name="phone" dir="ltr" />}
+          {({ id }) => <TextInput className="num" id={id} name="phone" dir="ltr" />}
         </Field>
         <Field label={t("termsDays")} mark="optional">
           {({ id }) => (
-            <TextInput id={id} name="terms" type="number" min={0} dir="ltr" defaultValue={0} />
+            <TextInput
+              className="num"
+              id={id}
+              name="terms"
+              type="number"
+              min={0}
+              dir="ltr"
+              defaultValue={0}
+            />
           )}
         </Field>
         {error && (
-          <div role="alert" className="text-[13px] font-medium text-danger-text">
+          <div role="alert" className="text-label font-medium text-danger-text">
             {error}
           </div>
         )}

@@ -72,7 +72,7 @@ export function PhoneSell(props: Props) {
             autoComplete="off"
             value={props.query}
             onChange={(e) => props.onQuery(e.target.value)}
-            className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
+            className="min-w-0 flex-1 border-0 bg-transparent text-lead text-text outline-none"
           />
         </label>
       )}
@@ -84,17 +84,17 @@ export function PhoneSell(props: Props) {
             disabled={props.locked}
             aria-label={t("add", { name: pick(ar, row) })}
             onClick={() => props.onAdd(row)}
-            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-card border border-border bg-surface px-[14px] py-[8px] text-start font-[inherit] text-[14px] text-text transition-[transform,background] duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
+            className="flex min-h-[56px] w-full cursor-pointer items-center gap-[12px] rounded-card border border-border bg-surface px-[14px] py-[8px] text-start font-[inherit] text-body text-text transition-[transform,background] duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
           >
             <span className="min-w-0 flex-1 truncate font-medium">
               {[pick(ar, row), row.strength].filter(Boolean).join(" ")}
             </span>
-            <span dir="ltr" className="text-text-muted tabular-nums">
+            <span dir="ltr" className="text-text-muted num">
               {row.price ? cur(row.price) : ""}
             </span>
             <span
               aria-hidden="true"
-              className="grid size-[44px] flex-none place-items-center rounded-control bg-brand-subtle text-[22px]"
+              className="grid size-[44px] flex-none place-items-center rounded-control bg-brand-subtle text-section"
             >
               {PLUS}
             </span>
@@ -117,7 +117,7 @@ export function PhoneSell(props: Props) {
           aria-expanded={open}
           aria-label={t("toggle")}
           onClick={() => setOpen((v) => !v)}
-          className="block w-full cursor-pointer border-0 bg-transparent px-[16px] pt-[10px] pb-0 text-start font-[inherit] text-[14px] text-text"
+          className="block w-full cursor-pointer border-0 bg-transparent px-[16px] pt-[10px] pb-0 text-start font-[inherit] text-body text-text"
         >
           <span
             aria-hidden="true"
@@ -126,15 +126,11 @@ export function PhoneSell(props: Props) {
           <span className="flex h-[52px] items-center gap-[12px]">
             <span className="flex-1 font-medium">
               {t("cart")} {SEP}{" "}
-              <b dir="ltr" data-testid="phone-cart-count">
+              <b className="num" dir="ltr" data-testid="phone-cart-count">
                 {count}
               </b>
             </span>
-            <span
-              dir="ltr"
-              className="text-[22px] font-medium tabular-nums"
-              data-testid="phone-cart-total"
-            >
+            <span dir="ltr" className="text-section font-medium num" data-testid="phone-cart-total">
               {cur(total)}
             </span>
           </span>
@@ -144,7 +140,7 @@ export function PhoneSell(props: Props) {
             type="button"
             disabled={props.payDisabled}
             onClick={props.onPay}
-            className="h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-[16px] font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
+            className="h-[52px] w-full cursor-pointer rounded-card border-0 bg-brand font-[inherit] text-lead font-semibold text-on-brand transition-transform duration-(--motion-feedback) disabled:cursor-default disabled:opacity-60"
           >
             {t("pay")}
           </button>
@@ -161,10 +157,10 @@ export function PhoneSell(props: Props) {
                 className="flex min-h-[44px] animate-[raff-rise_.25s_ease_both] items-center gap-[12px] border-t border-border"
               >
                 <span className="min-w-0 flex-1 truncate">{pick(ar, l.item)}</span>
-                <span dir="ltr" className="text-text-muted">
+                <span dir="ltr" className="text-text-muted num">
                   {TIMES} {l.quantity}
                 </span>
-                <span dir="ltr" className="font-semibold tabular-nums">
+                <span dir="ltr" className="font-semibold num">
                   {priced ? cur(priced.line_total) : ""}
                 </span>
               </div>

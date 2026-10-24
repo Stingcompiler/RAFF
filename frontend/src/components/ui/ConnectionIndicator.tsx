@@ -27,7 +27,7 @@ export function ConnectionIndicator({ status, label, detail, variant = "chip", c
       <span
         role="status"
         className={cn(
-          "flex items-center gap-[8px] rounded-full px-[10px] py-[4px] text-[12px] font-medium",
+          "flex items-center gap-[8px] rounded-full px-[10px] py-[4px] text-caption font-medium",
           TONE[status],
           className,
         )}
@@ -41,14 +41,14 @@ export function ConnectionIndicator({ status, label, detail, variant = "chip", c
     <div
       role="status"
       className={cn(
-        "flex items-center gap-[10px] rounded-control px-[12px] py-[8px] text-[13px]",
+        "flex items-center gap-[10px] rounded-control px-[12px] py-[8px] text-label",
         TONE[status],
         className,
       )}
     >
       {dot}
       <span className="flex-1 font-medium">{label}</span>
-      {detail && <span className="text-[12px] opacity-85">{detail}</span>}
+      {detail && <span className="text-caption opacity-85">{detail}</span>}
     </div>
   );
 }

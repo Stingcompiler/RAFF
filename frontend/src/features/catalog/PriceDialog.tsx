@@ -52,7 +52,7 @@ export function PriceDialog({
   return (
     <Dialog open={open} onClose={busy ? undefined : onClose} labelledBy="price-title">
       <form onSubmit={submit} className="grid gap-[12px]">
-        <div id="price-title" className="text-[16px] font-medium">
+        <div id="price-title" className="text-lead font-medium">
           {t("newPrice")}
         </div>
         <Field label={t("baseUnit")}>
@@ -76,12 +76,22 @@ export function PriceDialog({
         </Field>
         <Field label={t("fPrice")}>
           {({ id }) => (
-            <TextInput id={id} name="price" type="number" min={0} step="0.01" dir="ltr" required />
+            <TextInput
+              className="num"
+              id={id}
+              name="price"
+              type="number"
+              min={0}
+              step="0.01"
+              dir="ltr"
+              required
+            />
           )}
         </Field>
         <Field label={t("fPriceDate")}>
           {({ id }) => (
             <TextInput
+              className="num"
               id={id}
               name="effective_from"
               type="date"
@@ -92,7 +102,7 @@ export function PriceDialog({
           )}
         </Field>
         {error && (
-          <div role="alert" className="text-[13px] font-medium text-danger-text">
+          <div role="alert" className="text-label font-medium text-danger-text">
             {error}
           </div>
         )}

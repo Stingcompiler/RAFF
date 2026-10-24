@@ -93,7 +93,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
         <Panel
           title={t("catT")}
           chips={
-            <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
+            <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border px-[12px] py-[2px] text-label text-text-muted focus-within:border-brand">
               <SearchIcon size={14} />
               <input
                 type="search"
@@ -101,7 +101,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 placeholder={t("search")}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
+                className="w-[160px] border-0 bg-transparent p-0 text-label text-text outline-none"
               />
             </label>
           }
@@ -128,7 +128,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                 <span
                   role="cell"
                   className={cn(
-                    "text-[13px]",
+                    "text-label",
                     row.missing.length ? "text-warning-text" : "text-success-text",
                   )}
                 >
@@ -171,7 +171,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                   // eslint-disable-next-line @next/next/no-img-element -- uploaded listing image
                   <img src={chosen.image} alt="" className="block h-[120px] w-full object-cover" />
                 ) : (
-                  <div className="grid h-[80px] place-content-center justify-items-center gap-[4px] bg-surface-subtle text-[12px] text-text-muted">
+                  <div className="grid h-[80px] place-content-center justify-items-center gap-[4px] bg-surface-subtle text-caption text-text-muted">
                     <NoImageIcon size={22} />
                     {t("noImg")}
                   </div>
@@ -183,20 +183,20 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
                       .join(" ")}
                   </b>
                   {chosen.price && chosen.classification !== "rx" && (
-                    <div dir="ltr" className="text-start text-[18px] font-semibold">
+                    <div dir="ltr" className="text-start text-lead font-semibold num">
                       {money(chosen.price, ar ? "ar" : "en")}
                     </div>
                   )}
                 </div>
               </div>
-              <div className="text-[13px] text-text-muted">{t("noStock")}</div>
+              <div className="text-label text-text-muted">{t("noStock")}</div>
               <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("image")}
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => void upload(e)}
-                  className="text-[13px]"
+                  className="text-label"
                 />
               </label>
               <label className="grid gap-[4px] type-label text-text-secondary">
@@ -210,6 +210,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
               <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("descEn")}
                 <Textarea
+                  className="num"
                   dir="ltr"
                   rows={3}
                   value={draft.description_en}
@@ -219,6 +220,7 @@ export function CatalogScreen({ initial }: { initial: Row[] }) {
               <label className="grid gap-[4px] type-label text-text-secondary">
                 {t("slug")}
                 <TextInput
+                  className="num"
                   dir="ltr"
                   defaultValue={chosen.slug}
                   key={chosen.slug}

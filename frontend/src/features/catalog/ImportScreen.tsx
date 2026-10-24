@@ -121,11 +121,11 @@ export function ImportScreen({ ar }: { ar: boolean }) {
             name="file"
             accept=".csv,text/csv"
             required
-            className="max-w-full text-[14px]"
+            className="max-w-full text-body"
           />
           <div
             dir="ltr"
-            className="text-start text-[12px] text-text-muted [overflow-wrap:anywhere]"
+            className="text-start text-caption text-text-muted [overflow-wrap:anywhere] num"
           >
             {t("help")}
           </div>
@@ -142,7 +142,7 @@ export function ImportScreen({ ar }: { ar: boolean }) {
             </Button>
           </div>
           {error && (
-            <div role="alert" className="text-[13px] font-medium text-danger-text">
+            <div role="alert" className="text-label font-medium text-danger-text">
               {error}
             </div>
           )}

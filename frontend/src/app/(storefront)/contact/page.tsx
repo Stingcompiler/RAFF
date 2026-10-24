@@ -17,7 +17,7 @@ export default async function ContactPage() {
   return (
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-[28px] px-[20px] py-[32px]">
       <div className="grid content-start gap-[16px]">
-        <h1 className="m-0 text-[32px] font-semibold">{t("nav.contact")}</h1>
+        <h1 className="m-0 text-land-section font-semibold">{t("nav.contact")}</h1>
         <dl className="m-0 grid border-t border-border">
           {rows.map(([label, value, ltr]) => (
             <div
@@ -25,7 +25,7 @@ export default async function ContactPage() {
               className="flex min-h-[52px] items-center justify-between gap-[12px] border-b border-border"
             >
               <dt className="text-text-muted">{label}</dt>
-              <dd className="m-0" dir={ltr ? "ltr" : undefined}>
+              <dd className={ltr ? "m-0 num" : "m-0"} dir={ltr ? "ltr" : undefined}>
                 {value}
               </dd>
             </div>

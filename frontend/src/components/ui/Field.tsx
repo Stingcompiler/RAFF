@@ -12,7 +12,7 @@ import { cn } from "@/lib/cn";
 
 /** Shared look of text inputs: 44px content height, line border, bg fill. */
 export const controlClasses = cn(
-  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text",
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-body font-normal text-text",
   "outline-none transition-[border-color,box-shadow] duration-(--motion-feedback)",
   "focus:border-2 focus:border-brand focus:px-[11px] focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
   "aria-[invalid=true]:border-2 aria-[invalid=true]:border-danger-solid aria-[invalid=true]:px-[11px]",

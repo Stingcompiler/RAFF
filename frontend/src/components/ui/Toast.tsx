@@ -35,7 +35,7 @@ export function Toast({
       <span aria-hidden="true">{SYMBOL[tone]}</span>
       <span className="flex-1 font-medium">{message}</span>
       {requestId && (
-        <span dir="ltr" className="text-[12px] opacity-80">
+        <span dir="ltr" className="text-caption opacity-80 num">
           {requestId}
         </span>
       )}

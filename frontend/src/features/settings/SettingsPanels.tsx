@@ -134,7 +134,7 @@ export function LicensePanel({ license }: { license: Schemas["LicenseStatus"] })
             <span>{license.organization}</span>
           </div>
         )}
-        <p className="m-0 text-[13px] text-text-muted">{t("licenseNote")}</p>
+        <p className="m-0 text-label text-text-muted">{t("licenseNote")}</p>
       </div>
     </Panel>
   );

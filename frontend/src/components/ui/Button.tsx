@@ -32,9 +32,9 @@ const VARIANTS: Record<ButtonVariant, { base: string; hover: string; forced: str
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  md: "h-[40px] px-[16px] text-[14px]",
-  lg: "h-[44px] px-[20px] text-[14px]",
-  xl: "h-[48px] px-[20px] text-[16px]",
+  md: "h-[40px] px-[16px] text-body",
+  lg: "h-[44px] px-[20px] text-body",
+  xl: "h-[48px] px-[20px] text-lead",
 };
 
 type StyleOptions = {

@@ -85,7 +85,7 @@ export function DrawerRow({ label, children }: { label: ReactNode; children: Rea
   return (
     <div className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-border px-[20px] py-[8px] animate-[raff-fade_var(--motion-scene)_ease_both]">
       <span className="text-text-muted">{label}</span>
-      <span className="font-medium tabular-nums [unicode-bidi:isolate]">{children}</span>
+      <span className="font-medium num [unicode-bidi:isolate]">{children}</span>
     </div>
   );
 }

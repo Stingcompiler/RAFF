@@ -52,7 +52,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
     <div className="flex flex-1 flex-col overflow-hidden rounded-card border border-border bg-surface">
       <div
         className={cn(
-          "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-[12px] font-medium text-text-muted",
+          "grid h-[36px] items-center gap-[12px] border-b border-border bg-surface-subtle px-[16px] text-caption font-medium text-text-muted",
           COLS,
         )}
       >
@@ -65,7 +65,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
       </div>
       {noResults && (
         <div className="grid flex-1 place-content-center justify-items-center gap-[12px] p-[24px] text-center">
-          <div className="text-[16px] font-medium">{t("noRes", { query })}</div>
+          <div className="text-lead font-medium">{t("noRes", { query })}</div>
           <div className="max-w-[360px] text-text-muted">{t("noResHint")}</div>
           <Button variant="outline" onClick={onLogMissing}>
             {t("logMissing")}
@@ -94,10 +94,10 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
                 sellable(row) ? "cursor-pointer" : "cursor-not-allowed",
               )}
             >
-              <div className="grid min-w-0 leading-[1.25]">
+              <div className="grid min-w-0 leading-tight">
                 <span className="flex min-w-0 items-center gap-[6px]">
                   {row.rx && (
-                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] font-latin text-[12px] font-semibold text-info-text">
+                    <span className="flex-none rounded-[4px] border border-info-solid px-[4px] num text-caption font-semibold text-info-text">
                       {t("rx")}
                     </span>
                   )}
@@ -106,8 +106,9 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
                 <span
                   dir="ltr"
                   className={cn(
-                    "truncate text-start text-[12px] [unicode-bidi:isolate]",
+                    "truncate text-start text-caption [unicode-bidi:isolate]",
                     on ? "text-text" : "text-text-muted",
+                    "num",
                   )}
                 >
                   <span className="min-[1280px]:hidden">{secondary}</span>
@@ -116,24 +117,24 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
               </div>
               <span
                 dir="ltr"
-                className={cn(FORM_COL, "text-start text-[13px] [unicode-bidi:isolate]")}
+                className={cn(FORM_COL, "text-start text-label [unicode-bidi:isolate]", "num")}
               >
                 {[row.strength, row.dosage_form].filter(Boolean).join(SEP)}
               </span>
               <span>{unitName}</span>
-              <span dir="ltr" className="text-end tabular-nums [unicode-bidi:isolate]">
+              <span dir="ltr" className="text-end num">
                 {money(row.price, ar ? "ar" : "en")}
               </span>
-              <span className="grid text-end leading-[1.2] whitespace-nowrap tabular-nums">
+              <span className="grid text-end leading-tight whitespace-nowrap num">
                 <span>{stock}</span>
                 {row.reserved_base > 0 && (
-                  <span className="text-[12px] font-medium text-info-text">
+                  <span className="text-caption font-medium text-info-text">
                     {t("reserved", { count: inUnit(row.reserved_base, row.unit?.factor) })}
                   </span>
                 )}
               </span>
               <span className="flex items-center gap-[6px] whitespace-nowrap">
-                <span dir="ltr" className="text-[12px] tabular-nums">
+                <span dir="ltr" className="text-caption num">
                   {row.nearest_expiry ?? ""}
                 </span>
                 <Badge tone={STOCK_TONE[row.status]} dense>
@@ -144,7 +145,7 @@ export function ResultsTable({ rows, selected, query, onSelect, onAdd, onLogMiss
           );
         })}
       </div>
-      <div className="mt-auto flex gap-[16px] border-t border-border px-[16px] py-[10px] text-[12px] text-text-muted">
+      <div className="mt-auto flex gap-[16px] border-t border-border px-[16px] py-[10px] text-caption text-text-muted">
         <span>{navHint}</span>
         <span>{addHint}</span>
         <span>{t("rule")}</span>

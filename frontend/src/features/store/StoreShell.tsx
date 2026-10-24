@@ -79,18 +79,18 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
     <div
       style={brand}
       className={cn(
-        "min-h-dvh bg-canvas text-[16px] leading-[1.5] text-text",
+        "min-h-dvh bg-canvas text-lead leading-body text-text",
         path === "/" && "max-[760px]:pb-[72px]",
       )}
     >
       <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-border bg-surface-subtle px-[20px] py-[12px]">
         <Link
           href="/"
-          className="hit-44 flex items-center gap-[10px] text-[19px] font-bold whitespace-nowrap text-text no-underline"
+          className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline"
         >
           <span
             aria-hidden="true"
-            className="grid size-[34px] place-items-center rounded-full bg-brand text-[20px] leading-none text-on-brand"
+            className="grid size-[34px] place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
           >
             {PLUS}
           </span>
@@ -125,7 +125,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
           {t("cart")}
           <span
             data-testid="cart-count"
-            className="grid h-[22px] min-w-[22px] place-items-center rounded-full bg-brand-subtle px-[4px] text-[12px] text-text"
+            className="num grid h-[22px] min-w-[22px] place-items-center rounded-full bg-brand-subtle px-[4px] text-caption text-text"
           >
             {count}
           </span>
@@ -133,7 +133,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
       </header>
       <main>{children}</main>
       {path === "/" && <StickyCta whatsapp={store.whatsapp ?? ""} />}
-      <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-[14px] text-text-muted">
+      <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-body text-text-muted">
         <div className="flex flex-wrap gap-[16px]">
           <Link href="/policies/privacy" className="hit-44 text-brand">
             {t("policy")}
@@ -181,7 +181,7 @@ function SearchBox() {
         placeholder={t("searchPh")}
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        className="min-w-0 flex-1 border-0 bg-transparent text-[16px] text-text outline-none"
+        className="min-w-0 flex-1 border-0 bg-transparent text-lead text-text outline-none"
       />
     </form>
   );

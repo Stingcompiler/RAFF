@@ -14,7 +14,7 @@ export function AvailabilityBadge({ value, label }: { value: Availability; label
   return (
     <span
       className={cn(
-        "rounded-full px-[10px] py-[3px] text-[13px] font-semibold whitespace-nowrap",
+        "rounded-full px-[10px] py-[3px] text-label font-semibold whitespace-nowrap",
         STYLE[value],
       )}
     >

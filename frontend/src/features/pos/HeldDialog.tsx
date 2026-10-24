@@ -26,14 +26,14 @@ export function HeldDialog({ onClose, onResume }: Props) {
   return (
     <Dialog open onClose={onClose} labelledBy="held-title" className="w-[520px] gap-[16px]">
       <div className="flex items-center justify-between">
-        <span id="held-title" className="text-[16px] font-medium">
+        <span id="held-title" className="text-lead font-medium">
           {t("heldTitle")}
         </span>
         <button
           type="button"
           onClick={onClose}
           aria-label={t("dismiss")}
-          className="type-inherit cursor-pointer border-0 bg-transparent p-0 text-[12px] text-text-muted"
+          className="type-inherit cursor-pointer border-0 bg-transparent p-0 text-caption text-text-muted"
         >
           {ESC}
         </button>
@@ -53,11 +53,11 @@ export function HeldDialog({ onClose, onResume }: Props) {
               onClick={() => onResume(h)}
               className="type-inherit grid min-h-[52px] w-full cursor-pointer grid-cols-[60px_1fr_110px_90px] items-center gap-[12px] max-[560px]:min-w-[430px] border-0 border-b border-border bg-transparent px-[14px] py-[8px] text-start text-text transition-[background] duration-(--motion-feedback) hover:bg-brand-subtle"
             >
-              <span dir="ltr" className="tabular-nums">
+              <span dir="ltr" className="num">
                 {timeOfDay(h.created_at)}
               </span>
               <span>{summary}</span>
-              <span dir="ltr" className="text-end font-semibold tabular-nums">
+              <span dir="ltr" className="text-end font-semibold num">
                 {money(h.total ?? "0", ar ? "ar" : "en")}
               </span>
               <span className="text-end font-semibold text-brand">{t("resume")}</span>

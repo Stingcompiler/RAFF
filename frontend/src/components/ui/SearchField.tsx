@@ -27,7 +27,7 @@ export function SearchField({ shortcut, label, className, wrapperClassName, ...p
         type="search"
         aria-label={label}
         className={cn(
-          "min-w-0 flex-1 border-0 bg-transparent p-0 text-[14px] text-text outline-none placeholder:text-text-muted",
+          "min-w-0 flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-muted",
           className,
         )}
         {...props}

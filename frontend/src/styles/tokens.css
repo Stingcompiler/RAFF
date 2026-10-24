@@ -127,6 +127,19 @@
   --d-gap: 16px;
   --d-card-pad: 20px;
   --d-font: 14px;
+  --land-hero: 52px;
+  --land-hero-lead: 18px;
+  --land-section: 32px;
+  --land-lead: 17px;
+  --land-feature: 24px;
+  --land-body: 16px;
+  --font-ui: "IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: var(--font-ui);
+  --font-display: var(--font-ui);
+}
+
+:lang(en) {
+  --font-ui: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, sans-serif;
 }
 
 [data-density="compact"] {
@@ -177,7 +190,7 @@
 @utility type-caption {
   font-size: 12px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 @utility type-body {
@@ -220,6 +233,32 @@
   font-size: 36px;
   font-weight: 700;
   line-height: 1.1;
+}
+
+@utility font-ui {
+  font-family: var(--font-ui);
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@utility num {
+  font-family: var(--font-mono, var(--font-ui));
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --land-hero: 30px;
+    --land-hero-lead: 15px;
+    --land-section: 24px;
+    --land-lead: 15px;
+    --land-feature: 20px;
+    --land-body: 15px;
+  }
 }
 
 @utility hit-44 {
@@ -304,6 +343,40 @@
   --shadow-tile: var(--elev-2);
   --shadow-segment: var(--elev-1);
 
-  --font-sans: "IBM Plex Sans Arabic", "IBM Plex Sans", sans-serif;
-  --font-latin: "IBM Plex Sans", "IBM Plex Sans Arabic", sans-serif;
+  /* Only the named scale exists as font sizes and line heights. */
+  --text-*: initial;
+  --leading-*: initial;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.6;
+  --text-label: 13px;
+  --text-label--line-height: 1.4;
+  --text-body: 14px;
+  --text-body--line-height: 1.6;
+  --text-lead: 16px;
+  --text-lead--line-height: 1.6;
+  --text-section: 20px;
+  --text-section--line-height: 1.3;
+  --text-page: 28px;
+  --text-page--line-height: 1.25;
+  --text-metric: 32px;
+  --text-metric--line-height: 1.1;
+  --text-total: 36px;
+  --text-total--line-height: 1.1;
+  --text-land-hero: var(--land-hero);
+  --text-land-hero--line-height: 1.2;
+  --text-land-hero-lead: var(--land-hero-lead);
+  --text-land-hero-lead--line-height: 1.7;
+  --text-land-section: var(--land-section);
+  --text-land-section--line-height: 1.25;
+  --text-land-lead: var(--land-lead);
+  --text-land-lead--line-height: 1.6;
+  --text-land-feature: var(--land-feature);
+  --text-land-feature--line-height: 1.3;
+  --text-land-body: var(--land-body);
+  --text-land-body--line-height: 1.7;
+  --leading-tight: 1.25;
+  --leading-snug: 1.4;
+  --leading-body: 1.6;
+  --leading-loose: 1.7;
+  --leading-none: 1;
 }

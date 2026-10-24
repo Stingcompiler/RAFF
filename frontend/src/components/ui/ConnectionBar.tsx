@@ -77,7 +77,7 @@ export function ConnectionBar({ kind, progress, children, className }: Props) {
               style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%` }}
             />
           </span>
-          <span dir="ltr" className="tabular-nums">
+          <span dir="ltr" className="num">
             {progress.done}
             {OF}
             {progress.total}

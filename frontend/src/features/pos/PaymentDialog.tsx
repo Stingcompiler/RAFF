@@ -30,7 +30,7 @@ type Props = {
 const whole = (value: string) => value.replace(/\.0+$/, "");
 
 const FIELD =
-  "h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-[18px] font-medium text-text outline-none";
+  "h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-lead font-medium text-text outline-none";
 const LABEL = "grid gap-[4px] type-label text-text-secondary";
 
 export function PaymentDialog({
@@ -142,7 +142,7 @@ export function PaymentDialog({
           value={account}
           placeholder={t("bankA")}
           onChange={(e) => setAccount(e.target.value)}
-          className="h-[44px] w-full rounded-control border border-border-strong bg-canvas px-[12px] text-[14px] text-text outline-none"
+          className="h-[44px] w-full rounded-control border border-border-strong bg-canvas px-[12px] text-body text-text outline-none num"
         />
       </label>
     </div>
@@ -157,14 +157,14 @@ export function PaymentDialog({
     >
       <form onSubmit={submit} className="grid gap-[16px]">
         <div className="flex items-center justify-between">
-          <span id="pay-title" className="text-[16px] font-medium">
+          <span id="pay-title" className="text-lead font-medium">
             {t("payTitle")}
           </span>
-          <span className="text-[12px] text-text-muted max-[760px]:hidden">{ESC}</span>
+          <span className="text-caption text-text-muted max-[760px]:hidden">{ESC}</span>
         </div>
         <div className="rounded-control bg-surface-subtle p-[12px] text-center">
-          <div className="text-[13px] text-text-muted">{t("total")}</div>
-          <div dir="ltr" className="text-[40px] font-medium tabular-nums" data-testid="pay-total">
+          <div className="text-label text-text-muted">{t("total")}</div>
+          <div dir="ltr" className="text-total font-medium num" data-testid="pay-total">
             {cur(total)}
           </div>
         </div>
@@ -207,10 +207,11 @@ export function PaymentDialog({
                 dir="ltr"
                 data-testid="change"
                 className={cn(
-                  "flex h-[44px] items-center rounded-control px-[12px] text-[18px] font-semibold",
+                  "flex h-[44px] items-center rounded-control px-[12px] text-lead font-semibold",
                   isNegative(change)
                     ? "bg-danger-bg text-danger-text"
                     : "bg-success-bg text-success-text",
+                  "num",
                 )}
               >
                 {cur(change)}
@@ -238,7 +239,7 @@ export function PaymentDialog({
                   setCustomer(null);
                   setSearch(e.target.value);
                 }}
-                className={cn(FIELD, "text-[16px] font-normal")}
+                className={cn(FIELD, "text-lead font-normal")}
               />
             </label>
             {!customer && search.trim() && (
@@ -261,14 +262,14 @@ export function PaymentDialog({
             {customer && (
               <div className="grid grid-cols-3 gap-[8px]">
                 <div className="rounded-control border border-border px-[12px] py-[10px]">
-                  <div className="text-[12px] text-text-muted">{t("balance")}</div>
-                  <div dir="ltr" className="font-semibold tabular-nums">
+                  <div className="text-caption text-text-muted">{t("balance")}</div>
+                  <div dir="ltr" className="font-semibold num">
                     {cur(customer.balance)}
                   </div>
                 </div>
                 <div className="rounded-control border border-border px-[12px] py-[10px]">
-                  <div className="text-[12px] text-text-muted">{t("limit")}</div>
-                  <div dir="ltr" className="font-semibold tabular-nums">
+                  <div className="text-caption text-text-muted">{t("limit")}</div>
+                  <div dir="ltr" className="font-semibold num">
                     {cur(customer.credit_limit ?? "0")}
                   </div>
                 </div>
@@ -280,8 +281,8 @@ export function PaymentDialog({
                       : "bg-success-bg text-success-text",
                   )}
                 >
-                  <div className="text-[12px]">{t("remaining")}</div>
-                  <div dir="ltr" className="font-semibold tabular-nums" data-testid="credit-left">
+                  <div className="text-caption">{t("remaining")}</div>
+                  <div dir="ltr" className="font-semibold num" data-testid="credit-left">
                     {cur(creditLeft)}
                   </div>
                 </div>
@@ -307,7 +308,7 @@ export function PaymentDialog({
                 {t("bankPart")}
                 <span
                   dir="ltr"
-                  className="flex h-[44px] items-center rounded-control border border-border bg-canvas px-[12px] text-[18px] font-medium text-text"
+                  className="flex h-[44px] items-center rounded-control border border-border bg-canvas px-[12px] text-lead font-medium text-text num"
                 >
                   {cur(isNegative(bankPart) ? "0" : bankPart)}
                 </span>
@@ -316,7 +317,9 @@ export function PaymentDialog({
             {bankFields}
             <div className="flex justify-between rounded-control bg-success-bg px-[12px] py-[10px] font-semibold text-success-text">
               <span>{t("remainingPay")}</span>
-              <span dir="ltr">{cur("0")}</span>
+              <span className="num" dir="ltr">
+                {cur("0")}
+              </span>
             </div>
           </div>
         )}
@@ -336,7 +339,7 @@ export function PaymentDialog({
             disabled={busy || !ready}
             aria-busy={busy}
             className={cn(
-              "h-[48px] flex-1 rounded-control border-0 text-[16px] font-semibold transition-[background] duration-(--motion-feedback)",
+              "h-[48px] flex-1 rounded-control border-0 text-lead font-semibold transition-[background] duration-(--motion-feedback)",
               busy
                 ? "cursor-progress bg-border text-text-muted"
                 : ready
@@ -350,7 +353,7 @@ export function PaymentDialog({
             type="button"
             onClick={onClose}
             disabled={busy}
-            className="h-[48px] cursor-pointer rounded-control border border-border-strong bg-transparent px-[20px] text-[14px] font-medium text-text"
+            className="h-[48px] cursor-pointer rounded-control border border-border-strong bg-transparent px-[20px] text-body font-medium text-text"
           >
             {t("cancel")}
           </button>

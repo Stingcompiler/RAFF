@@ -40,7 +40,7 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
   const row = rows?.find((b) => b.batch_id === chosen);
   return (
     <Dialog open onClose={onClose} labelledBy="batch-title" className="w-[560px] gap-[12px]">
-      <div id="batch-title" className="text-[16px] font-medium">
+      <div id="batch-title" className="text-lead font-medium">
         {t("batchTitle", { item: `${pick(ar, line.item)} ${line.item.strength}`.trim() })}
       </div>
       <div
@@ -49,7 +49,10 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
         aria-labelledby="batch-title"
       >
         <div
-          className={cn(grid, "h-[36px] bg-surface-subtle text-[12px] font-medium text-text-muted")}
+          className={cn(
+            grid,
+            "h-[36px] bg-surface-subtle text-caption font-medium text-text-muted",
+          )}
         >
           <span>{t("hBatch")}</span>
           <span>{t("hExp")}</span>
@@ -78,13 +81,13 @@ export function BatchDialog({ line, onClose, onChoose }: Props) {
                 usable ? "cursor-pointer" : "cursor-not-allowed opacity-60",
               )}
             >
-              <span dir="ltr" className="text-start">
+              <span dir="ltr" className="text-start num">
                 {b.batch_no}
               </span>
-              <span dir="ltr" className="text-[13px] tabular-nums">
+              <span dir="ltr" className="text-label num">
                 {b.expiry_date ?? ""}
               </span>
-              <span dir="ltr" className="text-end tabular-nums">
+              <span dir="ltr" className="text-end num">
                 {inUnit(b.quantity_base, line.unit.factor)}
               </span>
               <span>

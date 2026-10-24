@@ -22,11 +22,11 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
         <ProductImage product={product} height="h-[340px]" label={t("noImgL")} />
       </div>
       <div className="grid content-start gap-[12px]">
-        <Link href="/store" className="min-h-[24px] text-[14px] text-brand">
+        <Link href="/store" className="min-h-[24px] text-body text-brand">
           {t("backStore")}
         </Link>
-        <h1 className="m-0 text-[32px] font-semibold">{productName(ar, product)}</h1>
-        <bdi dir="ltr" className="text-text-muted [unicode-bidi:isolate]">
+        <h1 className="m-0 text-land-section font-semibold">{productName(ar, product)}</h1>
+        <bdi dir="ltr" className="text-text-muted num">
           {[product.name_en, product.strength].filter(Boolean).join(" · ")}
         </bdi>
         <div className="text-text-secondary">
@@ -34,7 +34,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
           {ar ? product.unit_ar : product.unit_en}
         </div>
         {product.rx ? (
-          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-[14px] font-medium text-info-text">
+          <div className="rounded-control bg-info-bg px-[10px] py-[8px] text-body font-medium text-info-text">
             {t("rxLong")}
           </div>
         ) : (
@@ -42,7 +42,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             {product.availability && (
               <span
                 className={cn(
-                  "justify-self-start rounded-full px-[10px] py-[3px] text-[13px] font-semibold whitespace-nowrap",
+                  "justify-self-start rounded-full px-[10px] py-[3px] text-label font-semibold whitespace-nowrap",
                   AVAIL_TONE[product.availability],
                 )}
               >
@@ -51,12 +51,12 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             )}
             {product.price && (
               <div className="flex flex-wrap items-baseline gap-[10px]">
-                <span className="text-[28px] font-semibold tabular-nums">
+                <span className="text-land-feature font-semibold num">
                   {money(product.price, ar ? "ar" : "en")}
                 </span>
-                <span className="text-[12px] whitespace-nowrap text-text-muted">
+                <span className="text-caption whitespace-nowrap text-text-muted">
                   {t("updated")}{" "}
-                  <bdi dir="ltr" className="[unicode-bidi:isolate]">
+                  <bdi dir="ltr" className="num">
                     {product.price_date}
                   </bdi>
                 </span>
@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: PageProps<"/products/[slug
             )}
           </>
         )}
-        <p className="m-0 max-w-[480px] leading-[1.7] text-text-secondary">
+        <p className="m-0 max-w-[480px] leading-loose text-text-secondary">
           {ar ? product.description_ar : product.description_en || product.description_ar}
         </p>
         <AddToCart product={product} />

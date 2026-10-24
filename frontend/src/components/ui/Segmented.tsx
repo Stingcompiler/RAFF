@@ -33,7 +33,7 @@ export function Segmented<T extends string>({
             aria-checked={active}
             onClick={() => onChange(item.id)}
             className={cn(
-              "cursor-pointer rounded-control border-0 px-[12px] py-[4px] [font-family:inherit] [line-height:inherit] text-[13px] font-medium",
+              "cursor-pointer rounded-control border-0 px-[12px] py-[4px] [font-family:inherit] [line-height:inherit] text-label font-medium",
               "transition-[background,color] duration-(--motion-feedback)",
               active ? "bg-surface text-brand shadow-segment" : "bg-transparent text-text-muted",
             )}

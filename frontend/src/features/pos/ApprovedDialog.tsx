@@ -66,19 +66,19 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
         >
           {t("approvedMsg")}
         </div>
-        <div dir="ltr" className="text-start text-[12px] text-text-muted">
+        <div dir="ltr" className="text-start text-caption text-text-muted num">
           {reference}
         </div>
         <div className="flex justify-between font-semibold">
           <span>{t("total")}</span>
-          <span dir="ltr" className="whitespace-nowrap" data-testid="approved-total">
+          <span dir="ltr" className="whitespace-nowrap num" data-testid="approved-total">
             {money(sale.total, ar ? "ar" : "en")}
           </span>
         </div>
         {sale.change !== "0" && !/^0(\.0+)?$/.test(sale.change) && (
           <div className="flex justify-between font-semibold text-success-text">
             <span>{t("change")}</span>
-            <span dir="ltr" className="whitespace-nowrap" data-testid="approved-change">
+            <span dir="ltr" className="whitespace-nowrap num" data-testid="approved-change">
               {money(sale.change, ar ? "ar" : "en")}
             </span>
           </div>
@@ -103,10 +103,10 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
           type="button"
           ref={newSale}
           onClick={onNewSale}
-          className="h-[52px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand"
+          className="h-[52px] cursor-pointer rounded-control border-0 bg-brand text-lead font-semibold text-on-brand"
         >
           {t("newSale")}{" "}
-          <span dir="ltr" className="text-[13px] opacity-85">
+          <span dir="ltr" className="text-label opacity-85 num">
             {ENTER}
           </span>
         </button>

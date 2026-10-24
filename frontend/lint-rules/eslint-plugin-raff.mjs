@@ -3,10 +3,12 @@ import {
   findLegacyToken,
   findPhysicalClass,
   findPhysicalInCssText,
+  findRawFont,
   findRawColorInText,
   PHYSICAL_PROPERTIES_CAMEL,
   PHYSICAL_VALUE_PROPERTIES_CAMEL,
   PHYSICAL_VALUES,
+  RAW_FONT_STYLE_PROPS,
 } from "./patterns.mjs";
 
 const LOOKS_LIKE_CSS = /[a-z-]+\s*:\s*[^;]+;/i;
@@ -55,6 +57,34 @@ const noRawColor = {
       const what = findRawColorInText(text);
       if (what) context.report({ node, messageId: "raw", data: { what } });
     });
+  },
+};
+
+const noRawFont = {
+  meta: {
+    type: "problem",
+    docs: { description: "Type only through the named scale (text-body, leading-body, font-ui…)." },
+    schema: [],
+    messages: {
+      raw: 'Raw type value "{{what}}". Use the named scale: text-caption|label|body|lead|section|page|metric|total (land-* on the storefront), leading-tight|snug|body|loose, font-medium|semibold|bold, num for numbers.',
+      style: 'Type value in style ("{{what}}"). Use the named scale classes.',
+    },
+  },
+  create(context) {
+    return {
+      ...stringVisitors((node, text) => {
+        const what = findRawFont(text);
+        if (what) context.report({ node, messageId: "raw", data: { what } });
+      }),
+      "JSXAttribute[name.name='style'] ObjectExpression > Property"(prop) {
+        const name = propertyName(prop);
+        if (name && RAW_FONT_STYLE_PROPS.has(name)) {
+          const value = staticString(prop.value);
+          if (value === "inherit") return;
+          context.report({ node: prop.key, messageId: "style", data: { what: name } });
+        }
+      },
+    };
   },
 };
 
@@ -127,6 +157,7 @@ const plugin = {
     "no-raw-color": noRawColor,
     "no-physical-properties": noPhysicalProperties,
     "no-legacy-token": noLegacyToken,
+    "no-raw-font": noRawFont,
   },
 };
 

@@ -208,7 +208,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                 <span aria-disabled="true" className="opacity-60">
                   <Chip>{t("chipBranch")}</Chip>
                 </span>
-                <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border-strong px-[12px] py-[2px] text-[13px] text-text-muted focus-within:border-brand">
+                <label className="ms-auto flex items-center gap-[6px] rounded-full border border-border-strong px-[12px] py-[2px] text-label text-text-muted focus-within:border-brand">
                   <SearchIcon size={14} />
                   <input
                     type="search"
@@ -216,7 +216,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                     placeholder={t("search")}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="w-[160px] border-0 bg-transparent p-0 text-[13px] text-text outline-none"
+                    className="w-[160px] border-0 bg-transparent p-0 text-label text-text outline-none"
                   />
                 </label>
               </>
@@ -238,7 +238,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
                   <span role="cell" className="flex min-w-0 items-center gap-[6px]">
                     <span className="truncate">{itemLabel(ar, item)}</span>
                     {item.classification === "rx" && (
-                      <span className="flex-none rounded-[4px] border border-info-solid px-[4px] text-[12px] font-semibold text-info-text">
+                      <span className="flex-none rounded-[4px] border border-info-solid px-[4px] text-caption font-semibold text-info-text">
                         {t("rx")}
                       </span>
                     )}

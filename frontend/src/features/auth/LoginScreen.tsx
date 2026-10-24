@@ -10,10 +10,10 @@ import type { DeviceInfo, Me } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 
 const field =
-  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-[14px] font-normal text-text outline-none disabled:opacity-100 focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+  "h-[44px] rounded-control border border-border-strong bg-canvas px-[12px] py-0 text-body font-normal text-text outline-none disabled:opacity-100 focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
 const select = cn(field, "box-content appearance-none disabled:text-text-muted");
 const primary =
-  "h-[48px] cursor-pointer rounded-control border-0 bg-brand text-[16px] font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
+  "h-[48px] cursor-pointer rounded-control border-0 bg-brand text-lead font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted";
 const label = "grid gap-[4px] type-label text-text-secondary";
 
 type Props = { device: DeviceInfo | null; initialMe: Me | null; next: string };
@@ -124,11 +124,11 @@ export function LoginScreen({ device, initialMe, next }: Props) {
                 {busy === "login" ? t("signingIn") : t("signIn")}
               </button>
               {error && !signedIn ? (
-                <div role="alert" className="text-[12px] font-medium text-danger-text">
+                <div role="alert" className="text-caption font-medium text-danger-text">
                   {error}
                 </div>
               ) : (
-                <div className="text-[12px] text-text-muted">{foot}</div>
+                <div className="text-caption text-text-muted">{foot}</div>
               )}
             </form>
           </Panel>
@@ -185,11 +185,11 @@ export function LoginScreen({ device, initialMe, next }: Props) {
                 {busy === "context" ? t("continuing") : t("continue")}
               </button>
               {error && signedIn ? (
-                <div role="alert" className="text-[12px] font-medium text-danger-text">
+                <div role="alert" className="text-caption font-medium text-danger-text">
                   {error}
                 </div>
               ) : (
-                <div className="text-[12px] text-text-muted" />
+                <div className="text-caption text-text-muted" />
               )}
             </form>
           </Panel>

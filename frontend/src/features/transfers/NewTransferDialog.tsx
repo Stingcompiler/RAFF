@@ -91,7 +91,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
       className="w-[600px]"
     >
       <form onSubmit={submit} className="grid gap-[14px]">
-        <div id="new-transfer" className="text-[16px] font-medium">
+        <div id="new-transfer" className="text-lead font-medium">
           {t("newTitle")}
         </div>
         <label className="grid gap-[4px] type-label text-text-secondary">
@@ -128,6 +128,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
           <label className="grid gap-[4px] type-label text-text-secondary">
             {t("quantity")}
             <TextInput
+              className="num"
               dir="ltr"
               type="number"
               min={1}
@@ -155,7 +156,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
                 className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-border bg-transparent px-[12px] text-start text-text hover:bg-brand-subtle"
               >
                 {ar ? row.name_ar : row.name_en}{" "}
-                <bdi dir="ltr" className="text-text-muted">
+                <bdi dir="ltr" className="text-text-muted num">
                   {row.strength}
                 </bdi>
               </button>
@@ -171,7 +172,7 @@ export function NewTransferDialog({ branches, onClose, onSaved }: Props) {
               >
                 <span>{l.label}</span>
                 <span className="flex items-center gap-[12px]">
-                  <span dir="ltr" className="tabular-nums">
+                  <span dir="ltr" className="num">
                     {l.quantity}
                   </span>
                   <Button

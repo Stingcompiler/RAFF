@@ -75,7 +75,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
       className="w-[520px]"
     >
       <form onSubmit={submit} className="grid gap-[14px]">
-        <div id="recall-title" className="text-[16px] font-medium">
+        <div id="recall-title" className="text-lead font-medium">
           {t("recallTitle")}
         </div>
         <div className="text-text-muted">{t("recallBody")}</div>
@@ -106,7 +106,7 @@ export function RecallDialog({ onClose, onDone }: { onClose: () => void; onDone:
                 className="type-inherit min-h-[40px] cursor-pointer border-0 border-b border-border bg-transparent px-[12px] text-start text-text hover:bg-brand-subtle"
               >
                 {ar ? row.name_ar : row.name_en}{" "}
-                <bdi dir="ltr" className="text-text-muted">
+                <bdi dir="ltr" className="text-text-muted num">
                   {row.strength}
                 </bdi>
               </button>

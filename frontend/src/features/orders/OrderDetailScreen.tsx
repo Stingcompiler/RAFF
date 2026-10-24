@@ -134,7 +134,7 @@ export function OrderDetailScreen({
         >
           {t("back")}
         </Link>
-        <h1 dir="ltr" className="m-0 type-page">
+        <h1 dir="ltr" className="m-0 type-page num">
           {order.number}
         </h1>
         <Badge tone={STATUS_TONE[order.status]} dense>
@@ -142,7 +142,7 @@ export function OrderDetailScreen({
         </Badge>
         <span className="whitespace-nowrap text-text-muted">
           {order.customer_name}{" "}
-          <bdi dir="ltr" className="[unicode-bidi:isolate]">
+          <bdi dir="ltr" className="num">
             {order.phone}
           </bdi>
         </span>
@@ -203,7 +203,7 @@ export function OrderDetailScreen({
                     <TextCell>
                       {[ar ? l.name_ar : l.name_en, l.strength].filter(Boolean).join(" ")}
                       {l.rx && (
-                        <span className="ms-[6px] text-[12px] text-info-text">{t("rxNote")}</span>
+                        <span className="ms-[6px] text-caption text-info-text">{t("rxNote")}</span>
                       )}
                     </TextCell>
                     <NumberCell>{l.published_price ? amount(l.published_price) : DASH}</NumberCell>
@@ -222,7 +222,7 @@ export function OrderDetailScreen({
                           >
                             {MINUS}
                           </button>
-                          <span dir="ltr" className="w-[32px] text-center font-semibold">
+                          <span dir="ltr" className="w-[32px] text-center font-semibold num">
                             {qty}
                           </span>
                           <button
@@ -237,7 +237,7 @@ export function OrderDetailScreen({
                           </button>
                         </span>
                       ) : (
-                        <span className="tabular-nums">{qty}</span>
+                        <span className=" num">{qty}</span>
                       )}
                     </span>
                   </TableRow>
@@ -246,7 +246,7 @@ export function OrderDetailScreen({
             </div>
             <div className="flex min-h-[48px] items-center justify-between border-t border-border px-[16px] font-semibold">
               <span>{t("finalT")}</span>
-              <span dir="ltr" className="tabular-nums">
+              <span dir="ltr" className="num">
                 {total}
               </span>
             </div>
@@ -301,7 +301,7 @@ export function OrderDetailScreen({
               />
               <div
                 data-testid="wa-text"
-                className="rounded-control border border-border bg-canvas px-[12px] py-[10px] text-[13px] leading-[1.7] whitespace-pre-line"
+                className="rounded-control border border-border bg-canvas px-[12px] py-[10px] text-label leading-loose whitespace-pre-line"
               >
                 {waText}
               </div>
@@ -335,14 +335,14 @@ export function OrderDetailScreen({
                     <Badge tone={STATUS_TONE[e.status]} dense>
                       {t(`status.${e.status}`)}
                     </Badge>
-                    <span className="text-[13px]">
+                    <span className="text-label">
                       {(ar ? e.actor_ar : e.actor_en) ?? t("customer")}
                     </span>
-                    <bdi dir="ltr" className="text-[12px] text-text-muted [unicode-bidi:isolate]">
+                    <bdi dir="ltr" className="text-caption text-text-muted num">
                       {[e.at.slice(0, 10), timeOfDay(e.at)].join(" ")}
                     </bdi>
                   </span>
-                  {e.note && <span className="text-[13px] text-text-muted">{e.note}</span>}
+                  {e.note && <span className="text-label text-text-muted">{e.note}</span>}
                 </li>
               ))}
             </ol>
@@ -371,7 +371,7 @@ export function OrderDetailScreen({
         labelledBy="move-title"
       >
         <form onSubmit={move} className="grid gap-[14px]">
-          <div id="move-title" className="text-[16px] font-medium">
+          <div id="move-title" className="text-lead font-medium">
             {moving
               ? t("transitionTitle", {
                   to: t(

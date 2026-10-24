@@ -57,7 +57,7 @@ export default defineConfig({
     {
       name: "visual",
       // Layout guards share this project: it is small, so their page loads do not crowd the journeys.
-      testMatch: ["visual.spec.ts", "screens.spec.ts", "responsive.spec.ts"],
+      testMatch: ["visual.spec.ts", "screens.spec.ts", "responsive.spec.ts", "typography.spec.ts"],
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1440, height: 900 },

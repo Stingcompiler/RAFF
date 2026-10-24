@@ -50,7 +50,7 @@ export function ChartCard({ title, note, state, staleAt, onRetry, children, clas
         {state === "empty" && (
           <div className="grid h-[180px] content-center justify-items-center gap-[4px] p-[16px] text-center">
             <div className="font-medium">{t("empty")}</div>
-            <div className="text-[13px] text-text-muted">{t("emptyHint")}</div>
+            <div className="text-label text-text-muted">{t("emptyHint")}</div>
           </div>
         )}
         {state === "failed" && (

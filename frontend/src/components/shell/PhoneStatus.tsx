@@ -39,15 +39,17 @@ export function PhoneStatus({ status, text, onMenu, time }: Props) {
     };
   }, [time]);
   return (
-    <div className="flex h-[28px] flex-none items-center justify-between px-[20px] text-[12px] font-semibold">
-      <span dir="ltr">{now}</span>
+    <div className="flex h-[28px] flex-none items-center justify-between px-[20px] text-caption font-semibold">
+      <span className="num" dir="ltr">
+        {now}
+      </span>
       {onMenu ? (
         <button
           type="button"
           onClick={onMenu}
           aria-label={`${t("menu")} · ${text}`}
           className={cn(
-            "relative inline-flex cursor-pointer items-center border-0 bg-transparent p-0 text-[12px] font-semibold",
+            "relative inline-flex cursor-pointer items-center border-0 bg-transparent p-0 text-caption font-semibold",
             // 44px touch target around the 28px strip
             "before:absolute before:-inset-x-[12px] before:-inset-y-[8px] before:content-['']",
             TONE[status],
