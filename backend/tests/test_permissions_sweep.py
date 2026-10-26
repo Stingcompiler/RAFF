@@ -42,6 +42,7 @@ SIGNED_IN = {
     "api/v1/auth/logout/",
     "api/v1/auth/me/",
     "api/v1/auth/context/",
+    "api/v1/auth/password/change/",
     "api/v1/branches/",
     "api/v1/branches/<uuid:pk>/",
     "api/v1/licensing/status/",

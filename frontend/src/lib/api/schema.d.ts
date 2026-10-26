@@ -120,6 +120,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/auth/password/change/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Change your own password: asks for the current one, keeps this session, ends the others. */
+    post: operations["auth_password_change"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/backup/status/": {
     parameters: {
       query?: never;
@@ -1509,6 +1526,23 @@ export interface paths {
     patch: operations["users_update"];
     trace?: never;
   };
+  "/api/v1/users/{id}/reset-password/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description The owner sets a user's password (or has a temporary one generated, shown once). */
+    post: operations["users_reset_password"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2087,6 +2121,18 @@ export interface components {
      * @enum {string}
      */
     PartyTypeEnum: "customer" | "supplier";
+    PasswordChange: {
+      current_password: string;
+      new_password: string;
+    };
+    /** @description Leave `password` out to get a generated temporary one. */
+    PasswordReset: {
+      password?: string;
+    };
+    PasswordResetResult: {
+      password: string | null;
+      generated: boolean;
+    };
     PatchedCountsIn: {
       lines?: components["schemas"]["CountIn"][];
     };
@@ -3203,6 +3249,28 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["Me"];
         };
+      };
+    };
+  };
+  auth_password_change: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PasswordChange"];
+      };
+    };
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -5409,6 +5477,31 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["User"];
+        };
+      };
+    };
+  };
+  users_reset_password: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PasswordReset"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PasswordResetResult"];
         };
       };
     };

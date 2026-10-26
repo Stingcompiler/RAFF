@@ -126,6 +126,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/Me'
           description: ''
+  /api/v1/auth/password/change/:
+    post:
+      operationId: auth_password_change
+      description: 'Change your own password: asks for the current one, keeps this
+        session, ends the others.'
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/backup/status/:
     get:
       operationId: backup_status
@@ -2359,6 +2377,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/users/{id}/reset-password/:
+    post:
+      operationId: users_reset_password
+      description: The owner sets a user's password (or has a temporary one generated,
+        shown once).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetResult'
+          description: ''
 components:
   schemas:
     Assignment:
@@ -3710,6 +3756,38 @@ components:
       description: |-
         * `customer` - Customer
         * `supplier` - Supplier
+    PasswordChange:
+      type: object
+      properties:
+        current_password:
+          type: string
+          maxLength: 200
+        new_password:
+          type: string
+          maxLength: 200
+          minLength: 8
+      required:
+      - current_password
+      - new_password
+    PasswordReset:
+      type: object
+      description: Leave `password` out to get a generated temporary one.
+      properties:
+        password:
+          type: string
+          maxLength: 200
+          minLength: 8
+    PasswordResetResult:
+      type: object
+      properties:
+        password:
+          type: string
+          nullable: true
+        generated:
+          type: boolean
+      required:
+      - generated
+      - password
     PatchedCountsIn:
       type: object
       properties:

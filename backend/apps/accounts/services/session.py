@@ -42,6 +42,11 @@ def _keys(username: str) -> tuple[str, str]:
     return f"raff:login-fail:{who}", f"raff:login-lock:{who}"
 
 
+def clear_login_lock(username: str) -> None:
+    """Forget failed sign-ins and lift a lock (a password reset starts the account clean)."""
+    cache.delete_many(list(_keys(username)))
+
+
 def sign_in(request: HttpRequest, username: str, password: str) -> User:
     """Authenticate; after RAFF_LOGIN_MAX_FAILURES wrong passwords the username is locked
     for RAFF_LOGIN_LOCK_MINUTES (the right password does not unlock it early)."""
