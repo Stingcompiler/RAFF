@@ -79,7 +79,7 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
     <div
       style={brand}
       className={cn(
-        "min-h-dvh bg-canvas text-body leading-body text-text",
+        "flex min-h-dvh flex-col bg-canvas text-body leading-body text-text",
         path === "/" && "max-[760px]:pb-[72px]",
       )}
     >
@@ -133,30 +133,71 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
           </Link>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-[1200px]">{children}</main>
+      <main className="mx-auto w-full max-w-[1200px] flex-1">{children}</main>
       {path === "/" && <StickyCta whatsapp={store.whatsapp ?? ""} />}
-      <footer className="mt-[32px] border-t border-border">
-        <div className="mx-auto grid max-w-[1200px] gap-[8px] px-[20px] py-[24px] text-label text-text-muted">
-          <div className="flex flex-wrap gap-x-[20px]">
-            <Link href="/policies/privacy" className="hit-44 text-brand">
+      <footer className="mt-[40px] border-t border-border bg-surface-subtle">
+        <div className="mx-auto grid max-w-[1200px] gap-[28px] px-[20px] pt-[32px] pb-[20px] text-body text-text-secondary [grid-template-columns:minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] max-[900px]:[grid-template-columns:repeat(2,minmax(0,1fr))] max-[520px]:[grid-template-columns:minmax(0,1fr)]">
+          <div className="grid content-start gap-[10px] max-[900px]:col-span-2 max-[520px]:col-span-1">
+            <Link
+              href="/"
+              className="flex items-center gap-[10px] text-land-lead font-bold text-text no-underline"
+            >
+              <span
+                aria-hidden="true"
+                className="grid size-[30px] place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
+              >
+                {PLUS}
+              </span>
+              {pick(ar, store) || t("storeTitle")}
+            </Link>
+            <p className="m-0 max-w-[340px]">{t("footPromise")}</p>
+          </div>
+          <nav aria-label={t("footPages")} className="grid content-start gap-[2px]">
+            <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footPages")}</h2>
+            {NAV.filter(([href]) => href !== "/").map(([href, key]) => (
+              <Link
+                key={href}
+                href={href}
+                className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
+              >
+                {t(`nav.${key}`)}
+              </Link>
+            ))}
+          </nav>
+          <div className="grid content-start gap-[6px]">
+            <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footContact")}</h2>
+            {(store.address_ar || store.address_en) && (
+              <div>{pick(ar, { name_ar: store.address_ar, name_en: store.address_en })}</div>
+            )}
+            {store.hours && (
+              <div className="flex flex-wrap gap-x-[8px]">
+                <span className="text-text-muted">{t("hoursL")}</span>
+                <bdi className="num">{store.hours}</bdi>
+              </div>
+            )}
+            {store.whatsapp && (
+              <a
+                href={waLink(store.whatsapp)}
+                className="inline-flex min-h-[32px] items-center font-medium text-brand underline underline-offset-4"
+              >
+                {t("waLong")}
+              </a>
+            )}
+          </div>
+          <div className="grid content-start gap-[2px]">
+            <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footLegal")}</h2>
+            <Link
+              href="/policies/privacy"
+              className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
+            >
               {t("policy")}
             </Link>
-            <Link href="/about" className="hit-44 text-brand">
-              {t("nav.about")}
-            </Link>
-            <Link href="/contact" className="hit-44 text-brand">
-              {t("nav.contact")}
-            </Link>
-            <Link href="/orders/track" className="hit-44 text-brand">
-              {t("nav.track")}
-            </Link>
           </div>
-          <div>
-            {[pick(ar, { name_ar: store.address_ar, name_en: store.address_en }), store.hours]
-              .filter(Boolean)
-              .join(" · ")}
+        </div>
+        <div className="border-t border-border">
+          <div className="mx-auto max-w-[1200px] px-[20px] py-[12px] text-caption text-text-muted">
+            {t("footNote")}
           </div>
-          <div>{t("footNote")}</div>
         </div>
       </footer>
     </div>

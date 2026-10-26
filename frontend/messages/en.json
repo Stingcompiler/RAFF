@@ -1250,7 +1250,11 @@
     "polNote": "▲ Sample text — reviewed by the pharmacy before launch.",
     "footNote": "Sample data: name, address, hours and items.",
     "closed": "The store is not open right now.",
-    "closedB": "You can contact the pharmacy directly."
+    "closedB": "You can contact the pharmacy directly.",
+    "footPromise": "A pharmacist reviews every order before it is confirmed. You pay when you pick it up.",
+    "footPages": "Pages",
+    "footContact": "Contact",
+    "footLegal": "Legal"
   },
   "orders": {
     "title": "Orders",
