@@ -26,7 +26,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
     order.status === "cancelled" ? t("statusNote.cancelled") : t("statusNote.needs_contact"),
   ].join(" — ");
   return (
-    <section className="grid max-w-[720px] gap-[20px] px-[20px] pt-[32px] pb-[48px]">
+    <section className="mx-auto grid max-w-[720px] gap-[20px] px-[20px] pt-[40px] pb-[56px]">
       <div className="flex items-center gap-[12px] rounded-card bg-success-bg px-[16px] py-[14px] font-semibold text-success-text">
         <CheckCircleIcon size={24} />
         {t("arrived")}
@@ -121,7 +121,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
       {order.whatsapp && (
         <a
           href={waLink(order.whatsapp, order.number)}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
+          className="inline-flex min-h-[48px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
         >
           {t("openWa")}
         </a>

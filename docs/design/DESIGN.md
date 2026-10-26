@@ -19,7 +19,7 @@ IBM Plex Sans Arabic للعربية وIBM Plex Sans للاتينية، الأو�
 | `metric`  | 32    | 1.1   | قيمة المؤشر                      |
 | `total`   | 36    | 1.1   | إجمالي نقطة البيع                |
 
-المتجر والتعريف (LANDING §7، سطح مكتب/جوال): `land-hero` 52/30، `land-hero-lead` 18/15، `land-section` 32/24، `land-feature` 24/20، `land-lead` 17/15، `land-body` 16/15. الأوزان: `font-normal|medium|semibold|bold`. الأسطر: `leading-tight|snug|body|loose`.
+المتجر والتعريف (سطح مكتب/جوال، أصغر من LANDING §7 بقرار D-R0015): `land-hero` 40/28، `land-hero-lead` 16/15، `land-section` 26/22، `land-feature` 20/18، `land-lead` 16/15، `land-body` 15/14. الأوزان: `font-normal|medium|semibold|bold`. الأسطر: `leading-tight|snug|body|loose`.
 
 ## الأرقام
 

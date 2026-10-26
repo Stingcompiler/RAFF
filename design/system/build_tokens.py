@@ -134,14 +134,15 @@ SCALE = {
     "metric": (32, 1.1),
     "total": (36, 1.1),
 }
-# Landing and storefront sizes (LANDING.md §7): desktop, phone, line height.
+# Storefront and landing sizes (desktop, phone, line height). LANDING.md §7 gives 52/32/24/17/16 for
+# marketing pages; the pharmacy's shop reads smaller (D-R0015).
 LANDING_SCALE = {
-    "land-hero": (52, 30, 1.2),
-    "land-hero-lead": (18, 15, 1.7),
-    "land-section": (32, 24, 1.25),
-    "land-lead": (17, 15, 1.6),
-    "land-feature": (24, 20, 1.3),
-    "land-body": (16, 15, 1.7),
+    "land-hero": (40, 28, 1.2),
+    "land-hero-lead": (16, 15, 1.7),
+    "land-section": (26, 22, 1.25),
+    "land-lead": (16, 15, 1.6),
+    "land-feature": (20, 18, 1.3),
+    "land-body": (15, 14, 1.7),
 }
 LEADING = {"tight": 1.25, "snug": 1.4, "body": 1.6, "loose": 1.7}
 UI_STACK = '"IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif'

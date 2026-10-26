@@ -34,6 +34,7 @@ const PUBLIC = [
   ["cart", "/cart"],
   ["checkout", "/checkout"],
   ["about", "/about"],
+  ["track", "/orders/track"],
 ] as const;
 
 async function prepare(
@@ -50,9 +51,11 @@ async function prepare(
   await page.setViewportSize(size);
 }
 
-async function shoot(page: Page, name: string, path: string, v: string) {
-  await page.goto(path);
-  await page.waitForLoadState("networkidle");
+async function shoot(page: Page, name: string, path: string, v: string, navigate = true) {
+  if (navigate) {
+    await page.goto(path);
+    await page.waitForLoadState("networkidle");
+  }
   await page.evaluate(() => document.fonts.ready);
   await page.mouse.move(0, 0);
   await expect(page).toHaveScreenshot(`${name}-${v}.png`);
@@ -70,6 +73,14 @@ for (const variant of VARIANTS) {
       for (const [name, path] of WORKSPACE) {
         test(name, async ({ page }) => shoot(page, name, path, v));
       }
+      // The profile strip with its menu open: who you are, language, theme, density.
+      test("user menu", async ({ page }) => {
+        test.skip(size.width < 761, "a phone has the bottom navigation, not the top bar");
+        await page.goto("/dashboard");
+        await page.waitForLoadState("networkidle");
+        await page.getByRole("button", { name: /^(قائمة المستخدم|User menu)$/ }).click();
+        await shoot(page, "user-menu", "/dashboard", v, false);
+      });
     });
 
     test.describe(`Storefront screens · ${v}`, () => {

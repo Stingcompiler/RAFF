@@ -16,7 +16,7 @@ export default async function ShellPreview({
       context={{
         branchLine: t("branchLine"),
         connection: { status: "online", text: t("conn") },
-        user: { name: t("user"), initial: t("initial") },
+        user: { name: t("user"), role: t("role"), username: "mazin", initial: t("initial") },
         deviceLine: t("device"),
         badges: { orders: 1 },
       }}

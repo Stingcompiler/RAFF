@@ -22,7 +22,7 @@ export function TopBar({ context, onMenu }: { context: ShellContext; onMenu: () 
       </button>
       <span className="flex-1 text-label text-text-muted">{context.branchLine}</span>
       <ConnectionIndicator status={context.connection.status} label={context.connection.text} />
-      <UserMenu name={context.user.name} initial={context.user.initial} />
+      <UserMenu user={context.user} />
     </header>
   );
 }

@@ -7,7 +7,7 @@ import { type FormEvent, useState } from "react";
 import { apiSend } from "@/lib/api/browser";
 
 const FIELD =
-  "h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
+  "h-[44px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]";
 
 /** Order number + phone → the order page (the number alone never opens an order). */
 export function TrackScreen() {
@@ -29,7 +29,7 @@ export function TrackScreen() {
     else setError(true);
   };
   return (
-    <section className="grid max-w-[480px] gap-[16px] px-[20px] pt-[32px] pb-[48px]">
+    <section className="mx-auto my-[40px] grid max-w-[480px] gap-[16px] rounded-panel border border-border bg-surface p-[28px] max-[760px]:mx-[20px] max-[760px]:p-[20px]">
       <h1 className="m-0 text-land-section font-semibold">{t("trackT")}</h1>
       <p className="m-0 text-text-secondary">{t("trackB")}</p>
       <form onSubmit={submit} className="grid gap-[16px]">
@@ -63,7 +63,7 @@ export function TrackScreen() {
         <button
           type="submit"
           disabled={busy || !number || !phone}
-          className="min-h-[52px] cursor-pointer rounded-card border-0 bg-brand text-lead font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
+          className="min-h-[44px] cursor-pointer rounded-card border-0 bg-brand text-lead font-semibold text-on-brand disabled:cursor-not-allowed disabled:bg-border disabled:text-text-muted"
         >
           {t("trackBtn")}
         </button>
