@@ -39,7 +39,9 @@ export async function getShellContext(
       ? { status: "online", text: t("connection.chipOnline") }
       : { status: "unavailable", text: t("connection.chipUnavailable") },
     user: {
-      name: me.role ? `${name} (${pick(me.role)})` : name,
+      name,
+      role: me.role ? pick(me.role) : null,
+      username: me.user.username,
       initial: name.slice(0, 1),
     },
     deviceLine: me.device ? t("shell.deviceLine", { device: pick(me.device) }) : "",

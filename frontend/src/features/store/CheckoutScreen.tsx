@@ -108,7 +108,7 @@ export function CheckoutScreen() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoComplete="name"
-            className="h-[52px] rounded-control border border-border-strong bg-surface px-[14px] text-land-lead text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]"
+            className="h-[44px] rounded-control border border-border-strong bg-surface px-[14px] text-land-lead text-text outline-none focus:border-brand focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]"
           />
         </label>
         <label className="grid gap-[4px] text-body font-semibold text-text-muted">
@@ -122,7 +122,7 @@ export function CheckoutScreen() {
             aria-invalid={phone !== "" && !phoneOk}
             onChange={(e) => setPhone(e.target.value)}
             className={cn(
-              "h-[52px] rounded-control border bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
+              "h-[44px] rounded-control border bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-focus)]",
               phone !== "" && !phoneOk
                 ? "border-danger-solid"
                 : "border-border-strong focus:border-brand",
@@ -173,7 +173,7 @@ export function CheckoutScreen() {
           disabled={!valid || busy}
           aria-busy={busy}
           className={cn(
-            "flex min-h-[52px] items-center justify-center gap-[10px] rounded-card border-0 text-lead font-semibold",
+            "flex min-h-[44px] items-center justify-center gap-[10px] rounded-card border-0 text-lead font-semibold",
             valid && !busy
               ? "cursor-pointer bg-brand text-on-brand"
               : busy

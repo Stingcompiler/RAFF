@@ -187,9 +187,10 @@
     "shell": {
       "branchLine": "Khartoum branch (sample)",
       "conn": "Online · backup 07:30",
-      "user": "Mazin (Pharmacist)",
+      "user": "Mazin",
       "initial": "S",
-      "device": "Device registered as: Counter 1"
+      "device": "Device registered as: Counter 1",
+      "role": "Pharmacist"
     }
   },
   "auth": {

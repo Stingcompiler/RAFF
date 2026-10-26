@@ -31,7 +31,7 @@ export function CartScreen() {
     rows.map(({ line, product }) => (product?.price ? multiply(product.price, line.qty) : "0")),
   );
   return (
-    <section className="grid gap-[16px] px-[20px] pt-[24px] pb-[40px]">
+    <section className="mx-auto grid max-w-[960px] gap-[16px] px-[20px] pt-[32px] pb-[48px]">
       <h1 className="m-0 text-land-section font-semibold">{t("cart")}</h1>
       {ready && rows.length === 0 && (
         <div className="grid justify-items-center gap-[8px] rounded-card border border-dashed border-border-strong px-[20px] py-[48px] text-center">
@@ -130,7 +130,7 @@ export function CartScreen() {
           <Link
             href="/checkout"
             className={cn(
-              "inline-flex min-h-[52px] items-center justify-center rounded-card text-lead font-semibold no-underline",
+              "inline-flex min-h-[48px] items-center justify-center rounded-card text-lead font-semibold no-underline",
               BUTTON.solid,
             )}
           >

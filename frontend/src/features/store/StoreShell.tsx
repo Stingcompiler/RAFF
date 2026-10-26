@@ -79,81 +79,85 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
     <div
       style={brand}
       className={cn(
-        "min-h-dvh bg-canvas text-lead leading-body text-text",
+        "min-h-dvh bg-canvas text-body leading-body text-text",
         path === "/" && "max-[760px]:pb-[72px]",
       )}
     >
-      <header className="sticky top-0 z-[5] flex flex-wrap items-center gap-[16px] border-b border-border bg-surface-subtle px-[20px] py-[12px]">
-        <Link
-          href="/"
-          className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline"
-        >
-          <span
-            aria-hidden="true"
-            className="grid size-[34px] place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
+      <header className="sticky top-0 z-[5] border-b border-border bg-surface-subtle">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-[20px] gap-y-[8px] px-[20px] py-[10px]">
+          <Link
+            href="/"
+            className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline"
           >
-            {PLUS}
-          </span>
-          {pick(ar, store) || t("storeTitle")}
-        </Link>
-        <nav aria-label={t("nav.menu")} className="flex gap-[4px] max-[760px]:hidden">
-          {NAV.map(([href, key]) => {
-            const on = href === "/" ? path === "/" : path.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={on ? "page" : undefined}
-                className={cn(
-                  "inline-flex min-h-[44px] items-center rounded-control px-[12px] font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
-                  on ? "bg-brand-subtle/40 text-brand" : "text-text hover:bg-surface-subtle",
-                )}
-              >
-                {t(`nav.${key}`)}
-              </Link>
-            );
-          })}
-        </nav>
-        <Suspense>
-          <SearchBox />
-        </Suspense>
-        <Link
-          href="/cart"
-          aria-label={t("cartCount", { count })}
-          className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
-        >
-          {t("cart")}
-          <span
-            data-testid="cart-count"
-            className="num grid h-[22px] min-w-[22px] place-items-center rounded-full bg-brand-subtle px-[4px] text-caption text-text"
+            <span
+              aria-hidden="true"
+              className="grid size-[34px] place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
+            >
+              {PLUS}
+            </span>
+            {pick(ar, store) || t("storeTitle")}
+          </Link>
+          <nav aria-label={t("nav.menu")} className="flex gap-[4px] max-[760px]:hidden">
+            {NAV.map(([href, key]) => {
+              const on = href === "/" ? path === "/" : path.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={on ? "page" : undefined}
+                  className={cn(
+                    "inline-flex min-h-[44px] items-center rounded-control px-[12px] text-body font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
+                    on ? "bg-brand-subtle/40 text-brand" : "text-text hover:bg-surface-subtle",
+                  )}
+                >
+                  {t(`nav.${key}`)}
+                </Link>
+              );
+            })}
+          </nav>
+          <Suspense>
+            <SearchBox />
+          </Suspense>
+          <Link
+            href="/cart"
+            aria-label={t("cartCount", { count })}
+            className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
           >
-            {count}
-          </span>
-        </Link>
+            {t("cart")}
+            <span
+              data-testid="cart-count"
+              className="num grid h-[22px] min-w-[22px] place-items-center rounded-full bg-brand-subtle px-[4px] text-caption text-text"
+            >
+              {count}
+            </span>
+          </Link>
+        </div>
       </header>
-      <main>{children}</main>
+      <main className="mx-auto w-full max-w-[1200px]">{children}</main>
       {path === "/" && <StickyCta whatsapp={store.whatsapp ?? ""} />}
-      <footer className="mt-[24px] grid gap-[8px] border-t border-border px-[20px] py-[24px] text-body text-text-muted">
-        <div className="flex flex-wrap gap-[16px]">
-          <Link href="/policies/privacy" className="hit-44 text-brand">
-            {t("policy")}
-          </Link>
-          <Link href="/about" className="hit-44 text-brand">
-            {t("nav.about")}
-          </Link>
-          <Link href="/contact" className="hit-44 text-brand">
-            {t("nav.contact")}
-          </Link>
-          <Link href="/orders/track" className="hit-44 text-brand">
-            {t("nav.track")}
-          </Link>
+      <footer className="mt-[32px] border-t border-border">
+        <div className="mx-auto grid max-w-[1200px] gap-[8px] px-[20px] py-[24px] text-label text-text-muted">
+          <div className="flex flex-wrap gap-x-[20px]">
+            <Link href="/policies/privacy" className="hit-44 text-brand">
+              {t("policy")}
+            </Link>
+            <Link href="/about" className="hit-44 text-brand">
+              {t("nav.about")}
+            </Link>
+            <Link href="/contact" className="hit-44 text-brand">
+              {t("nav.contact")}
+            </Link>
+            <Link href="/orders/track" className="hit-44 text-brand">
+              {t("nav.track")}
+            </Link>
+          </div>
+          <div>
+            {[pick(ar, { name_ar: store.address_ar, name_en: store.address_en }), store.hours]
+              .filter(Boolean)
+              .join(" · ")}
+          </div>
+          <div>{t("footNote")}</div>
         </div>
-        <div>
-          {[pick(ar, { name_ar: store.address_ar, name_en: store.address_en }), store.hours]
-            .filter(Boolean)
-            .join(" · ")}
-        </div>
-        <div>{t("footNote")}</div>
       </footer>
     </div>
   );
@@ -172,7 +176,7 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[44px] min-w-[180px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px]"
+      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:max-w-none"
     >
       <SearchIcon className="text-text-muted" />
       <input

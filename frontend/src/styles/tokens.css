@@ -127,12 +127,12 @@
   --d-gap: 16px;
   --d-card-pad: 20px;
   --d-font: 14px;
-  --land-hero: 52px;
-  --land-hero-lead: 18px;
-  --land-section: 32px;
-  --land-lead: 17px;
-  --land-feature: 24px;
-  --land-body: 16px;
+  --land-hero: 40px;
+  --land-hero-lead: 16px;
+  --land-section: 26px;
+  --land-lead: 16px;
+  --land-feature: 20px;
+  --land-body: 15px;
   --font-ui: "IBM Plex Sans Arabic", "IBM Plex Sans", system-ui, sans-serif;
   --font-mono: var(--font-ui);
   --font-display: var(--font-ui);
@@ -252,12 +252,12 @@
 
 @media (max-width: 760px) {
   :root {
-    --land-hero: 30px;
+    --land-hero: 28px;
     --land-hero-lead: 15px;
-    --land-section: 24px;
+    --land-section: 22px;
     --land-lead: 15px;
-    --land-feature: 20px;
-    --land-body: 15px;
+    --land-feature: 18px;
+    --land-body: 14px;
   }
 }
 

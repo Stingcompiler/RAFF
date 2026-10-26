@@ -15,14 +15,14 @@ export default async function ContactPage() {
       ]
     : [];
   return (
-    <section className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-[28px] px-[20px] py-[32px]">
+    <section className="mx-auto max-w-[680px] px-[20px] py-[40px]">
       <div className="grid content-start gap-[16px]">
         <h1 className="m-0 text-land-section font-semibold">{t("nav.contact")}</h1>
-        <dl className="m-0 grid border-t border-border">
+        <dl className="m-0 grid rounded-card border border-border bg-surface px-[16px]">
           {rows.map(([label, value, ltr]) => (
             <div
               key={label}
-              className="flex min-h-[52px] items-center justify-between gap-[12px] border-b border-border"
+              className="flex min-h-[48px] items-center justify-between gap-[12px] border-b border-border last:border-b-0"
             >
               <dt className="text-text-muted">{label}</dt>
               <dd className={ltr ? "m-0 num" : "m-0"} dir={ltr ? "ltr" : undefined}>
@@ -34,7 +34,7 @@ export default async function ContactPage() {
         {store?.whatsapp && (
           <a
             href={waLink(store.whatsapp)}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
+            className="inline-flex min-h-[48px] items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
           >
             {t("waLong")}
           </a>

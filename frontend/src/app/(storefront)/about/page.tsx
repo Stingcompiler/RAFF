@@ -9,8 +9,8 @@ export default async function AboutPage() {
   const ar = (await getLocale()) === "ar";
   const store = await serverGet<Store>("/public/store/").catch(() => null);
   return (
-    <section className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] items-start gap-[28px] px-[20px] py-[32px]">
-      <div className="grid max-w-[560px] gap-[14px]">
+    <section className="mx-auto max-w-[680px] px-[20px] py-[40px]">
+      <div className="grid gap-[14px]">
         <h1 className="m-0 text-land-section font-semibold">{t("nav.about")}</h1>
         <p className="m-0 text-land-lead leading-loose text-text-secondary">
           {store ? (ar ? store.about_ar : store.about_en) : ""}

@@ -18,7 +18,7 @@ const PLUS = "+";
 
 /** The one action of the page, with the same words every time it appears (LANDING §2). */
 const CTA =
-  "inline-flex min-h-[52px] items-center rounded-card bg-brand px-[24px] text-lead font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-(--motion-feedback) hover:-translate-y-[2px]";
+  "inline-flex min-h-[48px] items-center rounded-card bg-brand px-[24px] text-lead font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-(--motion-feedback) hover:-translate-y-[2px]";
 
 /** The pharmacy's home (PHARMACY-WEBSITE §4): hero, featured items, how it works, FAQ. */
 export default async function StorefrontHome() {
@@ -38,13 +38,13 @@ export default async function StorefrontHome() {
     : "";
   return (
     <>
-      <section className="grid grid-cols-[repeat(auto-fit,minmax(min(360px,100%),1fr))] items-center gap-[32px] px-[20px] pt-[40px] pb-[24px]">
-        <div>
+      <section className="mx-[20px] mt-[24px] rounded-panel bg-surface-subtle px-[40px] py-[48px] max-[760px]:px-[20px] max-[760px]:py-[28px]">
+        <div className="max-w-[640px]">
           <h1 className="m-0 text-land-hero font-semibold [text-wrap:balance]">
             {title || t("storeTitle")}
           </h1>
           {lead && (
-            <p className="mt-[14px] mb-0 max-w-[460px] text-land-lead leading-loose text-text-secondary">
+            <p className="mt-[14px] mb-0 max-w-[520px] text-land-lead leading-loose text-text-secondary">
               {lead}
             </p>
           )}
@@ -55,7 +55,7 @@ export default async function StorefrontHome() {
             {store?.whatsapp && (
               <a
                 href={waLink(store.whatsapp)}
-                className="inline-flex min-h-[52px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
+                className="inline-flex min-h-[48px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
               >
                 {t("contactUs")}
               </a>

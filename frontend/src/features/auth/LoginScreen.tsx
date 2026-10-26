@@ -88,10 +88,9 @@ export function LoginScreen({ device, initialMe, next }: Props) {
       : t("deviceUnregistered");
 
   return (
-    <main className="flex min-h-dvh flex-col gap-[16px] bg-canvas p-[24px] text-text">
-      <div className="grid grid-cols-12 items-start gap-[16px]">
-        <div className="col-span-3 max-[760px]:hidden" />
-        <section className="col-span-6 min-w-0 max-[760px]:col-span-12">
+    <main className="grid min-h-dvh place-items-center bg-canvas px-[16px] py-[32px] text-text">
+      <div className="grid w-full max-w-[440px] gap-[16px]">
+        <section className="min-w-0">
           <Panel title={t("signInTitle")}>
             <form onSubmit={signIn} className="grid gap-[12px] p-[16px]">
               <label className={label}>
@@ -133,9 +132,7 @@ export function LoginScreen({ device, initialMe, next }: Props) {
             </form>
           </Panel>
         </section>
-        <div className="col-span-3 max-[760px]:hidden" />
-        <div className="col-span-3 max-[760px]:hidden" />
-        <section className="col-span-6 min-w-0 max-[760px]:col-span-12">
+        <section className="min-w-0">
           <Panel title={t("contextTitle")}>
             <form onSubmit={chooseContext} className="grid gap-[12px] p-[16px]">
               <label className={label}>
@@ -194,7 +191,6 @@ export function LoginScreen({ device, initialMe, next }: Props) {
             </form>
           </Panel>
         </section>
-        <div className="col-span-3 max-[760px]:hidden" />
       </div>
     </main>
   );
