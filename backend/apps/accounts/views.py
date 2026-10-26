@@ -4,6 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 from django.conf import settings
+from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -25,6 +26,9 @@ from apps.accounts.serializers import (
     DeviceSerializer,
     LoginSerializer,
     MeSerializer,
+    PasswordChangeSerializer,
+    PasswordResetResultSerializer,
+    PasswordResetSerializer,
     RoleSerializer,
     UserCreateSerializer,
     UserSerializer,
@@ -110,6 +114,34 @@ class LoginView(APIView):
             device_for_token(request.COOKIES.get(settings.DEVICE_COOKIE_NAME)),
         )
         return Response(me_payload(request, user))
+
+
+class PasswordChangeView(APIView):
+    """Change your own password: asks for the current one, keeps this session, ends the others."""
+
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "login"
+
+    @extend_schema(
+        operation_id="auth_password_change", request=PasswordChangeSerializer, responses={204: None}
+    )
+    def post(self, request: Request) -> Response:
+        assert isinstance(request.user, User)
+        data = PasswordChangeSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        try:
+            users.change_own_password(
+                request.user,
+                current=data.validated_data["current_password"],
+                new=data.validated_data["new_password"],
+            )
+        except users.UserError as exc:
+            raise ValidationError({"detail": exc.code}) from None
+        except DjangoValidationError as exc:
+            raise ValidationError({"password": exc.messages}) from None
+        update_session_auth_hash(request._request, request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class LogoutView(APIView):
@@ -233,9 +265,36 @@ class UserDetailView(APIView):
             if "assignments" in v:
                 users.set_assignments(user, _pairs(v["assignments"]))
             if "password" in v:
-                users.set_password(user, v["password"])
+                users.reset_password(user, acting=request.user, password=v["password"])
         except users.UserError as exc:
             raise ValidationError({"detail": exc.code}) from None
         except DjangoValidationError as exc:
             raise ValidationError({"password": exc.messages}) from None
         return Response(UserSerializer(user).data)
+
+
+class UserResetPasswordView(APIView):
+    """The owner sets a user's password (or has a temporary one generated, shown once)."""
+
+    permission_classes = [requires("users.manage")]
+
+    @extend_schema(
+        operation_id="users_reset_password",
+        request=PasswordResetSerializer,
+        responses=PasswordResetResultSerializer,
+    )
+    def post(self, request: Request, pk: str) -> Response:
+        user = User.objects.filter(pk=pk).first()
+        if user is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        assert isinstance(request.user, User)
+        data = PasswordResetSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        typed = data.validated_data.get("password")
+        try:
+            new = users.reset_password(user, acting=request.user, password=typed)
+        except users.UserError as exc:
+            raise ValidationError({"detail": exc.code}) from None
+        except DjangoValidationError as exc:
+            raise ValidationError({"password": exc.messages}) from None
+        return Response({"password": None if typed else new, "generated": typed is None})

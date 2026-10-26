@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import secrets
+import string
 import uuid
 from collections.abc import Iterable
 
@@ -10,6 +12,8 @@ from django.db import transaction
 
 from apps.accounts.models import Role, RoleAssignment, User
 from apps.accounts.permissions import DEFAULT_ROLES
+from apps.accounts.services.session import clear_login_lock
+from apps.audit.services.log import record
 from apps.tenancy.models import Branch
 
 
@@ -76,3 +80,39 @@ def set_password(user: User, password: str) -> None:
     validate_password(password, user)
     user.set_password(password)
     user.save(update_fields=["password"])
+
+
+# No look-alikes (0/O, 1/l/I): a temporary password is read aloud or typed from a screen.
+_TEMP_ALPHABET = "".join(c for c in string.ascii_letters + string.digits if c not in "0O1lI")
+TEMP_PASSWORD_LENGTH = 14
+
+
+def generate_password() -> str:
+    return "".join(secrets.choice(_TEMP_ALPHABET) for _ in range(TEMP_PASSWORD_LENGTH))
+
+
+@transaction.atomic
+def reset_password(user: User, *, acting: User, password: str | None = None) -> str:
+    """Set a new password for someone else (the owner's tool); generated when not given.
+
+    The user's other sessions end (Django ties a session to the password hash), a locked
+    account is unlocked, and the reset is audited. Resetting your own password goes through
+    `change_own_password`, which asks for the current one.
+    """
+    if user.pk == acting.pk:
+        raise UserError("use_change_password")
+    new = password or generate_password()
+    set_password(user, new)
+    clear_login_lock(user.username)
+    record("password_reset", "user", user.pk, actor=acting)
+    return new
+
+
+@transaction.atomic
+def change_own_password(user: User, *, current: str, new: str) -> None:
+    if not user.check_password(current):
+        raise UserError("wrong_current_password")
+    if new == current:
+        raise UserError("same_password")
+    set_password(user, new)
+    record("password_changed", "user", user.pk, actor=user)

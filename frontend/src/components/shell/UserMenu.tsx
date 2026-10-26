@@ -144,6 +144,17 @@ export function UserMenu({ name, initial }: { name: string; initial: string }) {
             </button>
           ))}
           <div className="my-[4px] border-t border-border" />
+          <button
+            type="button"
+            role="menuitem"
+            className={item(false)}
+            onClick={() => {
+              setOpen(false);
+              router.push("/account/password");
+            }}
+          >
+            {t("changePassword")}
+          </button>
           <button type="button" role="menuitem" className={item(false)} onClick={signOut}>
             {t("signOut")}
           </button>

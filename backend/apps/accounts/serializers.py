@@ -75,6 +75,25 @@ class UserUpdateSerializer(serializers.Serializer[None]):
     )
 
 
+class PasswordChangeSerializer(serializers.Serializer[None]):
+    current_password = serializers.CharField(max_length=200, trim_whitespace=False)
+    new_password = serializers.CharField(min_length=8, max_length=200, trim_whitespace=False)
+
+
+class PasswordResetSerializer(serializers.Serializer[None]):
+    """Leave `password` out to get a generated temporary one."""
+
+    password = serializers.CharField(
+        min_length=8, max_length=200, trim_whitespace=False, required=False
+    )
+
+
+class PasswordResetResultSerializer(serializers.Serializer[None]):
+    # Only a generated password is returned (once); a typed one is never echoed.
+    password = serializers.CharField(allow_null=True)
+    generated = serializers.BooleanField()
+
+
 class MeUserSerializer(serializers.Serializer[None]):
     id = serializers.UUIDField()
     username = serializers.CharField()

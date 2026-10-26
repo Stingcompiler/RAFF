@@ -13,6 +13,8 @@ import { useToast } from "@/components/ui/Toast";
 import { apiSend } from "@/lib/api/browser";
 import type { Branch, Role, User } from "@/lib/api/types";
 
+import { ResetPasswordDialog } from "./ResetPasswordDialog";
+
 type Props = { users: User[]; roles: Role[]; branches: Branch[]; meId: string };
 
 const ERRORS: Record<string, "usernameTaken" | "cannotDeactivateSelf"> = {
@@ -30,6 +32,7 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
   const roleById = new Map(roles.map((r) => [r.id, r]));
   const branchById = new Map(branches.map((b) => [b.id, b]));
   const [open, setOpen] = useState(false);
+  const [resetFor, setResetFor] = useState<User | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +41,7 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
     { header: t("role"), width: "120px" },
     { header: t("branch"), width: "140px" },
     { header: t("status"), width: "100px" },
-    { header: t("actions"), width: "110px" },
+    { header: t("actions"), width: "230px" },
   ];
 
   function message(err: Record<string, unknown> | null) {
@@ -106,9 +109,22 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
                 </BadgeCell>
                 <span role="cell">
                   {u.id !== meId && (
-                    <Button variant="quiet" className="h-[32px] px-[8px]" onClick={() => toggle(u)}>
-                      {u.is_active ? t("deactivate") : t("activate")}
-                    </Button>
+                    <span className="flex flex-wrap gap-[4px]">
+                      <Button
+                        variant="quiet"
+                        className="h-[32px] px-[8px]"
+                        onClick={() => setResetFor(u)}
+                      >
+                        {t("resetPassword")}
+                      </Button>
+                      <Button
+                        variant="quiet"
+                        className="h-[32px] px-[8px]"
+                        onClick={() => toggle(u)}
+                      >
+                        {u.is_active ? t("deactivate") : t("activate")}
+                      </Button>
+                    </span>
                   )}
                 </span>
               </TableRow>
@@ -116,6 +132,13 @@ export function UsersPanel({ users, roles, branches, meId }: Props) {
           })}
         </div>
       </Panel>
+      {resetFor && (
+        <ResetPasswordDialog
+          userId={resetFor.id}
+          name={ar ? resetFor.display_name_ar : resetFor.display_name_en}
+          onClose={() => setResetFor(null)}
+        />
+      )}
       <Dialog
         open={open}
         onClose={busy ? undefined : () => setOpen(false)}

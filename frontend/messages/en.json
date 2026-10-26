@@ -36,7 +36,8 @@
     "density": "Density",
     "density_compact": "Compact",
     "density_default": "Default",
-    "density_comfortable": "Comfortable"
+    "density_comfortable": "Comfortable",
+    "changePassword": "Change password"
   },
   "connection": {
     "online": "Server: online",
@@ -237,7 +238,20 @@
     "cannotDeactivateSelf": "You cannot suspend your own account",
     "failed": "Could not save",
     "noAccess": "You do not have permission to manage users.",
-    "actions": "Action"
+    "actions": "Action",
+    "resetPassword": "Reset password",
+    "resetTitle": "Reset password for {name}",
+    "resetHelp": "A temporary password is generated and shown once. The user's other sessions end and a locked account is unlocked.",
+    "resetTypeOwn": "I'll type the password myself",
+    "resetConfirm": "Reset",
+    "resetting": "Resetting…",
+    "resetDone": "Password reset",
+    "resetFailed": "Could not reset the password",
+    "tempTitle": "Temporary password",
+    "tempBody": "Shown once. Give it to {name}; they should change it from the user menu after signing in.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done"
   },
   "inventory": {
     "title": "Items & stock",
@@ -1493,5 +1507,21 @@
     "refresh": "Refresh",
     "refreshNeedsConnection": "Refresh is available when the connection returns",
     "approveNeedsServer": "Approval needs the server"
+  },
+  "account": {
+    "title": "Change password",
+    "current": "Current password",
+    "next": "New password",
+    "confirm": "Confirm new password",
+    "help": "At least 8 characters; not a common password",
+    "submit": "Change password",
+    "saving": "Saving…",
+    "done": "Password changed. Your other devices were signed out.",
+    "mismatch": "The two passwords do not match",
+    "wrongCurrent": "The current password is wrong",
+    "samePassword": "The new password is the same as the current one",
+    "weak": "Password is too weak or too common",
+    "failed": "Could not change the password",
+    "note": "Other devices signed in with this account will be signed out."
   }
 }
