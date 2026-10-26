@@ -1,0 +1,6 @@
+[Unit]
+Description=Raff health check (site, containers, backup age)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/raff-healthcheck
