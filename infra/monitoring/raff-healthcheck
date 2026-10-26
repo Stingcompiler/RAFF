@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Raff health check for a shared server: the public health endpoint, the Raff containers and
+# the age of the newest backup. Runs every 5 minutes from a systemd timer
+# (docs/runbooks/monitoring.md). It speaks only when the state changes (failing, then
+# recovered) so a long outage does not flood the phone, and it repeats a still-failing alert
+# every 6 hours.
+#
+# Alerts go to the journal (`journalctl -t raff-healthcheck`) and, when /etc/host-watch.env
+# sets TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID, to Telegram.
+set -u
+
+[ -f /etc/host-watch.env ] && . /etc/host-watch.env
+
+URL="${RAFF_HEALTH_URL:-https://raff.stingdev.pro/api/v1/health/}"
+BACKUP_DIR="${RAFF_BACKUP_DIR:-/var/backups/raff}"
+MAX_BACKUP_AGE_H="${RAFF_MAX_BACKUP_AGE_H:-30}"
+STATE_DIR="${RAFF_MONITOR_STATE:-/var/lib/raff-monitor}"
+REPEAT_S=$((6 * 3600))
+
+mkdir -p "$STATE_DIR"
+chmod 700 "$STATE_DIR"
+reasons=()
+
+if ! curl -fsS --max-time 10 "$URL" 2>/dev/null | grep -q '"status":"ok"'; then
+  reasons+=("health endpoint not ok ($URL)")
+fi
+
+if command -v docker >/dev/null 2>&1; then
+  bad="$(docker ps -a --filter 'name=^raff-' --format '{{.Names}} {{.Status}}' 2>/dev/null |
+    grep -E 'unhealthy|Restarting|Exited|Dead' | tr '\n' ';')"
+  [ -n "$bad" ] && reasons+=("containers: $bad")
+  running="$(docker ps --filter 'name=^raff-' --format '{{.Names}}' 2>/dev/null | wc -l)"
+  [ "$running" -ge 4 ] || reasons+=("only $running of 4 Raff containers running")
+fi
+
+newest="$(find "$BACKUP_DIR" -name '*.tar.enc' -printf '%T@\n' 2>/dev/null | sort -n | tail -1)"
+if [ -z "$newest" ]; then
+  reasons+=("no backup found in $BACKUP_DIR")
+else
+  age_h=$(( ($(date +%s) - ${newest%.*}) / 3600 ))
+  [ "$age_h" -le "$MAX_BACKUP_AGE_H" ] || reasons+=("newest backup is ${age_h}h old (limit ${MAX_BACKUP_AGE_H}h)")
+fi
+
+now="$(date +%s)"
+state_file="$STATE_DIR/state"
+last_state="ok"
+last_alert=0
+[ -f "$state_file" ] && read -r last_state last_alert <"$state_file"
+
+send() {
+  logger -t raff-healthcheck "$1"
+  if [ -z "${RAFF_ALERT_DRY:-}" ] && [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
+    curl -s --max-time 10 -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+      -d chat_id="$TELEGRAM_CHAT_ID" --data-urlencode text="$1" >/dev/null
+  fi
+  echo "$1"
+}
+
+if [ "${#reasons[@]}" -eq 0 ]; then
+  if [ "$last_state" = "fail" ]; then
+    send "✅ Raff recovered on $(hostname) ($URL)"
+  fi
+  echo "ok 0" >"$state_file"
+  exit 0
+fi
+
+text="⚠️ Raff on $(hostname): $(printf '%s | ' "${reasons[@]}")"
+if [ "$last_state" != "fail" ] || [ $((now - last_alert)) -ge "$REPEAT_S" ]; then
+  send "$text"
+  echo "fail $now" >"$state_file"
+else
+  logger -t raff-healthcheck "still failing: $text"
+  echo "fail $last_alert" >"$state_file"
+fi
+exit 1
