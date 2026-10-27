@@ -4,10 +4,16 @@
 const CACHE = "raff-store-v1";
 const OFFLINE = "/offline";
 const SHELL = [OFFLINE, "/pwa/icon-192.png"];
-const SHOP_PAGES = /^\/(?:shop|store|cart|checkout|about|contact|orders|products|categories|policies)?(?:\/|$)/;
+const SHOP_PAGES =
+  /^\/(?:shop|store|cart|checkout|about|contact|orders|products|categories|policies)?(?:\/|$)/;
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches
+      .open(CACHE)
+      .then((c) => c.addAll(SHELL))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener("activate", (event) => {
