@@ -510,6 +510,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/inquiries/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["inquiries_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/inquiries/{id}/status/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["inquiry_status"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/inventory/batches/{id}/release/": {
     parameters: {
       query?: never;
@@ -783,6 +815,23 @@ export interface paths {
     get: operations["public_categories"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/inquiries/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description A visitor's question from the contact page. Same key twice → the same inquiry. */
+    post: operations["public_inquiry_send"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1782,6 +1831,41 @@ export interface components {
       /** Format: uri */
       file: string;
     };
+    InquiryRow: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly number: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      readonly customer_name: string;
+      readonly phone: string;
+      readonly topic: components["schemas"]["TopicEnum"];
+      readonly contact_via: components["schemas"]["InquiryViaEnum"];
+      readonly order_number: string;
+      readonly message: string;
+      readonly locale: string;
+      readonly status: components["schemas"]["InquiryStatusEnum"];
+      unread: boolean;
+    };
+    InquirySent: {
+      number: string;
+    };
+    InquiryStatus: {
+      status: components["schemas"]["InquiryStatusEnum"];
+    };
+    /**
+     * @description * `new` - New
+     *     * `answered` - Answered
+     *     * `closed` - Closed
+     * @enum {string}
+     */
+    InquiryStatusEnum: "new" | "answered" | "closed";
+    /**
+     * @description * `whatsapp` - WhatsApp
+     *     * `call` - Phone call
+     * @enum {string}
+     */
+    InquiryViaEnum: "whatsapp" | "call";
     ItemCreate: {
       code: string;
       name_ar: string;
@@ -2694,6 +2778,19 @@ export interface components {
       /** Format: decimal */
       change: string;
     };
+    SendInquiry: {
+      name: string;
+      phone: string;
+      topic: components["schemas"]["TopicEnum"];
+      /** @default whatsapp */
+      via: components["schemas"]["InquiryViaEnum"];
+      /** @default  */
+      order_number: string;
+      message: string;
+      /** @default ar */
+      locale: components["schemas"]["LocaleEnum"];
+      agree: boolean;
+    };
     Settings: {
       enabled?: boolean;
       /** Format: uuid */
@@ -2969,6 +3066,14 @@ export interface components {
     Token: {
       token: string;
     };
+    /**
+     * @description * `medicine` - A medicine or product
+     *     * `order` - An order
+     *     * `availability` - Availability
+     *     * `other` - Something else
+     * @enum {string}
+     */
+    TopicEnum: "medicine" | "order" | "availability" | "other";
     Track: {
       number: string;
       phone: string;
@@ -3875,6 +3980,53 @@ export interface operations {
       };
     };
   };
+  inquiries_list: {
+    parameters: {
+      query?: {
+        q?: string;
+        status?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InquiryRow"][];
+        };
+      };
+    };
+  };
+  inquiry_status: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InquiryStatus"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InquiryRow"];
+        };
+      };
+    };
+  };
   inventory_batch_release: {
     parameters: {
       query?: never;
@@ -4246,6 +4398,31 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["PublicCategory"][];
+        };
+      };
+    };
+  };
+  public_inquiry_send: {
+    parameters: {
+      query?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SendInquiry"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InquirySent"];
         };
       };
     };

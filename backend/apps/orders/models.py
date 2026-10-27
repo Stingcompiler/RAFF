@@ -139,3 +139,52 @@ class OrderInvoiceLink(OrgScopedModel):
 
     def __str__(self) -> str:
         return f"{self.order_id}->{self.sale_id}"
+
+
+class Inquiry(OrgScopedModel):
+    """A question a visitor sent from the shop's contact page. Not an order, not a sale."""
+
+    class Topic(models.TextChoices):
+        MEDICINE = "medicine", "A medicine or product"
+        ORDER = "order", "An order"
+        AVAILABILITY = "availability", "Availability"
+        OTHER = "other", "Something else"
+
+    class Via(models.TextChoices):
+        WHATSAPP = "whatsapp", "WhatsApp"
+        CALL = "call", "Phone call"
+
+    class Status(models.TextChoices):
+        NEW = "new", "New"
+        ANSWERED = "answered", "Answered"
+        CLOSED = "closed", "Closed"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    number = models.CharField(max_length=20)
+    customer_name = models.CharField(max_length=120)
+    phone = models.CharField(max_length=20)
+    topic = models.CharField(max_length=15, choices=Topic.choices)
+    contact_via = models.CharField(max_length=10, choices=Via.choices, default=Via.WHATSAPP)
+    order_number = models.CharField(max_length=20, blank=True)
+    message = models.CharField(max_length=1000)
+    locale = models.CharField(max_length=5, default="ar")
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.NEW)
+    handled_by = models.ForeignKey(
+        "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
+    )
+    handled_at = models.DateTimeField(null=True, blank=True)
+    idempotency_key = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["organization", "number"], name="inquiry_number"),
+            models.UniqueConstraint(
+                fields=["organization", "idempotency_key"], name="inquiry_idempotency_key"
+            ),
+        ]
+        indexes = [models.Index(fields=["status", "created_at"]), models.Index(fields=["phone"])]
+
+    def __str__(self) -> str:
+        return self.number

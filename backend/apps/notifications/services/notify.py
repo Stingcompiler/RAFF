@@ -27,6 +27,26 @@ def order_placed(order_id: uuid.UUID, text: str, telegram_chat_id: str) -> None:
         transaction.on_commit(lambda: _telegram(note.pk, telegram_chat_id, text))
 
 
+def inquiry_received(inquiry_id: uuid.UUID, text: str, telegram_chat_id: str) -> None:
+    Notification.objects.create(
+        kind="inquiry_new", object_id=inquiry_id, channel=Notification.Channel.BADGE, text=text
+    )
+    if settings.RAFF_TELEGRAM_BOT_TOKEN and telegram_chat_id:
+        note = Notification.objects.create(
+            kind="inquiry_new",
+            object_id=inquiry_id,
+            channel=Notification.Channel.TELEGRAM,
+            text=text,
+        )
+        transaction.on_commit(lambda: _telegram(note.pk, telegram_chat_id, text))
+
+
+def unread_inquiries() -> int:
+    return Notification.objects.filter(
+        kind="inquiry_new", channel=Notification.Channel.BADGE, read_at__isnull=True
+    ).count()
+
+
 def _telegram(note_id: uuid.UUID, chat_id: str, text: str) -> None:
     """Best effort after commit: a failure is recorded on the notification, never raised."""
     url = f"https://api.telegram.org/bot{settings.RAFF_TELEGRAM_BOT_TOKEN}/sendMessage"

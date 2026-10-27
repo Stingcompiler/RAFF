@@ -25,3 +25,13 @@ export const STATUSES: OrderStatus[] = [
   "completed",
   "cancelled",
 ];
+
+export type InquiryRow = Schemas["InquiryRow"];
+export type InquiryStatus = InquiryRow["status"];
+
+export const INQUIRY_STATUSES: InquiryStatus[] = ["new", "answered", "closed"];
+export const INQUIRY_TONE: Record<InquiryStatus, Tone> = {
+  new: "info",
+  answered: "success",
+  closed: "neutral",
+};

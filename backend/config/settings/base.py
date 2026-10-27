@@ -174,6 +174,8 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": "/api/v1",
     # Several serializers have a `status` choice field; give each enum a stable name.
     "ENUM_NAME_OVERRIDES": {
+        "InquiryStatusEnum": "apps.orders.models.Inquiry.Status",
+        "InquiryViaEnum": "apps.orders.models.Inquiry.Via",
         "StockStatusEnum": ["good", "near_expiry", "low", "out", "expired"],
         "BatchStatusEnum": ["good", "near_expiry", "expired", "held", "quarantined"],
         "ImportStatusEnum": "apps.catalog.models.ImportBatch.Status",

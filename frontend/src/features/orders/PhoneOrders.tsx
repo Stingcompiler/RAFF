@@ -10,6 +10,7 @@ import { cn } from "@/lib/cn";
 import { money, timeOfDay } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
 
+import { InquiriesLink } from "./InquiriesLink";
 import { type OrderRow, type OrderStatus, STATUS_TONE } from "./labels";
 
 /** The next step a phone can take without a reason (cancel and contact stay on the computer). */
@@ -49,6 +50,7 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
     <>
       <div className="flex items-baseline justify-between px-[16px] pt-[8px] pb-[12px]">
         <h1 className="m-0 type-page">{t("title")}</h1>
+        <InquiriesLink />
         {fresh > 0 && (
           <span
             className={cn(
