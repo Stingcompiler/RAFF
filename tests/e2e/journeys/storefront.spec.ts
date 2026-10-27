@@ -50,6 +50,20 @@ test.describe("the shop as an app on a phone", () => {
     await expect(bar.getByLabel(/1/)).toBeVisible();
   });
 
+  test("the logo and the search share one row, and the search keeps a usable width", async ({
+    page,
+  }) => {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 700 });
+      await page.goto("/");
+      const logo = (await page.getByRole("banner").getByRole("link").first().boundingBox())!;
+      const search = (await page.getByRole("searchbox").boundingBox())!;
+      expect(Math.abs(logo.y + logo.height / 2 - (search.y + search.height / 2))).toBeLessThan(12);
+      expect(search.width).toBeGreaterThan(90);
+      expect((await page.getByRole("banner").boundingBox())!.height).toBeLessThan(72);
+    }
+  });
+
   test("the tab bar is for phones only", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/");

@@ -65,18 +65,18 @@ export function StoreShell({
       )}
     >
       <header className="sticky top-0 z-[5] border-b border-border bg-surface-subtle">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-[20px] gap-y-[8px] px-[20px] py-[10px]">
+        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-[20px] gap-y-[8px] px-[20px] py-[10px] max-[760px]:flex-nowrap max-[760px]:gap-x-[10px] max-[760px]:px-[12px]">
           <Link
             href={homePath}
-            className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline max-[760px]:flex-1"
+            className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline max-[760px]:max-w-[42%] max-[760px]:flex-none max-[760px]:text-lead"
           >
             <span
               aria-hidden="true"
-              className="grid size-[34px] place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
+              className="grid size-[34px] flex-none place-items-center rounded-full bg-brand text-section leading-none text-on-brand"
             >
               {PLUS}
             </span>
-            {pick(ar, store) || t("storeTitle")}
+            <span className="min-w-0 truncate">{pick(ar, store) || t("storeTitle")}</span>
           </Link>
           <nav aria-label={t("nav.menu")} className="flex gap-[4px] max-[760px]:hidden">
             {links.map(([href, key]) => {
@@ -238,7 +238,7 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:order-last max-[760px]:max-w-none max-[760px]:basis-full"
+      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:min-w-0 max-[760px]:max-w-none"
     >
       <SearchIcon className="text-text-muted" />
       <input
