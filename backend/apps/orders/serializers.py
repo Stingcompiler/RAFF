@@ -5,7 +5,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from apps.orders.models import Order
+from apps.orders.models import Inquiry, Order
 
 STATUS = [c[0] for c in Order.Status.choices]
 
@@ -163,3 +163,51 @@ class PosOrderLineSerializer(serializers.Serializer[Any]):
 class PosOrderSerializer(serializers.Serializer[Any]):
     order = OrderRefSerializer()
     lines = PosOrderLineSerializer(many=True)
+
+
+class SendInquirySerializer(serializers.Serializer[None]):
+    name = serializers.CharField(max_length=120)
+    phone = serializers.CharField(max_length=20)
+    topic = serializers.ChoiceField(choices=Inquiry.Topic.choices)
+    via = serializers.ChoiceField(choices=Inquiry.Via.choices, default=Inquiry.Via.WHATSAPP)
+    order_number = serializers.CharField(
+        max_length=20, required=False, allow_blank=True, default=""
+    )
+    message = serializers.CharField(max_length=1000)
+    locale = serializers.ChoiceField(choices=["ar", "en"], default="ar")
+    agree = serializers.BooleanField()
+
+    def validate_agree(self, value: bool) -> bool:
+        if not value:
+            raise serializers.ValidationError("policy_required")
+        return value
+
+
+class InquirySentSerializer(serializers.Serializer[Any]):
+    number = serializers.CharField()
+
+
+class InquiryRowSerializer(serializers.ModelSerializer[Inquiry]):
+    unread = serializers.BooleanField()
+
+    class Meta:
+        model = Inquiry
+        fields = [
+            "id",
+            "number",
+            "created_at",
+            "customer_name",
+            "phone",
+            "topic",
+            "contact_via",
+            "order_number",
+            "message",
+            "locale",
+            "status",
+            "unread",
+        ]
+        read_only_fields = fields
+
+
+class InquiryStatusSerializer(serializers.Serializer[None]):
+    status = serializers.ChoiceField(choices=Inquiry.Status.choices)

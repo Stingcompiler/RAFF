@@ -22,24 +22,28 @@ from rest_framework.views import APIView
 from apps.accounts.drf import current_branch, idempotency_key, requires
 from apps.accounts.models import User
 from apps.notifications.models import Notification
-from apps.notifications.services.notify import unread_orders
-from apps.orders.models import Order
+from apps.notifications.services.notify import mark_read, unread_orders
+from apps.orders.models import Inquiry, Order
 from apps.orders.selectors import public_order, staff_order
 from apps.orders.serializers import (
     EditLinesSerializer,
+    InquiryRowSerializer,
+    InquirySentSerializer,
+    InquiryStatusSerializer,
     NoteSerializer,
     OrdersSummarySerializer,
     PlacedSerializer,
     PlaceOrderSerializer,
     PosOrderSerializer,
     PublicOrderSerializer,
+    SendInquirySerializer,
     StaffOrderRowSerializer,
     StaffOrderSerializer,
     TokenSerializer,
     TrackSerializer,
     TransitionSerializer,
 )
-from apps.orders.services import workflow
+from apps.orders.services import inquiries, workflow
 from apps.orders.services.placing import (
     LineRequest,
     OrderError,
@@ -354,3 +358,115 @@ class OrderToPosView(APIView):
                 }
             ).data
         )
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class SendInquiryView(_Public):
+    """A visitor's question from the contact page. Same key twice → the same inquiry."""
+
+    throttle_scope = "orders"
+
+    @extend_schema(
+        operation_id="public_inquiry_send",
+        request=SendInquirySerializer,
+        parameters=[KEY],
+        responses={201: InquirySentSerializer},
+    )
+    def post(self, request: Request) -> Response:
+        data = SendInquirySerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        v = data.validated_data
+        key = idempotency_key(request)
+        args: dict[str, Any] = {
+            "name": v["name"],
+            "phone": v["phone"],
+            "topic": v["topic"],
+            "via": v["via"],
+            "order_number": v["order_number"],
+            "message": v["message"],
+            "locale": v["locale"],
+        }
+        try:
+            result = inquiries.send_inquiry(**args, idempotency_key=key)
+        except KeyRace:
+            try:
+                with transaction.atomic():
+                    result = replay(
+                        "send_inquiry",
+                        key,
+                        inquiries.inquiry_payload(
+                            v["name"],
+                            normalize_phone(v["phone"]) or "",
+                            v["topic"],
+                            v["via"],
+                            v["order_number"],
+                            v["message"],
+                            v["locale"],
+                        ),
+                    )
+            except KeyConflict:
+                return Response(
+                    {"detail": "idempotency_key_reused"}, status=status.HTTP_409_CONFLICT
+                )
+        except KeyConflict:
+            return Response({"detail": "idempotency_key_reused"}, status=status.HTTP_409_CONFLICT)
+        except OrderError as exc:
+            code = status.HTTP_429_TOO_MANY_REQUESTS if exc.code == "rate_limited" else 400
+            return Response({"detail": exc.code}, status=code)
+        return Response(InquirySentSerializer(result).data, status=status.HTTP_201_CREATED)
+
+
+class StaffInquiryListView(APIView):
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(
+        operation_id="inquiries_list",
+        parameters=[
+            OpenApiParameter("status", str, required=False),
+            OpenApiParameter("q", str, required=False),
+        ],
+        responses=InquiryRowSerializer(many=True),
+    )
+    def get(self, request: Request) -> Response:
+        p = request.query_params
+        qs = Inquiry.objects.all()
+        if p.get("status"):
+            qs = qs.filter(status=p["status"])
+        if term := p.get("q", "").strip():
+            qs = qs.filter(
+                Q(number__icontains=term)
+                | Q(customer_name__icontains=term)
+                | Q(phone__contains=term)
+                | Q(order_number__icontains=term)
+            )
+        unread = set(
+            Notification.objects.filter(kind="inquiry_new", read_at__isnull=True).values_list(
+                "object_id", flat=True
+            )
+        )
+        rows = list(qs[:100])
+        for row in rows:
+            row.unread = row.pk in unread
+        return Response(InquiryRowSerializer(rows, many=True).data)
+
+
+class InquiryStatusView(APIView):
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(
+        operation_id="inquiry_status",
+        request=InquiryStatusSerializer,
+        responses=InquiryRowSerializer,
+    )
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
+        data = InquiryStatusSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        inquiry = Inquiry.objects.filter(pk=pk).first()
+        if inquiry is None:
+            raise NotFound
+        with transaction.atomic():
+            assert isinstance(request.user, User)
+            inquiries.set_status(inquiry, data.validated_data["status"], request.user)
+            mark_read(inquiry.pk)
+        inquiry.unread = False
+        return Response(InquiryRowSerializer(inquiry).data)

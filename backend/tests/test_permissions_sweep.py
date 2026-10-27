@@ -32,6 +32,7 @@ PUBLIC = {
     "api/v1/public/categories/",
     "api/v1/public/products/",
     "api/v1/public/products/<slug:slug>/",
+    "api/v1/public/inquiries/",
     "api/v1/public/orders/",
     "api/v1/public/orders/track/",
     "api/v1/public/orders/by-key/<str:key>/",

@@ -736,6 +736,58 @@ paths:
               schema:
                 $ref: '#/components/schemas/Health'
           description: ''
+  /api/v1/inquiries/:
+    get:
+      operationId: inquiries_list
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - inquiries
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InquiryRow'
+          description: ''
+  /api/v1/inquiries/{id}/status/:
+    post:
+      operationId: inquiry_status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - inquiries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InquiryStatus'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InquiryRow'
+          description: ''
   /api/v1/inventory/batches/{id}/release/:
     post:
       operationId: inventory_batch_release
@@ -1133,6 +1185,34 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/PublicCategory'
+          description: ''
+  /api/v1/public/inquiries/:
+    post:
+      operationId: public_inquiry_send
+      description: A visitor's question from the contact page. Same key twice → the
+        same inquiry.
+      parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendInquiry'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InquirySent'
           description: ''
   /api/v1/public/orders/:
     post:
@@ -2961,6 +3041,94 @@ components:
           format: uri
       required:
       - file
+    InquiryRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        number:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        customer_name:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        topic:
+          allOf:
+          - $ref: '#/components/schemas/TopicEnum'
+          readOnly: true
+        contact_via:
+          allOf:
+          - $ref: '#/components/schemas/InquiryViaEnum'
+          readOnly: true
+        order_number:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        locale:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/InquiryStatusEnum'
+          readOnly: true
+        unread:
+          type: boolean
+      required:
+      - contact_via
+      - created_at
+      - customer_name
+      - id
+      - locale
+      - message
+      - number
+      - order_number
+      - phone
+      - status
+      - topic
+      - unread
+    InquirySent:
+      type: object
+      properties:
+        number:
+          type: string
+      required:
+      - number
+    InquiryStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/InquiryStatusEnum'
+      required:
+      - status
+    InquiryStatusEnum:
+      enum:
+      - new
+      - answered
+      - closed
+      type: string
+      description: |-
+        * `new` - New
+        * `answered` - Answered
+        * `closed` - Closed
+    InquiryViaEnum:
+      enum:
+      - whatsapp
+      - call
+      type: string
+      description: |-
+        * `whatsapp` - WhatsApp
+        * `call` - Phone call
     ItemCreate:
       type: object
       properties:
@@ -5227,6 +5395,40 @@ components:
       - id
       - number
       - total
+    SendInquiry:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 20
+        topic:
+          $ref: '#/components/schemas/TopicEnum'
+        via:
+          allOf:
+          - $ref: '#/components/schemas/InquiryViaEnum'
+          default: whatsapp
+        order_number:
+          type: string
+          default: ''
+          maxLength: 20
+        message:
+          type: string
+          maxLength: 1000
+        locale:
+          allOf:
+          - $ref: '#/components/schemas/LocaleEnum'
+          default: ar
+        agree:
+          type: boolean
+      required:
+      - agree
+      - message
+      - name
+      - phone
+      - topic
     Settings:
       type: object
       properties:
@@ -5962,6 +6164,18 @@ components:
           type: string
       required:
       - token
+    TopicEnum:
+      enum:
+      - medicine
+      - order
+      - availability
+      - other
+      type: string
+      description: |-
+        * `medicine` - A medicine or product
+        * `order` - An order
+        * `availability` - Availability
+        * `other` - Something else
     Track:
       type: object
       properties:

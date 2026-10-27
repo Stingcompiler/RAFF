@@ -19,6 +19,7 @@ const WORKSPACE = [
   "/reports",
   "/settings",
   "/orders",
+  "/orders/inquiries",
   "/storefront/catalog",
 ];
 const PUBLIC = [

@@ -1261,7 +1261,36 @@
     "trackAnother": "Track another order",
     "install": "Install the app",
     "offlineT": "You're offline",
-    "offlineB": "Check your connection and try again; prices and availability always come from the pharmacy."
+    "offlineB": "Check your connection and try again; prices and availability always come from the pharmacy.",
+    "contactLead": "Message us directly on WhatsApp, or leave your question here and we will get back to you.",
+    "waDirect": "Start a WhatsApp chat",
+    "waGreeting": "Hello, I have a question.",
+    "inqT": "Leave a question",
+    "inqB": "Your details go to the pharmacy so it can reply. Do not write private health information.",
+    "topicL": "What is it about?",
+    "topic": {
+      "medicine": "A medicine or product",
+      "order": "A previous order",
+      "availability": "Availability of an item",
+      "other": "Something else"
+    },
+    "orderNoL": "Order number",
+    "orderNoErr": "✕ Enter the order number, like O-0001",
+    "viaL": "How should we contact you?",
+    "via": {
+      "whatsapp": "WhatsApp",
+      "call": "Phone call"
+    },
+    "messageL": "Your question",
+    "messagePh": "Write your question here",
+    "inqSend": "Send question",
+    "inqSending": "Sending…",
+    "inqFail": "✕ The question was not sent. Your details are kept on the page, try again.",
+    "inqDone": "We received your question",
+    "inqDoneB": "Your reference is {number}. We will contact you by {via}.",
+    "inqAnother": "Send another question",
+    "inqWa": "Send a copy on WhatsApp",
+    "inqWaText": "Question {number}: {message}"
   },
   "orders": {
     "title": "Orders",
@@ -1344,7 +1373,37 @@
       "not_editable": "Cannot edit in this status",
       "failed": "Could not save"
     },
-    "toPos": "Turn into an invoice at the POS"
+    "toPos": "Turn into an invoice at the POS",
+    "inq": {
+      "title": "Inquiries",
+      "link": "Inquiries",
+      "count": "{count} inquiries",
+      "empty": "No inquiries.",
+      "all": "All",
+      "new": "New",
+      "answered": "Answered",
+      "closed": "Closed",
+      "markAnswered": "Answered",
+      "markClosed": "Close",
+      "reopen": "Reopen",
+      "wa": "Reply on WhatsApp",
+      "call": "Call",
+      "order": "Order",
+      "via": "Prefers",
+      "search": "Search by name or number",
+      "topic": {
+        "medicine": "A medicine or product",
+        "order": "A previous order",
+        "availability": "Availability of an item",
+        "other": "Something else"
+      },
+      "viaName": {
+        "whatsapp": "WhatsApp",
+        "call": "Phone call"
+      },
+      "back": "← Orders",
+      "waReply": "Hello {name}, about your question {number}: "
+    }
   },
   "storeAdmin": {
     "catT": "Published catalog",

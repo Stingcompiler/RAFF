@@ -22,6 +22,7 @@ import { cn } from "@/lib/cn";
 import { amount, timeOfDay } from "@/lib/format";
 import { usePhone } from "@/lib/phone";
 
+import { InquiriesLink } from "./InquiriesLink";
 import { type OrderRow, type OrderStatus, STATUS_TONE, STATUSES } from "./labels";
 import { PhoneOrders } from "./PhoneOrders";
 
@@ -71,7 +72,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
   ];
   return (
     <>
-      <PageHeader title={t("title")} />
+      <PageHeader title={t("title")} actions={<InquiriesLink />} />
       <Panel
         title={t("count", { count: rows.length })}
         chips={
