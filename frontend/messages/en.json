@@ -1051,7 +1051,8 @@
       "contact": "Contact",
       "track": "Track order",
       "menu": "Menu",
-      "close": "Close"
+      "tabs": "Bottom navigation",
+      "cart": "Cart"
     },
     "searchPh": "Search medicines or supplies",
     "cart": "Cart",
@@ -1257,7 +1258,10 @@
     "footContact": "Contact",
     "footLegal": "Legal",
     "autoRefresh": "This page updates by itself when the order's status changes.",
-    "trackAnother": "Track another order"
+    "trackAnother": "Track another order",
+    "install": "Install the app",
+    "offlineT": "You're offline",
+    "offlineB": "Check your connection and try again; prices and availability always come from the pharmacy."
   },
   "orders": {
     "title": "Orders",

@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 import { RootDocument } from "@/components/RootDocument";
 import { ToastProvider } from "@/components/ui/Toast";
+import { RegisterServiceWorker } from "@/features/store/StoreApp";
 import { StoreShell } from "@/features/store/StoreShell";
 import type { Store } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
@@ -35,8 +36,16 @@ const loadStore = async () =>
 
 export async function generateMetadata(): Promise<Metadata> {
   const [locale, store, t] = await Promise.all([getLocale(), loadStore(), getTranslations("app")]);
-  return { title: (locale === "ar" ? store.name_ar : store.name_en) || t("name") };
+  const title = (locale === "ar" ? store.name_ar : store.name_en) || t("name");
+  return {
+    title,
+    manifest: "/manifest.webmanifest",
+    icons: { apple: "/pwa/apple-touch-icon.png" },
+    appleWebApp: { capable: true, title, statusBarStyle: "default" },
+  };
 }
+
+export const viewport: Viewport = { viewportFit: "cover" };
 
 export default async function StorefrontLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
@@ -48,6 +57,7 @@ export default async function StorefrontLayout({ children }: { children: ReactNo
         <StoreShell store={store} homePath={shopHome()}>
           {children}
         </StoreShell>
+        <RegisterServiceWorker />
       </ToastProvider>
     </RootDocument>
   );

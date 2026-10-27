@@ -17,6 +17,8 @@ export function proxy(request: NextRequest) {
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
+    "worker-src 'self'",
+    "manifest-src 'self'",
     "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",

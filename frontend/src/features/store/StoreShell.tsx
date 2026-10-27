@@ -1,22 +1,22 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import {
+  House,
+  MessageCircle,
+  PackageSearch,
+  ShoppingCart,
+  Store as StoreFront,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import {
-  type CSSProperties,
-  type FormEvent,
-  type ReactNode,
-  Suspense,
-  useEffect,
-  useState,
-} from "react";
+import { type CSSProperties, type FormEvent, type ReactNode, Suspense, useState } from "react";
 
 import { SearchIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
 import { useCart } from "./cart";
+import { InstallButton } from "./StoreApp";
 import { pick, type Store, waLink } from "./types";
 
 const PLUS = "+";
@@ -29,44 +29,14 @@ const NAV = [
   ["/orders/track", "track"],
 ] as const;
 
-const SCROLLED_PX = 480;
-
-/**
- * On a phone, once the hero's button has scrolled away, the page's one action stays in reach
- * with the pharmacy's channel beside it (LANDING §2: a pinned bar shows the button on scroll).
- */
-function StickyCta({ whatsapp }: { whatsapp: string }) {
-  const t = useTranslations("store");
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setShown(window.scrollY > SCROLLED_PX);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  if (!shown) return null;
-  return (
-    <div
-      data-testid="sticky-cta"
-      className="fixed inset-x-0 bottom-0 z-[5] hidden items-center gap-[12px] border-t border-border bg-surface px-[20px] py-[10px] max-[760px]:flex"
-    >
-      <Link
-        href="/store"
-        className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-card bg-brand font-semibold text-on-brand no-underline"
-      >
-        {t("browse")}
-      </Link>
-      {whatsapp && (
-        <a
-          href={waLink(whatsapp)}
-          className="inline-flex min-h-[48px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
-        >
-          {t("contactUs")}
-        </a>
-      )}
-    </div>
-  );
-}
+const ICONS = {
+  home: House,
+  store: StoreFront,
+  contact: MessageCircle,
+  track: PackageSearch,
+} as const;
+/** The phone's bottom bar: the pages a customer uses most, with the cart in the middle. */
+const TABS = ["home", "store", "cart", "track", "contact"] as const;
 
 /** Public storefront frame: the pharmacy's brand, never Raff's (STOREFRONT-DESIGN-CHANGES §2). */
 export function StoreShell({
@@ -81,7 +51,6 @@ export function StoreShell({
   const t = useTranslations("store");
   const ar = useLocale() === "ar";
   const path = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
   const lines = useCart();
   const count = lines.reduce((n, l) => n + l.qty, 0);
   // The pharmacy's colour overrides the brand token only; everything else stays on tokens.
@@ -92,7 +61,7 @@ export function StoreShell({
       style={brand}
       className={cn(
         "flex min-h-dvh flex-col bg-canvas text-body leading-body text-text",
-        path === homePath && "max-[760px]:pb-[72px]",
+        "max-[760px]:pb-[calc(64px+env(safe-area-inset-bottom))]",
       )}
     >
       <header className="sticky top-0 z-[5] border-b border-border bg-surface-subtle">
@@ -133,7 +102,7 @@ export function StoreShell({
           <Link
             href="/cart"
             aria-label={t("cartCount", { count })}
-            className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline"
+            className="flex h-[44px] min-w-[44px] items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-semibold whitespace-nowrap text-text no-underline max-[760px]:hidden"
           >
             {t("cart")}
             <span
@@ -143,46 +112,9 @@ export function StoreShell({
               {count}
             </span>
           </Link>
-          <button
-            type="button"
-            aria-expanded={menuOpen}
-            aria-controls="store-menu"
-            aria-label={menuOpen ? t("nav.close") : t("nav.menu")}
-            onClick={() => setMenuOpen((v) => !v)}
-            className="hidden size-[44px] cursor-pointer place-items-center rounded-control border border-border-strong bg-surface text-text max-[760px]:grid"
-          >
-            {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-          </button>
         </div>
-        {/* Phones have no room for the tabs beside the brand: they open from the menu button. */}
-        {menuOpen && (
-          <nav
-            id="store-menu"
-            aria-label={t("nav.menu")}
-            className="hidden gap-[4px] border-t border-border bg-surface px-[20px] py-[12px] max-[760px]:grid"
-          >
-            {links.map(([href, key]) => {
-              const on = href === homePath ? path === homePath : path.startsWith(href);
-              return (
-                <Link
-                  key={`m-${href}`}
-                  href={href}
-                  onClick={() => setMenuOpen(false)}
-                  aria-current={on ? "page" : undefined}
-                  className={cn(
-                    "inline-flex min-h-[48px] items-center rounded-control px-[12px] text-lead font-medium no-underline",
-                    on ? "bg-brand-subtle/40 text-brand" : "text-text",
-                  )}
-                >
-                  {t(`nav.${key}`)}
-                </Link>
-              );
-            })}
-          </nav>
-        )}
       </header>
       <main className="mx-auto w-full max-w-[1200px] flex-1">{children}</main>
-      {path === homePath && <StickyCta whatsapp={store.whatsapp ?? ""} />}
       <footer className="mt-[40px] border-t border-border bg-surface-subtle">
         <div className="mx-auto grid max-w-[1200px] gap-[28px] px-[20px] pt-[32px] pb-[20px] text-body text-text-secondary [grid-template-columns:minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] max-[900px]:[grid-template-columns:repeat(2,minmax(0,1fr))] max-[520px]:[grid-template-columns:minmax(0,1fr)]">
           <div className="grid content-start gap-[10px] max-[900px]:col-span-2 max-[520px]:col-span-1">
@@ -233,6 +165,7 @@ export function StoreShell({
                 {t("waLong")}
               </a>
             )}
+            <InstallButton />
           </div>
           <div className="grid content-start gap-[2px]">
             <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footLegal")}</h2>
@@ -250,6 +183,44 @@ export function StoreShell({
           </div>
         </div>
       </footer>
+      <nav
+        aria-label={t("nav.tabs")}
+        data-testid="tab-bar"
+        className="fixed inset-x-0 bottom-0 z-[6] hidden grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] max-[760px]:grid"
+      >
+        {TABS.map((tab) => {
+          const href =
+            tab === "home"
+              ? homePath
+              : tab === "cart"
+                ? "/cart"
+                : links.find(([, k]) => k === tab)![0];
+          const on = href === homePath ? path === homePath : path.startsWith(href);
+          const Icon = tab === "cart" ? ShoppingCart : ICONS[tab];
+          return (
+            <Link
+              key={tab}
+              href={href}
+              aria-current={on ? "page" : undefined}
+              className={cn(
+                "relative flex min-h-[56px] flex-col items-center justify-center gap-[2px] px-[2px] text-caption font-medium no-underline",
+                on ? "text-brand" : "text-text-secondary",
+              )}
+            >
+              <Icon size={22} aria-hidden="true" />
+              {t(`nav.${tab === "cart" ? "cart" : tab}`)}
+              {tab === "cart" && count > 0 && (
+                <span
+                  aria-label={t("cartCount", { count })}
+                  className="num absolute top-[4px] ms-[18px] grid h-[18px] min-w-[18px] place-items-center rounded-full bg-brand px-[4px] text-caption text-on-brand"
+                >
+                  {count}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }
