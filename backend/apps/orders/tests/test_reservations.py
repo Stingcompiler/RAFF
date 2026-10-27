@@ -9,7 +9,7 @@ import pytest
 
 from apps.inventory.models import StockBalance
 from apps.orders.models import Order, OrderInvoiceLink, StockReservation
-from apps.orders.services.placing import LineRequest, place_order
+from apps.orders.services.placing import LineRequest, Place, place_order
 from apps.orders.services.workflow import transition
 from apps.sales.models import Sale
 from apps.sales.services.posting import PaymentRequest, SaleError, post_sale
@@ -27,6 +27,7 @@ def order_for(world: World, slug: str, qty: int = 1) -> Order:
         phone="0912345678",
         note="",
         lines=[LineRequest(slug, qty)],
+        place=Place("الخرطوم — الرياض"),
         idempotency_key=str(uuid.uuid4()),
     )
     order: Order = Order.objects.get(number=placed["number"])

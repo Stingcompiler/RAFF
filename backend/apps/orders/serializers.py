@@ -19,6 +19,13 @@ class PlaceOrderSerializer(serializers.Serializer[None]):
     name = serializers.CharField(max_length=120)
     phone = serializers.CharField(max_length=20)
     note = serializers.CharField(max_length=500, required=False, allow_blank=True, default="")
+    address = serializers.CharField(max_length=300)
+    latitude = serializers.DecimalField(
+        max_digits=9, decimal_places=6, required=False, allow_null=True, default=None
+    )
+    longitude = serializers.DecimalField(
+        max_digits=9, decimal_places=6, required=False, allow_null=True, default=None
+    )
     agree = serializers.BooleanField()
     lines = OrderLineInSerializer(many=True, allow_empty=False)
 
@@ -75,6 +82,7 @@ class StaffOrderRowSerializer(serializers.Serializer[Any]):
     created_at = serializers.DateTimeField()
     customer_name = serializers.CharField()
     phone = serializers.CharField()
+    address = serializers.CharField(allow_blank=True)
     lines_count = serializers.IntegerField()
     estimated_total = serializers.DecimalField(max_digits=18, decimal_places=4)
     status = serializers.ChoiceField(choices=STATUS)
@@ -117,6 +125,9 @@ class StaffOrderSerializer(serializers.Serializer[Any]):
     customer_name = serializers.CharField()
     phone = serializers.CharField()
     note = serializers.CharField(allow_blank=True)
+    address = serializers.CharField(allow_blank=True)
+    latitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
+    longitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
     reason = serializers.CharField(allow_blank=True)
     internal_note = serializers.CharField(allow_blank=True)
     estimated_total = serializers.DecimalField(max_digits=18, decimal_places=4)

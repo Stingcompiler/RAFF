@@ -107,6 +107,7 @@ test.describe("store orders on a phone", () => {
         name: "زبون الهاتف",
         phone: "0933333333",
         note: "",
+        address: "الخرطوم — الرياض",
         agree: true,
         lines: [{ slug: "par-500", quantity: 1 }],
       },

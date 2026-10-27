@@ -9,7 +9,7 @@ import pytest
 
 from apps.inventory.tests.test_concurrency import race
 from apps.orders.models import Order, StockReservation
-from apps.orders.services.placing import LineRequest, place_order
+from apps.orders.services.placing import LineRequest, Place, place_order
 from apps.orders.services.workflow import transition
 from apps.sales.models import Sale
 from apps.sales.services.posting import PaymentRequest, post_sale
@@ -31,6 +31,7 @@ def test_confirm_and_counter_sale_take_the_last_box_once(world: World) -> None:
             phone="0912345678",
             note="",
             lines=[LineRequest(listing.slug, 1)],
+            place=Place("الخرطوم — الرياض"),
             idempotency_key=str(uuid.uuid4()),
         )
         order = Order.objects.get(number=placed["number"])

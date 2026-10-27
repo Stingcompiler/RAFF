@@ -87,6 +87,9 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                   {TONE_SYMBOL[tone]} {t(`status.${order.status}`)}
                 </span>
               </div>
+              {order.address && (
+                <div className="truncate text-label text-text-muted">{order.address}</div>
+              )}
               <div className="flex justify-between gap-[8px] text-label text-text-muted">
                 <span className="flex min-w-0 gap-[6px]">
                   <span className="min-w-0 truncate">{order.customer_name}</span>

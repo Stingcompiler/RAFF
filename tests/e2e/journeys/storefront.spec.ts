@@ -102,7 +102,9 @@ test.describe("the shop as an app on a phone", () => {
 });
 
 test.describe("public storefront", () => {
-  test("a guest finds an item, sends an order once and tracks it", async ({ page }) => {
+  test("a guest finds an item, sends an order once and tracks it", async ({ page, context }) => {
+    await context.grantPermissions(["geolocation"]);
+    await context.setGeolocation({ latitude: 15.500654, longitude: 32.559899 });
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "دواؤك قريب، وصيدلي يراجع طلبك.",
@@ -133,6 +135,13 @@ test.describe("public storefront", () => {
     await expect(page.getByText("✕ أدخل رقماً سودانياً صحيحاً مثل 0912345678")).toBeVisible();
     await page.getByLabel("رقم الهاتف").fill(PHONE);
     await page.getByRole("checkbox").check();
+    await expect(send).toBeDisabled(); // the location is required
+    await page.getByLabel("موقعك").fill("ab");
+    await expect(page.getByText("✕ اكتب عنوانك (3 أحرف على الأقل)")).toBeVisible();
+    await expect(send).toBeDisabled();
+    await page.getByLabel("موقعك").fill("الخرطوم — الرياض، قرب مسجد النور");
+    await page.getByRole("button", { name: "استخدم موقعي الحالي" }).click();
+    await expect(page.getByText("✓ تم تحديد موقعك الحالي")).toBeVisible();
     await send.dblclick();
 
     await expect(page).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
@@ -156,6 +165,25 @@ test.describe("public storefront", () => {
     await page.getByLabel("رقم الهاتف").fill(PHONE);
     await page.getByRole("button", { name: "عرض الطلب" }).click();
     await expect(page).toHaveURL(orderUrl);
+  });
+
+  test("without permission to locate, the typed address is enough", async ({ page, context }) => {
+    await context.clearPermissions();
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "geolocation", {
+        value: {
+          getCurrentPosition: (_ok: unknown, fail: () => void) => fail(),
+        },
+      });
+    });
+    await page.goto("/checkout?rx=par-500");
+    await page.getByLabel("الاسم").fill("خالد");
+    await page.getByLabel("رقم الهاتف").fill("0955555555");
+    await page.getByLabel("موقعك").fill("بحري — الدروشاب");
+    await page.getByRole("button", { name: "استخدم موقعي الحالي" }).click();
+    await expect(page.getByRole("alert").filter({ hasText: "تعذّر تحديد الموقع" })).toBeVisible();
+    await page.getByRole("checkbox").check();
+    await expect(page.getByRole("button", { name: "إرسال الطلب" })).toBeEnabled();
   });
 
   test("prescription items have no price and no cart", async ({ page }) => {
@@ -182,6 +210,11 @@ test.describe("orders in the workspace", () => {
     await rows.click();
     await expect(page).toHaveURL(/\/orders\/detail\/[0-9a-f-]{36}$/);
     await expect(page.getByTestId("wa-text")).toContainText("سلمى أحمد");
+    await expect(page.getByText("الخرطوم — الرياض، قرب مسجد النور")).toBeVisible();
+    await expect(page.getByRole("link", { name: "فتح الخريطة" })).toHaveAttribute(
+      "href",
+      "https://www.google.com/maps?q=15.500654,32.559899",
+    );
     // The number the customer typed (0912345678) becomes a WhatsApp chat with the message ready.
     await expect(page.getByRole("link", { name: /واتساب/ }).first()).toHaveAttribute(
       "href",

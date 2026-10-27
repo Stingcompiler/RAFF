@@ -4085,6 +4085,19 @@ components:
           type: string
           default: ''
           maxLength: 500
+        address:
+          type: string
+          maxLength: 300
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
         agree:
           type: boolean
         lines:
@@ -4092,6 +4105,7 @@ components:
           items:
             $ref: '#/components/schemas/OrderLineIn'
       required:
+      - address
       - agree
       - lines
       - name
@@ -5742,6 +5756,18 @@ components:
           type: string
         note:
           type: string
+        address:
+          type: string
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
         reason:
           type: string
         internal_note:
@@ -5768,6 +5794,7 @@ components:
         whatsapp:
           type: string
       required:
+      - address
       - allowed
       - created_at
       - customer_name
@@ -5775,7 +5802,9 @@ components:
       - events
       - id
       - internal_note
+      - latitude
       - lines
+      - longitude
       - note
       - number
       - phone
@@ -5799,6 +5828,8 @@ components:
           type: string
         phone:
           type: string
+        address:
+          type: string
         lines_count:
           type: integer
         estimated_total:
@@ -5816,6 +5847,7 @@ components:
         unread:
           type: boolean
       required:
+      - address
       - assigned_ar
       - assigned_en
       - created_at

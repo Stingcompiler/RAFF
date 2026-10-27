@@ -1290,7 +1290,16 @@
     "inqDoneB": "Your reference is {number}. We will contact you by {via}.",
     "inqAnother": "Send another question",
     "inqWa": "Send a copy on WhatsApp",
-    "inqWaText": "Question {number}: {message}"
+    "inqWaText": "Question {number}: {message}",
+    "locL": "Your location",
+    "locHelp": "Write the area, neighbourhood and a nearby landmark. You can also add your current position.",
+    "locPh": "e.g. Khartoum — Al-Riyadh, near Al-Noor mosque",
+    "locErr": "✕ Enter your address (at least 3 characters)",
+    "locUse": "Use my current location",
+    "locBusy": "Finding your location…",
+    "locOk": "✓ Your current position is added",
+    "locClear": "Remove",
+    "locDenied": "✕ Could not get your position. Type your address instead."
   },
   "orders": {
     "title": "Orders",
@@ -1403,7 +1412,10 @@
       },
       "back": "← Orders",
       "waReply": "Hello {name}, about your question {number}: "
-    }
+    },
+    "addressL": "Location",
+    "openMap": "Open map",
+    "noAddress": "No location recorded"
   },
   "storeAdmin": {
     "catT": "Published catalog",

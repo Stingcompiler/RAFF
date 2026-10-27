@@ -28,6 +28,7 @@ def body(slug: str, qty: int = 2, phone: str = "0912345678") -> dict[str, Any]:
         "name": "سلمى أحمد",
         "phone": phone,
         "note": "",
+        "address": "الخرطوم — الرياض، شارع 15",
         "agree": True,
         "lines": [{"slug": slug, "quantity": qty}],
     }
@@ -113,7 +114,18 @@ def test_bad_orders_are_refused(world: World) -> None:
     assert post(body(listing.slug, phone="12345")).json()["detail"] == "invalid_phone"
     assert post(body("nope")).json()["detail"] == "unknown_item"
     assert post({**body(listing.slug), "agree": False}).status_code == 400
-    assert post(body(listing.slug)).status_code == 201
+    # The customer's location is required: a described place, and a position if shared.
+    assert post({**body(listing.slug), "address": ""}).status_code == 400
+    assert post({**body(listing.slug), "address": "ab"}).json()["detail"] == "invalid_address"
+    no_place = body(listing.slug)
+    del no_place["address"]
+    assert post(no_place).status_code == 400
+    half = {**body(listing.slug), "latitude": "15.5", "longitude": None}
+    assert post(half).json()["detail"] == "invalid_position"
+    far = {**body(listing.slug), "latitude": "95.0", "longitude": "32.5"}
+    assert post(far).json()["detail"] == "invalid_position"
+    shared = {**body(listing.slug), "latitude": "15.500654", "longitude": "32.559899"}
+    assert post(shared).status_code == 201
     assert post(body(listing.slug)).status_code == 429  # one order per hour for this phone
     no_csrf = APIClient(enforce_csrf_checks=True)
     assert (

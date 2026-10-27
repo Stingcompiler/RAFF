@@ -2275,6 +2275,11 @@ export interface components {
       phone: string;
       /** @default  */
       note: string;
+      address: string;
+      /** Format: decimal */
+      latitude?: string | null;
+      /** Format: decimal */
+      longitude?: string | null;
       agree: boolean;
       lines: components["schemas"]["OrderLineIn"][];
     };
@@ -2915,6 +2920,11 @@ export interface components {
       customer_name: string;
       phone: string;
       note: string;
+      address: string;
+      /** Format: decimal */
+      latitude: string | null;
+      /** Format: decimal */
+      longitude: string | null;
       reason: string;
       internal_note: string;
       /** Format: decimal */
@@ -2933,6 +2943,7 @@ export interface components {
       created_at: string;
       customer_name: string;
       phone: string;
+      address: string;
       lines_count: number;
       /** Format: decimal */
       estimated_total: string;
