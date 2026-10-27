@@ -1050,7 +1050,8 @@
       "about": "About",
       "contact": "Contact",
       "track": "Track order",
-      "menu": "Menu"
+      "menu": "Menu",
+      "close": "Close"
     },
     "searchPh": "Search medicines or supplies",
     "cart": "Cart",

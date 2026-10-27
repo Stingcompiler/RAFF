@@ -1,5 +1,6 @@
 "use client";
 
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -80,6 +81,7 @@ export function StoreShell({
   const t = useTranslations("store");
   const ar = useLocale() === "ar";
   const path = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
   const lines = useCart();
   const count = lines.reduce((n, l) => n + l.qty, 0);
   // The pharmacy's colour overrides the brand token only; everything else stays on tokens.
@@ -97,7 +99,7 @@ export function StoreShell({
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-[20px] gap-y-[8px] px-[20px] py-[10px]">
           <Link
             href={homePath}
-            className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline"
+            className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline max-[760px]:flex-1"
           >
             <span
               aria-hidden="true"
@@ -141,31 +143,43 @@ export function StoreShell({
               {count}
             </span>
           </Link>
+          <button
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="store-menu"
+            aria-label={menuOpen ? t("nav.close") : t("nav.menu")}
+            onClick={() => setMenuOpen((v) => !v)}
+            className="hidden size-[44px] cursor-pointer place-items-center rounded-control border border-border-strong bg-surface text-text max-[760px]:grid"
+          >
+            {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
         </div>
-        {/* Phones have no room for the tabs in the first row: they scroll sideways under it. */}
-        <nav
-          aria-label={t("nav.menu")}
-          className="hidden gap-[6px] overflow-x-auto px-[20px] pb-[10px] max-[760px]:flex [scrollbar-width:none]"
-        >
-          {links.map(([href, key]) => {
-            const on = href === homePath ? path === homePath : path.startsWith(href);
-            return (
-              <Link
-                key={`m-${href}`}
-                href={href}
-                aria-current={on ? "page" : undefined}
-                className={cn(
-                  "inline-flex min-h-[40px] flex-none items-center rounded-pill border px-[14px] text-label font-medium whitespace-nowrap no-underline",
-                  on
-                    ? "border-brand bg-brand-subtle/40 text-brand"
-                    : "border-border bg-surface text-text",
-                )}
-              >
-                {t(`nav.${key}`)}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Phones have no room for the tabs beside the brand: they open from the menu button. */}
+        {menuOpen && (
+          <nav
+            id="store-menu"
+            aria-label={t("nav.menu")}
+            className="hidden gap-[4px] border-t border-border bg-surface px-[20px] py-[12px] max-[760px]:grid"
+          >
+            {links.map(([href, key]) => {
+              const on = href === homePath ? path === homePath : path.startsWith(href);
+              return (
+                <Link
+                  key={`m-${href}`}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={on ? "page" : undefined}
+                  className={cn(
+                    "inline-flex min-h-[48px] items-center rounded-control px-[12px] text-lead font-medium no-underline",
+                    on ? "bg-brand-subtle/40 text-brand" : "text-text",
+                  )}
+                >
+                  {t(`nav.${key}`)}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
       </header>
       <main className="mx-auto w-full max-w-[1200px] flex-1">{children}</main>
       {path === homePath && <StickyCta whatsapp={store.whatsapp ?? ""} />}
@@ -253,7 +267,7 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:max-w-none"
+      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:order-last max-[760px]:max-w-none max-[760px]:basis-full"
     >
       <SearchIcon className="text-text-muted" />
       <input
