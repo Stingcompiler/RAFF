@@ -1,0 +1,11 @@
+code,name_ar,name_en,generic_name,strength,dosage_form,category,classification,base_unit_ar,base_unit_en,sale_unit_ar,sale_unit_en,sale_unit_factor,barcode,price,reorder_level
+AUG-625,أموكسيسيلين/كلافولانيك,Augmentin,amoxicillin/clavulanic,625 mg,tab,antibiotics,rx,قرص,Tablet,علبة,Box,14,6221234567890,12500,20
+PAR-500,باراسيتامول,Paracetamol,paracetamol,500 mg,tab,analgesics,otc,قرص,Tablet,شريط,Strip,10,6221234500017,800,20
+OME-20,أوميبرازول,Omeprazole,omeprazole,20 mg,cap,gastro,otc,كبسولة,Capsule,شريط,Strip,14,6221234500024,2400,20
+IBU-400,إيبوبروفين,Ibuprofen,ibuprofen,400 mg,tab,analgesics,otc,قرص,Tablet,شريط,Strip,10,6221234500031,1100,20
+ORS-1,محلول الإرواء الفموي,ORS sachet,oral rehydration salts,1 sachet,,rehydration,otc,كيس,Sachet,,,,,300,20
+CSY-100,شراب سعال,Cough syrup,dextromethorphan,100 ml,syr,respiratory,otc,زجاجة,Bottle,,,,,2900,20
+VTC-1000,فيتامين C,Vitamin C,ascorbic acid,1000 mg,eff,vitamins,otc,قرص فوار,Effervescent tablet,علبة,Box,20,6221234500048,4500,20
+AMX-500,أموكسيسيلين,Amoxicillin,amoxicillin,500 mg,cap,antibiotics,rx,كبسولة,Capsule,علبة,Box,16,6221234500055,3600,20
+BPM-1,جهاز قياس الضغط,Blood pressure monitor,,digital,,devices,otc,جهاز,Device,,,,,45000,20
+BND-20,ضمادات لاصقة,Adhesive bandages,,20 pcs,,supplies,otc,قطعة,Piece,علبة,Box,20,6221234500062,1500,20
