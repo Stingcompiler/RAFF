@@ -1,0 +1,155 @@
+import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+
+import {
+  CheckCircleIcon,
+  MessageIcon,
+  ShieldIcon,
+  StoreIcon,
+  TagIcon,
+  UserCheckIcon,
+} from "@/components/ui/icons";
+import { ProductTile } from "@/features/store/ProductTile";
+import { type Product, type Store, waLink } from "@/features/store/types";
+import { serverGet } from "@/lib/api/server";
+
+const ICONS = [TagIcon, CheckCircleIcon, UserCheckIcon, MessageIcon, StoreIcon, ShieldIcon];
+const PLUS = "+";
+
+/** The one action of the page, with the same words every time it appears (LANDING §2). */
+const CTA =
+  "inline-flex min-h-[48px] items-center rounded-card bg-brand px-[24px] text-lead font-semibold whitespace-nowrap text-on-brand no-underline transition-[transform] duration-(--motion-feedback) hover:-translate-y-[2px]";
+
+/** The pharmacy's home (PHARMACY-WEBSITE §4): hero, featured items, how it works, FAQ. */
+export async function StorefrontHome() {
+  const t = await getTranslations("store");
+  const ar = (await getLocale()) === "ar";
+  const [store, products] = await Promise.all([
+    serverGet<Store>("/public/store/").catch(() => null),
+    serverGet<Product[]>("/public/products/?limit=4").catch(() => null),
+  ]);
+  const features = t.raw("features") as { t: string; d: string }[];
+  const steps = t.raw("steps") as { t: string; d: string }[];
+  const faq = t.raw("faq") as { q: string; a: string }[];
+  const title = store ? (ar ? store.hero_title_ar : store.hero_title_en) : "";
+  const lead = store ? (ar ? store.hero_lead_ar : store.hero_lead_en) : "";
+  const address = store
+    ? [ar ? store.address_ar : store.address_en, store.hours].filter(Boolean).join(" · ")
+    : "";
+  return (
+    <>
+      <section className="mx-[20px] mt-[24px] rounded-panel bg-surface-subtle px-[40px] py-[48px] max-[760px]:px-[20px] max-[760px]:py-[28px]">
+        <div className="max-w-[640px]">
+          <h1 className="m-0 text-land-hero font-semibold [text-wrap:balance]">
+            {title || t("storeTitle")}
+          </h1>
+          {lead && (
+            <p className="mt-[14px] mb-0 max-w-[520px] text-land-lead leading-loose text-text-secondary">
+              {lead}
+            </p>
+          )}
+          <div className="mt-[24px] flex flex-wrap gap-[12px]">
+            <Link href="/store" className={CTA}>
+              {t("browse")}
+            </Link>
+            {store?.whatsapp && (
+              <a
+                href={waLink(store.whatsapp)}
+                className="inline-flex min-h-[48px] items-center px-[8px] font-medium whitespace-nowrap text-brand underline underline-offset-4"
+              >
+                {t("contactUs")}
+              </a>
+            )}
+          </div>
+          {address && <div className="mt-[20px] text-body text-text-muted">{address}</div>}
+        </div>
+      </section>
+
+      <section className="px-[20px] pt-[24px] pb-[8px]">
+        <h2 className="m-0 text-land-section font-semibold">{t("featured")}</h2>
+        <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[360px]:grid-cols-1">
+          {(products ?? []).map((p) => (
+            <ProductTile key={p.slug} product={p} />
+          ))}
+        </div>
+        <div className="mt-[20px]">
+          <Link href="/store" className={CTA}>
+            {t("browse")}
+          </Link>
+        </div>
+      </section>
+
+      <section className="px-[20px] pt-[48px] pb-[16px]">
+        <h2 className="mt-0 mb-[20px] text-land-section font-semibold">{t("howWork")}</h2>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-x-[32px]">
+          {features.map((f, i) => {
+            const Icon = ICONS[i] ?? TagIcon;
+            return (
+              <div
+                key={f.t}
+                className="grid grid-cols-[36px_1fr] gap-[12px] border-t border-border py-[18px]"
+              >
+                <Icon size={26} className="text-brand" />
+                <div>
+                  <div className="font-semibold">{f.t}</div>
+                  <div className="mt-[2px] text-land-body leading-body text-text-secondary">
+                    {f.d}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mx-[20px] mt-[32px] rounded-panel bg-brand px-[24px] py-[32px] text-on-brand">
+        <h2 className="mt-0 mb-[20px] text-land-section font-semibold">{t("howOrder")}</h2>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(220px,100%),1fr))] gap-[20px]">
+          {steps.map((s, i) => (
+            <div key={s.t} className="flex items-start gap-[14px]">
+              <span
+                dir="ltr"
+                className="text-land-section leading-none font-medium text-brand-subtle num"
+              >
+                {i + 1}
+              </span>
+              <div>
+                <div className="text-land-lead font-semibold">{s.t}</div>
+                <div className="text-land-body leading-body opacity-90">{s.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-[20px] rounded-control bg-on-brand/15 px-[14px] py-[10px] text-body">
+          {t("howNote")}
+        </div>
+      </section>
+
+      <section className="px-[20px] pt-[48px] pb-[16px]">
+        <h2 className="mt-0 mb-[12px] text-land-section font-semibold">{t("faqT")}</h2>
+        <div className="border-t border-border">
+          {faq.map((f, i) => (
+            <details key={f.q} open={i === 0} className="group border-b border-border">
+              <summary className="flex min-h-[56px] cursor-pointer list-none items-center justify-between gap-[12px] text-land-lead font-medium">
+                {f.q}
+                <span
+                  aria-hidden="true"
+                  className="text-land-feature text-brand transition-[transform] duration-(--motion-panel-in) group-open:rotate-45"
+                >
+                  {PLUS}
+                </span>
+              </summary>
+              <div className="max-w-[640px] pb-[16px] leading-loose text-text-secondary">{f.a}</div>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid justify-items-start gap-[12px] px-[20px] pt-[32px] pb-[16px]">
+        <Link href="/store" className={CTA}>
+          {t("browse")}
+        </Link>
+      </section>
+    </>
+  );
+}

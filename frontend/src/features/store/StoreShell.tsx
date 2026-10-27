@@ -19,8 +19,9 @@ import { useCart } from "./cart";
 import { pick, type Store, waLink } from "./types";
 
 const PLUS = "+";
+/** The shop's pages; "home" is `homePath` ("/", or "/shop" when "/" is the product page). */
 const NAV = [
-  ["/", "home"],
+  ["home", "home"],
   ["/store", "store"],
   ["/about", "about"],
   ["/contact", "contact"],
@@ -67,26 +68,35 @@ function StickyCta({ whatsapp }: { whatsapp: string }) {
 }
 
 /** Public storefront frame: the pharmacy's brand, never Raff's (STOREFRONT-DESIGN-CHANGES §2). */
-export function StoreShell({ store, children }: { store: Store; children: ReactNode }) {
+export function StoreShell({
+  store,
+  homePath,
+  children,
+}: {
+  store: Store;
+  homePath: string;
+  children: ReactNode;
+}) {
   const t = useTranslations("store");
   const ar = useLocale() === "ar";
   const path = usePathname();
   const lines = useCart();
   const count = lines.reduce((n, l) => n + l.qty, 0);
   // The pharmacy's colour overrides the brand token only; everything else stays on tokens.
+  const links = NAV.map(([href, key]) => [href === "home" ? homePath : href, key] as const);
   const brand = (store.brand_color ? { "--brand": store.brand_color } : {}) as CSSProperties;
   return (
     <div
       style={brand}
       className={cn(
         "flex min-h-dvh flex-col bg-canvas text-body leading-body text-text",
-        path === "/" && "max-[760px]:pb-[72px]",
+        path === homePath && "max-[760px]:pb-[72px]",
       )}
     >
       <header className="sticky top-0 z-[5] border-b border-border bg-surface-subtle">
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-[20px] gap-y-[8px] px-[20px] py-[10px]">
           <Link
-            href="/"
+            href={homePath}
             className="hit-44 flex items-center gap-[10px] text-land-lead font-bold whitespace-nowrap text-text no-underline"
           >
             <span
@@ -98,8 +108,8 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
             {pick(ar, store) || t("storeTitle")}
           </Link>
           <nav aria-label={t("nav.menu")} className="flex gap-[4px] max-[760px]:hidden">
-            {NAV.map(([href, key]) => {
-              const on = href === "/" ? path === "/" : path.startsWith(href);
+            {links.map(([href, key]) => {
+              const on = href === homePath ? path === homePath : path.startsWith(href);
               return (
                 <Link
                   key={href}
@@ -132,14 +142,38 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
             </span>
           </Link>
         </div>
+        {/* Phones have no room for the tabs in the first row: they scroll sideways under it. */}
+        <nav
+          aria-label={t("nav.menu")}
+          className="hidden gap-[6px] overflow-x-auto px-[20px] pb-[10px] max-[760px]:flex [scrollbar-width:none]"
+        >
+          {links.map(([href, key]) => {
+            const on = href === homePath ? path === homePath : path.startsWith(href);
+            return (
+              <Link
+                key={`m-${href}`}
+                href={href}
+                aria-current={on ? "page" : undefined}
+                className={cn(
+                  "inline-flex min-h-[40px] flex-none items-center rounded-pill border px-[14px] text-label font-medium whitespace-nowrap no-underline",
+                  on
+                    ? "border-brand bg-brand-subtle/40 text-brand"
+                    : "border-border bg-surface text-text",
+                )}
+              >
+                {t(`nav.${key}`)}
+              </Link>
+            );
+          })}
+        </nav>
       </header>
       <main className="mx-auto w-full max-w-[1200px] flex-1">{children}</main>
-      {path === "/" && <StickyCta whatsapp={store.whatsapp ?? ""} />}
+      {path === homePath && <StickyCta whatsapp={store.whatsapp ?? ""} />}
       <footer className="mt-[40px] border-t border-border bg-surface-subtle">
         <div className="mx-auto grid max-w-[1200px] gap-[28px] px-[20px] pt-[32px] pb-[20px] text-body text-text-secondary [grid-template-columns:minmax(0,1.4fr)_repeat(3,minmax(0,1fr))] max-[900px]:[grid-template-columns:repeat(2,minmax(0,1fr))] max-[520px]:[grid-template-columns:minmax(0,1fr)]">
           <div className="grid content-start gap-[10px] max-[900px]:col-span-2 max-[520px]:col-span-1">
             <Link
-              href="/"
+              href={homePath}
               className="flex items-center gap-[10px] text-land-lead font-bold text-text no-underline"
             >
               <span
@@ -154,15 +188,17 @@ export function StoreShell({ store, children }: { store: Store; children: ReactN
           </div>
           <nav aria-label={t("footPages")} className="grid content-start gap-[2px]">
             <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footPages")}</h2>
-            {NAV.filter(([href]) => href !== "/").map(([href, key]) => (
-              <Link
-                key={href}
-                href={href}
-                className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
-              >
-                {t(`nav.${key}`)}
-              </Link>
-            ))}
+            {links
+              .filter(([href]) => href !== homePath)
+              .map(([href, key]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
+                >
+                  {t(`nav.${key}`)}
+                </Link>
+              ))}
           </nav>
           <div className="grid content-start gap-[6px]">
             <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footContact")}</h2>
