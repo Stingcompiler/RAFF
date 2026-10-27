@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/Toast";
 import { apiSend } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { money, timeOfDay } from "@/lib/format";
+import { waLink } from "@/lib/whatsapp";
 
 import { type OrderRow, type OrderStatus, STATUS_TONE } from "./labels";
 
@@ -20,8 +21,6 @@ const NEXT: Partial<Record<OrderStatus, OrderStatus>> = {
 };
 const ARROW_AR = "←";
 const ARROW_EN = "→";
-
-const waLink = (phone: string) => `https://wa.me/${phone.replace(/^0/, "249")}`;
 
 /** Raff Mobile › 5 · طلبات المتجر (موظف): one card per order with the next step one tap away. */
 export function PhoneOrders({ initial }: { initial: OrderRow[] }) {

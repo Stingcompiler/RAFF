@@ -17,5 +17,4 @@ export const productName = (
 /** Sudanese mobile numbers (the server checks again). */
 export const PHONE = /^(?:\+?249|0)?[19]\d{8}$/;
 
-export const waLink = (number: string, text = "") =>
-  `https://wa.me/${number.replace(/\D/g, "")}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+export { waLink } from "@/lib/whatsapp";

@@ -15,6 +15,7 @@ import { useToast } from "@/components/ui/Toast";
 import { apiSend } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { amount, money, timeOfDay } from "@/lib/format";
+import { waLink } from "@/lib/whatsapp";
 
 import { type OrderDetail, type OrderStatus, STATUS_TONE } from "./labels";
 
@@ -116,7 +117,7 @@ export function OrderDetailScreen({
     total,
     reason: order.reason || DASH,
   });
-  const waHref = `https://wa.me/${order.phone.replace(/^0/, "249")}?text=${encodeURIComponent(waText)}`;
+  const waHref = waLink(order.phone, waText);
   const columns: Column[] = [
     { header: t("hItem"), width: "minmax(0,1fr)" },
     { header: t("pub"), width: "110px", numeric: true },
