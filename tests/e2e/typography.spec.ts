@@ -24,7 +24,18 @@ const WORKSPACE = [
   "/shifts",
   "/stocktake",
 ];
-const PUBLIC = ["/", "/store", "/cart", "/checkout", "/about", "/contact", "/orders/track"];
+const PUBLIC = [
+  "/",
+  "/shop",
+  "/ar",
+  "/en",
+  "/store",
+  "/cart",
+  "/checkout",
+  "/about",
+  "/contact",
+  "/orders/track",
+];
 
 /** The font files this page loaded: name and bytes (woff2 only: the browser takes one format). */
 const fontFiles = (page: Page) =>

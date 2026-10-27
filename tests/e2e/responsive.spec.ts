@@ -21,7 +21,17 @@ const WORKSPACE = [
   "/orders",
   "/storefront/catalog",
 ];
-const PUBLIC = ["/store", "/cart", "/checkout", "/orders/track", "/about", "/contact"];
+const PUBLIC = [
+  "/store",
+  "/shop",
+  "/cart",
+  "/checkout",
+  "/orders/track",
+  "/about",
+  "/contact",
+  "/ar",
+  "/en",
+];
 
 /**
  * A text field's default width depends on the machine's fonts (Linux CI is wider than a Mac).

@@ -90,6 +90,8 @@ for (const variant of VARIANTS) {
       for (const [name, path] of PUBLIC) {
         test(name, async ({ page }) => shoot(page, `store-${name}`, path, v));
       }
+      // Raff's own product page lives under the locale, not behind the shop's root.
+      test("marketing", async ({ page }) => shoot(page, "marketing", `/${variant.locale}`, v));
     });
   }
 }
