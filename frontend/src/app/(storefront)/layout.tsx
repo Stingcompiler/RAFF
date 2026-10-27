@@ -8,6 +8,7 @@ import { StoreShell } from "@/features/store/StoreShell";
 import type { Store } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
 import { defaultLocale, isLocale } from "@/lib/i18n/config";
+import { shopHome } from "@/lib/root";
 import { getTheme } from "@/lib/theme/config";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +45,9 @@ export default async function StorefrontLayout({ children }: { children: ReactNo
   return (
     <RootDocument locale={isLocale(locale) ? locale : defaultLocale} theme={await getTheme()}>
       <ToastProvider dismissLabel={t("dismiss")}>
-        <StoreShell store={store}>{children}</StoreShell>
+        <StoreShell store={store} homePath={shopHome()}>
+          {children}
+        </StoreShell>
       </ToastProvider>
     </RootDocument>
   );

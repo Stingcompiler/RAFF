@@ -72,6 +72,7 @@ services:
     restart: unless-stopped
     environment:
       RAFF_API_ORIGIN: http://backend:8000
+      RAFF_ROOT: ${RAFF_ROOT:-store}
     depends_on:
       backend:
         condition: service_healthy

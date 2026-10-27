@@ -70,6 +70,11 @@ test.describe("public storefront", () => {
 
     await expect(page).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
     await expect(page.getByText("وصل طلبك إلى الصيدلية")).toBeVisible();
+    await expect(page.getByText("تتحدّث هذه الصفحة تلقائياً")).toBeVisible();
+    await expect(page.getByRole("link", { name: "تتبّع طلباً آخر" })).toHaveAttribute(
+      "href",
+      "/orders/track",
+    );
     const number = (await page.getByTestId("order-number").textContent())?.trim() ?? "";
     expect(number).toMatch(/^O-\d{4}$/);
     const orderUrl = page.url();
@@ -110,6 +115,11 @@ test.describe("orders in the workspace", () => {
     await rows.click();
     await expect(page).toHaveURL(/\/orders\/detail\/[0-9a-f-]{36}$/);
     await expect(page.getByTestId("wa-text")).toContainText("سلمى أحمد");
+    // The number the customer typed (0912345678) becomes a WhatsApp chat with the message ready.
+    await expect(page.getByRole("link", { name: /واتساب/ }).first()).toHaveAttribute(
+      "href",
+      /^https:\/\/wa\.me\/249912345678\?text=.+/,
+    );
     await page.getByRole("button", { name: "تأكيد الطلب" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "تأكيد" }).click();
     await expect(page.getByText("● مؤكد").first()).toBeVisible();

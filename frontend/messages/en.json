@@ -1254,7 +1254,9 @@
     "footPromise": "A pharmacist reviews every order before it is confirmed. You pay when you pick it up.",
     "footPages": "Pages",
     "footContact": "Contact",
-    "footLegal": "Legal"
+    "footLegal": "Legal",
+    "autoRefresh": "This page updates by itself when the order's status changes.",
+    "trackAnother": "Track another order"
   },
   "orders": {
     "title": "Orders",
@@ -1528,5 +1530,158 @@
     "weak": "Password is too weak or too common",
     "failed": "Could not change the password",
     "note": "Other devices signed in with this account will be signed out."
+  },
+  "marketing": {
+    "brand": "Raff",
+    "tag": "Pharmacy management system",
+    "nav": {
+      "features": "Features",
+      "tour": "Tour",
+      "how": "Get started",
+      "trust": "Security",
+      "faq": "FAQ",
+      "menu": "Menu",
+      "close": "Close",
+      "lang": "العربية",
+      "langHref": "/ar",
+      "label": "Navigation"
+    },
+    "cta": {
+      "open": "Open Raff",
+      "demo": "See the demo store",
+      "hint": "Sign in and start"
+    },
+    "hero": {
+      "title": "Run your whole pharmacy from one screen",
+      "lead": "Raff is pharmacy software: fast barcode selling, stock by batch and expiry, branches and a WhatsApp-order online shop.",
+      "shotAlt": "The Raff overview"
+    },
+    "features": {
+      "title": "Everything a pharmacy needs, in one place",
+      "items": [
+        {
+          "t": "Keyboard-fast selling",
+          "d": "Search by name or scan the barcode, type 5* for the quantity, finish the sale with Enter."
+        },
+        {
+          "t": "Stock by batch and expiry",
+          "d": "Every batch has its expiry date, selling starts from the nearest one, and you are warned before it runs out."
+        },
+        {
+          "t": "Purchasing and suppliers",
+          "d": "Receive supplier invoices, record payments and see each supplier's balance at any time."
+        },
+        {
+          "t": "Returns and quarantine",
+          "d": "Return against the original invoice and hold doubtful stock in quarantine until you decide."
+        },
+        {
+          "t": "Stocktake by camera",
+          "d": "Count from your phone by scanning barcodes, then approve the differences against the system."
+        },
+        {
+          "t": "Shifts and cash",
+          "d": "Open and close shifts and reconcile cash and bank for every counter."
+        },
+        {
+          "t": "Branches and transfers",
+          "d": "Send stock between branches and receive it; each branch keeps its own stock and balance."
+        },
+        {
+          "t": "An online shop with WhatsApp",
+          "d": "The customer sends an order, the pharmacist reviews and confirms it on WhatsApp, and pays on pickup."
+        }
+      ]
+    },
+    "tour": {
+      "title": "See the system",
+      "items": [
+        {
+          "t": "The overview",
+          "d": "What needs action today: expiring items, shortages, shifts and shop orders.",
+          "alt": "The overview screen"
+        },
+        {
+          "t": "Items and stock",
+          "d": "Items with their stock, nearest expiry and status, and batch details when you pick one.",
+          "alt": "The items and stock screen"
+        }
+      ]
+    },
+    "steps": {
+      "title": "How to start",
+      "items": [
+        {
+          "t": "Install it on your server",
+          "d": "One install command on a server in your pharmacy; your data stays with you."
+        },
+        {
+          "t": "Load your items",
+          "d": "Import your items from a CSV file with a preview of every row, then receive your first purchase invoice."
+        },
+        {
+          "t": "Start selling",
+          "d": "Register each device as a counter, open the shift and make the first sale."
+        }
+      ]
+    },
+    "trust": {
+      "title": "Your data stays with you, and every action is recorded",
+      "items": [
+        {
+          "t": "Runs on your server",
+          "d": "Your pharmacy's data stays on your own server."
+        },
+        {
+          "t": "Encrypted backups",
+          "d": "A copy every night and a restore test every week."
+        },
+        {
+          "t": "No silent edits",
+          "d": "A posted document is never edited; a mistake is fixed with a reversing document, so the trail stays whole."
+        },
+        {
+          "t": "Roles and audit",
+          "d": "A role for each employee (owner, pharmacist, cashier, accountant) and a log of who did what and when."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently asked",
+      "items": [
+        {
+          "q": "Does it work without the internet?",
+          "a": "It runs on your pharmacy's network from your own server, so selling does not need the internet. Working fully without the server is in development."
+        },
+        {
+          "q": "Does it support several branches?",
+          "a": "Yes: branches, counters and transfers between them, each branch with its own stock."
+        },
+        {
+          "q": "Can I import my current items?",
+          "a": "Yes, from a CSV file, with a preview of each row before it is applied."
+        },
+        {
+          "q": "Does the shop take online payment?",
+          "a": "No. The order is sent and the pharmacist confirms it; payment is on pickup at the pharmacy."
+        },
+        {
+          "q": "Which languages and currency?",
+          "a": "Arabic first and English too, in Sudanese pounds."
+        },
+        {
+          "q": "Where can I see the online shop?",
+          "a": "Use the “See the demo store” button; it holds sample data."
+        }
+      ]
+    },
+    "final": {
+      "title": "Ready to see Raff for yourself?",
+      "lead": "Sign in and try the screens you just read about."
+    },
+    "foot": {
+      "note": "Demo data is sample data.",
+      "tag": "Pharmacy management system"
+    }
   }
 }

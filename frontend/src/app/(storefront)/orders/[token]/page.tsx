@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { CheckCircleIcon } from "@/components/ui/icons";
+import { OrderAutoRefresh } from "@/features/store/OrderAutoRefresh";
 import { type PublicOrder, waLink } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
 import { cn } from "@/lib/cn";
@@ -19,12 +21,22 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
   const ar = (await getLocale()) === "ar";
   const order = await serverGet<PublicOrder>(`/public/orders/${encodeURIComponent(token)}/`);
   if (!order) notFound();
-  const reached = FLOW.indexOf(order.status as (typeof FLOW)[number]);
-  const side = order.status === "needs_contact" || order.status === "cancelled";
+  const reached =
+    order.status === "out_for_delivery"
+      ? FLOW.indexOf("ready")
+      : FLOW.indexOf(order.status as (typeof FLOW)[number]);
+  const final = order.status === "completed" || order.status === "cancelled";
+  const side = ["needs_contact", "cancelled", "out_for_delivery"].includes(order.status);
   const sideText = [
     t(`status.${order.status}`),
-    order.status === "cancelled" ? t("statusNote.cancelled") : t("statusNote.needs_contact"),
-  ].join(" — ");
+    order.status === "cancelled"
+      ? t("statusNote.cancelled")
+      : order.status === "needs_contact"
+        ? t("statusNote.needs_contact")
+        : "",
+  ]
+    .filter(Boolean)
+    .join(" — ");
   return (
     <section className="mx-auto grid max-w-[720px] gap-[20px] px-[20px] pt-[40px] pb-[56px]">
       <div className="flex items-center gap-[12px] rounded-card bg-success-bg px-[16px] py-[14px] font-semibold text-success-text">
@@ -48,7 +60,9 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
             "rounded-control px-[14px] py-[12px] font-medium",
             order.status === "cancelled"
               ? "bg-danger-bg text-danger-text"
-              : "bg-warning-bg text-warning-text",
+              : order.status === "out_for_delivery"
+                ? "bg-info-bg text-info-text"
+                : "bg-warning-bg text-warning-text",
           )}
         >
           {sideText}
@@ -118,6 +132,7 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
           </span>
         </div>
       </div>
+      <OrderAutoRefresh active={!final} />
       {order.whatsapp && (
         <a
           href={waLink(order.whatsapp, order.number)}
@@ -126,6 +141,12 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
           {t("openWa")}
         </a>
       )}
+      <Link
+        href="/orders/track"
+        className="inline-flex min-h-[44px] items-center justify-center font-medium text-brand underline underline-offset-4"
+      >
+        {t("trackAnother")}
+      </Link>
     </section>
   );
 }

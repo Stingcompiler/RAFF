@@ -7,12 +7,16 @@ test.describe("app shell", () => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("lang", "ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("رَفّ");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "أدِر صيدليتك كلها من شاشة واحدة",
+    );
 
     await page.goto("/en");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Raff");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Run your whole pharmacy from one screen",
+    );
   });
 
   test("unknown locale is a 404", async ({ page }) => {
