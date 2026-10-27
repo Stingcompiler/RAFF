@@ -1,5 +1,6 @@
 "use client";
 
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -20,6 +21,9 @@ type Placed = { number: string; token: string; status: string };
 type Phase = "idle" | "sending" | "verifying" | "failed";
 const TIMEOUT_MS = 15000;
 const TIMES = "×";
+const MIN_ADDRESS = 3;
+const LOCATE_MS = 10000;
+const DECIMALS = 6;
 
 /** Send the order (§4.5): idle, sending (disabled), timeout → verify by the fixed key, failure keeps data. */
 export function CheckoutScreen() {
@@ -32,6 +36,9 @@ export function CheckoutScreen() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
+  const [address, setAddress] = useState("");
+  const [position, setPosition] = useState<{ lat: string; lng: string } | null>(null);
+  const [locating, setLocating] = useState<"idle" | "busy" | "denied">("idle");
   const [agree, setAgree] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +52,8 @@ export function CheckoutScreen() {
     rows.map(({ line, product }) => (product?.price ? multiply(product.price, line.qty) : "0")),
   );
   const phoneOk = PHONE.test(phone.replace(/\s/g, ""));
-  const valid = name.trim().length > 1 && phoneOk && agree && rows.length > 0;
+  const addressOk = address.trim().length >= MIN_ADDRESS;
+  const valid = name.trim().length > 1 && phoneOk && addressOk && agree && rows.length > 0;
   const busy = phase === "sending" || phase === "verifying";
 
   const done = (placed: Placed) => {
@@ -62,6 +70,22 @@ export function CheckoutScreen() {
     }
   };
 
+  const locate = () => {
+    if (!("geolocation" in navigator)) return setLocating("denied");
+    setLocating("busy");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setPosition({
+          lat: pos.coords.latitude.toFixed(DECIMALS),
+          lng: pos.coords.longitude.toFixed(DECIMALS),
+        });
+        setLocating("idle");
+      },
+      () => setLocating("denied"),
+      { enableHighAccuracy: true, timeout: LOCATE_MS, maximumAge: 60000 },
+    );
+  };
+
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     if (!valid || busy) return;
@@ -76,6 +100,9 @@ export function CheckoutScreen() {
         name,
         phone,
         note,
+        address,
+        latitude: position?.lat ?? null,
+        longitude: position?.lng ?? null,
         agree,
         lines: rows.map(({ line }) => ({ slug: line.slug, quantity: line.qty })),
       },
@@ -133,6 +160,55 @@ export function CheckoutScreen() {
             <span className="text-label font-medium text-danger-text">{t("phoneErr")}</span>
           )}
         </label>
+        <div className="grid gap-[6px]">
+          <label className="grid gap-[4px] text-body font-semibold text-text-muted">
+            {t("locL")}
+            <textarea
+              rows={2}
+              value={address}
+              maxLength={300}
+              autoComplete="street-address"
+              placeholder={t("locPh")}
+              aria-invalid={address !== "" && !addressOk}
+              onChange={(e) => setAddress(e.target.value)}
+              className={cn(
+                "resize-y rounded-control border bg-surface px-[14px] py-[12px] text-lead text-text outline-none focus:border-brand",
+                address !== "" && !addressOk ? "border-danger-solid" : "border-border-strong",
+              )}
+            />
+            <span className="text-label font-normal">{t("locHelp")}</span>
+            {address !== "" && !addressOk && (
+              <span className="text-label font-medium text-danger-text">{t("locErr")}</span>
+            )}
+          </label>
+          {position ? (
+            <div className="flex min-h-[44px] flex-wrap items-center justify-between gap-[8px] rounded-control bg-success-bg px-[14px] py-[8px] font-medium text-success-text">
+              <span>{t("locOk")}</span>
+              <button
+                type="button"
+                onClick={() => setPosition(null)}
+                className="min-h-[44px] cursor-pointer border-0 bg-transparent px-[8px] font-medium text-success-text underline"
+              >
+                {t("locClear")}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={locate}
+              disabled={locating === "busy"}
+              className="flex min-h-[44px] cursor-pointer items-center justify-center gap-[8px] rounded-control border border-border-strong bg-surface px-[14px] font-medium text-text disabled:cursor-progress"
+            >
+              {locating === "busy" ? <Spinner /> : <MapPin size={18} aria-hidden="true" />}
+              {locating === "busy" ? t("locBusy") : t("locUse")}
+            </button>
+          )}
+          {locating === "denied" && !position && (
+            <span role="alert" className="text-label font-medium text-danger-text">
+              {t("locDenied")}
+            </span>
+          )}
+        </div>
         <div className="grid gap-[6px]">
           <div className="text-body font-semibold text-text-muted">{t("pickupL")}</div>
           <div className="flex items-center gap-[12px] rounded-card border-2 border-brand bg-surface p-[14px]">

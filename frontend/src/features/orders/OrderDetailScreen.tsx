@@ -281,6 +281,21 @@ export function OrderDetailScreen({
               </div>
             </Panel>
           )}
+          <Panel title={t("addressL")}>
+            <div className="grid gap-[8px] p-[14px]">
+              <p className="m-0 whitespace-pre-wrap">{order.address || t("noAddress")}</p>
+              {order.latitude && order.longitude && (
+                <a
+                  href={`https://www.google.com/maps?q=${order.latitude},${order.longitude}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-[44px] items-center font-semibold text-brand underline underline-offset-4"
+                >
+                  {t("openMap")}
+                </a>
+              )}
+            </div>
+          </Panel>
           {order.note && (
             <Panel title={t("customerNote")}>
               <p className="m-0 p-[14px]">{order.note}</p>

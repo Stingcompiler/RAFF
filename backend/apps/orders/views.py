@@ -47,6 +47,8 @@ from apps.orders.services import inquiries, workflow
 from apps.orders.services.placing import (
     LineRequest,
     OrderError,
+    Place,
+    check_place,
     normalize_phone,
     order_payload,
     place_order,
@@ -82,9 +84,15 @@ class PlaceOrderView(_Public):
         v = data.validated_data
         key = idempotency_key(request)
         lines = [LineRequest(li["slug"], li["quantity"]) for li in v["lines"]]
+        place = Place(v["address"], v["latitude"], v["longitude"])
         try:
             result = place_order(
-                name=v["name"], phone=v["phone"], note=v["note"], lines=lines, idempotency_key=key
+                name=v["name"],
+                phone=v["phone"],
+                note=v["note"],
+                lines=lines,
+                place=place,
+                idempotency_key=key,
             )
         except KeyRace:
             try:
@@ -93,7 +101,11 @@ class PlaceOrderView(_Public):
                         "place_order",
                         key,
                         order_payload(
-                            v["name"], normalize_phone(v["phone"]) or "", v["note"], lines
+                            v["name"],
+                            normalize_phone(v["phone"]) or "",
+                            v["note"],
+                            lines,
+                            check_place(place),
                         ),
                     )
             except KeyConflict:
@@ -211,6 +223,7 @@ class StaffOrderListView(APIView):
                 "created_at": o.created_at,
                 "customer_name": o.customer_name,
                 "phone": o.phone,
+                "address": o.address,
                 "lines_count": o.n,
                 "estimated_total": o.estimated_total,
                 "status": o.status,

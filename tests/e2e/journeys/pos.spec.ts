@@ -173,6 +173,7 @@ test.describe("point of sale", () => {
         name: "زبون المتجر",
         phone: "0911111111",
         note: "",
+        address: "الخرطوم — الرياض",
         agree: true,
         lines: [{ slug: "par-500", quantity: 2 }],
       },

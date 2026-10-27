@@ -29,6 +29,10 @@ class Order(OrgScopedModel):
     customer_name = models.CharField(max_length=120)
     phone = models.CharField(max_length=20)
     note = models.CharField(max_length=500, blank=True)
+    # Where the customer is: a described place (required) and, if shared, the device's position.
+    address = models.CharField(max_length=300, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
     estimated_total = MoneyField(default=0)
     assigned_to = models.ForeignKey(

@@ -46,11 +46,43 @@ def normalize_phone(raw: str) -> str | None:
     return f"0{match.group(1)}" if match else None
 
 
-def order_payload(name: str, phone: str, note: str, lines: list[LineRequest]) -> dict[str, Any]:
+@dataclass(frozen=True)
+class Place:
+    """Where the customer is: a described place, and the device position when shared."""
+
+    address: str
+    latitude: Decimal | None = None
+    longitude: Decimal | None = None
+
+
+def check_place(place: Place) -> Place:
+    address = " ".join(place.address.split())
+    if len(address) < 3:
+        raise OrderError("invalid_address")
+    if (place.latitude is None) != (place.longitude is None):
+        raise OrderError("invalid_position")
+    if (
+        place.latitude is not None
+        and place.longitude is not None
+        and not (
+            Decimal(-90) <= place.latitude <= Decimal(90)
+            and Decimal(-180) <= place.longitude <= Decimal(180)
+        )
+    ):
+        raise OrderError("invalid_position")
+    return Place(address, place.latitude, place.longitude)
+
+
+def order_payload(
+    name: str, phone: str, note: str, lines: list[LineRequest], place: Place
+) -> dict[str, Any]:
     return {
         "name": name.strip(),
         "phone": phone,
         "note": note.strip(),
+        "address": " ".join(place.address.split()),
+        "latitude": str(place.latitude) if place.latitude is not None else None,
+        "longitude": str(place.longitude) if place.longitude is not None else None,
         "lines": sorted([li.slug, li.quantity] for li in lines),
     }
 
@@ -61,6 +93,7 @@ def _place(
     phone: str,
     note: str,
     lines: list[LineRequest],
+    place: Place,
     key: str,
 ) -> dict[str, Any]:
     if not settings.enabled or settings.branch_id is None:
@@ -92,6 +125,9 @@ def _place(
         customer_name=name.strip(),
         phone=phone,
         note=note.strip()[:500],
+        address=place.address,
+        latitude=place.latitude,
+        longitude=place.longitude,
         idempotency_key=key,
     )
     total = Decimal(0)
@@ -110,7 +146,7 @@ def _place(
     OrderEvent.objects.create(order=order, status=Order.Status.NEW)
     order_placed(
         order.pk,
-        f"{order.number} · {order.customer_name} · {phone} · {len(lines)}",
+        f"{order.number} · {order.customer_name} · {phone} · {place.address} · {len(lines)}",
         settings.telegram_chat_id,
     )
     return {"number": order.number, "token": order.token, "status": order.status}
@@ -118,17 +154,24 @@ def _place(
 
 @transaction.atomic
 def place_order(
-    *, name: str, phone: str, note: str, lines: list[LineRequest], idempotency_key: str | None
+    *,
+    name: str,
+    phone: str,
+    note: str,
+    lines: list[LineRequest],
+    place: Place,
+    idempotency_key: str | None,
 ) -> dict[str, Any]:
     normalized = normalize_phone(phone)
     if normalized is None:
         raise OrderError("invalid_phone")
     if len(name.strip()) < 2:
         raise OrderError("invalid_name")
+    place = check_place(place)
     settings = StorefrontSettings.objects.first() or StorefrontSettings()
     return run_once(
         "place_order",
         idempotency_key,
-        order_payload(name, normalized, note, lines),
-        lambda: _place(settings, name, normalized, note, lines, idempotency_key or ""),
+        order_payload(name, normalized, note, lines, place),
+        lambda: _place(settings, name, normalized, note, lines, place, idempotency_key or ""),
     )
