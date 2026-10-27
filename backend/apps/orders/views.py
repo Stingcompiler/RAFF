@@ -32,6 +32,7 @@ from apps.orders.serializers import (
     InquiryStatusSerializer,
     NoteSerializer,
     OrdersSummarySerializer,
+    PaymentActionSerializer,
     PlacedSerializer,
     PlaceOrderSerializer,
     PosOrderSerializer,
@@ -39,16 +40,19 @@ from apps.orders.serializers import (
     SendInquirySerializer,
     StaffOrderRowSerializer,
     StaffOrderSerializer,
+    SubmitPaymentSerializer,
     TokenSerializer,
     TrackSerializer,
     TransitionSerializer,
 )
-from apps.orders.services import inquiries, workflow
+from apps.orders.services import inquiries, payments, workflow
 from apps.orders.services.placing import (
     LineRequest,
     OrderError,
     Place,
+    Terms,
     check_place,
+    check_terms,
     normalize_phone,
     order_payload,
     place_order,
@@ -85,6 +89,9 @@ class PlaceOrderView(_Public):
         key = idempotency_key(request)
         lines = [LineRequest(li["slug"], li["quantity"]) for li in v["lines"]]
         place = Place(v["address"], v["latitude"], v["longitude"])
+        terms = Terms(
+            v["fulfillment"], v["payment_method"], v["payment_reference"], v["paid_amount"]
+        )
         try:
             result = place_order(
                 name=v["name"],
@@ -92,6 +99,7 @@ class PlaceOrderView(_Public):
                 note=v["note"],
                 lines=lines,
                 place=place,
+                terms=terms,
                 idempotency_key=key,
             )
         except KeyRace:
@@ -106,6 +114,7 @@ class PlaceOrderView(_Public):
                             v["note"],
                             lines,
                             check_place(place),
+                            check_terms(terms),
                         ),
                     )
             except KeyConflict:
@@ -212,9 +221,9 @@ class StaffOrderListView(APIView):
                 start -= dt.timedelta(days=6)
             qs = qs.filter(created_at__gte=start)
         unread = set(
-            Notification.objects.filter(kind="order_new", read_at__isnull=True).values_list(
-                "object_id", flat=True
-            )
+            Notification.objects.filter(
+                kind__in=["order_new", "order_payment"], read_at__isnull=True
+            ).values_list("object_id", flat=True)
         )
         rows = [
             {
@@ -224,6 +233,9 @@ class StaffOrderListView(APIView):
                 "customer_name": o.customer_name,
                 "phone": o.phone,
                 "address": o.address,
+                "fulfillment": o.fulfillment,
+                "payment_method": o.payment_method,
+                "payment_status": o.payment_status,
                 "lines_count": o.n,
                 "estimated_total": o.estimated_total,
                 "status": o.status,
@@ -358,6 +370,12 @@ class OrderToPosView(APIView):
                         "id": order.pk,
                         "number": order.number,
                         "customer_name": order.customer_name,
+                        "payment_status": order.payment_status,
+                        "prepaid": (
+                            {"reference": order.payment_reference, "amount": order.paid_amount}
+                            if order.payment_status == Order.PaymentStatus.VERIFIED
+                            else None
+                        ),
                     },
                     "lines": [
                         {
@@ -483,3 +501,65 @@ class InquiryStatusView(APIView):
             mark_read(inquiry.pk)
         inquiry.unread = False
         return Response(InquiryRowSerializer(inquiry).data)
+
+
+_PAYMENT_ERRORS = {"reference_used": status.HTTP_409_CONFLICT}
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class SubmitPaymentView(_Public):
+    """The customer sends the bank transfer's reference and amount for their order."""
+
+    throttle_scope = "orders"
+
+    @extend_schema(
+        operation_id="public_order_payment",
+        request=SubmitPaymentSerializer,
+        responses=PublicOrderSerializer,
+    )
+    def post(self, request: Request, token: str) -> Response:
+        data = SubmitPaymentSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+        if order is None:
+            raise NotFound
+        try:
+            order = payments.submit_payment(
+                order.pk, data.validated_data["reference"], data.validated_data["paid_amount"]
+            )
+        except payments.PaymentError as exc:
+            code = _PAYMENT_ERRORS.get(exc.code, status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": exc.code}, status=code)
+        return Response(PublicOrderSerializer(public_order(order)).data)
+
+
+class PaymentActionView(APIView):
+    """Staff check the transfer against the bank: verify, reject (with a reason), or record the
+    refund. Nothing here posts to the ledger."""
+
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(
+        operation_id="order_payment_action",
+        request=PaymentActionSerializer,
+        responses=StaffOrderSerializer,
+    )
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
+        data = PaymentActionSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        order = _mine(request, pk)
+        assert isinstance(request.user, User)
+        action = data.validated_data["action"]
+        note = data.validated_data["note"]
+        try:
+            if action == "verify":
+                payments.verify(order.pk, request.user)
+            elif action == "reject":
+                payments.reject(order.pk, request.user, note)
+            else:
+                payments.mark_refunded(order.pk, request.user, note)
+        except payments.PaymentError as exc:
+            code = _PAYMENT_ERRORS.get(exc.code, status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": exc.code}, status=code)
+        order.refresh_from_db()
+        return Response(StaffOrderSerializer(staff_order(order)).data)

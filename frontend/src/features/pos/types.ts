@@ -30,6 +30,8 @@ export type FromOrder = {
   id: string;
   number: string;
   customer_name: string;
+  /** A verified bank transfer that already paid (part of) this order. */
+  prepaid?: { reference: string; amount: string } | null;
   lines: { item: PosItem; unit_id: string; quantity: number }[];
 };
 
@@ -75,6 +77,8 @@ const ERRORS = [
   "discount_not_allowed",
   "discount_too_high",
   "no_price",
+  "prepaid_mismatch",
+  "payment_unverified",
   "failed",
 ] as const;
 export type ErrorKey = (typeof ERRORS)[number];

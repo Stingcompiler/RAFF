@@ -22,6 +22,23 @@ class Order(OrgScopedModel):
         COMPLETED = "completed", "Completed"
         CANCELLED = "cancelled", "Cancelled"
 
+    class Fulfillment(models.TextChoices):
+        PICKUP = "pickup", "Pickup at the pharmacy"
+        DELIVERY = "delivery", "Delivery to the customer's home"
+
+    class PaymentMethod(models.TextChoices):
+        COD = "cod", "Pay at pickup"
+        BANK = "bank", "Bank transfer before pickup"
+
+    class PaymentStatus(models.TextChoices):
+        NONE = "none", "Nothing to verify"
+        AWAITING_PROOF = "awaiting_proof", "Awaiting the transfer details"
+        SUBMITTED = "submitted", "Awaiting verification"
+        VERIFIED = "verified", "Verified"
+        REJECTED = "rejected", "Rejected"
+        REFUND_DUE = "refund_due", "Refund due"
+        REFUNDED = "refunded", "Refunded"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     number = models.CharField(max_length=20)
     token = models.CharField(max_length=64)
@@ -34,6 +51,17 @@ class Order(OrgScopedModel):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
+    fulfillment = models.CharField(max_length=10, choices=Fulfillment.choices, default="pickup")
+    payment_method = models.CharField(max_length=5, choices=PaymentMethod.choices, default="cod")
+    payment_status = models.CharField(max_length=14, choices=PaymentStatus.choices, default="none")
+    paid_amount = MoneyField(null=True, blank=True)
+    payment_reference = models.CharField(max_length=60, blank=True)
+    payment_note = models.CharField(max_length=300, blank=True)
+    payment_submitted_at = models.DateTimeField(null=True, blank=True)
+    payment_verified_at = models.DateTimeField(null=True, blank=True)
+    payment_verified_by = models.ForeignKey(
+        "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
+    )
     estimated_total = MoneyField(default=0)
     assigned_to = models.ForeignKey(
         "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
@@ -49,6 +77,14 @@ class Order(OrgScopedModel):
         constraints = [
             models.UniqueConstraint(fields=["organization", "number"], name="order_number"),
             models.UniqueConstraint(fields=["organization", "token"], name="order_token"),
+            # One bank transfer pays one order: a reference already submitted or verified
+            # cannot be used again (a rejected or not-yet-sent one can).
+            models.UniqueConstraint(
+                fields=["organization", "payment_reference"],
+                condition=~models.Q(payment_reference="")
+                & models.Q(payment_status__in=["submitted", "verified", "refund_due", "refunded"]),
+                name="order_payment_reference",
+            ),
             models.UniqueConstraint(
                 fields=["organization", "idempotency_key"], name="order_idempotency_key"
             ),
@@ -57,6 +93,34 @@ class Order(OrgScopedModel):
 
     def __str__(self) -> str:
         return self.number
+
+
+class OrderPaymentEvent(OrgScopedModel):
+    """The payment's timeline: transfer details sent, verified, rejected, refund."""
+
+    class Kind(models.TextChoices):
+        SUBMITTED = "submitted", "Transfer details sent"
+        VERIFIED = "verified", "Verified"
+        REJECTED = "rejected", "Rejected"
+        REFUND_DUE = "refund_due", "Refund due"
+        REFUNDED = "refunded", "Refunded"
+        OVERRIDE = "override", "Preparing started before verification"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="payment_events")
+    kind = models.CharField(max_length=12, choices=Kind.choices)
+    actor = models.ForeignKey(
+        "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
+    )
+    amount = MoneyField(null=True, blank=True)
+    note = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.order_id}:{self.kind}"
 
 
 class OrderLine(OrgScopedModel):

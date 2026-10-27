@@ -124,10 +124,14 @@ class StorefrontSettingsView(APIView):
         responses=SettingsSerializer,
     )
     def put(self, request: Request) -> Response:
-        data = SettingsSerializer(storefront_settings(), data=request.data)
+        current = storefront_settings()
+        data = SettingsSerializer(current, data=request.data)
         data.is_valid(raise_exception=True)
         if data.validated_data.get("enabled") and not data.validated_data.get("branch"):
             raise ValidationError({"detail": "branch_required"})
+        accounts = data.validated_data.get("bank_accounts", current.bank_accounts)
+        if data.validated_data.get("prepay_enabled") and not accounts.strip():
+            raise ValidationError({"detail": "bank_accounts_required"})
         data.save()
         return Response(data.data)
 

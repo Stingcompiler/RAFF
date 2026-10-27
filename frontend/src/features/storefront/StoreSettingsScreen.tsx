@@ -54,7 +54,11 @@ export function StoreSettingsScreen({
       const code = typeof res.error?.detail === "string" ? res.error.detail : "";
       toast.push(
         "danger",
-        code === "branch_required" ? t("errors.branch_required") : t("errors.failed"),
+        code === "branch_required"
+          ? t("errors.branch_required")
+          : code === "bank_accounts_required"
+            ? t("errors.bank_accounts_required")
+            : t("errors.failed"),
       );
     }
   };
@@ -78,6 +82,33 @@ export function StoreSettingsScreen({
         onChange={(e) => set(key, e.target.value)}
       />
     </label>
+  );
+
+  const toggle = (key: "prepay_enabled" | "delivery_enabled", label: string, hint: string) => (
+    <div className="flex items-center justify-between gap-[12px]">
+      <div>
+        <div className="font-medium">{label}</div>
+        <div className="text-label text-text-muted">{hint}</div>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={Boolean(s[key])}
+        aria-label={label}
+        onClick={() => set(key, !s[key])}
+        className={cn(
+          "relative h-[24px] w-[42px] flex-none cursor-pointer rounded-full border-0 p-0",
+          s[key] ? "bg-brand" : "bg-border-strong",
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-[3px] size-[18px] rounded-full bg-surface transition-[inset-inline-start] duration-(--motion-feedback)",
+            s[key] ? "start-[21px]" : "start-[3px]",
+          )}
+        />
+      </button>
+    </div>
   );
 
   return (
@@ -158,6 +189,34 @@ export function StoreSettingsScreen({
               {text("whatsapp", t("wa"), true)}
               {long("about_ar", t("aboutAr"))}
               {long("about_en", t("aboutEn"), true)}
+            </div>
+          </Panel>
+          <Panel title={t("payT")}>
+            <div className="grid gap-[16px] p-[20px]">
+              {toggle("prepay_enabled", t("prepay"), t("prepayD"))}
+              <label className={LABEL}>
+                {t("banks")}
+                <Textarea
+                  rows={4}
+                  value={s.bank_accounts ?? ""}
+                  placeholder={t("banksPh")}
+                  onChange={(e) => set("bank_accounts", e.target.value)}
+                />
+              </label>
+              <label className={LABEL}>
+                {t("hold")}
+                <TextInput
+                  className="num"
+                  dir="ltr"
+                  type="number"
+                  min={1}
+                  max={168}
+                  value={s.payment_hold_hours ?? 24}
+                  onChange={(e) => set("payment_hold_hours", Number(e.target.value))}
+                />
+                <span className="text-label font-normal text-text-muted">{t("holdD")}</span>
+              </label>
+              {toggle("delivery_enabled", t("delivery"), t("deliveryD"))}
             </div>
           </Panel>
           <Panel title={t("limits")}>

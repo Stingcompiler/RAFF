@@ -24,6 +24,10 @@ class PublicStoreSerializer(serializers.Serializer[Any]):
     whatsapp = serializers.CharField()
     about_ar = serializers.CharField()
     about_en = serializers.CharField()
+    prepay_enabled = serializers.BooleanField()
+    bank_accounts = serializers.CharField()
+    payment_hold_hours = serializers.IntegerField()
+    delivery_enabled = serializers.BooleanField()
 
 
 class PublicCategorySerializer(serializers.Serializer[Any]):
@@ -77,7 +81,16 @@ class SettingsSerializer(serializers.ModelSerializer[StorefrontSettings]):
             "orders_per_hour",
             "blocked_phones",
             "telegram_chat_id",
+            "prepay_enabled",
+            "bank_accounts",
+            "payment_hold_hours",
+            "delivery_enabled",
         ]
+
+    def validate_payment_hold_hours(self, value: int) -> int:
+        if not 1 <= value <= 168:
+            raise serializers.ValidationError("hold_hours_range")
+        return value
 
     def validate_brand_color(self, value: str) -> str:
         if not re.fullmatch(r"#[0-9A-Fa-f]{6}", value):

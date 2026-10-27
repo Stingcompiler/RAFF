@@ -487,6 +487,7 @@ export function PosScreen(props: PosScreenProps) {
           error={payError}
           lines={cart.lines.map(toLineIn)}
           customer={customer}
+          prepaid={order?.prepaid ?? null}
           onClose={() => {
             setDialog(null);
             focusSearch();

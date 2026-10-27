@@ -605,7 +605,9 @@
       "discount_not_allowed": "You may not give discounts",
       "discount_too_high": "Discount above the allowed maximum",
       "no_price": "This item has no price",
-      "failed": "Approval failed"
+      "failed": "Approval failed",
+      "prepaid_mismatch": "The prepaid transfer does not match the payment",
+      "payment_unverified": "The transfer is awaiting verification on the order screen"
     },
     "status": {
       "good": "Valid",
@@ -624,7 +626,12 @@
     "fromOrder": "■ Order {number} — {name} — reserved",
     "locked": "Batches locked",
     "reserved": "({count} reserved)",
-    "orderLine": "From the order"
+    "orderLine": "From the order",
+    "prepaidT": "Prepaid by a verified bank transfer",
+    "prepaidRef": "Reference",
+    "prepaidAmount": "Amount",
+    "prepaidRest": "Rest in cash:",
+    "prepaidOver": "The transfer exceeds the sale; the difference is recorded as a refund due:"
   },
   "returns": {
     "title": "Returns & quarantine",
@@ -1299,7 +1306,48 @@
     "locBusy": "Finding your location…",
     "locOk": "✓ Your current position is added",
     "locClear": "Remove",
-    "locDenied": "✕ Could not get your position. Type your address instead."
+    "locDenied": "✕ Could not get your position. Type your address instead.",
+    "pickupD": "You collect your order at the pharmacy",
+    "homeOpt": "Delivery to my home",
+    "homeD": "The pharmacy agrees delivery and its fee with you when it confirms the order",
+    "homeRx": "Not available when the order has a prescription item or an item without a price",
+    "payL": "Payment",
+    "cod": "Pay at pickup",
+    "codD": "You pay when you collect your order",
+    "bankOpt": "Bank transfer before pickup",
+    "bankD": "You transfer the amount, then enter the transaction number",
+    "bankRx": "Not available when the order has a prescription item or an item without a price",
+    "bankAccounts": "Transfer to",
+    "payNow": "I have transferred",
+    "payLater": "I will transfer after you confirm",
+    "refL": "Bank transaction number",
+    "refPh": "e.g. TX123456",
+    "refErr": "✕ Enter the transaction number (at least 4 characters)",
+    "amountL": "Amount transferred",
+    "payHint": "The pharmacy checks the transfer in its account before preparing, and confirms the final amount after reviewing the order.",
+    "refUsed": "✕ This transaction number is already used for another order",
+    "optionGone": "✕ This option is no longer available. Reload the page.",
+    "fulfillment": {
+      "pickup": "Pickup at the pharmacy",
+      "delivery": "Delivery to my home"
+    },
+    "paymentMethod": {
+      "cod": "Pay at pickup",
+      "bank": "Bank transfer before pickup"
+    },
+    "payState": {
+      "none": "",
+      "awaiting_proof": "Waiting for your transfer details",
+      "submitted": "Your transfer details arrived and are being checked",
+      "verified": "✓ Your transfer is verified",
+      "rejected": "✕ The transfer was not accepted, send the correct details",
+      "refund_due": "The pharmacy will return your money",
+      "refunded": "✓ Your money was returned"
+    },
+    "sendTransfer": "Send the transfer details",
+    "sendTransferBtn": "Send transfer details",
+    "rejectedB": "Reason: {note}",
+    "failPay": "✕ The transfer details were not sent. Try again."
   },
   "orders": {
     "title": "Orders",
@@ -1380,7 +1428,11 @@
       "reason_required": "Write the reason",
       "consent_required": "Record the customer's consent",
       "not_editable": "Cannot edit in this status",
-      "failed": "Could not save"
+      "failed": "Could not save",
+      "payment_not_verified": "The transfer is not verified; write a reason to start preparing",
+      "nothing_to_verify": "No transfer is awaiting verification",
+      "no_refund_due": "No refund is due",
+      "reference_used": "This transaction number is used for another order"
     },
     "toPos": "Turn into an invoice at the POS",
     "inq": {
@@ -1415,7 +1467,44 @@
     },
     "addressL": "Location",
     "openMap": "Open map",
-    "noAddress": "No location recorded"
+    "noAddress": "No location recorded",
+    "payT": "Handover & payment",
+    "fulfillment": {
+      "pickup": "Pickup at the pharmacy",
+      "delivery": "Delivery to the customer's home"
+    },
+    "paymentMethod": {
+      "cod": "Pay at pickup",
+      "bank": "Bank transfer before pickup"
+    },
+    "payState": {
+      "none": "—",
+      "awaiting_proof": "Awaiting transfer details",
+      "submitted": "Awaiting verification",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "refund_due": "Refund due",
+      "refunded": "Refunded"
+    },
+    "payRef": "Transaction number",
+    "payAmount": "Amount transferred",
+    "payTotal": "Order total (estimate)",
+    "payVerify": "I checked the transfer",
+    "payReject": "Reject the transfer",
+    "payRefunded": "I recorded the refund",
+    "payRejectT": "Reject the transfer",
+    "payRejectL": "Reason (the customer sees it)",
+    "payRefundedT": "Record the refund",
+    "payRefundedL": "Reference of the refund transfer, or a note",
+    "payEvent": {
+      "submitted": "Customer sent the transfer details",
+      "verified": "Transfer verified",
+      "rejected": "Transfer rejected",
+      "refund_due": "Refund became due",
+      "refunded": "Refund recorded",
+      "override": "Preparing started before verification"
+    },
+    "unverifiedWarn": "The transfer is not verified yet. Start preparing only if you trust the payment, and write the reason to keep it on record."
   },
   "storeAdmin": {
     "catT": "Published catalog",
@@ -1475,11 +1564,21 @@
       "image_type": "Image must be JPG, PNG or WebP",
       "image_too_large": "Image is larger than 2MB",
       "branch_required": "Choose the pickup branch before enabling",
-      "failed": "Could not save"
+      "failed": "Could not save",
+      "bank_accounts_required": "Add a bank account before turning on prepayment"
     },
     "chip": "Storefront: {state} · {count} new orders",
     "on": "on",
-    "off": "off"
+    "off": "off",
+    "payT": "Payment & handover",
+    "prepay": "Allow prepaying by bank transfer",
+    "prepayD": "Shows the “Bank transfer before pickup” option when sending an order (not for prescription items).",
+    "banks": "Accounts to pay into (shown to the customer)",
+    "banksPh": "Bank — account number — account holder",
+    "hold": "Time to wait for the transfer (hours)",
+    "holdD": "After this, unpaid orders are reviewed by hand and their holds released; there is no automatic release yet.",
+    "delivery": "Allow home delivery",
+    "deliveryD": "Shows the “To my home” option; assigning a courier comes in a later work order (not for prescription items)."
   },
   "phone": {
     "nav": {

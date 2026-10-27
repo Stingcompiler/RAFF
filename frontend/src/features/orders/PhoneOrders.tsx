@@ -26,6 +26,7 @@ const ARROW_EN = "→";
 /** Raff Mobile › 5 · طلبات المتجر (موظف): one card per order with the next step one tap away. */
 export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
   const t = useTranslations("phone.orders");
+  const tOrders = useTranslations("orders");
   const ar = useLocale() === "ar";
   const toast = useToast();
   const cur = (v: string) => money(v, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
@@ -87,6 +88,12 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                   {TONE_SYMBOL[tone]} {t(`status.${order.status}`)}
                 </span>
               </div>
+              {order.payment_method === "bank" && (
+                <div className="flex flex-wrap gap-x-[10px] text-label font-medium text-info-text">
+                  <span>{tOrders("paymentMethod.bank")}</span>
+                  <span>{tOrders(`payState.${order.payment_status}`)}</span>
+                </div>
+              )}
               {order.address && (
                 <div className="truncate text-label text-text-muted">{order.address}</div>
               )}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 
-import { Badge } from "@/components/ui/Badge";
+import { Badge, type Tone } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Textarea } from "@/components/ui/Field";
@@ -29,7 +29,21 @@ const ERRORS = [
   "reason_required",
   "consent_required",
   "not_editable",
+  "payment_not_verified",
+  "nothing_to_verify",
+  "no_refund_due",
+  "reference_used",
 ] as const;
+const PAY_TONE: Record<OrderDetail["payment_status"], Tone> = {
+  none: "neutral",
+  awaiting_proof: "warn",
+  submitted: "info",
+  verified: "success",
+  rejected: "danger",
+  refund_due: "warn",
+  refunded: "neutral",
+};
+type PayAction = "reject" | "refunded";
 
 /** Order details (§5.2): allowed transitions only, edits with recorded consent, WhatsApp templates. */
 export function OrderDetailScreen({
@@ -45,6 +59,8 @@ export function OrderDetailScreen({
   const [order, setOrder] = useState(initial);
   const [moving, setMoving] = useState<OrderStatus | null>(null);
   const [reason, setReason] = useState("");
+  const [payAct, setPayAct] = useState<PayAction | null>(null);
+  const [payNote, setPayNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -84,6 +100,20 @@ export function OrderDetailScreen({
     toast.push("success", t("saved"));
   };
 
+  const pay = async (action: "verify" | PayAction, noteText = "") => {
+    setBusy(true);
+    const res = await apiSend<OrderDetail>("POST", `/orders/${order.id}/payment/`, {
+      action,
+      note: noteText,
+    });
+    setBusy(false);
+    if (!res.ok) return fail(res.error);
+    setOrder(res.data);
+    setPayAct(null);
+    setPayNote("");
+    toast.push("success", t("saved"));
+  };
+
   const saveEdit = async () => {
     setBusy(true);
     const res = await apiSend<OrderDetail>("PATCH", `/orders/${order.id}/lines/`, {
@@ -108,6 +138,10 @@ export function OrderDetailScreen({
     toast.push("success", t("saved"));
   };
 
+  const prepaid = order.payment_method === "bank";
+  const unverifiedPrepaid = prepaid && order.payment_status !== "verified";
+  const needsReason = (to: OrderStatus) =>
+    NEEDS_REASON.includes(to) || (to === "preparing" && unverifiedPrepaid);
   const editable = order.status === "new" || order.status === "needs_contact";
   const total = money(order.estimated_total, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
   const waText = t(`waTpl.${tpl}`, {
@@ -281,6 +315,83 @@ export function OrderDetailScreen({
               </div>
             </Panel>
           )}
+          <Panel title={t("payT")}>
+            <div className="grid gap-[10px] p-[14px]">
+              <div className="flex flex-wrap gap-x-[16px] gap-y-[4px] text-label text-text-muted">
+                <span>{t(`fulfillment.${order.fulfillment}`)}</span>
+                <span>{t(`paymentMethod.${order.payment_method}`)}</span>
+              </div>
+              {prepaid && (
+                <>
+                  <div className="flex flex-wrap items-center gap-[8px]">
+                    <Badge tone={PAY_TONE[order.payment_status]}>
+                      {t(`payState.${order.payment_status}`)}
+                    </Badge>
+                  </div>
+                  {order.payment_reference && (
+                    <dl className="m-0 grid gap-[4px]">
+                      <div className="flex justify-between gap-[12px]">
+                        <dt className="text-text-muted">{t("payRef")}</dt>
+                        <dd dir="ltr" data-testid="pay-ref" className="m-0 font-semibold num">
+                          {order.payment_reference}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between gap-[12px]">
+                        <dt className="text-text-muted">{t("payAmount")}</dt>
+                        <dd dir="ltr" className="m-0 font-semibold num">
+                          {money(order.paid_amount ?? "0", ar ? "ar" : "en")}
+                        </dd>
+                      </div>
+                      <div className="flex justify-between gap-[12px]">
+                        <dt className="text-text-muted">{t("payTotal")}</dt>
+                        <dd dir="ltr" className="m-0 num">
+                          {total}
+                        </dd>
+                      </div>
+                    </dl>
+                  )}
+                  {order.payment_note && (
+                    <div className="text-label text-text-muted">{order.payment_note}</div>
+                  )}
+                  <div className="flex flex-wrap gap-[8px]">
+                    {order.payment_status === "submitted" && (
+                      <>
+                        <Button disabled={busy} onClick={() => void pay("verify")}>
+                          {t("payVerify")}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          disabled={busy}
+                          onClick={() => setPayAct("reject")}
+                        >
+                          {t("payReject")}
+                        </Button>
+                      </>
+                    )}
+                    {order.payment_status === "refund_due" && (
+                      <Button
+                        variant="outline"
+                        disabled={busy}
+                        onClick={() => setPayAct("refunded")}
+                      >
+                        {t("payRefunded")}
+                      </Button>
+                    )}
+                  </div>
+                  {order.payment_events.length > 0 && (
+                    <ol className="m-0 grid list-none gap-[4px] p-0 text-label text-text-muted">
+                      {order.payment_events.map((e, i) => (
+                        <li key={i}>
+                          {t(`payEvent.${e.kind}`)}
+                          {e.note ? ` — ${e.note}` : ""}
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </>
+              )}
+            </div>
+          </Panel>
           <Panel title={t("addressL")}>
             <div className="grid gap-[8px] p-[14px]">
               <p className="m-0 whitespace-pre-wrap">{order.address || t("noAddress")}</p>
@@ -382,6 +493,35 @@ export function OrderDetailScreen({
         </div>
       </div>
       <Dialog
+        open={payAct !== null}
+        onClose={busy ? undefined : () => setPayAct(null)}
+        labelledBy="pay-act-title"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (payAct) void pay(payAct, payNote);
+          }}
+          className="grid gap-[14px]"
+        >
+          <div id="pay-act-title" className="text-lead font-medium">
+            {payAct === "reject" ? t("payRejectT") : t("payRefundedT")}
+          </div>
+          <label className="grid gap-[4px] type-label text-text-secondary">
+            {payAct === "reject" ? t("payRejectL") : t("payRefundedL")}
+            <Textarea rows={3} value={payNote} onChange={(e) => setPayNote(e.target.value)} />
+          </label>
+          <div className="flex justify-end gap-[8px]">
+            <Button variant="outline" size="lg" onClick={() => setPayAct(null)} disabled={busy}>
+              {t("cancel")}
+            </Button>
+            <Button type="submit" size="lg" disabled={busy || !payNote.trim()}>
+              {busy ? t("saving") : t("confirm")}
+            </Button>
+          </div>
+        </form>
+      </Dialog>
+      <Dialog
         open={moving !== null}
         onClose={busy ? undefined : () => setMoving(null)}
         labelledBy="move-title"
@@ -398,7 +538,15 @@ export function OrderDetailScreen({
               : ""}
           </div>
           <div className="text-text-muted">{t("transitionBody")}</div>
-          {moving && NEEDS_REASON.includes(moving) && (
+          {moving === "preparing" && unverifiedPrepaid && (
+            <div
+              role="note"
+              className="rounded-control bg-warning-bg px-[12px] py-[10px] font-medium text-warning-text"
+            >
+              {t("unverifiedWarn")}
+            </div>
+          )}
+          {moving && needsReason(moving) && (
             <label className="grid gap-[4px] type-label text-text-secondary">
               {t("reasonL")}
               <Textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} />
@@ -411,9 +559,7 @@ export function OrderDetailScreen({
             <Button
               type="submit"
               size="lg"
-              disabled={
-                busy || (moving !== null && NEEDS_REASON.includes(moving) && !reason.trim())
-              }
+              disabled={busy || (moving !== null && needsReason(moving) && !reason.trim())}
             >
               {busy ? t("saving") : t("confirm")}
             </Button>

@@ -27,6 +27,21 @@ def order_placed(order_id: uuid.UUID, text: str, telegram_chat_id: str) -> None:
         transaction.on_commit(lambda: _telegram(note.pk, telegram_chat_id, text))
 
 
+def payment_submitted(order_id: uuid.UUID, text: str, telegram_chat_id: str) -> None:
+    text = f"💳 {text}"
+    Notification.objects.create(
+        kind="order_payment", object_id=order_id, channel=Notification.Channel.BADGE, text=text
+    )
+    if settings.RAFF_TELEGRAM_BOT_TOKEN and telegram_chat_id:
+        note = Notification.objects.create(
+            kind="order_payment",
+            object_id=order_id,
+            channel=Notification.Channel.TELEGRAM,
+            text=text,
+        )
+        transaction.on_commit(lambda: _telegram(note.pk, telegram_chat_id, text))
+
+
 def inquiry_received(inquiry_id: uuid.UUID, text: str, telegram_chat_id: str) -> None:
     Notification.objects.create(
         kind="inquiry_new", object_id=inquiry_id, channel=Notification.Channel.BADGE, text=text
@@ -64,7 +79,9 @@ def _telegram(note_id: uuid.UUID, chat_id: str, text: str) -> None:
 
 def unread_orders() -> int:
     return Notification.objects.filter(
-        kind="order_new", channel=Notification.Channel.BADGE, read_at__isnull=True
+        kind__in=["order_new", "order_payment"],
+        channel=Notification.Channel.BADGE,
+        read_at__isnull=True,
     ).count()
 
 
