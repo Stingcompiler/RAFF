@@ -34,6 +34,23 @@ test.describe("storefront home as a landing page", () => {
   });
 });
 
+test.describe("storefront navbar on a phone", () => {
+  test("a menu button opens the shop's pages and closes after a choice", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const menu = page.getByRole("button", { name: "القائمة" });
+    await expect(menu).toBeVisible();
+    await expect(page.locator("#store-menu")).toHaveCount(0);
+    await menu.click();
+    const panel = page.locator("#store-menu");
+    for (const name of ["الرئيسية", "المتجر", "عن الصيدلية", "تواصل", "تتبّع طلب"])
+      await expect(panel.getByRole("link", { name })).toBeVisible();
+    await panel.getByRole("link", { name: "تتبّع طلب" }).click();
+    await expect(page).toHaveURL(/\/orders\/track$/);
+    await expect(page.locator("#store-menu")).toHaveCount(0);
+  });
+});
+
 test.describe("public storefront", () => {
   test("a guest finds an item, sends an order once and tracks it", async ({ page }) => {
     await page.goto("/");
