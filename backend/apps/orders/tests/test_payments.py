@@ -214,7 +214,7 @@ def test_a_verified_transfer_pays_the_sale_and_an_overpayment_is_refundable(worl
             return post_sale(
                 device=world.counter,
                 user=world.cashier,
-                lines=[line(listing.item)],  # type: ignore[arg-type]
+                lines=[line(listing.item)],
                 payments=payments,
                 customer_id=None,
                 can_discount=False,
@@ -253,7 +253,7 @@ def test_unverified_transfer_blocks_the_sale_and_cash_orders_are_unchanged(world
             post_sale(
                 device=world.counter,
                 user=world.cashier,
-                lines=[line(listing.item)],  # type: ignore[arg-type]
+                lines=[line(listing.item)],
                 payments=[PaymentRequest("cash", TOTAL)],
                 customer_id=None,
                 can_discount=False,
