@@ -13,6 +13,7 @@ const MIN_PX = 12;
 
 const WORKSPACE = [
   "/dashboard",
+  "/deliveries",
   "/inventory",
   "/purchases",
   "/returns",
