@@ -1093,6 +1093,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/PosOrder'
           description: ''
+  /api/v1/orders/{id}/receipt/:
+    get:
+      operationId: order_receipt
+      description: 'Staff open the receipt photo. Private: never cached, never sniffed,
+        never scripted.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+          description: ''
   /api/v1/orders/{id}/transition/:
     post:
       operationId: orders_transition
@@ -1313,6 +1337,37 @@ paths:
             schema:
               $ref: '#/components/schemas/SubmitPayment'
         required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicOrder'
+          description: ''
+  /api/v1/public/orders/{token}/receipt/:
+    post:
+      operationId: public_order_receipt
+      description: The customer attaches the photo of the bank's confirmation (JPEG
+        or PNG, up to 3 MB).
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
       security:
       - {}
       responses:
@@ -4529,6 +4584,8 @@ components:
           $ref: '#/components/schemas/PaymentStatusEnum'
         payment_note:
           type: string
+        has_receipt:
+          type: boolean
         created_at:
           type: string
           format: date-time
@@ -4551,6 +4608,7 @@ components:
       - estimated_total
       - events
       - fulfillment
+      - has_receipt
       - lines
       - number
       - payment_method
@@ -5959,6 +6017,8 @@ components:
           type: string
         payment_note:
           type: string
+        has_receipt:
+          type: boolean
         payment_events:
           type: array
           items:
@@ -6006,6 +6066,7 @@ components:
       - estimated_total
       - events
       - fulfillment
+      - has_receipt
       - id
       - internal_note
       - latitude
@@ -6116,6 +6177,7 @@ components:
       - refund_due
       - refunded
       - override
+      - receipt
       type: string
       description: |-
         * `submitted` - Transfer details sent
@@ -6124,6 +6186,7 @@ components:
         * `refund_due` - Refund due
         * `refunded` - Refunded
         * `override` - Preparing started before verification
+        * `receipt` - Receipt photo attached
     Stock:
       type: object
       properties:

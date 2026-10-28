@@ -43,11 +43,15 @@ services:
       RAFF_LICENSE_FILE: /license/LICENSE.json
       RAFF_LICENSE_PUBLIC_KEY: ${RAFF_LICENSE_PUBLIC_KEY:-}
       RAFF_MEDIA_ROOT: /media
+      RAFF_PRIVATE_ROOT: /private
+      RAFF_RECEIPT_RETENTION_DAYS: ${RAFF_RECEIPT_RETENTION_DAYS:-90}
       RAFF_CACHE: db
       RAFF_TELEGRAM_BOT_TOKEN: ${RAFF_TELEGRAM_BOT_TOKEN:-}
       RAFF_DEMO_PASSWORD: ${RAFF_DEMO_PASSWORD:-}
     volumes:
       - media:/media
+      # Bank-transfer receipts: only the backend mounts this, the web server never does.
+      - private:/private
       - ./license:/license:ro
     depends_on:
       postgres:
@@ -111,5 +115,6 @@ services:
 volumes:
   pgdata:
   media:
+  private:
   caddy_data:
   caddy_config:

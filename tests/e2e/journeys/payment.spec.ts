@@ -5,6 +5,12 @@ import { signIn } from "../support/auth";
 test.describe.configure({ mode: "serial" });
 
 const REF = "TX778899";
+// A real 1×1 PNG, so the browser can draw it.
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+  "base64",
+);
+const PHOTO = "صورة إشعار التحويل (اختيارية)";
 const LATER_PHONE = "0966666662";
 
 async function toCheckout(page: import("@playwright/test").Page, query = "باراسيتامول") {
@@ -58,11 +64,22 @@ test.describe("bank transfer before pickup, and delivery to the home", () => {
     await expect(guest.getByText("✕ أدخل رقم العملية (4 أحرف على الأقل)")).toBeVisible();
     await guest.getByLabel("رقم العملية البنكية").fill(REF);
     await expect(guest.getByLabel("المبلغ المحوَّل")).toHaveValue("800");
+    // The photo is optional, but only a small JPEG or PNG is accepted.
+    await guest
+      .getByLabel(PHOTO)
+      .setInputFiles({ name: "note.txt", mimeType: "text/plain", buffer: Buffer.from("no") });
+    await expect(guest.getByText("✕ الصورة غير مقبولة")).toBeVisible();
+    await expect(send).toBeDisabled();
+    await guest
+      .getByLabel(PHOTO)
+      .setInputFiles({ name: "r.png", mimeType: "image/png", buffer: PNG });
+    await expect(guest.getByText("✕ الصورة غير مقبولة")).toHaveCount(0);
     await send.click();
     await expect(guest).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
     await expect(guest.getByTestId("payment-status")).toHaveText(
       "وصلت بيانات تحويلك وهي قيد التحقق",
     );
+    await expect(guest.getByText("✓ وصلت صورة الإشعار")).toBeVisible();
     await guest.context().close();
 
     await signIn(page, "admin");
@@ -72,6 +89,16 @@ test.describe("bank transfer before pickup, and delivery to the home", () => {
       .getByRole("row", { name: /0966666661/ })
       .click();
     await expect(page.getByTestId("pay-ref")).toHaveText(REF);
+    // The photo is private: staff see it, and it is served with no caching.
+    const photo = page.getByRole("img", { name: "صورة إشعار التحويل" });
+    await expect(photo).toBeVisible();
+    await expect.poll(() => photo.evaluate((i: HTMLImageElement) => i.naturalWidth)).toBe(1);
+    const served = await page.request.get((await photo.getAttribute("src")) ?? "");
+    expect(served.headers()["cache-control"]).toBe("private, no-store");
+    const anonymous = await (
+      await page.context().browser()!.newContext({ baseURL: page.url() })
+    ).request.get((await photo.getAttribute("src")) ?? "");
+    expect(anonymous.status()).toBeGreaterThanOrEqual(401);
     await page.getByRole("button", { name: "تأكيد الطلب" }).click();
     await page.getByRole("dialog").getByRole("button", { name: "تأكيد" }).click();
     await expect(page.getByText("● مؤكد").first()).toBeVisible();
@@ -109,6 +136,12 @@ test.describe("bank transfer before pickup, and delivery to the home", () => {
     await expect(guest.getByTestId("payment-status")).toHaveText(
       "وصلت بيانات تحويلك وهي قيد التحقق",
     );
+    // The photo can follow from the order page.
+    await guest
+      .getByLabel(PHOTO)
+      .setInputFiles({ name: "r.png", mimeType: "image/png", buffer: PNG });
+    await guest.getByRole("button", { name: "إرسال صورة الإشعار" }).click();
+    await expect(guest.getByText("✓ وصلت صورة الإشعار")).toBeVisible();
     await guest.context().close();
 
     await signIn(page, "admin");

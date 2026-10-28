@@ -1347,7 +1347,15 @@
     "sendTransfer": "Send the transfer details",
     "sendTransferBtn": "Send transfer details",
     "rejectedB": "Reason: {note}",
-    "failPay": "✕ The transfer details were not sent. Try again."
+    "failPay": "✕ The transfer details were not sent. Try again.",
+    "receiptL": "Photo of the transfer confirmation (optional)",
+    "receiptHint": "JPEG or PNG up to 3 MB. It is deleted some time after the order is closed.",
+    "receiptBad": "✕ This image is not accepted (JPEG or PNG up to 3 MB)",
+    "receiptFail": "✕ The image was not sent. Try again.",
+    "receiptOk": "✓ Your confirmation photo arrived",
+    "receiptSend": "Send the confirmation photo",
+    "receiptReplace": "Replace the photo",
+    "receiptLate": "Your order arrived but the confirmation photo could not be uploaded. Attach it here."
   },
   "orders": {
     "title": "Orders",
@@ -1502,9 +1510,12 @@
       "rejected": "Transfer rejected",
       "refund_due": "Refund became due",
       "refunded": "Refund recorded",
-      "override": "Preparing started before verification"
+      "override": "Preparing started before verification",
+      "receipt": "Receipt photo attached"
     },
-    "unverifiedWarn": "The transfer is not verified yet. Start preparing only if you trust the payment, and write the reason to keep it on record."
+    "unverifiedWarn": "The transfer is not verified yet. Start preparing only if you trust the payment, and write the reason to keep it on record.",
+    "payReceipt": "Transfer confirmation photo",
+    "payReceiptOpen": "Open the photo"
   },
   "storeAdmin": {
     "catT": "Published catalog",

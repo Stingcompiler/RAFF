@@ -8,12 +8,13 @@ import { type ComponentType, type FormEvent, useState } from "react";
 
 import { StoreIcon } from "@/components/ui/icons";
 import { Spinner } from "@/components/ui/Spinner";
-import { apiGet, apiSend } from "@/lib/api/browser";
+import { apiGet, apiSend, apiUpload } from "@/lib/api/browser";
 import { cn } from "@/lib/cn";
 import { multiply, sum } from "@/lib/decimal";
 import { money } from "@/lib/format";
 
 import { cart, useCart } from "./cart";
+import { ReceiptPicker, receiptOk } from "./ReceiptPicker";
 import { PHONE, productName, type Store } from "./types";
 import { useProducts } from "./useProducts";
 
@@ -46,6 +47,7 @@ export function CheckoutScreen({ store }: { store: Store }) {
   const [payNow, setPayNow] = useState(true);
   const [reference, setReference] = useState("");
   const [paid, setPaid] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<File | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [key, setKey] = useState<string | null>(null);
@@ -68,13 +70,21 @@ export function CheckoutScreen({ store }: { store: Store }) {
   const sendsTransfer = payment === "bank" && payNow;
   const refOk = reference.replace(/\s/g, "").length >= MIN_REFERENCE;
   const amountOk = Number(amountValue) > 0;
-  const payOk = !sendsTransfer || (refOk && amountOk);
+  const payOk = !sendsTransfer || (refOk && amountOk && (receipt === null || receiptOk(receipt)));
   const valid = name.trim().length > 1 && phoneOk && addressOk && payOk && agree && rows.length > 0;
   const busy = phase === "sending" || phase === "verifying";
 
-  const done = (placed: Placed) => {
+  const done = async (placed: Placed) => {
+    // The photo is optional: if it cannot be sent the order still stands, and the order page
+    // offers to attach it again.
+    let failed = false;
+    if (sendsTransfer && receipt && receiptOk(receipt)) {
+      const form = new FormData();
+      form.append("image", receipt);
+      failed = !(await apiUpload(`/public/orders/${placed.token}/receipt/`, form)).ok;
+    }
     cart.clear();
-    router.push(`/orders/${placed.token}`);
+    router.push(`/orders/${placed.token}${failed ? "?receipt=failed" : ""}`);
   };
 
   const verify = async (k: string) => {
@@ -369,6 +379,7 @@ export function CheckoutScreen({ store }: { store: Store }) {
                         className="h-[44px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand num"
                       />
                     </label>
+                    <ReceiptPicker file={receipt} onChange={setReceipt} />
                   </>
                 )}
                 <div className="text-label text-text-muted">{t("payHint")}</div>

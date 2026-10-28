@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { CheckCircleIcon } from "@/components/ui/icons";
 import { OrderAutoRefresh } from "@/features/store/OrderAutoRefresh";
 import { OrderPayment } from "@/features/store/OrderPayment";
+import { ReceiptUpload } from "@/features/store/ReceiptUpload";
 import { type PublicOrder, type Store, waLink } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
 import { cn } from "@/lib/cn";
@@ -16,8 +17,9 @@ const CHECK = "✓";
 const TIMES = "×";
 
 /** The customer's view of an order (§4.6), opened only by its long random token. */
-export default async function OrderPage({ params }: PageProps<"/orders/[token]">) {
+export default async function OrderPage({ params, searchParams }: PageProps<"/orders/[token]">) {
   const { token } = await params;
+  const receiptFailed = (await searchParams).receipt === "failed";
   const t = await getTranslations("store");
   const ar = (await getLocale()) === "ar";
   const order = await serverGet<PublicOrder>(`/public/orders/${encodeURIComponent(token)}/`);
@@ -92,6 +94,19 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
           rejectedNote={order.payment_status === "rejected" ? order.payment_note : ""}
         />
       )}
+      {order.payment_method === "bank" && receiptFailed && (
+        <div
+          role="status"
+          className="rounded-control bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
+        >
+          {t("receiptLate")}
+        </div>
+      )}
+      {order.payment_method === "bank" &&
+        order.status !== "cancelled" &&
+        ["awaiting_proof", "submitted", "rejected"].includes(order.payment_status) && (
+          <ReceiptUpload token={token} has={order.has_receipt} />
+        )}
       <ol
         aria-label={t("orderNo")}
         className="ms-[11px] grid list-none border-s-2 border-border p-0"

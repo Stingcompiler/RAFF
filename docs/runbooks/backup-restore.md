@@ -2,7 +2,7 @@
 
 ## ما يُنسخ
 
-`infra/backup/backup.sh` يأخذ نسخة كاملة من قاعدة البيانات (`pg_dump`) وصور الأصناف، ويشفّرها بـAES-256 بالمفتاح `infra/prod/backup.key`، ويحفظها في `RAFF_BACKUP_DIR` (افتراضياً `/var/backups/raff`) مع ملف `.sha256`. يبقى آخر `RAFF_BACKUP_KEEP` نسخة (افتراضياً 14).
+`infra/backup/backup.sh` يأخذ نسخة كاملة من قاعدة البيانات (`pg_dump`) وصور الأصناف وصور إشعارات التحويل البنكي (مجلد `/private` الذي لا يخدمه الخادم الأمامي)، ويشفّرها بـAES-256 بالمفتاح `infra/prod/backup.key`، ويحفظها في `RAFF_BACKUP_DIR` (افتراضياً `/var/backups/raff`) مع ملف `.sha256`. يبقى آخر `RAFF_BACKUP_KEEP` نسخة (افتراضياً 14).
 
 يعمل ليلياً الساعة 02:30 (من `install.sh`). نتيجة كل نسخة تظهر في **الإعدادات › آخر نسخة ناجحة**، والفشل يظهر هناك ويُسجَّل في سجل التدقيق.
 
@@ -54,3 +54,8 @@ sudo infra/restore.sh /path/raff-20261022-023000.tar.enc --key /path/backup.key 
 | `Checksum mismatch` | الملف تالف أثناء النقل | انسخه مجدداً أو استعمل نسخة أقدم |
 | `Could not decrypt (wrong key?)` | مفتاح خاطئ | استعمل `backup.key` الأصلي |
 | `This server serves organization …` | نسخة مؤسسة أخرى | استعملها على خادم نظيف |
+
+
+## صور إشعارات التحويل البنكي
+
+تُحفظ في مجلد خاص (`RAFF_PRIVATE_ROOT`، في الحاوية `/private`) خارج `/media` فلا تُخدم للعموم، ويقرؤها موظفو الطلبات فقط عبر واجهة بصلاحية. تُحذف تلقائياً بعد `RAFF_RECEIPT_RETENTION_DAYS` (90 افتراضياً) من إكمال الطلب أو إلغائه، بأمر `manage.py purge_receipts` الذي يشغّله `backup.sh` في كل نسخة. النسخ الاحتياطية القديمة (قبل هذه الميزة) تُستعاد بلا هذا المجلد.

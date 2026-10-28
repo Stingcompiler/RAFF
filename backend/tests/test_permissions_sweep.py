@@ -38,6 +38,7 @@ PUBLIC = {
     "api/v1/public/orders/by-key/<str:key>/",
     "api/v1/public/orders/<str:token>/",
     "api/v1/public/orders/<str:token>/payment/",
+    "api/v1/public/orders/<str:token>/receipt/",
 }
 # Any signed-in user, whatever their role.
 SIGNED_IN = {
