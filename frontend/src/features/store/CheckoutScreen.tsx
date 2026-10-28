@@ -1,10 +1,10 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { Home, Landmark, MapPin, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type ComponentType, type FormEvent, useState } from "react";
 
 import { StoreIcon } from "@/components/ui/icons";
 import { Spinner } from "@/components/ui/Spinner";
@@ -14,7 +14,7 @@ import { multiply, sum } from "@/lib/decimal";
 import { money } from "@/lib/format";
 
 import { cart, useCart } from "./cart";
-import { PHONE, productName } from "./types";
+import { PHONE, productName, type Store } from "./types";
 import { useProducts } from "./useProducts";
 
 type Placed = { number: string; token: string; status: string };
@@ -22,11 +22,12 @@ type Phase = "idle" | "sending" | "verifying" | "failed";
 const TIMEOUT_MS = 15000;
 const TIMES = "×";
 const MIN_ADDRESS = 3;
+const MIN_REFERENCE = 4;
 const LOCATE_MS = 10000;
 const DECIMALS = 6;
 
 /** Send the order (§4.5): idle, sending (disabled), timeout → verify by the fixed key, failure keeps data. */
-export function CheckoutScreen() {
+export function CheckoutScreen({ store }: { store: Store }) {
   const t = useTranslations("store");
   const ar = useLocale() === "ar";
   const router = useRouter();
@@ -40,6 +41,11 @@ export function CheckoutScreen() {
   const [position, setPosition] = useState<{ lat: string; lng: string } | null>(null);
   const [locating, setLocating] = useState<"idle" | "busy" | "denied">("idle");
   const [agree, setAgree] = useState(false);
+  const [fulfillment, setFulfillment] = useState<"pickup" | "delivery">("pickup");
+  const [payment, setPayment] = useState<"cod" | "bank">("cod");
+  const [payNow, setPayNow] = useState(true);
+  const [reference, setReference] = useState("");
+  const [paid, setPaid] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [key, setKey] = useState<string | null>(null);
@@ -53,7 +59,17 @@ export function CheckoutScreen() {
   );
   const phoneOk = PHONE.test(phone.replace(/\s/g, ""));
   const addressOk = address.trim().length >= MIN_ADDRESS;
-  const valid = name.trim().length > 1 && phoneOk && addressOk && agree && rows.length > 0;
+  // Prescription items and items without a price are reviewed at the counter: pickup, and
+  // paying at pickup, only.
+  const needsReview = rows.some(({ product }) => product?.rx || !product?.price);
+  const showDelivery = store.delivery_enabled;
+  const showBank = store.prepay_enabled;
+  const amountValue = paid ?? estimate.replace(/\.0+$/, "");
+  const sendsTransfer = payment === "bank" && payNow;
+  const refOk = reference.replace(/\s/g, "").length >= MIN_REFERENCE;
+  const amountOk = Number(amountValue) > 0;
+  const payOk = !sendsTransfer || (refOk && amountOk);
+  const valid = name.trim().length > 1 && phoneOk && addressOk && payOk && agree && rows.length > 0;
   const busy = phase === "sending" || phase === "verifying";
 
   const done = (placed: Placed) => {
@@ -101,6 +117,10 @@ export function CheckoutScreen() {
         phone,
         note,
         address,
+        fulfillment,
+        payment_method: payment,
+        payment_reference: sendsTransfer ? reference.trim() : "",
+        paid_amount: sendsTransfer ? amountValue : null,
         latitude: position?.lat ?? null,
         longitude: position?.lng ?? null,
         agree,
@@ -121,7 +141,52 @@ export function CheckoutScreen() {
         ? t("rateLimited")
         : code === "store_closed"
           ? t("storeClosed")
-          : t("failMsg"),
+          : code === "reference_used"
+            ? t("refUsed")
+            : /^(delivery|prepay)_/.test(code)
+              ? t("optionGone")
+              : t("failMsg"),
+    );
+  };
+
+  const choice = (
+    group: "fulfillment" | "payment",
+    value: string,
+    Icon: ComponentType<{ size?: number; className?: string }>,
+    title: string,
+    hint: string,
+    available: boolean,
+    unavailable = "",
+  ) => {
+    const on = (group === "fulfillment" ? fulfillment : payment) === value;
+    return (
+      <label
+        key={value}
+        className={cn(
+          "flex min-h-[64px] items-center gap-[12px] rounded-card border-2 bg-surface p-[14px]",
+          on ? "border-brand" : "border-border",
+          available ? "cursor-pointer" : "cursor-not-allowed opacity-60",
+        )}
+      >
+        <input
+          type="radio"
+          name={group}
+          value={value}
+          checked={on}
+          disabled={!available}
+          onChange={() =>
+            group === "fulfillment"
+              ? setFulfillment(value as "pickup" | "delivery")
+              : setPayment(value as "cod" | "bank")
+          }
+          className="m-0 size-[18px] flex-none accent-brand"
+        />
+        <Icon size={26} aria-hidden="true" className="flex-none text-brand" />
+        <span className="grid gap-[2px]">
+          <span className="font-semibold">{title}</span>
+          <span className="text-body text-text-muted">{available ? hint : unavailable}</span>
+        </span>
+      </label>
     );
   };
 
@@ -209,16 +274,108 @@ export function CheckoutScreen() {
             </span>
           )}
         </div>
-        <div className="grid gap-[6px]">
-          <div className="text-body font-semibold text-text-muted">{t("pickupL")}</div>
-          <div className="flex items-center gap-[12px] rounded-card border-2 border-brand bg-surface p-[14px]">
-            <StoreIcon size={26} className="flex-none text-brand" />
-            <div>
-              <div className="font-semibold">{t("pickup")}</div>
-              <div className="text-body text-text-muted">{t("payPickup")}</div>
-            </div>
-          </div>
-        </div>
+        <fieldset className="m-0 grid gap-[8px] border-0 p-0">
+          <legend className="mb-[6px] p-0 text-body font-semibold text-text-muted">
+            {t("pickupL")}
+          </legend>
+          {choice("fulfillment", "pickup", StoreIcon, t("pickup"), t("pickupD"), true)}
+          {showDelivery &&
+            choice(
+              "fulfillment",
+              "delivery",
+              Home,
+              t("homeOpt"),
+              t("homeD"),
+              !needsReview,
+              t("homeRx"),
+            )}
+        </fieldset>
+        {showBank && (
+          <fieldset className="m-0 grid gap-[8px] border-0 p-0">
+            <legend className="mb-[6px] p-0 text-body font-semibold text-text-muted">
+              {t("payL")}
+            </legend>
+            {choice("payment", "cod", Wallet, t("cod"), t("codD"), true)}
+            {choice(
+              "payment",
+              "bank",
+              Landmark,
+              t("bankOpt"),
+              t("bankD"),
+              !needsReview,
+              t("bankRx"),
+            )}
+            {payment === "bank" && (
+              <div className="grid gap-[12px] rounded-card border border-border bg-surface p-[14px]">
+                <div className="grid gap-[4px]">
+                  <div className="text-label font-semibold text-text-muted">
+                    {t("bankAccounts")}
+                  </div>
+                  <div className="whitespace-pre-wrap">{store.bank_accounts}</div>
+                </div>
+                <div className="flex flex-wrap gap-[8px]">
+                  {[true, false].map((now) => (
+                    <label
+                      key={String(now)}
+                      className={cn(
+                        "flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-[8px] rounded-control border px-[12px] font-medium",
+                        payNow === now
+                          ? "border-brand bg-brand-subtle/40 text-brand"
+                          : "border-border-strong bg-surface text-text",
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="paynow"
+                        checked={payNow === now}
+                        onChange={() => setPayNow(now)}
+                        className="m-0 size-[18px] accent-brand"
+                      />
+                      {now ? t("payNow") : t("payLater")}
+                    </label>
+                  ))}
+                </div>
+                {payNow && (
+                  <>
+                    <label className="grid gap-[4px] text-body font-semibold text-text-muted">
+                      {t("refL")}
+                      <input
+                        dir="ltr"
+                        value={reference}
+                        placeholder={t("refPh")}
+                        aria-invalid={reference !== "" && !refOk}
+                        onChange={(e) => setReference(e.target.value)}
+                        className={cn(
+                          "h-[44px] rounded-control border bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand",
+                          reference !== "" && !refOk
+                            ? "border-danger-solid"
+                            : "border-border-strong",
+                          "num",
+                        )}
+                      />
+                      {reference !== "" && !refOk && (
+                        <span className="text-label font-medium text-danger-text">
+                          {t("refErr")}
+                        </span>
+                      )}
+                    </label>
+                    <label className="grid gap-[4px] text-body font-semibold text-text-muted">
+                      {t("amountL")}
+                      <input
+                        dir="ltr"
+                        inputMode="decimal"
+                        value={amountValue}
+                        onChange={(e) => setPaid(e.target.value.replace(/[^\d.]/g, ""))}
+                        className="h-[44px] rounded-control border border-border-strong bg-surface px-[14px] text-start text-land-lead text-text outline-none focus:border-brand num"
+                      />
+                    </label>
+                  </>
+                )}
+                <div className="text-label text-text-muted">{t("payHint")}</div>
+              </div>
+            )}
+          </fieldset>
+        )}
         <label className="grid gap-[4px] text-body font-semibold text-text-muted">
           {t("noteL")}
           <textarea

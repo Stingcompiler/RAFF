@@ -5,7 +5,7 @@ from typing import Any
 
 from rest_framework import serializers
 
-from apps.orders.models import Inquiry, Order
+from apps.orders.models import Inquiry, Order, OrderPaymentEvent
 
 STATUS = [c[0] for c in Order.Status.choices]
 
@@ -20,6 +20,18 @@ class PlaceOrderSerializer(serializers.Serializer[None]):
     phone = serializers.CharField(max_length=20)
     note = serializers.CharField(max_length=500, required=False, allow_blank=True, default="")
     address = serializers.CharField(max_length=300)
+    fulfillment = serializers.ChoiceField(
+        choices=Order.Fulfillment.choices, default=Order.Fulfillment.PICKUP
+    )
+    payment_method = serializers.ChoiceField(
+        choices=Order.PaymentMethod.choices, default=Order.PaymentMethod.COD
+    )
+    payment_reference = serializers.CharField(
+        max_length=60, required=False, allow_blank=True, default=""
+    )
+    paid_amount = serializers.DecimalField(
+        max_digits=18, decimal_places=4, required=False, allow_null=True, default=None
+    )
     latitude = serializers.DecimalField(
         max_digits=9, decimal_places=6, required=False, allow_null=True, default=None
     )
@@ -69,6 +81,10 @@ class PublicEventSerializer(serializers.Serializer[Any]):
 class PublicOrderSerializer(serializers.Serializer[Any]):
     number = serializers.CharField()
     status = serializers.ChoiceField(choices=STATUS)
+    fulfillment = serializers.ChoiceField(choices=Order.Fulfillment.choices)
+    payment_method = serializers.ChoiceField(choices=Order.PaymentMethod.choices)
+    payment_status = serializers.ChoiceField(choices=Order.PaymentStatus.choices)
+    payment_note = serializers.CharField(allow_blank=True)
     created_at = serializers.DateTimeField()
     estimated_total = serializers.DecimalField(max_digits=18, decimal_places=4)
     lines = PublicLineSerializer(many=True)
@@ -83,6 +99,9 @@ class StaffOrderRowSerializer(serializers.Serializer[Any]):
     customer_name = serializers.CharField()
     phone = serializers.CharField()
     address = serializers.CharField(allow_blank=True)
+    fulfillment = serializers.ChoiceField(choices=Order.Fulfillment.choices)
+    payment_method = serializers.ChoiceField(choices=Order.PaymentMethod.choices)
+    payment_status = serializers.ChoiceField(choices=Order.PaymentStatus.choices)
     lines_count = serializers.IntegerField()
     estimated_total = serializers.DecimalField(max_digits=18, decimal_places=4)
     status = serializers.ChoiceField(choices=STATUS)
@@ -116,6 +135,15 @@ class StaffEventSerializer(serializers.Serializer[Any]):
     note = serializers.CharField(allow_blank=True)
 
 
+class StaffPaymentEventSerializer(serializers.Serializer[Any]):
+    kind = serializers.ChoiceField(choices=OrderPaymentEvent.Kind.choices)
+    at = serializers.DateTimeField()
+    actor_ar = serializers.CharField(allow_null=True)
+    actor_en = serializers.CharField(allow_null=True)
+    amount = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
+    note = serializers.CharField(allow_blank=True)
+
+
 class StaffOrderSerializer(serializers.Serializer[Any]):
     id = serializers.UUIDField()
     number = serializers.CharField()
@@ -126,6 +154,13 @@ class StaffOrderSerializer(serializers.Serializer[Any]):
     phone = serializers.CharField()
     note = serializers.CharField(allow_blank=True)
     address = serializers.CharField(allow_blank=True)
+    fulfillment = serializers.ChoiceField(choices=Order.Fulfillment.choices)
+    payment_method = serializers.ChoiceField(choices=Order.PaymentMethod.choices)
+    payment_status = serializers.ChoiceField(choices=Order.PaymentStatus.choices)
+    paid_amount = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
+    payment_reference = serializers.CharField(allow_blank=True)
+    payment_note = serializers.CharField(allow_blank=True)
+    payment_events = StaffPaymentEventSerializer(many=True)
     latitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
     longitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
     reason = serializers.CharField(allow_blank=True)
@@ -159,10 +194,19 @@ class OrdersSummarySerializer(serializers.Serializer[Any]):
     completed = serializers.IntegerField()
 
 
+class PrepaidSerializer(serializers.Serializer[Any]):
+    """A verified bank transfer that must pay this sale's bank part."""
+
+    reference = serializers.CharField()
+    amount = serializers.DecimalField(max_digits=18, decimal_places=4)
+
+
 class OrderRefSerializer(serializers.Serializer[Any]):
     id = serializers.UUIDField()
     number = serializers.CharField()
     customer_name = serializers.CharField()
+    payment_status = serializers.ChoiceField(choices=Order.PaymentStatus.choices)
+    prepaid = PrepaidSerializer(allow_null=True)
 
 
 class PosOrderLineSerializer(serializers.Serializer[Any]):
@@ -222,3 +266,13 @@ class InquiryRowSerializer(serializers.ModelSerializer[Inquiry]):
 
 class InquiryStatusSerializer(serializers.Serializer[None]):
     status = serializers.ChoiceField(choices=Inquiry.Status.choices)
+
+
+class SubmitPaymentSerializer(serializers.Serializer[None]):
+    reference = serializers.CharField(max_length=60)
+    paid_amount = serializers.DecimalField(max_digits=18, decimal_places=4)
+
+
+class PaymentActionSerializer(serializers.Serializer[None]):
+    action = serializers.ChoiceField(choices=["verify", "reject", "refunded"])
+    note = serializers.CharField(max_length=300, required=False, allow_blank=True, default="")

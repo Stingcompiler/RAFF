@@ -40,6 +40,10 @@ def public_order(order: Order) -> dict[str, Any]:
     return {
         "number": order.number,
         "status": order.status,
+        "fulfillment": order.fulfillment,
+        "payment_method": order.payment_method,
+        "payment_status": order.payment_status,
+        "payment_note": order.payment_note if order.payment_status == "rejected" else "",
         "created_at": order.created_at,
         "estimated_total": order.estimated_total,
         "lines": [
@@ -88,6 +92,23 @@ def staff_order(order: Order) -> dict[str, Any]:
         "phone": order.phone,
         "note": order.note,
         "address": order.address,
+        "fulfillment": order.fulfillment,
+        "payment_method": order.payment_method,
+        "payment_status": order.payment_status,
+        "paid_amount": order.paid_amount,
+        "payment_reference": order.payment_reference,
+        "payment_note": order.payment_note,
+        "payment_events": [
+            {
+                "kind": e.kind,
+                "at": e.created_at,
+                "actor_ar": e.actor.display_name_ar if e.actor else None,
+                "actor_en": e.actor.display_name_en if e.actor else None,
+                "amount": e.amount,
+                "note": e.note,
+            }
+            for e in order.payment_events.select_related("actor")
+        ],
         "latitude": order.latitude,
         "longitude": order.longitude,
         "reason": order.reason,

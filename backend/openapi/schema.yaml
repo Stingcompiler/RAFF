@@ -1040,6 +1040,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaffOrder'
           description: ''
+  /api/v1/orders/{id}/payment/:
+    post:
+      operationId: order_payment_action
+      description: |-
+        Staff check the transfer against the bank: verify, reject (with a reason), or record the
+        refund. Nothing here posts to the ledger.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentAction'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
   /api/v1/orders/{id}/pos/:
     get:
       operationId: orders_pos
@@ -1255,6 +1285,34 @@ paths:
         required: true
       tags:
       - public
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicOrder'
+          description: ''
+  /api/v1/public/orders/{token}/payment/:
+    post:
+      operationId: public_order_payment
+      description: The customer sends the bank transfer's reference and amount for
+        their order.
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      tags:
+      - public
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitPayment'
+        required: true
       security:
       - {}
       responses:
@@ -2487,6 +2545,16 @@ paths:
           description: ''
 components:
   schemas:
+    ActionEnum:
+      enum:
+      - verify
+      - reject
+      - refunded
+      type: string
+      description: |-
+        * `verify` - verify
+        * `reject` - reject
+        * `refunded` - refunded
     Assignment:
       type: object
       properties:
@@ -2958,6 +3026,14 @@ components:
       - branch
       - device
       - registered
+    FulfillmentEnum:
+      enum:
+      - pickup
+      - delivery
+      type: string
+      description: |-
+        * `pickup` - Pickup at the pharmacy
+        * `delivery` - Delivery to the customer's home
     Health:
       type: object
       properties:
@@ -3723,10 +3799,18 @@ components:
           type: string
         customer_name:
           type: string
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        prepaid:
+          allOf:
+          - $ref: '#/components/schemas/Prepaid'
+          nullable: true
       required:
       - customer_name
       - id
       - number
+      - payment_status
+      - prepaid
     OrderStatusEnum:
       enum:
       - new
@@ -4037,6 +4121,17 @@ components:
           type: string
           maxLength: 200
           minLength: 8
+    PaymentAction:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/ActionEnum'
+        note:
+          type: string
+          default: ''
+          maxLength: 300
+      required:
+      - action
     PaymentIn:
       type: object
       properties:
@@ -4072,6 +4167,32 @@ components:
         * `cash` - Cash
         * `bank` - Bank transfer
         * `credit` - Customer credit
+    PaymentMethodEnum:
+      enum:
+      - cod
+      - bank
+      type: string
+      description: |-
+        * `cod` - Pay at pickup
+        * `bank` - Bank transfer before pickup
+    PaymentStatusEnum:
+      enum:
+      - none
+      - awaiting_proof
+      - submitted
+      - verified
+      - rejected
+      - refund_due
+      - refunded
+      type: string
+      description: |-
+        * `none` - Nothing to verify
+        * `awaiting_proof` - Awaiting the transfer details
+        * `submitted` - Awaiting verification
+        * `verified` - Verified
+        * `rejected` - Rejected
+        * `refund_due` - Refund due
+        * `refunded` - Refunded
     PlaceOrder:
       type: object
       properties:
@@ -4088,6 +4209,23 @@ components:
         address:
           type: string
           maxLength: 300
+        fulfillment:
+          allOf:
+          - $ref: '#/components/schemas/FulfillmentEnum'
+          default: pickup
+        payment_method:
+          allOf:
+          - $ref: '#/components/schemas/PaymentMethodEnum'
+          default: cod
+        payment_reference:
+          type: string
+          default: ''
+          maxLength: 60
+        paid_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
         latitude:
           type: string
           format: decimal
@@ -4233,6 +4371,19 @@ components:
       - id
       - number
       - total
+    Prepaid:
+      type: object
+      description: A verified bank transfer that must pay this sale's bank part.
+      properties:
+        reference:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - amount
+      - reference
     Price:
       type: object
       properties:
@@ -4370,6 +4521,14 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/OrderStatusEnum'
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentEnum'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        payment_note:
+          type: string
         created_at:
           type: string
           format: date-time
@@ -4391,8 +4550,12 @@ components:
       - created_at
       - estimated_total
       - events
+      - fulfillment
       - lines
       - number
+      - payment_method
+      - payment_note
+      - payment_status
       - status
       - whatsapp
     PublicProduct:
@@ -4532,12 +4695,22 @@ components:
           type: string
         about_en:
           type: string
+        prepay_enabled:
+          type: boolean
+        bank_accounts:
+          type: string
+        payment_hold_hours:
+          type: integer
+        delivery_enabled:
+          type: boolean
       required:
       - about_ar
       - about_en
       - address_ar
       - address_en
+      - bank_accounts
       - brand_color
+      - delivery_enabled
       - enabled
       - hero_lead_ar
       - hero_lead_en
@@ -4546,6 +4719,8 @@ components:
       - hours
       - name_ar
       - name_en
+      - payment_hold_hours
+      - prepay_enabled
       - whatsapp
     QuarantineEntry:
       type: object
@@ -5497,6 +5672,17 @@ components:
         telegram_chat_id:
           type: string
           maxLength: 40
+        prepay_enabled:
+          type: boolean
+        bank_accounts:
+          type: string
+          description: Shown to customers who prepay
+        payment_hold_hours:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        delivery_enabled:
+          type: boolean
     Shift:
       type: object
       properties:
@@ -5758,6 +5944,25 @@ components:
           type: string
         address:
           type: string
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentEnum'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        paid_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        payment_reference:
+          type: string
+        payment_note:
+          type: string
+        payment_events:
+          type: array
+          items:
+            $ref: '#/components/schemas/StaffPaymentEvent'
         latitude:
           type: string
           format: decimal
@@ -5800,6 +6005,7 @@ components:
       - customer_name
       - estimated_total
       - events
+      - fulfillment
       - id
       - internal_note
       - latitude
@@ -5807,6 +6013,12 @@ components:
       - longitude
       - note
       - number
+      - paid_amount
+      - payment_events
+      - payment_method
+      - payment_note
+      - payment_reference
+      - payment_status
       - phone
       - reason
       - sale_number
@@ -5830,6 +6042,12 @@ components:
           type: string
         address:
           type: string
+        fulfillment:
+          $ref: '#/components/schemas/FulfillmentEnum'
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
         lines_count:
           type: integer
         estimated_total:
@@ -5853,12 +6071,59 @@ components:
       - created_at
       - customer_name
       - estimated_total
+      - fulfillment
       - id
       - lines_count
       - number
+      - payment_method
+      - payment_status
       - phone
       - status
       - unread
+    StaffPaymentEvent:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/StaffPaymentEventKindEnum'
+        at:
+          type: string
+          format: date-time
+        actor_ar:
+          type: string
+          nullable: true
+        actor_en:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        note:
+          type: string
+      required:
+      - actor_ar
+      - actor_en
+      - amount
+      - at
+      - kind
+      - note
+    StaffPaymentEventKindEnum:
+      enum:
+      - submitted
+      - verified
+      - rejected
+      - refund_due
+      - refunded
+      - override
+      type: string
+      description: |-
+        * `submitted` - Transfer details sent
+        * `verified` - Verified
+        * `rejected` - Rejected
+        * `refund_due` - Refund due
+        * `refunded` - Refunded
+        * `override` - Preparing started before verification
     Stock:
       type: object
       properties:
@@ -6159,6 +6424,19 @@ components:
       - completed
       - confirmed
       - new
+    SubmitPayment:
+      type: object
+      properties:
+        reference:
+          type: string
+          maxLength: 60
+        paid_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+      required:
+      - paid_amount
+      - reference
     Supplier:
       type: object
       properties:

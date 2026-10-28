@@ -705,6 +705,26 @@ export interface paths {
     patch: operations["orders_note"];
     trace?: never;
   };
+  "/api/v1/orders/{id}/payment/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * @description Staff check the transfer against the bank: verify, reject (with a reason), or record the
+     *     refund. Nothing here posts to the ledger.
+     */
+    post: operations["order_payment_action"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/orders/{id}/pos/": {
     parameters: {
       query?: never;
@@ -866,6 +886,23 @@ export interface paths {
     get: operations["public_order"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/{token}/payment/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description The customer sends the bank transfer's reference and amount for their order. */
+    post: operations["public_order_payment"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1596,6 +1633,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /**
+     * @description * `verify` - verify
+     *     * `reject` - reject
+     *     * `refunded` - refunded
+     * @enum {string}
+     */
+    ActionEnum: "verify" | "reject" | "refunded";
     Assignment: {
       /** Format: uuid */
       role_id: string;
@@ -1793,6 +1837,12 @@ export interface components {
       device: components["schemas"]["Device"] | null;
       branch: components["schemas"]["Branch"] | null;
     };
+    /**
+     * @description * `pickup` - Pickup at the pharmacy
+     *     * `delivery` - Delivery to the customer's home
+     * @enum {string}
+     */
+    FulfillmentEnum: "pickup" | "delivery";
     Health: {
       status: string;
       database: string;
@@ -2110,6 +2160,8 @@ export interface components {
       id: string;
       number: string;
       customer_name: string;
+      payment_status: components["schemas"]["PaymentStatusEnum"];
+      prepaid: components["schemas"]["Prepaid"] | null;
     };
     /**
      * @description * `new` - new
@@ -2252,6 +2304,11 @@ export interface components {
       assignments?: components["schemas"]["Assignment"][];
       password?: string;
     };
+    PaymentAction: {
+      action: components["schemas"]["ActionEnum"];
+      /** @default  */
+      note: string;
+    };
     PaymentIn: {
       method: components["schemas"]["PaymentInMethodEnum"];
       /** Format: decimal */
@@ -2270,12 +2327,38 @@ export interface components {
      * @enum {string}
      */
     PaymentInMethodEnum: "cash" | "bank" | "credit";
+    /**
+     * @description * `cod` - Pay at pickup
+     *     * `bank` - Bank transfer before pickup
+     * @enum {string}
+     */
+    PaymentMethodEnum: "cod" | "bank";
+    /**
+     * @description * `none` - Nothing to verify
+     *     * `awaiting_proof` - Awaiting the transfer details
+     *     * `submitted` - Awaiting verification
+     *     * `verified` - Verified
+     *     * `rejected` - Rejected
+     *     * `refund_due` - Refund due
+     *     * `refunded` - Refunded
+     * @enum {string}
+     */
+    PaymentStatusEnum:
+      "none" | "awaiting_proof" | "submitted" | "verified" | "rejected" | "refund_due" | "refunded";
     PlaceOrder: {
       name: string;
       phone: string;
       /** @default  */
       note: string;
       address: string;
+      /** @default pickup */
+      fulfillment: components["schemas"]["FulfillmentEnum"];
+      /** @default cod */
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      /** @default  */
+      payment_reference: string;
+      /** Format: decimal */
+      paid_amount?: string | null;
       /** Format: decimal */
       latitude?: string | null;
       /** Format: decimal */
@@ -2328,6 +2411,12 @@ export interface components {
       /** Format: decimal */
       total: string;
       held_lines: number;
+    };
+    /** @description A verified bank transfer that must pay this sale's bank part. */
+    Prepaid: {
+      reference: string;
+      /** Format: decimal */
+      amount: string;
     };
     Price: {
       /** Format: uuid */
@@ -2384,6 +2473,10 @@ export interface components {
     PublicOrder: {
       number: string;
       status: components["schemas"]["OrderStatusEnum"];
+      fulfillment: components["schemas"]["FulfillmentEnum"];
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      payment_status: components["schemas"]["PaymentStatusEnum"];
+      payment_note: string;
       /** Format: date-time */
       created_at: string;
       /** Format: decimal */
@@ -2443,6 +2536,10 @@ export interface components {
       whatsapp: string;
       about_ar: string;
       about_en: string;
+      prepay_enabled: boolean;
+      bank_accounts: string;
+      payment_hold_hours: number;
+      delivery_enabled: boolean;
     };
     QuarantineEntry: {
       /** Format: uuid */
@@ -2817,6 +2914,11 @@ export interface components {
       /** @description One phone number per line */
       blocked_phones?: string;
       telegram_chat_id?: string;
+      prepay_enabled?: boolean;
+      /** @description Shown to customers who prepay */
+      bank_accounts?: string;
+      payment_hold_hours?: number;
+      delivery_enabled?: boolean;
     };
     Shift: {
       /** Format: uuid */
@@ -2921,6 +3023,14 @@ export interface components {
       phone: string;
       note: string;
       address: string;
+      fulfillment: components["schemas"]["FulfillmentEnum"];
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      payment_status: components["schemas"]["PaymentStatusEnum"];
+      /** Format: decimal */
+      paid_amount: string | null;
+      payment_reference: string;
+      payment_note: string;
+      payment_events: components["schemas"]["StaffPaymentEvent"][];
       /** Format: decimal */
       latitude: string | null;
       /** Format: decimal */
@@ -2944,6 +3054,9 @@ export interface components {
       customer_name: string;
       phone: string;
       address: string;
+      fulfillment: components["schemas"]["FulfillmentEnum"];
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      payment_status: components["schemas"]["PaymentStatusEnum"];
       lines_count: number;
       /** Format: decimal */
       estimated_total: string;
@@ -2952,6 +3065,27 @@ export interface components {
       assigned_en: string | null;
       unread: boolean;
     };
+    StaffPaymentEvent: {
+      kind: components["schemas"]["StaffPaymentEventKindEnum"];
+      /** Format: date-time */
+      at: string;
+      actor_ar: string | null;
+      actor_en: string | null;
+      /** Format: decimal */
+      amount: string | null;
+      note: string;
+    };
+    /**
+     * @description * `submitted` - Transfer details sent
+     *     * `verified` - Verified
+     *     * `rejected` - Rejected
+     *     * `refund_due` - Refund due
+     *     * `refunded` - Refunded
+     *     * `override` - Preparing started before verification
+     * @enum {string}
+     */
+    StaffPaymentEventKindEnum:
+      "submitted" | "verified" | "rejected" | "refund_due" | "refunded" | "override";
     Stock: {
       sellable_base: number;
       held_base: number;
@@ -3063,6 +3197,11 @@ export interface components {
       new: number;
       confirmed: number;
       completed: number;
+    };
+    SubmitPayment: {
+      reference: string;
+      /** Format: decimal */
+      paid_amount: string;
     };
     Supplier: {
       /** Format: uuid */
@@ -4263,6 +4402,31 @@ export interface operations {
       };
     };
   };
+  order_payment_action: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaymentAction"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
   orders_pos: {
     parameters: {
       query?: never;
@@ -4473,6 +4637,31 @@ export interface operations {
       cookie?: never;
     };
     requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicOrder"];
+        };
+      };
+    };
+  };
+  public_order_payment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubmitPayment"];
+      };
+    };
     responses: {
       200: {
         headers: {

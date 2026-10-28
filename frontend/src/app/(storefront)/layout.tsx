@@ -29,6 +29,10 @@ const FALLBACK: Store = {
   whatsapp: "",
   about_ar: "",
   about_en: "",
+  prepay_enabled: false,
+  bank_accounts: "",
+  payment_hold_hours: 24,
+  delivery_enabled: false,
 };
 
 const loadStore = async () =>

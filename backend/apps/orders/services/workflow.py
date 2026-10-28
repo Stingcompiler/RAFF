@@ -14,6 +14,7 @@ from apps.audit.services.log import record
 from apps.finance.money import money
 from apps.notifications.services.notify import mark_read
 from apps.orders.models import Order, OrderEvent
+from apps.orders.services import payments
 
 S = Order.Status
 TRANSITIONS: dict[str, set[str]] = {
@@ -54,6 +55,13 @@ def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
         raise WorkflowError("transition_not_allowed")
     if to in NEEDS_REASON and not reason.strip():
         raise WorkflowError("reason_required")
+    prepaid_unverified = (
+        order.payment_method == Order.PaymentMethod.BANK
+        and order.payment_status != Order.PaymentStatus.VERIFIED
+    )
+    if to == S.PREPARING and prepaid_unverified and not reason.strip():
+        # Preparing a prepaid order before the transfer is verified is a recorded decision.
+        raise WorkflowError("payment_not_verified")
     hooks = _hooks()
     automatic = ""
     if hooks is not None:
@@ -66,6 +74,10 @@ def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
         order.assigned_to = user
     order.save(update_fields=["status", "reason", "assigned_to", "updated_at"])
     OrderEvent.objects.create(order=order, status=to, actor=user, note=reason.strip()[:300])
+    if to == S.PREPARING and prepaid_unverified:
+        payments.override_note(order, user, reason)
+    if to == S.CANCELLED:
+        payments.on_cancel(order, user)
     mark_read(order.pk)
     record("status", "order", order.pk, actor=user, branch=order.branch, to=to)
     return order

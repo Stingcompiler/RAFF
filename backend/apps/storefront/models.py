@@ -32,6 +32,12 @@ class StorefrontSettings(OrgScopedModel):
     orders_per_hour = models.PositiveIntegerField(default=10)
     blocked_phones = models.TextField(blank=True, help_text="One phone number per line")
     telegram_chat_id = models.CharField(max_length=40, blank=True)
+    # Paying before pickup by bank transfer, and home delivery: both off until the pharmacy
+    # fills in its accounts / is ready to deliver (D-R0021).
+    prepay_enabled = models.BooleanField(default=False)
+    bank_accounts = models.TextField(blank=True, help_text="Shown to customers who prepay")
+    payment_hold_hours = models.PositiveIntegerField(default=24)
+    delivery_enabled = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:

@@ -4,7 +4,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { CheckCircleIcon } from "@/components/ui/icons";
 import { OrderAutoRefresh } from "@/features/store/OrderAutoRefresh";
-import { type PublicOrder, waLink } from "@/features/store/types";
+import { OrderPayment } from "@/features/store/OrderPayment";
+import { type PublicOrder, type Store, waLink } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
 import { cn } from "@/lib/cn";
 import { multiply } from "@/lib/decimal";
@@ -21,6 +22,8 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
   const ar = (await getLocale()) === "ar";
   const order = await serverGet<PublicOrder>(`/public/orders/${encodeURIComponent(token)}/`);
   if (!order) notFound();
+  const store = order.payment_method === "bank" ? await serverGet<Store>("/public/store/") : null;
+  const canSend = order.payment_status === "awaiting_proof" || order.payment_status === "rejected";
   const reached =
     order.status === "out_for_delivery"
       ? FLOW.indexOf("ready")
@@ -67,6 +70,27 @@ export default async function OrderPage({ params }: PageProps<"/orders/[token]">
         >
           {sideText}
         </div>
+      )}
+      <div className="flex flex-wrap gap-x-[16px] gap-y-[4px] text-body text-text-secondary">
+        <span>{t(`fulfillment.${order.fulfillment}`)}</span>
+        <span>{t(`paymentMethod.${order.payment_method}`)}</span>
+      </div>
+      {order.payment_method === "bank" && (
+        <div
+          role="status"
+          data-testid="payment-status"
+          className="rounded-control border border-border bg-surface px-[14px] py-[12px] font-medium"
+        >
+          {t(`payState.${order.payment_status}`)}
+        </div>
+      )}
+      {order.payment_method === "bank" && canSend && order.status !== "cancelled" && (
+        <OrderPayment
+          token={token}
+          accounts={store?.bank_accounts ?? ""}
+          estimate={order.estimated_total}
+          rejectedNote={order.payment_status === "rejected" ? order.payment_note : ""}
+        />
       )}
       <ol
         aria-label={t("orderNo")}

@@ -16,6 +16,7 @@ from apps.catalog.models import Item
 from apps.finance.money import money
 from apps.notifications.services.notify import order_placed
 from apps.orders.models import Order, OrderEvent, OrderLine
+from apps.orders.services import payments
 from apps.storefront.models import Listing, StorefrontSettings
 from apps.storefront.selectors import current_prices
 from apps.storefront.services.listings import sale_unit
@@ -55,6 +56,35 @@ class Place:
     longitude: Decimal | None = None
 
 
+@dataclass(frozen=True)
+class Terms:
+    """How the order is handed over and paid for (D-R0021)."""
+
+    fulfillment: str = "pickup"
+    payment_method: str = "cod"
+    payment_reference: str = ""
+    paid_amount: Decimal | None = None
+
+
+def check_terms(terms: Terms) -> Terms:
+    if terms.fulfillment not in ("pickup", "delivery"):
+        raise OrderError("invalid_fulfillment")
+    if terms.payment_method not in ("cod", "bank"):
+        raise OrderError("invalid_payment_method")
+    if terms.payment_method == "cod":
+        if terms.payment_reference.strip() or terms.paid_amount is not None:
+            raise OrderError("cod_has_no_transfer")
+        return Terms(terms.fulfillment, "cod")
+    ref = payments.normalize_reference(terms.payment_reference)
+    if not ref and terms.paid_amount is None:
+        return Terms(terms.fulfillment, "bank")  # "I will transfer after you confirm"
+    try:
+        ref, amount = payments.check_details(ref, terms.paid_amount)
+    except payments.PaymentError as exc:
+        raise OrderError(exc.code) from None
+    return Terms(terms.fulfillment, "bank", ref, amount)
+
+
 def check_place(place: Place) -> Place:
     address = " ".join(place.address.split())
     if len(address) < 3:
@@ -74,9 +104,13 @@ def check_place(place: Place) -> Place:
 
 
 def order_payload(
-    name: str, phone: str, note: str, lines: list[LineRequest], place: Place
+    name: str, phone: str, note: str, lines: list[LineRequest], place: Place, terms: Terms
 ) -> dict[str, Any]:
     return {
+        "fulfillment": terms.fulfillment,
+        "payment_method": terms.payment_method,
+        "payment_reference": terms.payment_reference,
+        "paid_amount": str(terms.paid_amount) if terms.paid_amount is not None else None,
         "name": name.strip(),
         "phone": phone,
         "note": note.strip(),
@@ -94,6 +128,7 @@ def _place(
     note: str,
     lines: list[LineRequest],
     place: Place,
+    terms: Terms,
     key: str,
 ) -> dict[str, Any]:
     if not settings.enabled or settings.branch_id is None:
@@ -118,6 +153,23 @@ def _place(
         if not 1 <= r.quantity <= MAX_QTY:
             raise OrderError("invalid_quantity", slug=r.slug)
     prices = current_prices([listings[r.slug].item for r in lines])
+    # Prescription items and items without a price have no final total yet, and are for
+    # pharmacist review at the counter: no delivery, no prepayment (D-R0021).
+    needs_review = any(
+        listings[r.slug].item.classification == Item.Classification.RX
+        or listings[r.slug].item.pk not in prices
+        for r in lines
+    )
+    if terms.fulfillment == "delivery":
+        if not settings.delivery_enabled:
+            raise OrderError("delivery_unavailable")
+        if needs_review:
+            raise OrderError("delivery_pickup_only")
+    if terms.payment_method == "bank":
+        if not settings.prepay_enabled:
+            raise OrderError("prepay_unavailable")
+        if needs_review:
+            raise OrderError("prepay_pickup_only")
     order = Order.objects.create(
         number=next_number("order", "O", width=4),
         token=secrets.token_urlsafe(32),
@@ -128,6 +180,13 @@ def _place(
         address=place.address,
         latitude=place.latitude,
         longitude=place.longitude,
+        fulfillment=terms.fulfillment,
+        payment_method=terms.payment_method,
+        payment_status=(
+            Order.PaymentStatus.AWAITING_PROOF
+            if terms.payment_method == "bank"
+            else Order.PaymentStatus.NONE
+        ),
         idempotency_key=key,
     )
     total = Decimal(0)
@@ -144,6 +203,11 @@ def _place(
     order.estimated_total = money(total)
     order.save(update_fields=["estimated_total"])
     OrderEvent.objects.create(order=order, status=Order.Status.NEW)
+    if terms.payment_reference and terms.paid_amount is not None:
+        try:
+            payments.apply_submission(order, terms.payment_reference, terms.paid_amount)
+        except payments.PaymentError as exc:
+            raise OrderError(exc.code) from None
     order_placed(
         order.pk,
         f"{order.number} · {order.customer_name} · {phone} · {place.address} · {len(lines)}",
@@ -160,6 +224,7 @@ def place_order(
     note: str,
     lines: list[LineRequest],
     place: Place,
+    terms: Terms | None = None,
     idempotency_key: str | None,
 ) -> dict[str, Any]:
     normalized = normalize_phone(phone)
@@ -168,10 +233,13 @@ def place_order(
     if len(name.strip()) < 2:
         raise OrderError("invalid_name")
     place = check_place(place)
+    terms = check_terms(terms or Terms())
     settings = StorefrontSettings.objects.first() or StorefrontSettings()
     return run_once(
         "place_order",
         idempotency_key,
-        order_payload(name, normalized, note, lines, place),
-        lambda: _place(settings, name, normalized, note, lines, place, idempotency_key or ""),
+        order_payload(name, normalized, note, lines, place, terms),
+        lambda: _place(
+            settings, name, normalized, note, lines, place, terms, idempotency_key or ""
+        ),
     )

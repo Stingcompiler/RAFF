@@ -88,6 +88,35 @@ def allocate(
     return taken
 
 
+def _prepaid_reference(order: Any, total: Decimal, payments: list[PaymentRequest]) -> str:
+    """A verified bank transfer for this order must be what pays the sale (D-R0021): the
+    sale's bank payment carries the transfer's reference and covers what was transferred, up
+    to the total. A transfer still awaiting verification is settled first, never worked round."""
+    if order is None or order.payment_method != "bank":
+        return ""
+    if order.payment_status == "submitted":
+        raise SaleError("payment_unverified")
+    if order.payment_status != "verified":
+        return ""
+    from apps.orders.services.payments import normalize_reference
+
+    due = money(min(order.paid_amount or Decimal(0), total))
+    applied = money(
+        sum(
+            (
+                money(p.amount)
+                for p in payments
+                if p.method == Payment.Method.BANK
+                and normalize_reference(p.bank_reference) == order.payment_reference
+            ),
+            Decimal(0),
+        )
+    )
+    if applied != due:
+        raise SaleError("prepaid_mismatch")
+    return str(order.payment_reference)
+
+
 def _payments(
     total: Decimal, payments: list[PaymentRequest], customer: Customer | None
 ) -> list[PaymentRequest]:
@@ -143,6 +172,10 @@ def _complete_order(order: Any, sale: Sale, user: User) -> None:
         status=StockReservation.Status.CONSUMED
     )
     OrderInvoiceLink.objects.create(order=order, sale=sale)
+    if order.payment_method == Order.PaymentMethod.BANK and order.payment_status == "verified":
+        from apps.orders.services.payments import overpaid
+
+        overpaid(order, sale.total, user)
     order.status = Order.Status.COMPLETED
     order.save(update_fields=["status", "updated_at"])
     OrderEvent.objects.create(order=order, status=order.status, actor=user, note=sale.number)
@@ -170,6 +203,7 @@ def _post(
         raise SaleError("unknown_customer")
     q = quote(lines, can_discount=can_discount)
     payments = _payments(q.total, payments, customer)
+    prepaid = _prepaid_reference(order, q.total, payments)
 
     from apps.orders.services.reserving import held_by_batch, lock_reservations
 
@@ -269,7 +303,15 @@ def _post(
         elif p.method == Payment.Method.BANK:
             pay.bank_reference = p.bank_reference.strip()
             pay.bank_account = p.bank_account.strip()
-            pay.verification = Payment.Verification.PENDING
+            from apps.orders.services.payments import normalize_reference
+
+            # The customer's own transfer was verified before preparing; others wait for the
+            # shift close like every counter transfer.
+            pay.verification = (
+                Payment.Verification.CONFIRMED
+                if prepaid and normalize_reference(pay.bank_reference) == prepaid
+                else Payment.Verification.PENDING
+            )
             debit_by_account["1020"] += amount
         else:
             assert customer is not None
