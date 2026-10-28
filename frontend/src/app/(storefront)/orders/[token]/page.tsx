@@ -12,7 +12,16 @@ import { cn } from "@/lib/cn";
 import { multiply } from "@/lib/decimal";
 import { money } from "@/lib/format";
 
-const FLOW = ["new", "confirmed", "preparing", "ready", "completed"] as const;
+const PICKUP_FLOW = ["new", "confirmed", "preparing", "ready", "completed"] as const;
+const DELIVERY_FLOW = [
+  "new",
+  "confirmed",
+  "preparing",
+  "ready",
+  "out_for_delivery",
+  "delivered",
+  "completed",
+] as const;
 const CHECK = "✓";
 const TIMES = "×";
 
@@ -26,19 +35,18 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/or
   if (!order) notFound();
   const store = order.payment_method === "bank" ? await serverGet<Store>("/public/store/") : null;
   const canSend = order.payment_status === "awaiting_proof" || order.payment_status === "rejected";
-  const reached =
-    order.status === "out_for_delivery"
-      ? FLOW.indexOf("ready")
-      : FLOW.indexOf(order.status as (typeof FLOW)[number]);
+  const delivery = order.fulfillment === "delivery";
+  const flow: readonly string[] = delivery ? DELIVERY_FLOW : PICKUP_FLOW;
   const final = order.status === "completed" || order.status === "cancelled";
-  const side = ["needs_contact", "cancelled", "out_for_delivery"].includes(order.status);
+  const reached = flow.indexOf(order.status === "delivery_failed" ? "ready" : order.status);
+  const side = ["needs_contact", "cancelled", "delivery_failed"].includes(order.status);
   const sideText = [
     t(`status.${order.status}`),
     order.status === "cancelled"
       ? t("statusNote.cancelled")
       : order.status === "needs_contact"
         ? t("statusNote.needs_contact")
-        : "",
+        : t("statusNote.delivery_failed"),
   ]
     .filter(Boolean)
     .join(" — ");
@@ -63,11 +71,9 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/or
           role="status"
           className={cn(
             "rounded-control px-[14px] py-[12px] font-medium",
-            order.status === "cancelled"
+            order.status === "cancelled" || order.status === "delivery_failed"
               ? "bg-danger-bg text-danger-text"
-              : order.status === "out_for_delivery"
-                ? "bg-info-bg text-info-text"
-                : "bg-warning-bg text-warning-text",
+              : "bg-warning-bg text-warning-text",
           )}
         >
           {sideText}
@@ -111,7 +117,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/or
         aria-label={t("orderNo")}
         className="ms-[11px] grid list-none border-s-2 border-border p-0"
       >
-        {FLOW.map((step, i) => {
+        {flow.map((step, i) => {
           const done = reached >= 0 ? i <= reached : i === 0;
           const note =
             step === "new"
@@ -137,7 +143,7 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/or
                 <div
                   className={cn(done ? "font-semibold text-text" : "font-medium text-text-muted")}
                 >
-                  {t(`status.${step}`)}
+                  {step === "ready" && delivery ? t("status.ready_delivery") : t(`status.${step}`)}
                 </div>
                 {note && <div className="text-label text-text-muted">{note}</div>}
               </div>

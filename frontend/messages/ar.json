@@ -1217,13 +1217,17 @@
       "ready": "جاهز للاستلام",
       "out_for_delivery": "خرج للتوصيل",
       "completed": "مكتمل",
-      "cancelled": "ملغى"
+      "cancelled": "ملغى",
+      "delivered": "تم التوصيل",
+      "delivery_failed": "تعذّر التوصيل",
+      "ready_delivery": "جاهز للتوصيل"
     },
     "statusNote": {
       "new": "وصل الطلب",
       "confirmed": "تؤكده الصيدلية معك",
       "needs_contact": "ستراسلك الصيدلية لتوضيح تفاصيل",
-      "cancelled": "أُلغي الطلب"
+      "cancelled": "أُلغي الطلب",
+      "delivery_failed": "تعذّر توصيل طلبك، وستتواصل معك الصيدلية لتحديد موعد جديد"
     },
     "trackT": "تتبّع طلب",
     "trackB": "أدخل رقم الطلب ورقم الهاتف الذي أرسلته به.",
@@ -1381,7 +1385,9 @@
       "ready": "جاهز للاستلام",
       "out_for_delivery": "خرج للتوصيل",
       "completed": "مكتمل",
-      "cancelled": "ملغى"
+      "cancelled": "ملغى",
+      "delivered": "سُلّم — بانتظار التسوية",
+      "delivery_failed": "تعذّر التوصيل"
     },
     "back": "← الطلبات",
     "hItem": "الصنف",
@@ -1440,7 +1446,10 @@
       "payment_not_verified": "التحويل لم يُتحقَّق منه؛ اكتب سبباً لبدء التجهيز",
       "nothing_to_verify": "لا تحويل بانتظار التحقق",
       "no_refund_due": "لا استرداد مستحق",
-      "reference_used": "رقم العملية مستخدم لطلب آخر"
+      "reference_used": "رقم العملية مستخدم لطلب آخر",
+      "not_a_delivery": "الطلب ليس توصيلاً",
+      "order_not_ready": "الإسناد لطلب «جاهز» فقط",
+      "unknown_courier": "موظف التوصيل غير متاح"
     },
     "toPos": "تحويل إلى فاتورة في نقطة البيع",
     "inq": {
@@ -1515,7 +1524,16 @@
     },
     "unverifiedWarn": "التحويل لم يُتحقَّق منه بعد. ابدأ التجهيز فقط إن اطمأننت للدفع، واكتب السبب ليُسجَّل.",
     "payReceipt": "صورة إشعار التحويل",
-    "payReceiptOpen": "فتح الصورة"
+    "payReceiptOpen": "فتح الصورة",
+    "courierT": "التوصيل",
+    "courierL": "موظف التوصيل",
+    "courierNone": "بلا إسناد",
+    "assign": "إسناد",
+    "assignPick": "اختر موظف التوصيل",
+    "courierIs": "المُسنَد إليه",
+    "collected": "حصّله المندوب",
+    "toReadyAgain": "إعادة إلى «جاهز» (فشل التوصيل)",
+    "delivBack": "أُعيد للتجهيز لإسناد جديد"
   },
   "storeAdmin": {
     "catT": "الكتالوج المنشور",
@@ -1671,7 +1689,9 @@
         "ready": "جاهز للاستلام",
         "out_for_delivery": "خرج للتوصيل",
         "completed": "مكتمل",
-        "cancelled": "ملغى"
+        "cancelled": "ملغى",
+        "delivered": "سُلّم — بانتظار التسوية",
+        "delivery_failed": "تعذّر التوصيل"
       },
       "viaPos": "يُكمل بالفاتورة في نقطة البيع",
       "failed": "تعذّر تغيير حالة الطلب."
@@ -1868,6 +1888,43 @@
     "foot": {
       "note": "بيانات العرض تجريبية.",
       "tag": "نظام إدارة الصيدليات"
+    }
+  },
+  "deliveries": {
+    "title": "توصيلاتي",
+    "empty": "لا توصيلات مُسنَدة إليك الآن.",
+    "forbidden": "ليست لديك صلاحية التوصيل.",
+    "home": "إلى لوحة المتابعة",
+    "whatsapp": "واتساب",
+    "noAddress": "لا عنوان",
+    "items": "{count} صنف",
+    "collect": "حصّل {amount}",
+    "prepaid": "✓ مدفوع مسبقاً",
+    "pickup": "استلمتُ الطلب من الصيدلية",
+    "delivered": "سُلِّم للزبون",
+    "failedBtn": "تعذّر التسليم",
+    "handTitle": "تسليم الطلب {number}",
+    "collectedL": "المبلغ الذي استلمته نقداً",
+    "noteL": "ملاحظة (اختيارية)",
+    "failTitle": "تعذّر تسليم {number}",
+    "reasonL": "السبب",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "handCash": "✓ سُلِّم. سلّم {amount} للكاشير",
+    "doneNoCash": "✓ سُلِّم",
+    "failedNote": "تعذّر: {reason}. أعده للصيدلية.",
+    "failed": "تعذّر تنفيذ العملية.",
+    "status": {
+      "ready": "بانتظار الاستلام",
+      "out_for_delivery": "في الطريق",
+      "delivered": "سُلِّم",
+      "delivery_failed": "تعذّر",
+      "new": "جديد",
+      "needs_contact": "—",
+      "confirmed": "—",
+      "preparing": "—",
+      "completed": "مكتمل",
+      "cancelled": "ملغى"
     }
   }
 }

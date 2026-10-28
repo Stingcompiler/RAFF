@@ -162,6 +162,10 @@ class StaffOrderSerializer(serializers.Serializer[Any]):
     payment_reference = serializers.CharField(allow_blank=True)
     payment_note = serializers.CharField(allow_blank=True)
     has_receipt = serializers.BooleanField()
+    courier_id = serializers.UUIDField(allow_null=True)
+    courier_name_ar = serializers.CharField(allow_null=True)
+    courier_name_en = serializers.CharField(allow_null=True)
+    collected_amount = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
     payment_events = StaffPaymentEventSerializer(many=True)
     latitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
     longitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
@@ -278,3 +282,44 @@ class SubmitPaymentSerializer(serializers.Serializer[None]):
 class PaymentActionSerializer(serializers.Serializer[None]):
     action = serializers.ChoiceField(choices=["verify", "reject", "refunded"])
     note = serializers.CharField(max_length=300, required=False, allow_blank=True, default="")
+
+
+class CourierSerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    username = serializers.CharField()
+    name_ar = serializers.CharField()
+    name_en = serializers.CharField()
+
+
+class AssignCourierSerializer(serializers.Serializer[None]):
+    courier_id = serializers.UUIDField()
+
+
+class DeliverSerializer(serializers.Serializer[None]):
+    collected = serializers.DecimalField(
+        max_digits=18, decimal_places=4, required=False, allow_null=True, default=None
+    )
+    note = serializers.CharField(max_length=300, required=False, allow_blank=True, default="")
+
+
+class FailDeliverySerializer(serializers.Serializer[None]):
+    reason = serializers.CharField(max_length=300)
+
+
+class DeliveryCardSerializer(serializers.Serializer[Any]):
+    id = serializers.UUIDField()
+    number = serializers.CharField()
+    status = serializers.ChoiceField(choices=STATUS)
+    customer_name = serializers.CharField()
+    phone = serializers.CharField()
+    address = serializers.CharField(allow_blank=True)
+    latitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
+    longitude = serializers.DecimalField(max_digits=9, decimal_places=6, allow_null=True)
+    note = serializers.CharField(allow_blank=True)
+    payment_method = serializers.ChoiceField(choices=Order.PaymentMethod.choices)
+    payment_status = serializers.ChoiceField(choices=Order.PaymentStatus.choices)
+    amount_due = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
+    lines_count = serializers.IntegerField()
+    reason = serializers.CharField(allow_blank=True)
+    collected_amount = serializers.DecimalField(max_digits=18, decimal_places=4, allow_null=True)
+    delivered_at = serializers.DateTimeField(allow_null=True)

@@ -37,6 +37,7 @@ USERS = [
     ("mazin", "مازن", "Mazin", "pharmacist", "KRT"),
     ("salma", "سلمى", "Salma", "cashier", "KRT"),
     ("huda", "هدى", "Huda", "accountant", None),
+    ("hasan", "حسن", "Hasan", "courier", "KRT"),
 ]
 
 

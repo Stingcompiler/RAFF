@@ -473,6 +473,24 @@ paths:
                 items:
                   $ref: '#/components/schemas/PriceList'
           description: ''
+  /api/v1/couriers/:
+    get:
+      operationId: couriers_list
+      description: Who can be given a delivery at this branch (for the assignment
+        list).
+      tags:
+      - couriers
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courier'
+          description: ''
   /api/v1/customers/:
     get:
       operationId: customers_list
@@ -536,6 +554,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Overview'
+          description: ''
+  /api/v1/deliveries/:
+    get:
+      operationId: deliveries_list
+      description: 'The courier''s own deliveries: assigned, on the way, failed, and
+        delivered today.'
+      tags:
+      - deliveries
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeliveryCard'
+          description: ''
+  /api/v1/deliveries/{id}/{action}/:
+    post:
+      operationId: delivery_action
+      description: 'pickup / deliver / fail: the courier''s three moves, on their
+        own orders only.'
+      parameters:
+      - in: path
+        name: action
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - deliveries
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deliver'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryCard'
           description: ''
   /api/v1/devices/:
     get:
@@ -979,6 +1048,33 @@ paths:
         required: true
       tags:
       - orders
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffOrder'
+          description: ''
+  /api/v1/orders/{id}/assign-courier/:
+    post:
+      operationId: order_assign_courier
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignCourier'
+        required: true
       security:
       - cookieAuth: []
       responses:
@@ -2610,6 +2706,14 @@ components:
         * `verify` - verify
         * `reject` - reject
         * `refunded` - refunded
+    AssignCourier:
+      type: object
+      properties:
+        courier_id:
+          type: string
+          format: uuid
+      required:
+      - courier_id
     Assignment:
       type: object
       properties:
@@ -2947,6 +3051,23 @@ components:
       required:
       - counted_units
       - line_id
+    Courier:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        name_ar:
+          type: string
+        name_en:
+          type: string
+      required:
+      - id
+      - name_ar
+      - name_en
+      - username
     Customer:
       type: object
       properties:
@@ -3017,6 +3138,85 @@ components:
         * `restock` - restock
         * `destroy` - destroy
         * `return` - return
+    Deliver:
+      type: object
+      properties:
+        collected:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        note:
+          type: string
+          default: ''
+          maxLength: 300
+    DeliveryCard:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        number:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        customer_name:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,6})?$
+          nullable: true
+        note:
+          type: string
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        amount_due:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        lines_count:
+          type: integer
+        reason:
+          type: string
+        collected_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - address
+      - amount_due
+      - collected_amount
+      - customer_name
+      - delivered_at
+      - id
+      - latitude
+      - lines_count
+      - longitude
+      - note
+      - number
+      - payment_method
+      - payment_status
+      - phone
+      - reason
+      - status
     Device:
       type: object
       properties:
@@ -3874,6 +4074,8 @@ components:
       - preparing
       - ready
       - out_for_delivery
+      - delivered
+      - delivery_failed
       - completed
       - cancelled
       type: string
@@ -3884,6 +4086,8 @@ components:
         * `preparing` - preparing
         * `ready` - ready
         * `out_for_delivery` - out_for_delivery
+        * `delivered` - delivered
+        * `delivery_failed` - delivery_failed
         * `completed` - completed
         * `cancelled` - cancelled
     OrdersSummary:
@@ -6019,6 +6223,21 @@ components:
           type: string
         has_receipt:
           type: boolean
+        courier_id:
+          type: string
+          format: uuid
+          nullable: true
+        courier_name_ar:
+          type: string
+          nullable: true
+        courier_name_en:
+          type: string
+          nullable: true
+        collected_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,14}(?:\.\d{0,4})?$
+          nullable: true
         payment_events:
           type: array
           items:
@@ -6061,6 +6280,10 @@ components:
       required:
       - address
       - allowed
+      - collected_amount
+      - courier_id
+      - courier_name_ar
+      - courier_name_en
       - created_at
       - customer_name
       - estimated_total

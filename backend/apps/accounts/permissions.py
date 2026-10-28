@@ -19,6 +19,7 @@ PERMISSIONS: Final[dict[str, str]] = {
     "finance.manage": "Record payments and verify bank transfers",
     "reports.view": "View reports",
     "orders.manage": "Handle storefront orders",
+    "deliveries.handle": "Deliver the orders assigned to me",
     "storefront.manage": "Manage the public storefront",
     "settings.manage": "Manage pharmacy settings, branches and devices",
     "users.manage": "Manage users and roles",
@@ -66,6 +67,7 @@ DEFAULT_ROLES: Final[dict[str, tuple[str, str, frozenset[str]]]] = {
             }
         ),
     ),
+    "courier": ("موظف توصيل", "Courier", frozenset({"deliveries.handle"})),
     "accountant": (
         "محاسب",
         "Accountant",

@@ -207,7 +207,10 @@ def _post(
 
     from apps.orders.services.reserving import held_by_batch, lock_reservations
 
-    if order is not None and (order.status != "ready" or order.branch_id != branch.pk):
+    # A pickup order is settled when it is ready; a home delivery when the courier reports it
+    # delivered and hands the cash over.
+    settled = "delivered" if order is not None and order.fulfillment == "delivery" else "ready"
+    if order is not None and (order.status != settled or order.branch_id != branch.pk):
         raise SaleError("order_not_ready")
     number = next_number("sale", "INV")
     item_ids = {line.item.pk for line in q.lines}

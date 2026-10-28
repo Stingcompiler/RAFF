@@ -1217,13 +1217,17 @@
       "ready": "Ready for pickup",
       "out_for_delivery": "Out for delivery",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "delivered": "Delivered",
+      "delivery_failed": "Delivery failed",
+      "ready_delivery": "Ready for delivery"
     },
     "statusNote": {
       "new": "Order received",
       "confirmed": "The pharmacy confirms with you",
       "needs_contact": "The pharmacy will message you about details",
-      "cancelled": "The order was cancelled"
+      "cancelled": "The order was cancelled",
+      "delivery_failed": "Delivery did not work out; the pharmacy will contact you for a new time"
     },
     "trackT": "Track an order",
     "trackB": "Enter the order number and the phone number you used.",
@@ -1381,7 +1385,9 @@
       "ready": "Ready for pickup",
       "out_for_delivery": "Out for delivery",
       "completed": "Completed",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "delivered": "Delivered — awaiting settlement",
+      "delivery_failed": "Delivery failed"
     },
     "back": "← Orders",
     "hItem": "Item",
@@ -1440,7 +1446,10 @@
       "payment_not_verified": "The transfer is not verified; write a reason to start preparing",
       "nothing_to_verify": "No transfer is awaiting verification",
       "no_refund_due": "No refund is due",
-      "reference_used": "This transaction number is used for another order"
+      "reference_used": "This transaction number is used for another order",
+      "not_a_delivery": "This order is not a delivery",
+      "order_not_ready": "Only a ready order can be assigned",
+      "unknown_courier": "That courier is not available"
     },
     "toPos": "Turn into an invoice at the POS",
     "inq": {
@@ -1515,7 +1524,16 @@
     },
     "unverifiedWarn": "The transfer is not verified yet. Start preparing only if you trust the payment, and write the reason to keep it on record.",
     "payReceipt": "Transfer confirmation photo",
-    "payReceiptOpen": "Open the photo"
+    "payReceiptOpen": "Open the photo",
+    "courierT": "Delivery",
+    "courierL": "Courier",
+    "courierNone": "Not assigned",
+    "assign": "Assign",
+    "assignPick": "Choose a courier",
+    "courierIs": "Assigned to",
+    "collected": "Collected by the courier",
+    "toReadyAgain": "Back to ready (failed delivery)",
+    "delivBack": "Returned to ready for a new assignment"
   },
   "storeAdmin": {
     "catT": "Published catalog",
@@ -1671,7 +1689,9 @@
         "ready": "Ready",
         "out_for_delivery": "Out for delivery",
         "completed": "Completed",
-        "cancelled": "Cancelled"
+        "cancelled": "Cancelled",
+        "delivered": "Delivered — awaiting settlement",
+        "delivery_failed": "Delivery failed"
       },
       "viaPos": "Completes via POS invoice",
       "failed": "Couldn't change the order status."
@@ -1868,6 +1888,43 @@
     "foot": {
       "note": "Demo data is sample data.",
       "tag": "Pharmacy management system"
+    }
+  },
+  "deliveries": {
+    "title": "My deliveries",
+    "empty": "No deliveries assigned to you right now.",
+    "forbidden": "You do not have the delivery permission.",
+    "home": "To the dashboard",
+    "whatsapp": "WhatsApp",
+    "noAddress": "No address",
+    "items": "{count} items",
+    "collect": "Collect {amount}",
+    "prepaid": "✓ Prepaid",
+    "pickup": "I took the order from the pharmacy",
+    "delivered": "Delivered to the customer",
+    "failedBtn": "Could not deliver",
+    "handTitle": "Hand over {number}",
+    "collectedL": "Cash you received",
+    "noteL": "Note (optional)",
+    "failTitle": "Could not deliver {number}",
+    "reasonL": "Reason",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "handCash": "✓ Delivered. Hand {amount} to the cashier",
+    "doneNoCash": "✓ Delivered",
+    "failedNote": "Failed: {reason}. Return it to the pharmacy.",
+    "failed": "The action did not go through.",
+    "status": {
+      "ready": "Waiting to be picked up",
+      "out_for_delivery": "On the way",
+      "delivered": "Delivered",
+      "delivery_failed": "Failed",
+      "new": "New",
+      "needs_contact": "—",
+      "confirmed": "—",
+      "preparing": "—",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
     }
   }
 }

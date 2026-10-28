@@ -12,6 +12,8 @@ export const STATUS_TONE: Record<OrderStatus, Tone> = {
   preparing: "info",
   ready: "success",
   out_for_delivery: "info",
+  delivered: "info",
+  delivery_failed: "danger",
   completed: "success",
   cancelled: "danger",
 };
@@ -22,6 +24,9 @@ export const STATUSES: OrderStatus[] = [
   "confirmed",
   "preparing",
   "ready",
+  "out_for_delivery",
+  "delivered",
+  "delivery_failed",
   "completed",
   "cancelled",
 ];

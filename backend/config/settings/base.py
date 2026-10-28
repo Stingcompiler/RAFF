@@ -194,6 +194,8 @@ SPECTACULAR_SETTINGS = {
             "preparing",
             "ready",
             "out_for_delivery",
+            "delivered",
+            "delivery_failed",
             "completed",
             "cancelled",
         ],

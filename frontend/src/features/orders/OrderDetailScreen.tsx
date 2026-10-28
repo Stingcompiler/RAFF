@@ -2,17 +2,18 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
 import { Badge, type Tone } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
-import { Textarea } from "@/components/ui/Field";
+import { Select, Textarea } from "@/components/ui/Field";
 import { Panel } from "@/components/ui/Panel";
 import { Segmented } from "@/components/ui/Segmented";
 import { NumberCell, TableHead, TableRow, TextCell, type Column } from "@/components/ui/Table";
 import { useToast } from "@/components/ui/Toast";
-import { apiSend } from "@/lib/api/browser";
+import { apiGet, apiSend } from "@/lib/api/browser";
+import type { Schemas } from "@/lib/api/types";
 import { cn } from "@/lib/cn";
 import { amount, money, timeOfDay } from "@/lib/format";
 import { waLink } from "@/lib/whatsapp";
@@ -33,6 +34,9 @@ const ERRORS = [
   "nothing_to_verify",
   "no_refund_due",
   "reference_used",
+  "not_a_delivery",
+  "order_not_ready",
+  "unknown_courier",
 ] as const;
 const PAY_TONE: Record<OrderDetail["payment_status"], Tone> = {
   none: "neutral",
@@ -44,6 +48,7 @@ const PAY_TONE: Record<OrderDetail["payment_status"], Tone> = {
   refunded: "neutral",
 };
 type PayAction = "reject" | "refunded";
+type Courier = Schemas["Courier"];
 
 /** Order details (§5.2): allowed transitions only, edits with recorded consent, WhatsApp templates. */
 export function OrderDetailScreen({
@@ -61,6 +66,8 @@ export function OrderDetailScreen({
   const [reason, setReason] = useState("");
   const [payAct, setPayAct] = useState<PayAction | null>(null);
   const [payNote, setPayNote] = useState("");
+  const [couriers, setCouriers] = useState<Courier[]>([]);
+  const [courierId, setCourierId] = useState("");
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -97,6 +104,31 @@ export function OrderDetailScreen({
     setOrder(res.data);
     setMoving(null);
     setReason("");
+    toast.push("success", t("saved"));
+  };
+
+  const isDelivery = order.fulfillment === "delivery";
+  const assignable = isDelivery && order.status === "ready";
+  useEffect(() => {
+    if (!assignable) return;
+    let live = true;
+    void apiGet<Courier[]>("/couriers/").then((res) => {
+      if (live && res.ok) setCouriers(res.data);
+    });
+    return () => {
+      live = false;
+    };
+  }, [assignable]);
+
+  const assign = async () => {
+    if (!courierId) return;
+    setBusy(true);
+    const res = await apiSend<OrderDetail>("POST", `/orders/${order.id}/assign-courier/`, {
+      courier_id: courierId,
+    });
+    setBusy(false);
+    if (!res.ok) return fail(res.error);
+    setOrder(res.data);
     toast.push("success", t("saved"));
   };
 
@@ -200,7 +232,11 @@ export function OrderDetailScreen({
               }
               onClick={() => setMoving(to)}
             >
-              {t(`to.${to as "needs_contact" | "confirmed" | "preparing" | "ready" | "cancelled"}`)}
+              {to === "ready" && order.status === "delivery_failed"
+                ? t("toReadyAgain")
+                : t(
+                    `to.${to as "needs_contact" | "confirmed" | "preparing" | "ready" | "cancelled"}`,
+                  )}
             </Button>
           ))}
         </span>
@@ -215,17 +251,20 @@ export function OrderDetailScreen({
           {t("readyNote")}
         </div>
       )}
-      {(order.status === "cancelled" || order.status === "needs_contact") && order.reason && (
-        <div
-          className={
-            order.status === "cancelled"
-              ? "rounded-control bg-danger-bg px-[14px] py-[10px] font-medium text-danger-text"
-              : "rounded-control bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
-          }
-        >
-          {order.reason}
-        </div>
-      )}
+      {(order.status === "cancelled" ||
+        order.status === "needs_contact" ||
+        order.status === "delivery_failed") &&
+        order.reason && (
+          <div
+            className={
+              order.status === "cancelled" || order.status === "delivery_failed"
+                ? "rounded-control bg-danger-bg px-[14px] py-[10px] font-medium text-danger-text"
+                : "rounded-control bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
+            }
+          >
+            {order.reason}
+          </div>
+        )}
       <div className="grid grid-cols-[minmax(0,1.7fr)_minmax(300px,1fr)] items-start gap-[16px] max-[1180px]:grid-cols-1">
         <div className="grid gap-[12px]">
           <Panel>
@@ -312,6 +351,50 @@ export function OrderDetailScreen({
                     {t("cancel")}
                   </Button>
                 </div>
+              </div>
+            </Panel>
+          )}
+          {isDelivery && (
+            <Panel title={t("courierT")}>
+              <div className="grid gap-[10px] p-[14px]">
+                <div className="flex justify-between gap-[12px]">
+                  <span className="text-text-muted">{t("courierIs")}</span>
+                  <span data-testid="courier-name" className="font-semibold">
+                    {order.courier_id
+                      ? ar
+                        ? order.courier_name_ar
+                        : order.courier_name_en
+                      : t("courierNone")}
+                  </span>
+                </div>
+                {order.collected_amount && (
+                  <div className="flex justify-between gap-[12px]">
+                    <span className="text-text-muted">{t("collected")}</span>
+                    <span dir="ltr" className="font-semibold num">
+                      {money(order.collected_amount, ar ? "ar" : "en")}
+                    </span>
+                  </div>
+                )}
+                {assignable && (
+                  <div className="flex flex-wrap gap-[8px]">
+                    <Select
+                      aria-label={t("assignPick")}
+                      value={courierId}
+                      onChange={(e) => setCourierId(e.target.value)}
+                      className="min-w-[160px] flex-1"
+                    >
+                      <option value="">{t("assignPick")}</option>
+                      {couriers.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {ar ? c.name_ar : c.name_en}
+                        </option>
+                      ))}
+                    </Select>
+                    <Button disabled={busy || !courierId} onClick={() => void assign()}>
+                      {t("assign")}
+                    </Button>
+                  </div>
+                )}
               </div>
             </Panel>
           )}

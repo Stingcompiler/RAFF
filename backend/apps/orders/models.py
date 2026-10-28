@@ -39,6 +39,8 @@ class Order(OrgScopedModel):
         PREPARING = "preparing", "Preparing"
         READY = "ready", "Ready for pickup"
         OUT_FOR_DELIVERY = "out_for_delivery", "Out for delivery"
+        DELIVERED = "delivered", "Delivered — awaiting settlement"
+        DELIVERY_FAILED = "delivery_failed", "Delivery failed"
         COMPLETED = "completed", "Completed"
         CANCELLED = "cancelled", "Cancelled"
 
@@ -87,6 +89,12 @@ class Order(OrgScopedModel):
         "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
     )
     estimated_total = MoneyField(default=0)
+    # Home delivery: the courier it is assigned to, and how it ended (D-R0023).
+    courier = models.ForeignKey(
+        "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
+    )
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    collected_amount = MoneyField(null=True, blank=True)
     assigned_to = models.ForeignKey(
         "accounts.User", null=True, blank=True, on_delete=models.PROTECT, related_name="+"
     )
