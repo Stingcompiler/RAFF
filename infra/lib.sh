@@ -92,3 +92,33 @@ wait_healthy() {
 }
 
 manage() { compose exec -T backend python manage.py "$@"; }
+
+# Refuse to start with the example file's placeholders (review D-01): an empty organization id
+# or a "change-me" secret means the environment was copied by hand and never generated.
+check_env() {
+  local bad=""
+  [ -n "${SINGLE_ORG_ID:-}" ] || bad="$bad SINGLE_ORG_ID(empty)"
+  for key in DJANGO_SECRET_KEY POSTGRES_PASSWORD; do
+    case "${!key:-}" in ""|change-me) bad="$bad $key(placeholder)" ;; esac
+  done
+  [ -z "$bad" ] || die "infra/prod/.env still has placeholders:$bad. Run infra/install.sh (it generates them)."
+}
+
+# The commit that is running now (review D-02): written after a healthy start, read by the
+# next update for its rollback — never the checkout, which a `git pull` may already have moved.
+DEPLOYED_FILE="$PROD/DEPLOYED"
+deployed_commit() { [ -f "$DEPLOYED_FILE" ] && cat "$DEPLOYED_FILE" || git -C "$ROOT" rev-parse HEAD; }
+
+# Backup schedule (reviews D-04): a local copy every 15 minutes kept for a day, the nightly
+# copy with the off-site upload, and the weekly restore drill.
+write_cron() {
+  [ -d /etc/cron.d ] && [ -w /etc/cron.d ] || return 0
+  cat >/etc/cron.d/raff <<CRON
+# Raff backups (see docs/runbooks/backup-restore.md).
+SHELL=/bin/bash
+*/15 * * * * root $ROOT/infra/backup/backup.sh --frequent >>/var/log/raff-backup.log 2>&1
+30 2 * * * root $ROOT/infra/backup/backup.sh >>/var/log/raff-backup.log 2>&1
+30 3 * * 0 root $ROOT/infra/restore.sh --verify-latest >>/var/log/raff-backup.log 2>&1
+CRON
+  chmod 644 /etc/cron.d/raff
+}

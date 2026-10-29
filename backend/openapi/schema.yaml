@@ -2823,11 +2823,24 @@ components:
           nullable: true
         failing:
           type: boolean
+        last_offsite_ok:
+          allOf:
+          - $ref: '#/components/schemas/BackupRun'
+          nullable: true
+        last_offsite_failed:
+          allOf:
+          - $ref: '#/components/schemas/BackupRun'
+          nullable: true
+        offsite_failing:
+          type: boolean
       required:
       - failing
       - last_failed
+      - last_offsite_failed
+      - last_offsite_ok
       - last_ok
       - last_restore_test
+      - offsite_failing
     BankTransfer:
       type: object
       properties:

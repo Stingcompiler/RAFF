@@ -2,14 +2,27 @@
 # Encrypted backup of the database and listing images, with an optional off-site copy.
 # Prints the archive path on its last line. Records the result for Settings › backups.
 #
-#   infra/backup/backup.sh            (cron runs it nightly; see install.sh)
+#   infra/backup/backup.sh             nightly: kept RAFF_BACKUP_KEEP days, copied off-site
+#   infra/backup/backup.sh --frequent  every 15 minutes: local only, kept for a day (spec §1)
 . "$(cd "$(dirname "$0")/.." && pwd)/lib.sh"
 
+FREQUENT=0
+[ "${1:-}" = "--frequent" ] && FREQUENT=1
 load_env
 require_docker
 [ -f "$KEY_FILE" ] || die "Backup key $KEY_FILE is missing."
+# One backup at a time: a frequent run that meets the nightly one simply skips this turn.
+exec 9>/var/lock/raff-backup.lock 2>/dev/null || exec 9>/tmp/raff-backup.lock
+if ! flock -n 9; then
+  log "Another backup is running; skipping this one."
+  exit 0
+fi
 DIR="${RAFF_BACKUP_DIR:-/var/backups/raff}"
 KEEP="${RAFF_BACKUP_KEEP:-14}"
+if [ "$FREQUENT" = 1 ]; then
+  DIR="$DIR/frequent"
+  KEEP="${RAFF_BACKUP_FREQUENT_KEEP:-96}"
+fi
 mkdir -p "$DIR"
 chmod 700 "$DIR"
 STAMP="$(date -u +%Y%m%d-%H%M%S)"
@@ -47,12 +60,21 @@ trap - ERR
 SIZE=$(stat -c %s "$OUT" 2>/dev/null || stat -f %z "$OUT")
 
 OFFSITE=""
-if [ -n "${RAFF_BACKUP_REMOTE:-}" ]; then
+OFFSITE_ERROR=""
+if [ "$FREQUENT" = 1 ]; then
+  : # Local only; the nightly run carries the off-site copy.
+elif [ -n "${RAFF_BACKUP_REMOTE:-}" ]; then
   log "Copying off-site to $RAFF_BACKUP_REMOTE…"
-  case "$RAFF_BACKUP_REMOTE" in
-    rclone:*) rclone copy "$OUT" "${RAFF_BACKUP_REMOTE#rclone:}" && rclone copy "$OUT.sha256" "${RAFF_BACKUP_REMOTE#rclone:}" && OFFSITE=1 ;;
-    *) rsync -a "$OUT" "$OUT.sha256" "$RAFF_BACKUP_REMOTE/" && OFFSITE=1 ;;
-  esac || warn "Off-site copy failed; the local backup is still good."
+  if case "$RAFF_BACKUP_REMOTE" in
+    rclone:*) rclone copy "$OUT" "${RAFF_BACKUP_REMOTE#rclone:}" && rclone copy "$OUT.sha256" "${RAFF_BACKUP_REMOTE#rclone:}" ;;
+    *) rsync -a "$OUT" "$OUT.sha256" "$RAFF_BACKUP_REMOTE/" ;;
+  esac; then
+    OFFSITE=1
+  else
+    OFFSITE_ERROR="the copy to $RAFF_BACKUP_REMOTE failed"
+  fi
+else
+  OFFSITE_ERROR="no off-site destination is configured (RAFF_BACKUP_REMOTE)"
 fi
 
 # Keep the newest $KEEP archives.
@@ -60,6 +82,15 @@ ls -1t "$DIR"/raff-*.tar.enc 2>/dev/null | tail -n +"$((KEEP + 1))" | while read
   rm -f "$old" "$old.sha256"
 done
 
-manage record_backup ok --file "$(basename "$OUT")" --bytes "$SIZE" ${OFFSITE:+--offsite} >/dev/null
+DETAIL=""
+[ "$FREQUENT" = 1 ] && DETAIL="frequent"
+manage record_backup ok --file "$(basename "$OUT")" --bytes "$SIZE" ${OFFSITE:+--offsite} \
+  --detail "$DETAIL" >/dev/null
+# The local copy is good either way; a missing off-site copy is its own failure, with its own
+# alert, so days without one never pass as success (review D-03).
+if [ -n "$OFFSITE_ERROR" ]; then
+  warn "Off-site copy: $OFFSITE_ERROR. The local backup is still good."
+  manage record_backup failed --kind offsite --file "$(basename "$OUT")" --detail "$OFFSITE_ERROR" >/dev/null || true
+fi
 log "Backup written: $OUT ($SIZE bytes)"
 echo "$OUT"

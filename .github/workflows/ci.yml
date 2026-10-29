@@ -179,6 +179,22 @@ jobs:
         run: |
           test "$(sudo $COMPOSE exec -T postgres psql -U raff -d raff -tAc 'SELECT count(*) FROM catalog_item')" = "$ITEMS"
           curl -fsS http://localhost/api/v1/public/products/ | grep -q par-500
+      - name: A damaged backup leaves the current data untouched
+        run: |
+          mkdir -p /tmp/bad && cd /tmp/bad
+          sudo openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -pass file:/tmp/backup.key -in "$BACKUP" | tar -xf - meta.json
+          echo "not a database dump" > db.dump
+          tar -cf media.tar --files-from /dev/null
+          tar -cf bundle.tar db.dump media.tar meta.json
+          sudo openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass file:/tmp/backup.key -in bundle.tar -out bad.tar.enc
+          cd "$GITHUB_WORKSPACE"
+          set +e
+          sudo infra/restore.sh /tmp/bad/bad.tar.enc --key /tmp/backup.key --no-build
+          code=$?
+          set -e
+          test "$code" -ne 0
+          test "$(sudo $COMPOSE exec -T postgres psql -U raff -d raff -tAc 'SELECT count(*) FROM catalog_item')" = "$ITEMS"
+          curl -fsS http://localhost/api/v1/health/
       - name: Weekly restore drill
         run: sudo infra/restore.sh --verify-latest
       - name: A failed update rolls back

@@ -7,10 +7,13 @@
 #     --owner admin --owner-ar "المالك" --owner-en "Owner" [--license LICENSE.json] [--no-cron]
 #
 # Use --http instead of --domain for a plain-HTTP trial on a test machine.
+# Behind another web server on the same host (docs/runbooks/shared-host.md):
+#   --behind-proxy raff.example.com [--http-port 8400] [--https-port 8443] [--trusted-proxies CIDR]
 # The owner's password is read from RAFF_OWNER_PASSWORD, or generated and printed once.
 . "$(dirname "$0")/lib.sh"
 
 ADDRESS="" EMAIL="" ORG="" BCODE="" BAR="" BEN="" OWNER="" OAR="" OEN="" LICENSE="" CRON=1
+PROXY_HOST="" HTTP_PORT=8400 HTTPS_PORT=8443 TRUSTED="172.16.0.0/12"
 while [ $# -gt 0 ]; do
   case "$1" in
     --domain) ADDRESS="$2"; shift 2 ;;
@@ -25,6 +28,10 @@ while [ $# -gt 0 ]; do
     --owner-en) OEN="$2"; shift 2 ;;
     --license) LICENSE="$2"; shift 2 ;;
     --no-cron) CRON=0; shift ;;
+    --behind-proxy) PROXY_HOST="$2"; ADDRESS=":80"; shift 2 ;;
+    --http-port) HTTP_PORT="$2"; shift 2 ;;
+    --https-port) HTTPS_PORT="$2"; shift 2 ;;
+    --trusted-proxies) TRUSTED="$2"; shift 2 ;;
     *) die "Unknown option $1 (see the header of this script)" ;;
   esac
 done
@@ -34,8 +41,18 @@ done
 require_docker
 write_env "$ADDRESS"
 [ -n "$EMAIL" ] && set_env ACME_EMAIL "$EMAIL"
+if [ -n "$PROXY_HOST" ]; then
+  # Raff's own proxy on loopback, TLS at the front web server (shared-host.md).
+  set_env SITE_HOST "$PROXY_HOST"
+  set_env SITE_ORIGIN "https://$PROXY_HOST"
+  set_env RAFF_BIND 127.0.0.1
+  set_env RAFF_HTTP_PORT "$HTTP_PORT"
+  set_env RAFF_HTTPS_PORT "$HTTPS_PORT"
+  set_env RAFF_TRUSTED_PROXIES "$TRUSTED"
+fi
 ensure_key
 load_env
+check_env
 if [ -n "$LICENSE" ]; then
   install -m 644 "$LICENSE" "$PROD/license/LICENSE.json"
   log "License installed."
@@ -62,14 +79,9 @@ if [ "$has_users" != "True" ]; then
   [ -n "${RAFF_OWNER_PASSWORD:-}" ] || log "Owner password (shown once, change it after signing in): $password"
 fi
 
-if [ "$CRON" = 1 ] && [ -d /etc/cron.d ] && [ -w /etc/cron.d ]; then
-  cat >/etc/cron.d/raff <<CRON
-# Raff: nightly encrypted backup and a weekly restore drill (see docs/runbooks/backup-restore.md).
-SHELL=/bin/bash
-30 2 * * * root $ROOT/infra/backup/backup.sh >>/var/log/raff-backup.log 2>&1
-30 3 * * 0 root $ROOT/infra/restore.sh --verify-latest >>/var/log/raff-backup.log 2>&1
-CRON
-  log "Scheduled backups in /etc/cron.d/raff."
+if [ "$CRON" = 1 ]; then
+  write_cron
+  log "Backups scheduled: every 15 minutes locally, nightly with the off-site copy, weekly restore drill."
 fi
 
 log "Done. Open ${SITE_ORIGIN} and sign in as '$OWNER'."
