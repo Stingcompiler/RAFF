@@ -127,7 +127,10 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
                   </button>
                 ) : (
                   <span className="grid min-h-[44px] flex-1 place-items-center rounded-control bg-border px-[8px] text-center font-semibold text-text-muted">
-                    {order.status === "ready" ? t("viaPos") : t(`status.${order.status}`)}
+                    {order.status === "delivered" ||
+                    (order.status === "ready" && order.fulfillment === "pickup")
+                      ? t("viaPos")
+                      : t(`status.${order.status}`)}
                   </span>
                 )}
               </div>

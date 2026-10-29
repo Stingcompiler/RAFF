@@ -28,7 +28,12 @@ from apps.notifications.services.notify import mark_read, unread_orders
 from apps.orders.models import Inquiry, Order
 from apps.orders.selectors import public_order, staff_order
 from apps.orders.serializers import (
+    AssignCourierSerializer,
+    CourierSerializer,
+    DeliverSerializer,
+    DeliveryCardSerializer,
     EditLinesSerializer,
+    FailDeliverySerializer,
     InquiryRowSerializer,
     InquirySentSerializer,
     InquiryStatusSerializer,
@@ -47,7 +52,7 @@ from apps.orders.serializers import (
     TrackSerializer,
     TransitionSerializer,
 )
-from apps.orders.services import inquiries, payments, receipts, workflow
+from apps.orders.services import deliveries, inquiries, payments, receipts, workflow
 from apps.orders.services.placing import (
     LineRequest,
     OrderError,
@@ -359,7 +364,12 @@ class OrderToPosView(APIView):
         from apps.sales.serializers import PosItemSerializer
 
         order = _mine(request, pk)
-        if order.status != Order.Status.READY:
+        settled = (
+            Order.Status.DELIVERED
+            if order.fulfillment == Order.Fulfillment.DELIVERY
+            else Order.Status.READY
+        )
+        if order.status != settled:
             raise ValidationError({"detail": "order_not_ready"})
         lines = list(order.lines.all())
         rows = {
@@ -630,3 +640,125 @@ class ReceiptView(APIView):
         response["Content-Security-Policy"] = "default-src 'none'; sandbox"
         response["Content-Disposition"] = f'inline; filename="receipt-{order.number}.{ext}"'
         return response
+
+
+class CouriersView(APIView):
+    """Who can be given a delivery at this branch (for the assignment list)."""
+
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(operation_id="couriers_list", responses=CourierSerializer(many=True))
+    def get(self, request: Request) -> Response:
+        rows = [
+            {
+                "id": u.pk,
+                "username": u.username,
+                "name_ar": u.display_name_ar,
+                "name_en": u.display_name_en,
+            }
+            for u in deliveries.couriers_for(current_branch(request).pk)
+        ]
+        return Response(CourierSerializer(rows, many=True).data)
+
+
+class AssignCourierView(APIView):
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(
+        operation_id="order_assign_courier",
+        request=AssignCourierSerializer,
+        responses=StaffOrderSerializer,
+    )
+    def post(self, request: Request, pk: uuid.UUID) -> Response:
+        data = AssignCourierSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        order = _mine(request, pk)
+        assert isinstance(request.user, User)
+        try:
+            deliveries.assign(order.pk, data.validated_data["courier_id"], request.user)
+        except deliveries.DeliveryError as exc:
+            return Response({"detail": exc.code}, status=status.HTTP_400_BAD_REQUEST)
+        order.refresh_from_db()
+        return Response(StaffOrderSerializer(staff_order(order)).data)
+
+
+def _card(order: Order) -> dict[str, Any]:
+    return {
+        "id": order.pk,
+        "number": order.number,
+        "status": order.status,
+        "customer_name": order.customer_name,
+        "phone": order.phone,
+        "address": order.address,
+        "latitude": order.latitude,
+        "longitude": order.longitude,
+        "note": order.note,
+        "payment_method": order.payment_method,
+        "payment_status": order.payment_status,
+        "amount_due": order.estimated_total if order.payment_method == "cod" else None,
+        "lines_count": order.lines.count(),
+        "reason": order.reason if order.status == Order.Status.DELIVERY_FAILED else "",
+        "collected_amount": order.collected_amount,
+        "delivered_at": order.delivered_at,
+    }
+
+
+class MyDeliveriesView(APIView):
+    """The courier's own deliveries: assigned, on the way, failed, and delivered today."""
+
+    permission_classes = [requires("deliveries.handle")]
+
+    @extend_schema(operation_id="deliveries_list", responses=DeliveryCardSerializer(many=True))
+    def get(self, request: Request) -> Response:
+        tz = timezone.get_current_timezone()
+        start = dt.datetime.combine(clock.today(), dt.time.min, tzinfo=tz)
+        active = [Order.Status.READY, Order.Status.OUT_FOR_DELIVERY, Order.Status.DELIVERY_FAILED]
+        orders = (
+            Order.objects.filter(courier=request.user, branch=current_branch(request))
+            .filter(
+                Q(status__in=active) | Q(status=Order.Status.DELIVERED, delivered_at__gte=start)
+            )
+            .order_by("created_at")
+        )
+        return Response(DeliveryCardSerializer([_card(o) for o in orders], many=True).data)
+
+
+class DeliveryActionView(APIView):
+    """pickup / deliver / fail: the courier's three moves, on their own orders only."""
+
+    permission_classes = [requires("deliveries.handle")]
+
+    @extend_schema(
+        operation_id="delivery_action",
+        request=DeliverSerializer,
+        responses=DeliveryCardSerializer,
+    )
+    def post(self, request: Request, pk: uuid.UUID, action: str) -> Response:
+        order = Order.objects.filter(
+            pk=pk, courier=request.user, branch=current_branch(request)
+        ).first()
+        if order is None:
+            raise NotFound
+        assert isinstance(request.user, User)
+        try:
+            if action == "pickup":
+                deliveries.pick_up(order.pk, request.user)
+            elif action == "deliver":
+                data = DeliverSerializer(data=request.data)
+                data.is_valid(raise_exception=True)
+                deliveries.deliver(
+                    order.pk,
+                    request.user,
+                    data.validated_data["collected"],
+                    data.validated_data["note"],
+                )
+            elif action == "fail":
+                failed = FailDeliverySerializer(data=request.data)
+                failed.is_valid(raise_exception=True)
+                deliveries.fail(order.pk, request.user, failed.validated_data["reason"])
+            else:
+                raise NotFound
+        except deliveries.DeliveryError as exc:
+            return Response({"detail": exc.code}, status=status.HTTP_400_BAD_REQUEST)
+        order.refresh_from_db()
+        return Response(DeliveryCardSerializer(_card(order)).data)

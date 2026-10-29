@@ -1,8 +1,56 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 import { signIn } from "../support/auth";
 
 test.describe.configure({ mode: "serial" });
+
+async function csrf(page: Page) {
+  await page.request.get("/api/v1/auth/csrf/");
+  return (await page.context().cookies()).find((c) => c.name === "csrftoken")?.value ?? "";
+}
+
+async function orderDelivered(
+  browser: import("@playwright/test").Browser,
+  baseURL: string | undefined,
+  phone: string,
+) {
+  const guest = await (await browser.newContext({ baseURL })).newPage();
+  await guest.goto("/store?q=باراسيتامول");
+  await guest
+    .getByRole("article")
+    .filter({ hasText: "باراسيتامول" })
+    .getByRole("button", { name: "أضف إلى السلة" })
+    .click();
+  await guest.goto("/checkout");
+  await guest.getByLabel("توصيل إلى البيت").check();
+  await guest.getByLabel("الاسم").fill("ريم صالح");
+  await guest.getByLabel("رقم الهاتف").fill(phone);
+  await guest.getByLabel("موقعك").fill("بحري — الصافية، شارع 3");
+  await guest.getByRole("checkbox").check();
+  await guest.getByRole("button", { name: "إرسال الطلب" }).click();
+  await expect(guest).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
+  return guest;
+}
+
+/** Confirm, prepare and mark ready through the API, then open the order in the browser. */
+async function readyAndOpen(page: Page, phone: string) {
+  const rows = await (await page.request.get("/api/v1/orders/")).json();
+  const order = rows.find((r: { phone: string }) => r.phone === phone);
+  for (const to of ["confirmed", "preparing", "ready"]) {
+    const res = await page.request.post(`/api/v1/orders/${order.id}/transition/`, {
+      data: { to, reason: "" },
+      headers: { "x-csrftoken": await csrf(page) },
+    });
+    expect(res.ok(), await res.text()).toBe(true);
+  }
+  await page.goto(`/orders/detail/${order.id}`);
+}
+
+async function assignHasan(page: Page) {
+  await page.getByLabel("اختر موظف التوصيل").selectOption({ label: "حسن" });
+  await page.getByRole("button", { name: "إسناد" }).click();
+  await expect(page.getByTestId("courier-name")).toHaveText("حسن");
+}
 
 const REF = "TX778899";
 // A real 1×1 PNG, so the browser can draw it.
@@ -29,7 +77,7 @@ async function fillContact(page: import("@playwright/test").Page, phone: string)
   await page.getByLabel("موقعك").fill("أمدرمان — الثورة الحارة 12");
 }
 
-test.describe("bank transfer before pickup, and delivery to the home", () => {
+test.describe("bank transfer before pickup, home delivery, and the courier", () => {
   test("the pharmacy turns the options on in the store settings", async ({ page }) => {
     await signIn(page, "admin");
     await page.goto("/storefront/settings");
@@ -185,6 +233,81 @@ test.describe("bank transfer before pickup, and delivery to the home", () => {
       .getByRole("row", { name: /0966666663/ })
       .click();
     await expect(page.getByText("توصيل إلى البيت").first()).toBeVisible();
+  });
+
+  test("assigned, picked up and delivered: the courier hands the cash over", async ({
+    browser,
+    baseURL,
+    page,
+  }) => {
+    const guest = await orderDelivered(browser, baseURL, "0966666671");
+    await expect(guest.getByText("توصيل إلى البيت").first()).toBeVisible();
+    await signIn(page, "admin");
+    await readyAndOpen(page, "0966666671");
+    await assignHasan(page);
+
+    const courierPage = await (await browser.newContext({ baseURL })).newPage();
+    await signIn(courierPage, "hasan");
+    await courierPage.goto("/deliveries");
+    const card = courierPage.getByTestId("delivery-card");
+    await expect(card).toHaveCount(1);
+    await expect(card).toContainText("ريم صالح");
+    await expect(card).toContainText("بحري — الصافية، شارع 3");
+    await expect(card.getByTestId("amount-due")).toContainText("800");
+    await card.getByRole("button", { name: "استلمتُ الطلب من الصيدلية" }).click();
+    await expect(card).toContainText("في الطريق");
+    await card.getByRole("button", { name: "سُلِّم للزبون" }).click();
+    const dialog = courierPage.getByRole("dialog");
+    await expect(dialog.getByLabel("المبلغ الذي استلمته نقداً")).toHaveValue("800");
+    await dialog.getByRole("button", { name: "تأكيد" }).click();
+    await expect(card).toContainText("سلّم");
+    await expect(card).toContainText("للكاشير");
+
+    // The courier cannot open the workspace screens that are not theirs.
+    expect((await courierPage.request.get("/api/v1/orders/")).status()).toBe(403);
+    await courierPage.context().close();
+
+    await guest.reload();
+    await expect(guest.getByText("تم التوصيل")).toBeVisible();
+    await guest.context().close();
+
+    await page.reload();
+    await expect(page.getByText("سُلّم — بانتظار التسوية").first()).toBeVisible();
+    await expect(page.getByTestId("courier-name")).toHaveText("حسن");
+  });
+
+  test("a failed delivery returns to the pharmacy, and the customer is told", async ({
+    browser,
+    baseURL,
+    page,
+  }) => {
+    const guest = await orderDelivered(browser, baseURL, "0966666672");
+    await signIn(page, "admin");
+    await readyAndOpen(page, "0966666672");
+    await assignHasan(page);
+
+    const courierPage = await (await browser.newContext({ baseURL })).newPage();
+    await signIn(courierPage, "hasan");
+    await courierPage.goto("/deliveries");
+    const card = courierPage.getByTestId("delivery-card").filter({ hasText: "0966666672" });
+    await card.getByRole("button", { name: "استلمتُ الطلب من الصيدلية" }).click();
+    await card.getByRole("button", { name: "تعذّر التسليم" }).click();
+    const dialog = courierPage.getByRole("dialog");
+    await expect(dialog.getByRole("button", { name: "تأكيد" })).toBeDisabled();
+    await dialog.getByLabel("السبب").fill("لا أحد في البيت");
+    await dialog.getByRole("button", { name: "تأكيد" }).click();
+    await expect(card).toContainText("تعذّر: لا أحد في البيت");
+    await courierPage.context().close();
+
+    await guest.reload();
+    await expect(guest.getByText("تعذّر توصيل طلبك")).toBeVisible();
+    await guest.context().close();
+
+    await page.reload();
+    await page.getByRole("button", { name: "إعادة إلى «جاهز» (فشل التوصيل)" }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "تأكيد" }).click();
+    await expect(page.getByText("جاهز للاستلام").first()).toBeVisible();
+    await expect(page.getByTestId("courier-name")).toHaveText("بلا إسناد");
   });
 
   test.afterAll(async ({ browser, baseURL }) => {

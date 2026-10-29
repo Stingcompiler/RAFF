@@ -346,6 +346,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/couriers/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Who can be given a delivery at this branch (for the assignment list). */
+    get: operations["couriers_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/customers/": {
     parameters: {
       query?: never;
@@ -373,6 +390,40 @@ export interface paths {
     get: operations["dashboard"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/deliveries/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description The courier's own deliveries: assigned, on the way, failed, and delivered today. */
+    get: operations["deliveries_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/deliveries/{id}/{action}/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description pickup / deliver / fail: the courier's three moves, on their own orders only. */
+    post: operations["delivery_action"];
     delete?: never;
     options?: never;
     head?: never;
@@ -667,6 +718,22 @@ export interface paths {
     get: operations["orders_retrieve"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/orders/{id}/assign-courier/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["order_assign_courier"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1674,6 +1741,10 @@ export interface components {
      * @enum {string}
      */
     ActionEnum: "verify" | "reject" | "refunded";
+    AssignCourier: {
+      /** Format: uuid */
+      courier_id: string;
+    };
     Assignment: {
       /** Format: uuid */
       role_id: string;
@@ -1818,6 +1889,13 @@ export interface components {
       /** @default  */
       reason: string;
     };
+    Courier: {
+      /** Format: uuid */
+      id: string;
+      username: string;
+      name_ar: string;
+      name_en: string;
+    };
     Customer: {
       /** Format: uuid */
       readonly id: string;
@@ -1849,6 +1927,36 @@ export interface components {
      * @enum {string}
      */
     DecisionEnum: "restock" | "destroy" | "return";
+    Deliver: {
+      /** Format: decimal */
+      collected?: string | null;
+      /** @default  */
+      note: string;
+    };
+    DeliveryCard: {
+      /** Format: uuid */
+      id: string;
+      number: string;
+      status: components["schemas"]["OrderStatusEnum"];
+      customer_name: string;
+      phone: string;
+      address: string;
+      /** Format: decimal */
+      latitude: string | null;
+      /** Format: decimal */
+      longitude: string | null;
+      note: string;
+      payment_method: components["schemas"]["PaymentMethodEnum"];
+      payment_status: components["schemas"]["PaymentStatusEnum"];
+      /** Format: decimal */
+      amount_due: string | null;
+      lines_count: number;
+      reason: string;
+      /** Format: decimal */
+      collected_amount: string | null;
+      /** Format: date-time */
+      delivered_at: string | null;
+    };
     Device: {
       /** Format: uuid */
       readonly id: string;
@@ -2204,6 +2312,8 @@ export interface components {
      *     * `preparing` - preparing
      *     * `ready` - ready
      *     * `out_for_delivery` - out_for_delivery
+     *     * `delivered` - delivered
+     *     * `delivery_failed` - delivery_failed
      *     * `completed` - completed
      *     * `cancelled` - cancelled
      * @enum {string}
@@ -2215,6 +2325,8 @@ export interface components {
       | "preparing"
       | "ready"
       | "out_for_delivery"
+      | "delivered"
+      | "delivery_failed"
       | "completed"
       | "cancelled";
     OrdersSummary: {
@@ -3066,6 +3178,12 @@ export interface components {
       payment_reference: string;
       payment_note: string;
       has_receipt: boolean;
+      /** Format: uuid */
+      courier_id: string | null;
+      courier_name_ar: string | null;
+      courier_name_en: string | null;
+      /** Format: decimal */
+      collected_amount: string | null;
       payment_events: components["schemas"]["StaffPaymentEvent"][];
       /** Format: decimal */
       latitude: string | null;
@@ -3910,6 +4028,25 @@ export interface operations {
       };
     };
   };
+  couriers_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Courier"][];
+        };
+      };
+    };
+  };
   customers_list: {
     parameters: {
       query?: {
@@ -3971,6 +4108,51 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Overview"];
+        };
+      };
+    };
+  };
+  deliveries_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeliveryCard"][];
+        };
+      };
+    };
+  };
+  delivery_action: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        action: string;
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["Deliver"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeliveryCard"];
         };
       };
     };
@@ -4378,6 +4560,31 @@ export interface operations {
       cookie?: never;
     };
     requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StaffOrder"];
+        };
+      };
+    };
+  };
+  order_assign_courier: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AssignCourier"];
+      };
+    };
     responses: {
       200: {
         headers: {

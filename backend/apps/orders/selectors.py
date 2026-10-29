@@ -100,6 +100,10 @@ def staff_order(order: Order) -> dict[str, Any]:
         "payment_reference": order.payment_reference,
         "payment_note": order.payment_note,
         "has_receipt": bool(order.payment_receipt),
+        "courier_id": order.courier_id,
+        "courier_name_ar": order.courier.display_name_ar if order.courier else None,
+        "courier_name_en": order.courier.display_name_en if order.courier else None,
+        "collected_amount": order.collected_amount,
         "payment_events": [
             {
                 "kind": e.kind,

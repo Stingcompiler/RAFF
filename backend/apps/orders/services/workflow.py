@@ -23,6 +23,8 @@ TRANSITIONS: dict[str, set[str]] = {
     S.CONFIRMED: {S.PREPARING, S.CANCELLED},
     S.PREPARING: {S.READY, S.CANCELLED},
     S.READY: {S.CANCELLED},
+    # A delivery that did not reach the customer goes back to the shelf side or is cancelled.
+    S.DELIVERY_FAILED: {S.READY, S.CANCELLED},
 }
 NEEDS_REASON = {S.NEEDS_CONTACT, S.CANCELLED}
 EDITABLE = {S.NEW, S.NEEDS_CONTACT}
@@ -66,6 +68,9 @@ def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
     automatic = ""
     if hooks is not None:
         to, automatic = hooks.on_transition(order, to, user)
+    if to == S.READY and order.status == S.DELIVERY_FAILED:
+        order.courier = None
+        order.save(update_fields=["courier"])
     order.status = to
     reason = automatic or reason
     if to in NEEDS_REASON or reason.strip():
