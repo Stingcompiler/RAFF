@@ -4,7 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { apiSend } from "@/lib/api/browser";
 
-import { type CartLine, errorCode, type Quote, type QuoteLine, toLineIn } from "./types";
+import {
+  type CartLine,
+  errorCode,
+  type Quote,
+  type QuoteLine,
+  type SaleRequest,
+  toLineIn,
+} from "./types";
 
 const QUOTE_DELAY_MS = 120;
 
@@ -18,7 +25,9 @@ export type QuoteState = {
 
 const EMPTY: QuoteState = { version: 0, quote: null, byKey: {}, error: null };
 
-type Draft = { lines: CartLine[]; pendingKey: string | null };
+/** The cart, and while an approval's outcome is unknown, its key and exact request together
+ * (review C-01): after a reload the same request is re-sent with the same key, never a new one. */
+type Draft = { lines: CartLine[]; pendingKey: string | null; pendingRequest?: SaleRequest | null };
 
 /**
  * The counter's cart. Totals always come from POST /sales/quote — the screen
@@ -30,6 +39,7 @@ export function usePosCart(deviceId: string) {
   const [version, setVersion] = useState(1);
   const [quoted, setQuoted] = useState<QuoteState>(EMPTY);
   const [pendingKey, setPendingKey] = useState<string | null>(null);
+  const [pendingRequest, setPendingRequest] = useState<SaleRequest | null>(null);
   const loaded = useRef(false);
 
   // Restore after hydration (the server renders an empty cart).
@@ -41,6 +51,7 @@ export function usePosCart(deviceId: string) {
           const draft = JSON.parse(raw) as Draft;
           setLinesState(draft.lines ?? []);
           setPendingKey(draft.pendingKey ?? null);
+          setPendingRequest(draft.pendingRequest ?? null);
           setVersion((v) => v + 1);
         }
       } catch {
@@ -55,14 +66,17 @@ export function usePosCart(deviceId: string) {
     if (!loaded.current) return;
     try {
       if (lines.length || pendingKey) {
-        localStorage.setItem(storageKey, JSON.stringify({ lines, pendingKey } satisfies Draft));
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify({ lines, pendingKey, pendingRequest } satisfies Draft),
+        );
       } else {
         localStorage.removeItem(storageKey);
       }
     } catch {
       // Storage full or blocked: the cart still works in memory.
     }
-  }, [lines, pendingKey, storageKey]);
+  }, [lines, pendingKey, pendingRequest, storageKey]);
 
   useEffect(() => {
     const valid = lines.filter((l) => l.quantity >= 1);
@@ -102,6 +116,7 @@ export function usePosCart(deviceId: string) {
   const clear = useCallback(() => {
     setLines(() => []);
     setPendingKey(null);
+    setPendingRequest(null);
   }, [setLines]);
 
   const hasValid = lines.some((l) => l.quantity >= 1);
@@ -119,5 +134,15 @@ export function usePosCart(deviceId: string) {
     !insufficient &&
     lines.every((l) => l.quantity >= 1);
 
-  return { lines, setLines, clear, quoted: current, ready, pendingKey, setPendingKey };
+  return {
+    lines,
+    setLines,
+    clear,
+    quoted: current,
+    ready,
+    pendingKey,
+    setPendingKey,
+    pendingRequest,
+    setPendingRequest,
+  };
 }

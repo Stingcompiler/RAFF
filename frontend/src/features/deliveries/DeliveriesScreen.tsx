@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 
 import { BrandMark } from "@/components/ui/icons";
+import { StaleNote } from "@/components/ui/StaleNote";
+
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Textarea } from "@/components/ui/Field";
@@ -24,6 +26,7 @@ export function DeliveriesScreen({ initial, name }: { initial: DeliveryCard[]; n
   const ar = useLocale() === "ar";
   const toast = useToast();
   const [cards, setCards] = useState(initial);
+  const [stale, setStale] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [handing, setHanding] = useState<DeliveryCard | null>(null);
   const [failing, setFailing] = useState<DeliveryCard | null>(null);
@@ -34,6 +37,7 @@ export function DeliveriesScreen({ initial, name }: { initial: DeliveryCard[]; n
 
   const reload = useCallback(async () => {
     const res = await apiGet<DeliveryCard[]>("/deliveries/");
+    setStale(!res.ok);
     if (res.ok) setCards(res.data);
   }, []);
   useEffect(() => {
@@ -86,6 +90,7 @@ export function DeliveriesScreen({ initial, name }: { initial: DeliveryCard[]; n
         </span>
         <span className="text-label text-text-muted">{name}</span>
       </header>
+      <StaleNote show={stale} />
       {cards.length === 0 && (
         <div className="rounded-card border border-border bg-surface p-[24px] text-center text-text-muted">
           {t("empty")}

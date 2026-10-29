@@ -72,6 +72,7 @@ class PublicProductsView(PublicView):
             OpenApiParameter("availability", str, enum=["available", "confirm"], required=False),
             OpenApiParameter("sort", str, enum=sorted(SORTS), required=False),
             OpenApiParameter("limit", int, required=False),
+            OpenApiParameter("slugs", str, required=False, description="Comma-separated, ≤50"),
         ],
         responses=PublicProductSerializer(many=True),
     )
@@ -80,8 +81,10 @@ class PublicProductsView(PublicView):
         if not settings.enabled:
             return Response([])
         p = request.query_params
+        # The cart asks for exactly its own items, however large the catalog (review C-03).
+        slugs = [x for x in p.get("slugs", "").split(",") if x][:50] or None
         rows = selectors.product_rows(
-            settings, selectors.published(p.get("q", ""), p.get("category", ""))
+            settings, selectors.published(p.get("q", ""), p.get("category", ""), slugs)
         )
         if p.get("availability") in ("available", "confirm"):
             rows = [r for r in rows if r["availability"] == p["availability"]]

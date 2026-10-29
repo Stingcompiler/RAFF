@@ -23,17 +23,51 @@ export function CartScreen() {
   const t = useTranslations("store");
   const ar = useLocale() === "ar";
   const lines = useCart();
-  const { bySlug, ready } = useProducts();
+  const { bySlug, ready, failed, retry } = useProducts(lines.map((l) => l.slug));
   const rows = lines
     .map((l) => ({ line: l, product: bySlug.get(l.slug) }))
     .filter((r) => !ready || r.product);
+  // Items the shop no longer offers stay visible with a way to remove them (review C-03).
+  const gone = ready && !failed ? lines.filter((l) => !bySlug.has(l.slug)) : [];
   const estimate = sum(
     rows.map(({ line, product }) => (product?.price ? multiply(product.price, line.qty) : "0")),
   );
   return (
     <section className="mx-auto grid max-w-[960px] gap-[16px] px-[20px] pt-[32px] pb-[48px]">
       <h1 className="m-0 text-land-section font-semibold">{t("cart")}</h1>
-      {ready && rows.length === 0 && (
+      {failed && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center justify-between gap-[8px] rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
+        >
+          {t("itemsUnreadable")}
+          <button
+            type="button"
+            onClick={retry}
+            className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-surface px-[14px] font-medium text-text"
+          >
+            {t("checkAgain")}
+          </button>
+        </div>
+      )}
+      {gone.map((l) => (
+        <div
+          key={l.slug}
+          role="status"
+          data-testid="store-cart-gone"
+          className="flex flex-wrap items-center justify-between gap-[8px] rounded-card border border-warning-solid bg-warning-bg px-[14px] py-[10px] font-medium text-warning-text"
+        >
+          {t("itemGone")}
+          <button
+            type="button"
+            onClick={() => cart.set(l.slug, 0)}
+            className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-surface px-[14px] font-medium text-text"
+          >
+            {t("removeItem")}
+          </button>
+        </div>
+      ))}
+      {ready && !failed && lines.length === 0 && (
         <div className="grid justify-items-center gap-[8px] rounded-card border border-dashed border-border-strong px-[20px] py-[48px] text-center">
           <b>{t("emptyT")}</b>
           <span className="text-text-muted">{t("emptyB")}</span>

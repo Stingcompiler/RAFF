@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleNote } from "@/components/ui/StaleNote";
 import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Badge } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
@@ -66,6 +67,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
   const [page, setPage] = useState<Page>(initial);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("");
+  const [stale, setStale] = useState(false);
   const [selected, setSelected] = useState<StockRow | null>(null);
   const [batches, setBatches] = useState<BatchRow[]>([]);
   const [drawer, setDrawer] = useState<string | null>(null);
@@ -87,6 +89,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
       if (query) params.set("q", query);
       if (category) params.set("category", category);
       const res = await apiGet<Page>(`/inventory/items/?${params}`);
+      setStale(!res.ok);
       if (res.ok) {
         setStamp(new Date().toISOString());
         setPage((prev) =>
@@ -165,6 +168,7 @@ function InventoryDesktop({ initial, categories, canManage, canReceive }: Props)
           </>
         }
       />
+      <StaleNote show={stale} />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-8 min-w-0 max-[1180px]:col-span-12">
           <Panel

@@ -1605,6 +1605,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: slugs
+        schema:
+          type: string
+        description: Comma-separated, ≤50
+      - in: query
         name: sort
         schema:
           type: string

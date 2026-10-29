@@ -186,6 +186,71 @@ test.describe("public storefront", () => {
     await expect(page.getByRole("button", { name: "إرسال الطلب" })).toBeEnabled();
   });
 
+  test("an item the shop no longer offers is named, not dropped from the order", async ({
+    page,
+  }) => {
+    await page.goto("/store");
+    await page.evaluate(() =>
+      localStorage.setItem(
+        "raff.store.cart.v1",
+        JSON.stringify([
+          { slug: "par-500", qty: 1 },
+          { slug: "withdrawn-item", qty: 1 },
+        ]),
+      ),
+    );
+    await page.goto("/cart");
+    await expect(page.getByTestId("store-cart-line")).toHaveCount(1);
+    await expect(page.getByTestId("store-cart-gone")).toHaveCount(1);
+    await page.goto("/checkout");
+    await expect(page.getByText(/لم يعد متاحاً/)).toBeVisible();
+    await page.getByLabel("الاسم").fill("سلمى");
+    await page.getByLabel("رقم الهاتف").fill("0911112222");
+    await page.getByLabel("موقعك").fill("الخرطوم — الرياض");
+    await page.getByRole("checkbox").check();
+    await expect(page.getByRole("button", { name: "إرسال الطلب" })).toBeDisabled();
+    await page.goto("/cart");
+    await page.getByTestId("store-cart-gone").getByRole("button", { name: "حذف من السلة" }).click();
+    await expect(page.getByTestId("store-cart-gone")).toHaveCount(0);
+    await page.evaluate(() => localStorage.removeItem("raff.store.cart.v1"));
+  });
+
+  test("an unknown outcome is checked again with the same key, never sent as new", async ({
+    page,
+  }) => {
+    await page.goto("/store");
+    await page.evaluate(() =>
+      localStorage.setItem("raff.store.cart.v1", JSON.stringify([{ slug: "par-500", qty: 1 }])),
+    );
+    await page.goto("/checkout");
+    const keys: string[] = [];
+    await page.route("**/api/v1/public/orders/", async (route) => {
+      keys.push(route.request().headers()["idempotency-key"] ?? "");
+      if (keys.length === 1) return route.abort("timedout");
+      return route.continue();
+    });
+    await page.route("**/api/v1/public/orders/by-key/**", (route) =>
+      route.fulfill({ status: 503, body: "{}" }),
+    );
+    await page.getByLabel("الاسم").fill("هالة");
+    await page.getByLabel("رقم الهاتف").fill("0911113333");
+    await page.getByLabel("موقعك").fill("بحري — الصافية");
+    await page.getByRole("checkbox").check();
+    await page.getByRole("button", { name: "إرسال الطلب" }).click();
+    await expect(
+      page.getByText("لم نعرف بعد إن وصل طلبك. لا ترسله مرة أخرى؛ تحقق منه."),
+    ).toBeVisible();
+    await expect(page.locator('form button[type="submit"]')).toBeDisabled();
+    await page.unroute("**/api/v1/public/orders/by-key/**");
+    await page.getByRole("button", { name: "تحقق مرة أخرى" }).click();
+    // It never arrived: sending again uses the same key and creates it once.
+    await page.getByRole("button", { name: "إرسال الطلب" }).click();
+    await expect(page).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
+    await page.unroute("**/api/v1/public/orders/");
+    expect(keys).toHaveLength(2);
+    expect(keys[1]).toBe(keys[0]);
+  });
+
   test("prescription items have no price and no cart", async ({ page }) => {
     await page.goto("/store");
     const rx = page.getByRole("article").filter({ hasText: "أموكسيسيلين" });

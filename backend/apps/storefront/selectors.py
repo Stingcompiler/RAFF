@@ -108,12 +108,14 @@ def product_rows(
     return rows
 
 
-def published(query: str = "", category: str = "") -> list[Listing]:
+def published(query: str = "", category: str = "", slugs: list[str] | None = None) -> list[Listing]:
     qs = (
         Listing.objects.filter(published=True, item__is_active=True)
         .select_related("item__category")
         .prefetch_related("item__units")
     )
+    if slugs is not None:
+        qs = qs.filter(slug__in=slugs)
     if category:
         qs = qs.filter(item__category__code=category)
     if query.strip():
