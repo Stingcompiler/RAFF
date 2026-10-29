@@ -18,3 +18,6 @@ class BackupStatusSerializer(serializers.Serializer[Any]):
     last_failed = BackupRunSerializer(allow_null=True)
     last_restore_test = BackupRunSerializer(allow_null=True)
     failing = serializers.BooleanField()
+    last_offsite_ok = BackupRunSerializer(allow_null=True)
+    last_offsite_failed = BackupRunSerializer(allow_null=True)
+    offsite_failing = serializers.BooleanField()

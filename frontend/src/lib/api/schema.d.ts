@@ -1785,6 +1785,9 @@ export interface components {
       last_failed: components["schemas"]["BackupRun"] | null;
       last_restore_test: components["schemas"]["BackupRun"] | null;
       failing: boolean;
+      last_offsite_ok: components["schemas"]["BackupRun"] | null;
+      last_offsite_failed: components["schemas"]["BackupRun"] | null;
+      offsite_failing: boolean;
     };
     BankTransfer: {
       /** Format: uuid */

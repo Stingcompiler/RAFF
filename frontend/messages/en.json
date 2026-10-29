@@ -1049,7 +1049,8 @@
     "noAudit": "No events.",
     "backupFailed": "✕ Last attempt failed: {detail}",
     "offsite": "Off-site copy",
-    "localOnly": "On this server only"
+    "localOnly": "On this server only",
+    "offsiteFailed": "✕ No copy off this server: {detail}"
   },
   "store": {
     "nav": {

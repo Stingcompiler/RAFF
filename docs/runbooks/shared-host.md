@@ -6,27 +6,16 @@
 
 ```bash
 sudo git clone https://github.com/Stingcompiler/RAFF.git /opt/raff && cd /opt/raff
-sudo mkdir -p infra/prod && sudo install -m 600 infra/prod/.env.example infra/prod/.env
+sudo infra/install.sh --behind-proxy raff.example.com --http-port 8400 --https-port 8443 \
+  --email owner@example.com --org "صيدلية الشفاء" --branch-code KRT \
+  --branch-ar "فرع الخرطوم" --branch-en "Khartoum" --owner admin --owner-ar "المالك" --owner-en "Owner"
 ```
 
-عدّل `infra/prod/.env` قبل التشغيل (أو أنشئه بـ`install.sh` ثم عدّل وأعد تشغيل `docker compose up -d`):
-
-```
-SITE_ADDRESS=:80
-SITE_HOST=raff.example.com
-SITE_ORIGIN=https://raff.example.com
-RAFF_BIND=127.0.0.1
-RAFF_HTTP_PORT=8400
-RAFF_HTTPS_PORT=8443
-RAFF_TRUSTED_PROXIES=172.16.0.0/12
-```
+`--behind-proxy` يكتب في `infra/prod/.env` ما يلزم الخادم المشترك (`SITE_ADDRESS=:80`، `SITE_HOST` و`SITE_ORIGIN` بعنوان https، `RAFF_BIND=127.0.0.1`، المنفذين، و`RAFF_TRUSTED_PROXIES=172.16.0.0/12` أو `--trusted-proxies`)، **ويولّد معها الأسرار ومعرّف المؤسسة**. لا تنسخ `.env.example` يدوياً: `install.sh` و`update.sh` يرفضان بيئة فيها `change-me` أو معرّف مؤسسة فارغ.
 
 - `SITE_ADDRESS=:80`: وكيل رَفّ الداخلي بلا TLS، لأن الخادم الأمامي هو الذي يخدم HTTPS.
-- `SITE_ORIGIN` و`SITE_HOST` بعنوان الموقع العام (https) حتى تعمل ملفات تعريف الارتباط الآمنة وCSRF.
 - اختر منفذاً حراً (`ss -tln`).
-- `RAFF_ROOT=marketing` يجعل `/` صفحة المنتج (رَفّ) ويحوّل متجر الصيدلية إلى `/shop`؛ القيمة الافتراضية `store` تُبقي المتجر في `/`. تُقرأ عند تشغيل الواجهة، فيكفي إعادة تشغيل الخدمة بعد التغيير.
-
-ثم `sudo infra/install.sh --domain raff.example.com ...` كما في `install.md`؛ يحافظ `.env` الموجود على القيم أعلاه.
+- `RAFF_ROOT=marketing` يجعل `/` صفحة المنتج (رَفّ) ويحوّل متجر الصيدلية إلى `/shop`؛ القيمة الافتراضية `store` تُبقي المتجر في `/`. أضفه إلى `.env` ثم `sudo infra/update.sh origin/main`.
 
 ## 2. الخادم الأمامي (Caddy)
 

@@ -2,14 +2,22 @@
 # Update to a new release with a backup first and an automatic rollback on failure.
 # Run it after the counters have closed their shifts.
 #
-#   infra/update.sh [git-ref]        (default: the current checkout, e.g. after `git pull`)
+#   infra/update.sh origin/main      (or a tag / commit; fetched after the running release is kept)
+#   infra/update.sh                  (builds the current checkout)
+#
+# The rollback returns to the commit recorded in infra/prod/DEPLOYED (the release that was
+# running), not to the checkout, which `git pull` may already have moved (review D-02).
 . "$(dirname "$0")/lib.sh"
 
 REF="${1:-}"
 load_env
 require_docker
 git -C "$ROOT" diff --quiet || die "The checkout has local changes; commit or stash them first."
-PREVIOUS="$(git -C "$ROOT" rev-parse HEAD)"
+check_env
+PREVIOUS="$(deployed_commit)"
+if [ "$PREVIOUS" != "$(git -C "$ROOT" rev-parse HEAD)" ] && [ -z "$REF" ]; then
+  warn "The checkout ($(git -C "$ROOT" rev-parse --short HEAD)) is not the running release ($PREVIOUS); a failure returns to the running one."
+fi
 PREVIOUS_VERSION="${RAFF_VERSION:-dev}"
 
 log "1/4 Backup before updating…"
@@ -42,9 +50,15 @@ set_env RAFF_VERSION "$NEW_VERSION"
 load_env
 compose build || rollback "build failed"
 compose up -d || rollback "start failed"
+# The proxy's config is a single bind-mounted file: a checkout replaces it, and only a new
+# container reads the new one (found when the browser-policy fix did not reach production).
+compose up -d --no-deps --force-recreate caddy || rollback "proxy restart failed"
 
 log "4/4 Checking the new release…"
 if [ "${RAFF_UPDATE_SIMULATE_FAILURE:-0}" = 1 ] || ! wait_healthy 300; then
   rollback "health check failed"
 fi
+git -C "$ROOT" rev-parse HEAD >"$DEPLOYED_FILE"
+# Keep the backup schedule current with this release.
+[ -f /etc/cron.d/raff ] && write_cron
 log "Updated $PREVIOUS_VERSION → $NEW_VERSION."

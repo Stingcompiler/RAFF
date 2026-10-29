@@ -37,6 +37,7 @@ backend/private/
 # Production secrets (written by infra/install.sh)
 infra/prod/.env
 infra/prod/backup.key
+infra/prod/DEPLOYED
 infra/prod/license/*.json
 
 # Visual baselines: only the Linux ones from CI are committed

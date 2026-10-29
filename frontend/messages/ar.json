@@ -1049,7 +1049,8 @@
     "noAudit": "لا أحداث.",
     "backupFailed": "✕ فشلت آخر محاولة: {detail}",
     "offsite": "نسخة خارج الخادم",
-    "localOnly": "على الخادم فقط"
+    "localOnly": "على الخادم فقط",
+    "offsiteFailed": "✕ لا نسخة خارج الخادم: {detail}"
   },
   "store": {
     "nav": {
