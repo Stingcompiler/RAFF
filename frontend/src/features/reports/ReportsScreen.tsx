@@ -1,9 +1,10 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleNote } from "@/components/ui/StaleNote";
 import { StaleStamp } from "@/components/ui/StaleStamp";
 import { Button } from "@/components/ui/Button";
 import { TextInput } from "@/components/ui/Field";
@@ -56,6 +57,8 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
   const t = useTranslations("reports");
   const ar = useLocale() === "ar";
   const [name, setName] = useState<ReportName>(initialName);
+  const [failed, setFailed] = useState(false);
+  const latest = useRef(0);
   const [report, setReport] = useState(initial);
   const [stamp, setStamp] = useState(() => new Date().toISOString());
   const [from, setFrom] = useState(initial.start);
@@ -71,20 +74,22 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
     if (DAYS.includes(n)) params.set("days", d);
     return params;
   };
+  // Only the latest request may change the screen, and the report's name changes together
+  // with its data, never before it (review C-06).
   const load = async (n: ReportName, params: URLSearchParams) => {
+    const id = ++latest.current;
+    setFailed(false);
     const res = await apiGet<Report>(`/reports/${n}/?${params}`);
-    if (res.ok) {
-      setReport(res.data);
-      setStamp(new Date().toISOString());
-      setFrom(res.data.start);
-      setTo(res.data.end);
-      setDays(String(res.data.days));
-    }
-  };
-  const pick = (n: ReportName) => {
+    if (id !== latest.current) return;
+    if (!res.ok) return setFailed(true);
     setName(n);
-    void load(n, new URLSearchParams());
+    setReport(res.data);
+    setStamp(new Date().toISOString());
+    setFrom(res.data.start);
+    setTo(res.data.end);
+    setDays(String(res.data.days));
   };
+  const pick = (n: ReportName) => void load(n, new URLSearchParams());
   const apply = (e: FormEvent) => {
     e.preventDefault();
     void load(name, query(name));
@@ -130,6 +135,7 @@ export function ReportsScreen({ initial, name: initialName, branch }: Props) {
           </>
         }
       />
+      <StaleNote show={failed} />
       <div className="grid grid-cols-12 items-start gap-[16px]">
         <section className="col-span-4 min-w-0 max-[1180px]:col-span-12">
           <Panel title={t("available")}>

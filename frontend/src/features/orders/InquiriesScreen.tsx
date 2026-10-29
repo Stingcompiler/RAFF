@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleNote } from "@/components/ui/StaleNote";
+
 import { Badge } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Panel";
@@ -20,6 +22,7 @@ export function InquiriesScreen({ initial }: { initial: InquiryRow[] }) {
   const [rows, setRows] = useState(initial);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<InquiryStatus | "">("");
+  const [stale, setStale] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -28,7 +31,9 @@ export function InquiriesScreen({ initial }: { initial: InquiryRow[] }) {
       if (q.trim()) params.set("q", q.trim());
       if (status) params.set("status", status);
       const res = await apiGet<InquiryRow[]>(`/inquiries/?${params}`);
-      if (live && res.ok) setRows(res.data);
+      if (!live) return;
+      setStale(!res.ok);
+      if (res.ok) setRows(res.data);
     }, 200);
     return () => {
       live = false;
@@ -77,6 +82,7 @@ export function InquiriesScreen({ initial }: { initial: InquiryRow[] }) {
           </button>
         ))}
       </div>
+      <StaleNote show={stale} />
       <div className="text-label text-text-muted">{t("count", { count: rows.length })}</div>
       {rows.length === 0 && (
         <div className="rounded-card border border-border bg-surface p-[24px] text-center text-text-muted">

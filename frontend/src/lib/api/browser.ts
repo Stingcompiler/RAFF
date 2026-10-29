@@ -41,13 +41,15 @@ async function send<T>(
   timeoutMs?: number,
 ): Promise<ApiResult<T>> {
   const headers: Record<string, string> = { accept: "application/json" };
-  if (method !== "GET") {
-    headers["x-csrftoken"] = await csrfToken();
-    if (body !== undefined) headers["content-type"] = "application/json";
-    if (idempotencyKey) headers["idempotency-key"] = idempotencyKey;
-  }
   let res: Response;
   try {
+    // Fetching the CSRF cookie is part of the request: if it fails, so does the request, with
+    // the same "unknown outcome" result instead of an exception (review C-09).
+    if (method !== "GET") {
+      headers["x-csrftoken"] = await csrfToken();
+      if (body !== undefined) headers["content-type"] = "application/json";
+      if (idempotencyKey) headers["idempotency-key"] = idempotencyKey;
+    }
     res = await fetch(`/api/v1${path}`, {
       method,
       headers,

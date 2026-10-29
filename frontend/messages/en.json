@@ -56,7 +56,11 @@
     "requiredMark": "(required)",
     "unsavedChanges": "Unsaved changes",
     "discardChanges": "Discard",
-    "saveChanges": "Save"
+    "saveChanges": "Save",
+    "loadFailedT": "The data could not be loaded",
+    "loadFailedB": "The server did not answer. What you see may be incomplete; try again.",
+    "retry": "Try again",
+    "stale": "Refresh failed; the screen shows the last data that arrived."
   },
   "dev": {
     "gallery": {
@@ -632,7 +636,10 @@
     "prepaidRef": "Reference",
     "prepaidAmount": "Amount",
     "prepaidRest": "Rest in cash:",
-    "prepaidOver": "The transfer exceeds the sale; the difference is recorded as a refund due:"
+    "prepaidOver": "The transfer exceeds the sale; the difference is recorded as a refund due:",
+    "receiptMissing": "The sale is approved, but the receipt could not be loaded.",
+    "receiptReload": "Load the receipt again",
+    "receiptLoadFailed": "The receipt could not be loaded."
   },
   "returns": {
     "title": "Returns & quarantine",
@@ -1361,7 +1368,13 @@
     "receiptOk": "✓ Your confirmation photo arrived",
     "receiptSend": "Send the confirmation photo",
     "receiptReplace": "Replace the photo",
-    "receiptLate": "Your order arrived but the confirmation photo could not be uploaded. Attach it here."
+    "receiptLate": "Your order arrived but the confirmation photo could not be uploaded. Attach it here.",
+    "unknownMsg": "We do not know yet whether your order arrived. Do not send it again; check it.",
+    "checkAgain": "Check again",
+    "itemsUnreadable": "The cart's items could not be loaded from the pharmacy.",
+    "itemsGone": "{count, plural, one {An item in your cart is} other {# items in your cart are}} no longer available; remove them from the cart before sending.",
+    "itemGone": "An item in your cart is no longer offered by the shop.",
+    "removeItem": "Remove from cart"
   },
   "orders": {
     "title": "Orders",

@@ -217,6 +217,8 @@ test.describe("bank transfer before pickup, home delivery, and the courier", () 
     await fillContact(guest, "0966666663");
     await guest.getByRole("checkbox").check();
     await guest.getByRole("button", { name: "إرسال الطلب" }).click();
+    // Wait for the order page itself: the checkout shows the same words before it moves on.
+    await expect(guest).toHaveURL(/\/orders\/[A-Za-z0-9_-]{40,}$/);
     await expect(guest.getByText("توصيل إلى البيت").first()).toBeVisible();
 
     await guest.goto("/store?q=أموكسيسيلين");

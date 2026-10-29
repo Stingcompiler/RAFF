@@ -93,3 +93,15 @@ def test_rx_items_have_no_price_and_availability_words(world: World) -> None:
     rx = client.get(f"/api/v1/public/products/{listing.slug}/").json()
     assert rx["rx"] is True and rx["price"] is None and rx["availability"] is None
     assert client.get(f"/api/v1/public/products/{low.slug}/").json()["availability"] == "confirm"
+
+
+def test_c03_the_cart_reads_exactly_its_own_items(world: World) -> None:
+    from rest_framework.test import APIClient
+
+    with org_context(world.org.id):
+        open_store(world)
+        listing = stocked_listing(world)
+    client = APIClient()
+    rows = client.get(f"/api/v1/public/products/?slugs={listing.slug},missing-item").json()
+    assert [r["slug"] for r in rows] == [listing.slug]
+    assert client.get("/api/v1/public/products/?slugs=missing-item").json() == []

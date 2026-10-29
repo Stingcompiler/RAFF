@@ -5022,6 +5022,8 @@ export interface operations {
         category?: string;
         limit?: number;
         q?: string;
+        /** @description Comma-separated, ≤50 */
+        slugs?: string;
         sort?: "name" | "price";
       };
       header?: never;

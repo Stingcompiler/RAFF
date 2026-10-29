@@ -111,11 +111,10 @@ export function PosScreen(props: PosScreenProps) {
   const [batchFor, setBatchFor] = useState<string | null>(null);
   const [phaseState, setPhase] = useState<Phase>("idle");
   const [payError, setPayError] = useState<string | null>(null);
-  const [lastRequest, setLastRequest] = useState<SaleRequest | null>(null);
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [approved, setApproved] = useState<{
     sale: SaleResult;
-    receipt: Receipt;
+    receipt: Receipt | null;
     key: string;
   } | null>(null);
 
@@ -285,10 +284,11 @@ export function PosScreen(props: PosScreenProps) {
     const receipt = await apiGet<Receipt>(`/sales/${sale.id}/receipt/`);
     cart.clear();
     setCustomer(null);
-    setLastRequest(null);
     setPhase("idle");
     setDialog(null);
-    if (receipt.ok) setApproved({ sale, receipt: receipt.data, key });
+    // The sale is posted whatever happens to the receipt: show it, with the receipt or a way
+    // to load it again (review C-08).
+    setApproved({ sale, receipt: receipt.ok ? receipt.data : null, key });
     void refreshShift();
   };
 
@@ -297,7 +297,7 @@ export function PosScreen(props: PosScreenProps) {
     if (phase === "approving") return;
     const key = cart.pendingKey ?? crypto.randomUUID();
     cart.setPendingKey(key);
-    setLastRequest(request);
+    cart.setPendingRequest(request);
     setPhase("approving");
     setPayError(null);
     const res = await apiSend<SaleResult>("POST", "/sales/", request, {
@@ -316,8 +316,15 @@ export function PosScreen(props: PosScreenProps) {
       setPhase("failed");
       return;
     }
+    if (res.status === 409) {
+      // This key already carries a request: ask the server what became of it.
+      setDialog(null);
+      setPhase("verify");
+      return void checkResult();
+    }
     // Rejected (nothing recorded): the next attempt gets a fresh key.
     cart.setPendingKey(null);
+    cart.setPendingRequest(null);
     setPhase("idle");
     const code = errorCode(res.error);
     setPayError(tErr(errorKey(code)));
@@ -331,12 +338,11 @@ export function PosScreen(props: PosScreenProps) {
     if (res.status === 404) setPhase("failed");
   };
 
+  /** Try again with the same key and the same request: the server either finishes it once or
+   * returns what it already recorded. A "not found" never frees the key (review C-01). */
   const retry = () => {
-    if (lastRequest) void approve(lastRequest);
-    else {
-      cart.setPendingKey(null);
-      setPhase("idle");
-    }
+    if (cart.pendingRequest) void approve(cart.pendingRequest);
+    else void checkResult();
   };
 
   const shiftOpen = shift.shift !== null;

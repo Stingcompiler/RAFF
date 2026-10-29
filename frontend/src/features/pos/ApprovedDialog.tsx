@@ -7,7 +7,7 @@ import { createPortal, flushSync } from "react-dom";
 import { Dialog } from "@/components/ui/Dialog";
 import { ReceiptPreview } from "@/components/ui/ReceiptPreview";
 import { useToast } from "@/components/ui/Toast";
-import { apiSend } from "@/lib/api/browser";
+import { apiGet, apiSend } from "@/lib/api/browser";
 import { money } from "@/lib/format";
 
 import { type Receipt, requestRef, type SaleResult } from "./types";
@@ -17,17 +17,24 @@ const SEP = " · ";
 
 type Props = {
   sale: SaleResult;
-  receipt: Receipt;
+  /** Null when loading the receipt failed after the sale posted: the sale still shows. */
+  receipt: Receipt | null;
   requestKey: string;
   onNewSale: () => void;
 };
 
 /** Sale approved: receipt preview, print / reprint (80mm via the browser), new sale on Enter. */
-export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) {
+export function ApprovedDialog({ sale, receipt: initialReceipt, requestKey, onNewSale }: Props) {
   const t = useTranslations("pos");
   const ar = useLocale() === "ar";
   const toast = useToast();
   const [printing, setPrinting] = useState<Receipt | null>(null);
+  const [receipt, setReceipt] = useState(initialReceipt);
+  const reload = async () => {
+    const res = await apiGet<Receipt>(`/sales/${sale.id}/receipt/`);
+    if (res.ok) setReceipt(res.data);
+    else toast.push("danger", t("receiptLoadFailed"));
+  };
   const newSale = useRef<HTMLButtonElement>(null);
 
   const print = async (reprint: boolean) => {
@@ -53,10 +60,26 @@ export function ApprovedDialog({ sale, receipt, requestKey, onNewSale }: Props) 
       className="grid max-h-[80vh] w-[680px] grid-cols-[302px_1fr] grid-rows-[minmax(0,1fr)_auto] gap-x-[24px] gap-y-[16px] overflow-hidden max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:grid-cols-1 max-[760px]:grid-rows-[auto_minmax(0,1fr)_auto] max-[760px]:overflow-hidden"
     >
       <div className="row-span-2 min-h-0 overflow-y-auto max-[760px]:order-2 max-[760px]:row-span-1">
-        <ReceiptPreview
-          data={receipt}
-          className="box-border animate-[raff-fade_var(--motion-scene)_ease_both]"
-        />
+        {receipt ? (
+          <ReceiptPreview
+            data={receipt}
+            className="box-border animate-[raff-fade_var(--motion-scene)_ease_both]"
+          />
+        ) : (
+          <div
+            role="status"
+            className="grid gap-[10px] rounded-control border border-warning-solid bg-warning-bg p-[14px] font-medium text-warning-text"
+          >
+            {t("receiptMissing")}
+            <button
+              type="button"
+              onClick={() => void reload()}
+              className="h-[44px] cursor-pointer rounded-control border border-border-strong bg-surface font-medium text-text"
+            >
+              {t("receiptReload")}
+            </button>
+          </div>
+        )}
       </div>
       <div className="grid content-start gap-[12px] max-[760px]:order-1">
         <div

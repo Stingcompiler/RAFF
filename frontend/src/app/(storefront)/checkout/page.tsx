@@ -5,7 +5,8 @@ import type { Store } from "@/features/store/types";
 import { serverGet } from "@/lib/api/server";
 
 export default async function CheckoutPage() {
-  const store = await serverGet<Store>("/public/store/").catch(() => null);
+  // No silent fallback: a store that cannot be read is an error page, never "no delivery".
+  const store = await serverGet<Store>("/public/store/");
   return (
     <Suspense>
       <CheckoutScreen
