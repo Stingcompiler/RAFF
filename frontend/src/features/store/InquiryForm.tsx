@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { type FormEvent, useState } from "react";
 
@@ -82,7 +83,7 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
     return (
       <div
         role="status"
-        className="grid gap-[12px] rounded-card border border-success-border bg-success-bg p-[18px] text-success-text"
+        className="grid gap-[12px] rounded-panel border border-success-border bg-success-bg p-[24px] text-success-text"
       >
         <div className="text-lead font-semibold">{t("inqDone")}</div>
         <div>{t("inqDoneB", { number: sent.number, via: t(`via.${via}`) })}</div>
@@ -109,10 +110,12 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
     <form
       onSubmit={submit}
       noValidate
-      className="grid grid-cols-[minmax(0,1fr)] gap-[14px] rounded-card border border-border bg-surface p-[18px]"
+      className="grid grid-cols-[minmax(0,1fr)] gap-x-[16px] gap-y-[16px] rounded-panel border border-border bg-surface p-[24px] min-[640px]:grid-cols-2 max-[760px]:p-[18px]"
     >
-      <h2 className="m-0 text-land-lead font-semibold">{t("inqT")}</h2>
-      <p className="m-0 text-text-secondary">{t("inqB")}</p>
+      <div className="grid gap-[4px] min-[640px]:col-span-2">
+        <h2 className="m-0 text-land-section font-semibold">{t("inqT")}</h2>
+        <p className="m-0 text-text-secondary">{t("inqB")}</p>
+      </div>
       <label className="grid gap-[4px] text-body font-semibold text-text-muted">
         {t("nameL")}
         <input
@@ -138,7 +141,12 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
           <span className="text-label font-medium text-danger-text">{t("phoneErr")}</span>
         )}
       </label>
-      <label className="grid gap-[4px] text-body font-semibold text-text-muted">
+      <label
+        className={cn(
+          "grid gap-[4px] text-body font-semibold text-text-muted",
+          topic !== "order" && "min-[640px]:col-span-2",
+        )}
+      >
         {t("topicL")}
         <select
           value={topic}
@@ -167,7 +175,7 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
           )}
         </label>
       )}
-      <fieldset className="m-0 grid gap-[6px] border-0 p-0">
+      <fieldset className="m-0 grid gap-[6px] border-0 p-0 min-[640px]:col-span-2">
         <legend className="mb-[6px] p-0 text-body font-semibold text-text-muted">
           {t("viaL")}
         </legend>
@@ -195,7 +203,7 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
           ))}
         </div>
       </fieldset>
-      <label className="grid gap-[4px] text-body font-semibold text-text-muted">
+      <label className="grid gap-[4px] text-body font-semibold text-text-muted min-[640px]:col-span-2">
         {t("messageL")}
         <textarea
           rows={4}
@@ -207,21 +215,26 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
         />
         <span className="text-label font-normal">{t("noHealth")}</span>
       </label>
-      <label className="flex min-h-[44px] cursor-pointer items-center gap-[10px]">
+      <label className="flex min-h-[44px] cursor-pointer items-center gap-[10px] min-[640px]:col-span-2">
         <input
           type="checkbox"
           checked={agree}
           onChange={(e) => setAgree(e.target.checked)}
           className="m-0 size-[22px] flex-none accent-brand"
         />
-        <span>{t("agree")}</span>
+        <span>
+          {t("agree")}
+          <Link href="/policies/privacy" target="_blank" className="text-brand underline">
+            {t("policy")}
+          </Link>
+        </span>
       </label>
       <button
         type="submit"
         disabled={!valid || busy}
         aria-busy={busy}
         className={cn(
-          "flex min-h-[44px] items-center justify-center gap-[10px] rounded-card border-0 text-lead font-semibold",
+          "flex min-h-[48px] items-center justify-center gap-[10px] rounded-card border-0 text-lead font-semibold min-[640px]:col-span-2",
           valid && !busy
             ? "cursor-pointer bg-brand text-on-brand"
             : "cursor-not-allowed bg-border text-text-muted",
@@ -233,7 +246,7 @@ export function InquiryForm({ whatsapp }: { whatsapp: string }) {
       {error && (
         <div
           role="alert"
-          className="rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
+          className="rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text min-[640px]:col-span-2"
         >
           {error}
         </div>
