@@ -24,6 +24,9 @@ fail() {
 }
 trap 'fail "unexpected error on line $LINENO"' ERR
 
+# Receipts of orders closed long ago are deleted (RAFF_RECEIPT_RETENTION_DAYS) before the
+# copy, so an archive never brings back a photo that was due to go (review B-12).
+manage purge_receipts >/dev/null 2>&1 || warn "Could not purge old receipts."
 log "Dumping the database…"
 compose exec -T postgres pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc >"$WORK/db.dump" \
   || fail "pg_dump"
@@ -31,9 +34,6 @@ log "Copying listing images…"
 compose exec -T backend tar -C /media -cf - . >"$WORK/media.tar" || fail "media"
 log "Copying transfer receipts…"
 compose exec -T backend tar -C /private -cf - . >"$WORK/private.tar" || fail "private"
-# Receipts of orders closed long ago are deleted (RAFF_RECEIPT_RETENTION_DAYS), here and not
-# in a separate timer: the backup already runs on a schedule.
-manage purge_receipts >/dev/null 2>&1 || warn "Could not purge old receipts."
 cat >"$WORK/meta.json" <<META
 {"created": "$STAMP", "version": "${RAFF_VERSION:-dev}", "org_id": "$SINGLE_ORG_ID",
  "postgres_db": "$POSTGRES_DB", "postgres_user": "$POSTGRES_USER"}

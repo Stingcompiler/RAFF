@@ -26,10 +26,14 @@ class UserError(Exception):
 def ensure_default_roles() -> list[Role]:
     roles = []
     for code, (name_ar, name_en, perms) in DEFAULT_ROLES.items():
-        role, _ = Role.objects.get_or_create(
+        role, created = Role.objects.get_or_create(
             code=code,
             defaults={"name_ar": name_ar, "name_en": name_en, "permissions": sorted(perms)},
         )
+        # The owner always holds every permission, including ones added after it was created.
+        if not created and code == "owner" and set(role.permissions) != set(perms):
+            role.permissions = sorted(perms)
+            role.save(update_fields=["permissions"])
         roles.append(role)
     return roles
 

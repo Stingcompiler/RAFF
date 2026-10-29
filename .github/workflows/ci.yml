@@ -161,6 +161,8 @@ jobs:
         run: |
           curl -fsS http://localhost/api/v1/health/
           curl -fsS -o /dev/null http://localhost/login
+          # The store's location button and the stocktake camera need these (review D-06).
+          curl -fsSI http://localhost/login | grep -qi "permissions-policy: camera=(self), microphone=(), geolocation=(self)"
           curl -fsS http://localhost/api/v1/public/products/ | grep -q par-500
       - name: Backup
         run: |

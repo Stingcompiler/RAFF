@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import struct
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -28,25 +29,24 @@ pytestmark = pytest.mark.django_db
 SECRET = b"GPS-15.5006N-32.5599E"
 
 
+SOF0 = b"\xff\xc0" + struct.pack(">HBHHB", 11, 8, 1, 1, 1) + b"\x01\x11\x00"
+SOS = b"\xff\xda" + struct.pack(">H", 8) + b"\x01\x01\x00\x00?\x00"
+
+
+def segment(marker: int, body: bytes) -> bytes:
+    return bytes([0xFF, marker]) + struct.pack(">H", len(body) + 2) + body
+
+
 def jpeg(extra: bytes = b"") -> bytes:
-    app0 = b"\xff\xe0" + struct.pack(">H", 16) + b"JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00"
-    exif = b"Exif\x00\x00" + SECRET
-    app1 = b"\xff\xe1" + struct.pack(">H", len(exif) + 2) + exif
-    com = b"\xff\xfe" + struct.pack(">H", len(SECRET) + 2) + SECRET
-    return (
-        b"\xff\xd8"
-        + app0
-        + app1
-        + com
-        + b"\xff\xda\x00\x08\x01\x01\x00\x00?\x00"
-        + b"PIXELS"
-        + extra
-        + b"\xff\xd9"
-    )
+    app0 = segment(0xE0, b"JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00")
+    app1 = segment(0xE1, b"Exif\x00\x00" + SECRET)
+    com = segment(0xFE, SECRET)
+    return b"\xff\xd8" + app0 + app1 + com + SOF0 + SOS + b"PIXELS" + extra + b"\xff\xd9"
 
 
 def chunk(kind: bytes, body: bytes) -> bytes:
-    return struct.pack(">I", len(body)) + kind + body + b"\x00\x00\x00\x00"
+    crc = zlib.crc32(kind + body) & 0xFFFFFFFF
+    return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", crc)
 
 
 def png() -> bytes:
@@ -193,8 +193,64 @@ def test_old_photos_of_closed_orders_are_deleted(
         assert receipts.purge_old() == 0  # still open
         transition(order.pk, "cancelled", "test", world.owner)
         assert receipts.purge_old() == 0  # closed today
-        Order.objects.filter(pk=order.pk).update(updated_at=timezone.now() - dt.timedelta(days=91))
+        Order.objects.filter(pk=order.pk).update(closed_at=timezone.now() - dt.timedelta(days=91))
         assert receipts.purge_old() == 1
         order.refresh_from_db()
         assert not order.payment_receipt and not path.exists()
         assert order.payment_reference  # the order keeps its transfer details
+
+
+def test_b11_every_broken_image_is_a_clear_refusal_never_a_crash() -> None:
+    ihdr = struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0)
+    sig = b"\x89PNG\r\n\x1a\n"
+    zero = struct.pack(">IIBBBBB", 0, 1, 8, 2, 0, 0, 0)
+    broken = {
+        "truncated jpeg": b"\xff\xd8\xff",
+        "fill bytes only": b"\xff\xd8\xff\xff",
+        "jpeg without a frame": b"\xff\xd8" + SOS + b"PIX" + b"\xff\xd9",
+        "jpeg without its end": jpeg()[:-2],
+        "png without image data": sig + chunk(b"IHDR", ihdr) + chunk(b"IEND", b""),
+        "png with an empty header": sig
+        + chunk(b"IHDR", b"")
+        + chunk(b"IDAT", b"x")
+        + chunk(b"IEND", b""),
+        "png with a bad checksum": png().replace(b"PIXELS", b"PIXELZ"),
+        "png with a zero size": sig
+        + chunk(b"IHDR", zero)
+        + chunk(b"IDAT", b"x")
+        + chunk(b"IEND", b""),
+    }
+    for name, data in broken.items():
+        with pytest.raises(receipts.ReceiptError) as exc:
+            receipts.clean_image(data)
+        assert exc.value.code == "image_type", name
+
+
+def test_b11_metadata_between_the_scans_of_a_progressive_jpeg_is_removed() -> None:
+    sof2 = b"\xff\xc2" + SOF0[2:]
+    exif = segment(0xE1, b"Exif\x00\x00" + SECRET)
+    data = b"\xff\xd8" + sof2 + SOS + b"SCAN1" + exif + SOS + b"SCAN2\xff\x00" + b"\xff\xd9"
+    kind, clean = receipts.clean_image(data)
+    assert kind == "jpg" and SECRET not in clean
+    assert b"SCAN1" in clean and b"SCAN2\xff\x00" in clean and clean.endswith(b"\xff\xd9")
+
+
+def test_b11_a_truncated_upload_is_a_400_not_a_500(
+    world: World, tmp_path: Path, settings: Any
+) -> None:
+    client, csrf, order = prepaid_order(world, tmp_path, settings)
+    res = upload(client, csrf, order.token, b"\xff\xd8\xff")
+    assert res.status_code == 400 and res.json()["detail"] == "image_type"
+
+
+def test_b12_the_keep_counts_from_closing_not_from_the_last_edit(
+    world: World, tmp_path: Path, settings: Any
+) -> None:
+    client, csrf, order = prepaid_order(world, tmp_path, settings)
+    upload(client, csrf, order.token, jpeg())
+    with org_context(world.org.id):
+        transition(order.pk, "cancelled", "test", world.owner)
+        Order.objects.filter(pk=order.pk).update(closed_at=timezone.now() - dt.timedelta(days=91))
+        # An edit after closing (a refund recorded, a note) does not restart the 90 days.
+        Order.objects.filter(pk=order.pk).update(updated_at=timezone.now())
+        assert receipts.purge_old() == 1
