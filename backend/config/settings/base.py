@@ -136,6 +136,10 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Storefront listing images. Served by Caddy in production (WO-10), by Django when DEBUG.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(env("RAFF_MEDIA_ROOT", str(BASE_DIR / "media")))
+# Files that must never be public (customers' bank-transfer receipts): a directory the web
+# server does not serve, read only through an authenticated endpoint.
+PRIVATE_ROOT = Path(env("RAFF_PRIVATE_ROOT", str(BASE_DIR / "private")))
+RECEIPT_RETENTION_DAYS = int(env("RAFF_RECEIPT_RETENTION_DAYS", "90"))
 # Outbound order alerts; unset means badge only.
 RAFF_TELEGRAM_BOT_TOKEN = env("RAFF_TELEGRAM_BOT_TOKEN", "")
 

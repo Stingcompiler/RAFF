@@ -25,7 +25,7 @@ COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --frozen --no-dev --no-install-project
 COPY . .
 # The media volume takes this directory's owner on first use: the app must be able to write it.
-RUN mkdir -p /media && chown raff:raff /media
+RUN mkdir -p /media /private && chown raff:raff /media /private
 ENV DJANGO_SETTINGS_MODULE=config.settings.prod \
     RAFF_VERSION=${RAFF_VERSION}
 USER raff

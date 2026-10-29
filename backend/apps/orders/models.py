@@ -1,12 +1,32 @@
 from __future__ import annotations
 
+import os
 import uuid
 
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 
 from apps.catalog.models import Item, ItemUnit
 from apps.finance.money import MoneyField
 from apps.tenancy.models import Branch, OrgScopedModel
+
+
+class PrivateStorage(FileSystemStorage):
+    """Files under PRIVATE_ROOT, read at use (so tests and deployments can point elsewhere)."""
+
+    @property
+    def base_location(self) -> str:
+        return str(settings.PRIVATE_ROOT)
+
+    @property
+    def location(self) -> str:
+        return os.path.abspath(self.base_location)
+
+
+def receipt_storage() -> FileSystemStorage:
+    """Receipts live outside MEDIA_ROOT: nothing serves this directory directly."""
+    return PrivateStorage()
 
 
 class Order(OrgScopedModel):
@@ -57,6 +77,10 @@ class Order(OrgScopedModel):
     paid_amount = MoneyField(null=True, blank=True)
     payment_reference = models.CharField(max_length=60, blank=True)
     payment_note = models.CharField(max_length=300, blank=True)
+    # Optional photo of the bank's confirmation, metadata stripped, private storage.
+    payment_receipt = models.FileField(
+        storage=receipt_storage, upload_to="receipts/", blank=True, max_length=200
+    )
     payment_submitted_at = models.DateTimeField(null=True, blank=True)
     payment_verified_at = models.DateTimeField(null=True, blank=True)
     payment_verified_by = models.ForeignKey(
@@ -105,6 +129,7 @@ class OrderPaymentEvent(OrgScopedModel):
         REFUND_DUE = "refund_due", "Refund due"
         REFUNDED = "refunded", "Refunded"
         OVERRIDE = "override", "Preparing started before verification"
+        RECEIPT = "receipt", "Receipt photo attached"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="payment_events")

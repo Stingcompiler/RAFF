@@ -742,6 +742,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/orders/{id}/receipt/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Staff open the receipt photo. Private: never cached, never sniffed, never scripted. */
+    get: operations["order_receipt"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/orders/{id}/transition/": {
     parameters: {
       query?: never;
@@ -903,6 +920,23 @@ export interface paths {
     put?: never;
     /** @description The customer sends the bank transfer's reference and amount for their order. */
     post: operations["public_order_payment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/public/orders/{token}/receipt/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description The customer attaches the photo of the bank's confirmation (JPEG or PNG, up to 3 MB). */
+    post: operations["public_order_receipt"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2477,6 +2511,7 @@ export interface components {
       payment_method: components["schemas"]["PaymentMethodEnum"];
       payment_status: components["schemas"]["PaymentStatusEnum"];
       payment_note: string;
+      has_receipt: boolean;
       /** Format: date-time */
       created_at: string;
       /** Format: decimal */
@@ -3030,6 +3065,7 @@ export interface components {
       paid_amount: string | null;
       payment_reference: string;
       payment_note: string;
+      has_receipt: boolean;
       payment_events: components["schemas"]["StaffPaymentEvent"][];
       /** Format: decimal */
       latitude: string | null;
@@ -3082,10 +3118,11 @@ export interface components {
      *     * `refund_due` - Refund due
      *     * `refunded` - Refunded
      *     * `override` - Preparing started before verification
+     *     * `receipt` - Receipt photo attached
      * @enum {string}
      */
     StaffPaymentEventKindEnum:
-      "submitted" | "verified" | "rejected" | "refund_due" | "refunded" | "override";
+      "submitted" | "verified" | "rejected" | "refund_due" | "refunded" | "override" | "receipt";
     Stock: {
       sellable_base: number;
       held_base: number;
@@ -4448,6 +4485,27 @@ export interface operations {
       };
     };
   };
+  order_receipt: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "image/jpeg": string;
+        };
+      };
+    };
+  };
   orders_transition: {
     parameters: {
       query?: never;
@@ -4660,6 +4718,34 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": components["schemas"]["SubmitPayment"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicOrder"];
+        };
+      };
+    };
+  };
+  public_order_receipt: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          image?: string;
+        };
       };
     };
     responses: {

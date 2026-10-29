@@ -7,12 +7,14 @@ from typing import Any
 
 from django.db import transaction
 from django.db.models import Count, Q
+from django.http import FileResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -45,7 +47,7 @@ from apps.orders.serializers import (
     TrackSerializer,
     TransitionSerializer,
 )
-from apps.orders.services import inquiries, payments, workflow
+from apps.orders.services import inquiries, payments, receipts, workflow
 from apps.orders.services.placing import (
     LineRequest,
     OrderError,
@@ -563,3 +565,68 @@ class PaymentActionView(APIView):
             return Response({"detail": exc.code}, status=code)
         order.refresh_from_db()
         return Response(StaffOrderSerializer(staff_order(order)).data)
+
+
+_RECEIPT_TYPES = {"jpg": "image/jpeg", "png": "image/png"}
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class SubmitReceiptView(_Public):
+    """The customer attaches the photo of the bank's confirmation (JPEG or PNG, up to 3 MB)."""
+
+    throttle_scope = "orders"
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        operation_id="public_order_receipt",
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {"image": {"type": "string", "format": "binary"}},
+            }
+        },
+        responses=PublicOrderSerializer,
+    )
+    def post(self, request: Request, token: str) -> Response:
+        order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+        if order is None:
+            raise NotFound
+        upload = request.FILES.get("image")
+        if upload is None:
+            return Response({"detail": "image_required"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            order = receipts.save_receipt(order.pk, upload)
+        except receipts.ReceiptError as exc:
+            code = (
+                status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+                if exc.code == "image_too_large"
+                else status.HTTP_400_BAD_REQUEST
+            )
+            return Response({"detail": exc.code}, status=code)
+        return Response(PublicOrderSerializer(public_order(order)).data)
+
+
+class ReceiptView(APIView):
+    """Staff open the receipt photo. Private: never cached, never sniffed, never scripted."""
+
+    permission_classes = [requires("orders.manage")]
+
+    @extend_schema(
+        operation_id="order_receipt",
+        responses={(200, "image/jpeg"): {"type": "string", "format": "binary"}},
+    )
+    def get(self, request: Request, pk: uuid.UUID) -> FileResponse:
+        order = _mine(request, pk)
+        if not order.payment_receipt:
+            raise NotFound
+        assert isinstance(request.user, User)
+        receipts.viewed(order, request.user)
+        ext = str(order.payment_receipt.name).rsplit(".", 1)[-1]
+        response = FileResponse(
+            order.payment_receipt.open("rb"), content_type=_RECEIPT_TYPES.get(ext, "image/jpeg")
+        )
+        response["Cache-Control"] = "private, no-store"
+        response["X-Content-Type-Options"] = "nosniff"
+        response["Content-Security-Policy"] = "default-src 'none'; sandbox"
+        response["Content-Disposition"] = f'inline; filename="receipt-{order.number}.{ext}"'
+        return response

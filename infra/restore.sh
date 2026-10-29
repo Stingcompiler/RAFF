@@ -83,6 +83,11 @@ compose exec -T postgres pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --no-o
 
 log "Restoring listing images…"
 compose run --rm --no-deps -T --entrypoint sh backend -c "rm -rf /media/* && tar -C /media --no-overwrite-dir -xf -" <"$WORK/media.tar"
+# Backups made before receipts existed have no private.tar.
+if [ -f "$WORK/private.tar" ]; then
+  log "Restoring transfer receipts…"
+  compose run --rm --no-deps -T --entrypoint sh backend -c "rm -rf /private/* && tar -C /private --no-overwrite-dir -xf -" <"$WORK/private.tar"
+fi
 
 compose up -d
 wait_healthy 600 || { compose logs --tail 100; die "Restored, but the services are not healthy."; }

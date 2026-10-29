@@ -44,6 +44,7 @@ def public_order(order: Order) -> dict[str, Any]:
         "payment_method": order.payment_method,
         "payment_status": order.payment_status,
         "payment_note": order.payment_note if order.payment_status == "rejected" else "",
+        "has_receipt": bool(order.payment_receipt),
         "created_at": order.created_at,
         "estimated_total": order.estimated_total,
         "lines": [
@@ -98,6 +99,7 @@ def staff_order(order: Order) -> dict[str, Any]:
         "paid_amount": order.paid_amount,
         "payment_reference": order.payment_reference,
         "payment_note": order.payment_note,
+        "has_receipt": bool(order.payment_receipt),
         "payment_events": [
             {
                 "kind": e.kind,

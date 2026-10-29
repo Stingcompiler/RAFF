@@ -353,6 +353,22 @@ export function OrderDetailScreen({
                   {order.payment_note && (
                     <div className="text-label text-text-muted">{order.payment_note}</div>
                   )}
+                  {order.has_receipt && (
+                    <a
+                      href={`/api/v1/orders/${order.id}/receipt/`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="grid gap-[4px] justify-self-start text-label font-medium text-brand"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element -- private, authenticated image */}
+                      <img
+                        src={`/api/v1/orders/${order.id}/receipt/`}
+                        alt={t("payReceipt")}
+                        className="max-h-[220px] max-w-full rounded-control border border-border object-contain"
+                      />
+                      {t("payReceiptOpen")}
+                    </a>
+                  )}
                   <div className="flex flex-wrap gap-[8px]">
                     {order.payment_status === "submitted" && (
                       <>
