@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 import uuid
+from decimal import Decimal
 from typing import Any
 
 from django.db.models import Max
 
 from apps.finance.models import Customer, PartyLedgerEntry, PartyPayment
-from apps.finance.services.ledger import supplier_balance
+from apps.finance.services.ledger import supplier_balances
 
 
 def last_activity(party_type: str, ids: list[uuid.UUID]) -> dict[uuid.UUID, Any]:
@@ -42,6 +43,7 @@ def suppliers() -> list[dict[str, Any]]:
 
     rows = list(Supplier.objects.all().order_by("name_en"))
     last = last_activity(PartyLedgerEntry.Party.SUPPLIER, [s.pk for s in rows])
+    balances = supplier_balances([s.pk for s in rows])
     return [
         {
             "id": s.pk,
@@ -49,7 +51,7 @@ def suppliers() -> list[dict[str, Any]]:
             "name_ar": s.name_ar,
             "name_en": s.name_en,
             "phone": s.phone,
-            "balance": supplier_balance(s.pk),
+            "balance": balances.get(s.pk, Decimal(0)),
             "credit_limit": None,
             "last_activity": last.get(s.pk),
         }

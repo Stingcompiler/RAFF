@@ -234,7 +234,7 @@ export function CartPanel(props: Props) {
                     onClick={() =>
                       props.onChange(line.key, { quantity: Math.max(1, line.quantity - 1) })
                     }
-                    className="type-inherit grid size-[40px] cursor-pointer place-items-center border-0 bg-surface-subtle p-0 text-text"
+                    className="type-inherit grid size-[44px] cursor-pointer place-items-center border-0 bg-surface-subtle p-0 text-text"
                   >
                     {MINUS}
                   </button>
@@ -249,7 +249,7 @@ export function CartPanel(props: Props) {
                       props.onChange(line.key, { quantity: digits(e.target.value, MAX_QTY) })
                     }
                     className={cn(
-                      "h-[40px] w-[48px] border-0 text-center text-body font-semibold num outline-none",
+                      "h-[44px] w-[48px] border-0 text-center text-body font-semibold num outline-none",
                       error && !lineError
                         ? "bg-danger-bg text-danger-text"
                         : "bg-surface text-text",
@@ -265,7 +265,7 @@ export function CartPanel(props: Props) {
                         quantity: Math.min(MAX_QTY, line.quantity + 1),
                       })
                     }
-                    className="type-inherit grid size-[40px] cursor-pointer place-items-center border-0 bg-surface-subtle p-0 text-text"
+                    className="type-inherit grid size-[44px] cursor-pointer place-items-center border-0 bg-surface-subtle p-0 text-text"
                   >
                     {PLUS}
                   </button>

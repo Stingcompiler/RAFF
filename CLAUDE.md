@@ -73,7 +73,7 @@ make check        # all of the above; must be green before any PR
 
 ```
 CLAUDE.md
-docs/spec/                 BUILD-SPEC-STANDALONE-AR.md, UI-BUILD-BRIEF-AR.md, STOREFRONT-DESIGN-CHANGES-AR.md, PHARMACY-WEBSITE-AND-STORE-SPEC-AR.md, BACKLOG.md
+docs/spec/                 BUILD-SPEC-STANDALONE-AR.md, UI-BUILD-BRIEF-AR.md, STOREFRONT-DESIGN-CHANGES-AR.md, PHARMACY-WEBSITE-AND-STORE-SPEC-AR.md, SPEC-ADDENDUM-AR.md (where decisions replace the spec), BACKLOG.md
 docs/design/               Design Reference v2.2, PROJECT_PROFILE.yaml, DECISIONS.md (the design system)
 docs/work-orders/          work order plans (WO-15 design system migration)
 design/handoff/            archive: previous approved .dc.html package, HANDOFF.md, screenshots/, reference/, generate-reference.mjs, README.md
@@ -89,7 +89,7 @@ frontend/                  Next.js app
   messages/{ar,en}.json
 backend/
   config/settings/{base,dev,test,prod}.py
-  apps/{tenancy,accounts,licensing,catalog,inventory,purchasing,sales,returns,finance,transfers,storefront,orders,notifications,audit,sync,backup}
+  apps/{tenancy,accounts,licensing,catalog,inventory,purchasing,sales,returns,finance,transfers,reports,storefront,orders,notifications,audit,sync,backup}
     models.py  services/  selectors.py  serializers.py  views.py  urls.py  tests/
 infra/                     compose/, caddy/, backup/, install.sh, restore.sh, update.sh
 tests/e2e/                 playwright journeys + visual

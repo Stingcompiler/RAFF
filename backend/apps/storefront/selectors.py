@@ -60,22 +60,19 @@ def availability(settings: StorefrontSettings, items: list[Item]) -> dict[uuid.U
 
 
 def current_prices(items: list[Item]) -> dict[uuid.UUID, ItemPrice]:
+    """Today's retail price of each item's sale unit, in one query however many items
+    (DISTINCT ON the unit, newest effective date first; review B-08)."""
     retail = ensure_default_price_lists()
-    out = {}
-    for item in items:
-        unit = sale_unit(item)
-        if unit is None:
-            continue
-        price = (
-            ItemPrice.objects.filter(
-                unit=unit, price_list=retail, effective_from__lte=clock.today()
-            )
-            .order_by("-effective_from")
-            .first()
+    units = {item.pk: unit for item in items if (unit := sale_unit(item)) is not None}
+    latest = {
+        p.unit_id: p
+        for p in ItemPrice.objects.filter(
+            unit__in=list(units.values()), price_list=retail, effective_from__lte=clock.today()
         )
-        if price is not None:
-            out[item.pk] = price
-    return out
+        .order_by("unit_id", "-effective_from")
+        .distinct("unit_id")
+    }
+    return {item_id: latest[u.pk] for item_id, u in units.items() if u.pk in latest}
 
 
 def product_rows(

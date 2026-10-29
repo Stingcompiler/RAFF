@@ -78,6 +78,7 @@ class ItemListSerializer(serializers.ModelSerializer[Item]):
 class ItemDetailSerializer(ItemListSerializer):
     units = UnitSerializer(many=True, read_only=True)
     prices = serializers.SerializerMethodField()
+    published = serializers.SerializerMethodField()
 
     class Meta(ItemListSerializer.Meta):
         fields = [
@@ -85,8 +86,15 @@ class ItemDetailSerializer(ItemListSerializer):
             "reorder_level_base",
             "units",
             "prices",
+            "published",
             "updated_at",
         ]
+
+    def get_published(self, item: Item) -> bool:
+        """Whether the item is on the public store now (the drawer's store tab; review E-02)."""
+        from apps.storefront.models import Listing
+
+        return Listing.objects.filter(item=item, published=True).exists()
 
     @extend_schema_field(PriceSerializer(many=True))
     def get_prices(self, item: Item) -> list[dict[str, object]]:

@@ -17,7 +17,7 @@ from django.utils import timezone
 from apps.catalog.models import Item, ItemUnit
 from apps.finance.models import Customer, PartyLedgerEntry
 from apps.finance.money import money
-from apps.finance.services.ledger import supplier_balance
+from apps.finance.services.ledger import supplier_balances
 from apps.inventory.models import Location, StockBalance, StockMovement
 from apps.tenancy import clock
 from apps.tenancy.models import Branch
@@ -346,8 +346,10 @@ def receivables(p: Params) -> Report:
         )
         owed += c.balance
     payable = Decimal(0)
-    for s in Supplier.objects.order_by("name_en"):
-        balance = supplier_balance(s.pk)
+    suppliers = list(Supplier.objects.order_by("name_en"))
+    balances = supplier_balances([s.pk for s in suppliers])
+    for s in suppliers:
+        balance = balances.get(s.pk, Decimal(0))
         if not balance:
             continue
         stamp = last.get(("supplier", s.pk))

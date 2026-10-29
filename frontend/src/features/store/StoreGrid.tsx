@@ -17,7 +17,7 @@ const chip = (on: boolean) =>
 const seg = (on: boolean) =>
   cn(
     "hit-44 rounded-control px-[12px] py-[6px] text-label font-medium whitespace-nowrap no-underline transition-[background] duration-(--motion-feedback)",
-    on ? "bg-surface text-brand shadow-[0_1px_2px_rgb(0_0_0/.12)]" : "text-text-muted",
+    on ? "bg-surface text-brand shadow-1" : "text-text-muted",
   );
 
 /** Store and category pages (§4.2): search, category and availability filters, simple sort. */

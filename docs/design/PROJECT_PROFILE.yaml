@@ -43,8 +43,14 @@ navigation:
 
 data:
   record_types: [sale, return, goods_receipt, stocktake, shift, transfer, order, party_payment]
-  metrics: []                   # تُعرَّف مع WO-15d (الوحدة والفترة وفترة الأساس لكل مقياس)
-  statuses: []                  # جدول الحالات الدوائية في DECISIONS D-R0009
+  # المقاييس المبنية (لوحة المتابعة والتقارير؛ المصدر backend/apps/reports/services/catalog.py):
+  metrics:
+    - {name: sales_today, unit: SDG, period: اليوم, source: "sales.Sale.total (الفرع)"}
+    - {name: cash_collected, unit: SDG, period: اليوم, source: "sales.Payment method=cash"}
+    - {name: store_orders_today, unit: count, period: اليوم, source: "orders.Order حسب الحالة"}
+    - {name: sales_7_days, unit: "ألف SDG", period: آخر 7 أيام, source: "sales.Sale.total يومياً"}
+    - {name: reports, unit: متعددة, period: حسب التقرير, source: "7 تقارير في reports/services/catalog.py (D-R0012: لا مقارنة بفترة سابقة بعد)"}
+  statuses: []                  # جدول الحالات الدوائية في DECISIONS D-R0009 (هو المرجع)
 
 connectivity:
   offline_first: false          # يصير true مع WO-11 (D-R0002)
@@ -78,7 +84,7 @@ market:
   network_budget: low
   price_display: show
 
-landing:                        # صفحة المتجر الرئيسية دُقّقت في WO-15d (BACKLOG 136–141)؛ /ar /en للمنتج لم تُبنَ
+landing:                        # صفحة المتجر الرئيسية دُقّقت في WO-15d (BACKLOG 136–141)؛ /ar /en للمنتج بُنيت في WO-24
   - page: store-home
     type: consumer
     goal: purchase

@@ -114,6 +114,19 @@ def supplier_balance(supplier_id: uuid.UUID) -> Decimal:
     return last.balance_after if last else Decimal(0)
 
 
+def supplier_balances(supplier_ids: list[uuid.UUID]) -> dict[uuid.UUID, Decimal]:
+    """Every supplier's balance in one query (latest ledger row per supplier; review B-08)."""
+    rows = (
+        PartyLedgerEntry.objects.filter(
+            party_type=PartyLedgerEntry.Party.SUPPLIER, party_id__in=supplier_ids
+        )
+        .order_by("party_id", "-created_at")
+        .distinct("party_id")
+        .values_list("party_id", "balance_after")
+    )
+    return dict(rows)
+
+
 def charge_supplier(
     supplier_id: uuid.UUID, amount: Decimal, *, document_type: str, document_id: uuid.UUID
 ) -> PartyLedgerEntry:

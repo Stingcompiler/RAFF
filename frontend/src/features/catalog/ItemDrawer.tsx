@@ -317,7 +317,9 @@ export function ItemDrawer({
             )}
             {tab === 5 && (
               <>
-                <DrawerRow label={t("published")}>{t("no")}</DrawerRow>
+                <DrawerRow label={t("published")}>
+                  {current.published ? t("yes") : t("no")}
+                </DrawerRow>
                 <DrawerRow label={t("classification")}>
                   {current.classification === "rx" ? t("rxLong") : t("otc")}
                 </DrawerRow>

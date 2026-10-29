@@ -371,7 +371,8 @@
     "release": "Release with expiry",
     "releaseTitle": "Release a held batch",
     "expiry": "Expiry date",
-    "released": "The batch is now sellable"
+    "released": "The batch is now sellable",
+    "yes": "● Yes — on the store"
   },
   "import": {
     "title": "Import items",

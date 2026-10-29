@@ -178,6 +178,10 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": "/api/v1",
+    "POSTPROCESSING_HOOKS": [
+        "drf_spectacular.hooks.postprocess_schema_enums",
+        "apps.sync.openapi.idempotent_errors",
+    ],
     # Several serializers have a `status` choice field; give each enum a stable name.
     "ENUM_NAME_OVERRIDES": {
         "InquiryStatusEnum": "apps.orders.models.Inquiry.Status",
