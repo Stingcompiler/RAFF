@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { TONE_CLASSES, TONE_SYMBOL } from "@/components/ui/Badge";
 import { useToast } from "@/components/ui/Toast";
@@ -32,16 +32,24 @@ export function PhoneOrders({ initial }: { initial: OrderRow[] }) {
   const cur = (v: string) => money(v, ar ? "ar" : "en") || money("0", ar ? "ar" : "en");
   const [rows, setRows] = useState(initial);
   const [busy, setBusy] = useState<string | null>(null);
+  // One key per (order, step), kept across a retry after a lost reply.
+  const keys = useRef(new Map<string, string>());
 
   const fresh = rows.filter((o) => o.status === "new").length;
 
   const advance = async (order: OrderRow, to: OrderStatus) => {
     setBusy(order.id);
-    const res = await apiSend<{ status: OrderStatus }>("POST", `/orders/${order.id}/transition/`, {
-      to,
-      reason: "",
-    });
+    const slot = `${order.id}:${to}`;
+    const key = keys.current.get(slot) ?? crypto.randomUUID();
+    keys.current.set(slot, key);
+    const res = await apiSend<{ status: OrderStatus }>(
+      "POST",
+      `/orders/${order.id}/transition/`,
+      { to, reason: "" },
+      { idempotencyKey: key },
+    );
     setBusy(null);
+    if (res.ok || res.status !== 0) keys.current.delete(slot);
     if (!res.ok) return toast.push("danger", t("failed"));
     const status = res.data.status;
     setRows((prev) => prev.map((o) => (o.id === order.id ? { ...o, status } : o)));

@@ -30,11 +30,12 @@ def _error(exc: ReceiptError) -> ValidationError:
     return ValidationError({"detail": exc.code, **{k: str(v) for k, v in exc.detail.items()}})
 
 
-def _receipt(pk: str) -> GoodsReceipt:
+def _receipt(request: Request, pk: str) -> GoodsReceipt:
+    """A receipt of the session's branch only (404 for another branch's)."""
     receipt: GoodsReceipt | None = (
         GoodsReceipt.objects.select_related("supplier")
         .prefetch_related("lines__item", "lines__unit")
-        .filter(pk=pk)
+        .filter(pk=pk, branch=current_branch(request))
         .first()
     )
     if receipt is None:
@@ -113,7 +114,8 @@ class ReceiptListView(APIView):
     def post(self, request: Request) -> Response:
         receipt = _save(request, None)
         return Response(
-            ReceiptSerializer(_receipt(str(receipt.pk))).data, status=status.HTTP_201_CREATED
+            ReceiptSerializer(_receipt(request, str(receipt.pk))).data,
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -124,14 +126,14 @@ class ReceiptDetailView(APIView):
 
     @extend_schema(operation_id="receipts_retrieve", responses=ReceiptSerializer)
     def get(self, request: Request, pk: str) -> Response:
-        return Response(ReceiptSerializer(_receipt(pk)).data)
+        return Response(ReceiptSerializer(_receipt(request, pk)).data)
 
     @extend_schema(
         operation_id="receipts_update", request=ReceiptInputSerializer, responses=ReceiptSerializer
     )
     def put(self, request: Request, pk: str) -> Response:
-        _save(request, _receipt(pk))
-        return Response(ReceiptSerializer(_receipt(pk)).data)
+        _save(request, _receipt(request, pk))
+        return Response(ReceiptSerializer(_receipt(request, pk)).data)
 
 
 class ReceiptPostView(APIView):
@@ -150,7 +152,7 @@ class ReceiptPostView(APIView):
         responses=PostResultSerializer,
     )
     def post(self, request: Request, pk: str) -> Response:
-        receipt = _receipt(pk)
+        receipt = _receipt(request, pk)
         key = idempotency_key(request)
         assert isinstance(request.user, User)
         try:

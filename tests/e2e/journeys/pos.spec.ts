@@ -188,7 +188,7 @@ test.describe("point of sale", () => {
     for (const to of ["confirmed", "preparing", "ready"]) {
       const moved = await page.request.post(`/api/v1/orders/${row.id}/transition/`, {
         data: { to },
-        headers,
+        headers: { ...headers, "idempotency-key": crypto.randomUUID() },
       });
       expect(moved.ok(), await moved.text()).toBe(true);
     }

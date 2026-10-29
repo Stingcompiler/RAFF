@@ -8,6 +8,7 @@ from decimal import Decimal
 from typing import Any
 
 from django.db import transaction
+from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.audit.services.log import record
@@ -154,6 +155,10 @@ def _order_allocations(order: Any, priced: list[PricedLine]) -> list[list[tuple[
         taken = []
         need = line.base_quantity
         for r in held.get(line.item.pk, []):
+            # A batch held when the order was confirmed may have expired since (the order can
+            # wait overnight): it is never sold. The pharmacist re-confirms with fresh stock.
+            if r.batch.expiry_date is not None and r.batch.expiry_date < clock.today():
+                raise SaleError("reserved_batch_expired", line=line.line_no)
             q = min(need, r.quantity_base)
             if q > 0:
                 taken.append((r.batch, q))
@@ -177,7 +182,8 @@ def _complete_order(order: Any, sale: Sale, user: User) -> None:
 
         overpaid(order, sale.total, user)
     order.status = Order.Status.COMPLETED
-    order.save(update_fields=["status", "updated_at"])
+    order.closed_at = timezone.now()
+    order.save(update_fields=["status", "closed_at", "updated_at"])
     OrderEvent.objects.create(order=order, status=order.status, actor=user, note=sale.number)
 
 
@@ -292,6 +298,7 @@ def _post(
     change = Decimal(0)
     debit_by_account: dict[str, Decimal] = {
         "1000": Decimal(0),
+        "1010": Decimal(0),
         "1020": Decimal(0),
         "1100": Decimal(0),
     }
@@ -310,12 +317,13 @@ def _post(
 
             # The customer's own transfer was verified before preparing; others wait for the
             # shift close like every counter transfer.
+            verified = bool(prepaid) and normalize_reference(pay.bank_reference) == prepaid
             pay.verification = (
-                Payment.Verification.CONFIRMED
-                if prepaid and normalize_reference(pay.bank_reference) == prepaid
-                else Payment.Verification.PENDING
+                Payment.Verification.CONFIRMED if verified else Payment.Verification.PENDING
             )
-            debit_by_account["1020"] += amount
+            # A verified transfer is already in the bank (1010); a counter transfer waits in
+            # transfers pending (1020) until the shift close verifies it (B-04).
+            debit_by_account["1010" if verified else "1020"] += amount
         else:
             assert customer is not None
             charge_customer(customer, amount, document_type="sale", document_id=sale.pk)
@@ -367,7 +375,8 @@ def sale_payload(
             for x in lines
         ],
         "payments": [
-            [p.method, str(p.amount), str(p.tendered), p.bank_reference] for p in payments
+            [p.method, str(p.amount), str(p.tendered), p.bank_reference, p.bank_account]
+            for p in payments
         ],
     }
 

@@ -17,7 +17,7 @@ from apps.finance.services.ledger import post_journal
 from apps.sales.models import Payment, Shift
 from apps.sync.services.idempotency import run_once
 from apps.tenancy import clock
-from apps.tenancy.models import Device
+from apps.tenancy.models import Branch, Device
 
 
 class ShiftError(Exception):
@@ -120,10 +120,18 @@ def _close(shift: Shift, counted: Decimal, user: User) -> dict[str, Any]:
 
 @transaction.atomic
 def close_shift(
-    shift_id: uuid.UUID, counted: Decimal, *, idempotency_key: str | None, user: User
+    shift_id: uuid.UUID,
+    counted: Decimal,
+    *,
+    idempotency_key: str | None,
+    user: User,
+    branch: Branch | None = None,
 ) -> dict[str, Any]:
-    """Count the cash and close. Lock order: the shift (the document) first."""
+    """Count the cash and close. Lock order: the shift (the document) first. When the caller
+    acts for a branch, the shift must belong to it."""
     shift = Shift.objects.select_for_update(of=("self",)).select_related("branch").get(pk=shift_id)
+    if branch is not None and shift.branch_id != branch.pk:
+        raise ShiftError("other_branch")
     return run_once(
         "close_shift",
         idempotency_key,

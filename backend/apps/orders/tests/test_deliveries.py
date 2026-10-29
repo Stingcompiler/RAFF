@@ -195,7 +195,11 @@ def test_a_failed_delivery_goes_back_and_can_be_given_to_another_courier(world: 
     detail = staff.get(f"/api/v1/orders/{order.pk}/").json()
     assert detail["allowed"] == ["cancelled", "ready"]
     back = staff.post(
-        f"/api/v1/orders/{order.pk}/transition/", {"to": "ready"}, format="json", **scsrf
+        f"/api/v1/orders/{order.pk}/transition/",
+        {"to": "ready"},
+        format="json",
+        HTTP_IDEMPOTENCY_KEY=str(uuid.uuid4()),
+        **scsrf,
     )
     assert back.status_code == 200 and back.json()["courier_id"] is None
     staff.post(assign, {"courier_id": ids["omar"]}, format="json", **scsrf)

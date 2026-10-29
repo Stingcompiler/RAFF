@@ -230,6 +230,12 @@ def _post(
             document_id=sale_return.pk,
             enforce_limit=False,
         )
+    if shift is not None:
+        # LOCKING.md step 6, as for a sale: the shift row last. A close that counted the
+        # drawer first wins, and this cash refund is refused instead of joining a closed shift.
+        locked = Shift.objects.select_for_update().get(pk=shift.pk)
+        if locked.status != Shift.Status.OPEN:
+            raise ReturnError("shift_closed")
     record(
         "post",
         "return",

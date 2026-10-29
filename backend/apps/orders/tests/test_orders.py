@@ -177,3 +177,73 @@ def test_staff_workflow_never_completes_by_hand(world: World) -> None:
     assert "internal_note" not in public and all("actor_ar" not in e for e in public["events"])
     other, _ = owner_at(world, world.omdurman.pk)
     assert other.get(f"/api/v1/orders/{order.pk}/").status_code == 404
+
+
+def test_b06_staff_moves_need_a_key_and_replay_once(world: World) -> None:
+    with org_context(world.org.id):
+        open_store(world)
+        listing = stocked_listing(world)
+    client, csrf = guest()
+    client.post(
+        "/api/v1/public/orders/",
+        body(listing.slug),
+        format="json",
+        HTTP_IDEMPOTENCY_KEY=str(uuid.uuid4()),
+        **csrf,
+    )
+    with org_context(world.org.id):
+        order = Order.objects.get()
+    staff, scsrf = owner_at(world, world.khartoum.pk)
+    url = f"/api/v1/orders/{order.pk}/transition/"
+    no_key = staff.post(url, {"to": "confirmed"}, format="json", **scsrf)
+    assert no_key.status_code == 400
+    key = str(uuid.uuid4())
+    first = staff.post(url, {"to": "confirmed"}, format="json", HTTP_IDEMPOTENCY_KEY=key, **scsrf)
+    assert first.status_code == 200 and first.json()["status"] == "confirmed"
+    # The reply was lost; the same request again gets the same result, not an error.
+    again = staff.post(url, {"to": "confirmed"}, format="json", HTTP_IDEMPOTENCY_KEY=key, **scsrf)
+    assert again.status_code == 200 and again.json()["status"] == "confirmed"
+    other = staff.post(
+        url, {"to": "cancelled", "reason": "x"}, format="json", HTTP_IDEMPOTENCY_KEY=key, **scsrf
+    )
+    assert other.status_code == 409
+    with org_context(world.org.id):
+        assert order.reservations.count() == 1
+
+
+def test_b07_the_customer_link_expires_after_the_order_closes(world: World, settings: Any) -> None:
+    import datetime as dt
+
+    from django.utils import timezone
+
+    settings.ORDER_LINK_DAYS = 30
+    with org_context(world.org.id):
+        open_store(world)
+        listing = stocked_listing(world)
+    client, csrf = guest()
+    placed = client.post(
+        "/api/v1/public/orders/",
+        body(listing.slug),
+        format="json",
+        HTTP_IDEMPOTENCY_KEY=(key := str(uuid.uuid4())),
+        **csrf,
+    ).json()
+    url = f"/api/v1/public/orders/{placed['token']}/"
+    assert client.get(url).status_code == 200
+    with org_context(world.org.id):
+        order = Order.objects.get()
+        transition(order.pk, "cancelled", "test", world.owner)
+        order.refresh_from_db()
+        assert order.closed_at is not None
+    assert client.get(url).status_code == 200  # still open for 30 days
+    with org_context(world.org.id):
+        Order.objects.filter(pk=order.pk).update(closed_at=timezone.now() - dt.timedelta(days=31))
+    assert client.get(url).status_code == 404
+    track = client.post(
+        "/api/v1/public/orders/track/",
+        {"number": placed["number"], "phone": "0912345678"},
+        format="json",
+        **csrf,
+    )
+    assert track.status_code == 404
+    assert client.get(f"/api/v1/public/orders/by-key/{key}/").status_code == 404

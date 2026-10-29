@@ -140,6 +140,8 @@ MEDIA_ROOT = Path(env("RAFF_MEDIA_ROOT", str(BASE_DIR / "media")))
 # server does not serve, read only through an authenticated endpoint.
 PRIVATE_ROOT = Path(env("RAFF_PRIVATE_ROOT", str(BASE_DIR / "private")))
 RECEIPT_RETENTION_DAYS = int(env("RAFF_RECEIPT_RETENTION_DAYS", "90"))
+# Days a customer's order link (tracking token) keeps working after the order is closed.
+ORDER_LINK_DAYS = int(env("RAFF_ORDER_LINK_DAYS", "30"))
 # Outbound order alerts; unset means badge only.
 RAFF_TELEGRAM_BOT_TOKEN = env("RAFF_TELEGRAM_BOT_TOKEN", "")
 

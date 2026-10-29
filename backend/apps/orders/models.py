@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import datetime as dt
 import os
 import uuid
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.utils import timezone
 
 from apps.catalog.models import Item, ItemUnit
 from apps.finance.money import MoneyField
@@ -103,6 +105,9 @@ class Order(OrgScopedModel):
     idempotency_key = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    # When the order was completed or cancelled: the customer's link and the transfer photo
+    # are kept for a fixed time from here (B-07, B-12), not from the last edit.
+    closed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -125,6 +130,12 @@ class Order(OrgScopedModel):
 
     def __str__(self) -> str:
         return self.number
+
+    def link_open(self) -> bool:
+        """The customer's private link (token) works until ORDER_LINK_DAYS after closing."""
+        if self.closed_at is None:
+            return True
+        return timezone.now() < self.closed_at + dt.timedelta(days=settings.ORDER_LINK_DAYS)
 
 
 class OrderPaymentEvent(OrgScopedModel):

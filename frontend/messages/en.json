@@ -607,7 +607,8 @@
       "no_price": "This item has no price",
       "failed": "Approval failed",
       "prepaid_mismatch": "The prepaid transfer does not match the payment",
-      "payment_unverified": "The transfer is awaiting verification on the order screen"
+      "payment_unverified": "The transfer is awaiting verification on the order screen",
+      "reserved_batch_expired": "A batch held for this order has expired; re-confirm the order with valid stock"
     },
     "status": {
       "good": "Valid",

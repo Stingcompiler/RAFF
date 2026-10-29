@@ -29,14 +29,23 @@ class PaymentError(Exception):
 
 
 def payment_payload(
-    party_type: str, party_id: uuid.UUID, method: str, amount: Decimal, reference: str
+    party_type: str,
+    party_id: uuid.UUID,
+    method: str,
+    amount: Decimal,
+    reference: str,
+    branch_id: uuid.UUID,
+    note: str,
 ) -> dict[str, Any]:
+    """Every field the payment records: the same key with any of them changed is a 409 (B-05)."""
     return {
         "party_type": party_type,
         "party": str(party_id),
         "method": method,
         "amount": str(money(amount)),
         "reference": reference,
+        "branch": str(branch_id),
+        "note": note.strip(),
     }
 
 
@@ -129,7 +138,7 @@ def record_payment(
     return run_once(
         "party_payment",
         idempotency_key,
-        payment_payload(party_type, party_id, method, amount, reference),
+        payment_payload(party_type, party_id, method, amount, reference, branch.pk, note),
         action,
     )
 

@@ -79,6 +79,7 @@ const ERRORS = [
   "no_price",
   "prepaid_mismatch",
   "payment_unverified",
+  "reserved_batch_expired",
   "failed",
 ] as const;
 export type ErrorKey = (typeof ERRORS)[number];
