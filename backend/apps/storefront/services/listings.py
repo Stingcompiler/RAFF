@@ -38,15 +38,23 @@ def storefront_settings() -> StorefrontSettings:
 
 
 def listing_for(item: Item) -> Listing:
+    """The item's listing, created on first use. Creation holds the item's row lock, so two
+    screens opening the catalog at once never collide on a slug (a 500) or make two listings
+    for one item (found by the WO-36 checks, which open the catalog in parallel)."""
     listing: Listing | None = Listing.objects.filter(item=item).first()
-    if listing is None:
-        base = slugify(item.code) or str(item.pk)[:8]
-        slug = base
-        n = 2
-        while Listing.objects.filter(slug=slug).exists():
-            slug = f"{base}-{n}"
-            n += 1
-        listing = Listing.objects.create(item=item, slug=slug)
+    if listing is not None:
+        return listing
+    with transaction.atomic():
+        Item.objects.select_for_update().filter(pk=item.pk).first()
+        listing = Listing.objects.filter(item=item).first()
+        if listing is None:
+            base = slugify(item.code) or str(item.pk)[:8]
+            slug = base
+            n = 2
+            while Listing.objects.filter(slug=slug).exists():
+                slug = f"{base}-{n}"
+                n += 1
+            listing = Listing.objects.create(item=item, slug=slug)
     return listing
 
 

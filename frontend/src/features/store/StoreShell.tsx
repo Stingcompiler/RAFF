@@ -140,7 +140,7 @@ export function StoreShell({
                 <Link
                   key={href}
                   href={href}
-                  className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
+                  className="inline-flex min-h-[44px] items-center text-text-secondary no-underline hover:text-brand"
                 >
                   {t(`nav.${key}`)}
                 </Link>
@@ -160,7 +160,7 @@ export function StoreShell({
             {store.whatsapp && (
               <a
                 href={waLink(store.whatsapp)}
-                className="inline-flex min-h-[32px] items-center font-medium text-brand underline underline-offset-4"
+                className="inline-flex min-h-[44px] items-center font-medium text-brand underline underline-offset-4"
               >
                 {t("waLong")}
               </a>
@@ -171,7 +171,7 @@ export function StoreShell({
             <h2 className="m-0 mb-[6px] text-label font-semibold text-text">{t("footLegal")}</h2>
             <Link
               href="/policies/privacy"
-              className="inline-flex min-h-[32px] items-center text-text-secondary no-underline hover:text-brand"
+              className="inline-flex min-h-[44px] items-center text-text-secondary no-underline hover:text-brand"
             >
               {t("policy")}
             </Link>

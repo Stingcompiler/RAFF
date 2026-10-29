@@ -26,6 +26,14 @@ const WORKSPACE = [
   ["transfers", "/transfers"],
   ["reports", "/reports"],
   ["settings", "/settings"],
+  // Review E-01: the screens of §4.4 the first list did not cover (seeded data is fixed).
+  ["stocktake", "/stocktake"],
+  ["shifts", "/shifts"],
+  ["orders", "/orders"],
+  ["inquiries", "/orders/inquiries"],
+  ["storefront-catalog", "/storefront/catalog"],
+  ["storefront-settings", "/storefront/settings"],
+  ["deliveries", "/deliveries"],
 ] as const;
 const PUBLIC = [
   ["home", "/"],
@@ -35,6 +43,9 @@ const PUBLIC = [
   ["checkout", "/checkout"],
   ["about", "/about"],
   ["track", "/orders/track"],
+  ["product", "/products/par-500"],
+  ["category", "/categories/analgesics"],
+  ["policy", "/policies/privacy"],
 ] as const;
 
 async function prepare(

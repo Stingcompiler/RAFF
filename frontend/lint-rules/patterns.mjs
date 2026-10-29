@@ -31,7 +31,8 @@ const TW_COLOR_UTILITIES =
   "decoration|divide|placeholder|caret|accent|shadow|inset-shadow|drop-shadow|text-shadow";
 
 export const HEX_COLOR = /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{3,4})(?![0-9a-zA-Z_-])/;
-export const COLOR_FUNCTION = /(?<![-\w])(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i;
+// `_` is a space inside Tailwind arbitrary values: `shadow-[0_1px_2px_rgb(0_0_0/.12)]` (C-04).
+export const COLOR_FUNCTION = /(?<![-a-zA-Z0-9])(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i;
 const TW_PALETTE_CLASS = new RegExp(
   `^-?(?:${TW_COLOR_UTILITIES})-(?:(?:${TW_PALETTE})-\\d{2,3}|black|white)(?:/\\d+)?$`,
 );
@@ -69,6 +70,12 @@ export function findRawColorInText(text) {
   for (const token of classTokens(text)) {
     if (TW_PALETTE_CLASS.test(token)) return `palette class "${token}"`;
     if (TW_ARBITRARY_COLOR.test(token)) return `arbitrary color class "${token}"`;
+  }
+  // A hex color anywhere inside an arbitrary value: `[box-shadow:0_0_2px_#fff]` (C-04).
+  for (const raw of text.split(/\s+/)) {
+    if (/\[[^\]]*#[0-9a-fA-F]{3,8}(?![0-9a-zA-Z])[^\]]*\]/.test(raw)) {
+      return `arbitrary value with a hex color "${raw}"`;
+    }
   }
   return null;
 }

@@ -151,6 +151,75 @@ const noPhysicalProperties = {
   },
 };
 
+// Attributes a person sees or hears; their text must come from messages/*.json (rule 13).
+// jsx-no-literals ignores props, so this covers them (review C-04).
+const VISIBLE_ATTRIBUTES = new Set([
+  "placeholder",
+  "title",
+  "alt",
+  "aria-label",
+  "aria-description",
+]);
+// Words of a language (two words, or any Arabic letter), not a format hint like "09XXXXXXXX".
+const PROSE = /[\u0600-\u06FF]|[A-Za-z]{2,}\s+[A-Za-z]{2,}/;
+
+const noLiteralAttributes = {
+  meta: {
+    type: "problem",
+    docs: { description: "Visible attribute text comes from messages/*.json." },
+    schema: [],
+    messages: { literal: 'Visible text in {{attr}} ("{{text}}"). Use t() from messages/*.json.' },
+  },
+  create(context) {
+    return {
+      JSXAttribute(node) {
+        const attr = typeof node.name.name === "string" ? node.name.name : "";
+        if (!VISIBLE_ATTRIBUTES.has(attr) || !node.value) return;
+        const value =
+          node.value.type === "Literal"
+            ? node.value.value
+            : node.value.type === "JSXExpressionContainer"
+              ? staticString(node.value.expression)
+              : null;
+        if (typeof value === "string" && PROSE.test(value)) {
+          context.report({ node, messageId: "literal", data: { attr, text: value.slice(0, 40) } });
+        }
+      },
+    };
+  },
+};
+
+// A class name built from a variable followed by text (`${dir}-0`) cannot be checked by the
+// other rules; class strings are written out or chosen whole (review C-04).
+const noDynamicClassFragment = {
+  meta: {
+    type: "problem",
+    docs: { description: "No class names glued together from variables." },
+    schema: [],
+    messages: {
+      fragment:
+        "Class name built from a variable and text (`${…}{{text}}`). Write the classes out.",
+    },
+  },
+  create(context) {
+    return {
+      "JSXAttribute[name.name='className'] TemplateLiteral"(node) {
+        node.quasis.forEach((quasi, i) => {
+          if (i === 0) return;
+          const text = quasi.value.cooked ?? "";
+          if (/^[^\s]/.test(text)) {
+            context.report({
+              node: quasi,
+              messageId: "fragment",
+              data: { text: text.split(/\s/)[0] },
+            });
+          }
+        });
+      },
+    };
+  },
+};
+
 const plugin = {
   meta: { name: "eslint-plugin-raff" },
   rules: {
@@ -158,6 +227,8 @@ const plugin = {
     "no-physical-properties": noPhysicalProperties,
     "no-legacy-token": noLegacyToken,
     "no-raw-font": noRawFont,
+    "no-literal-attributes": noLiteralAttributes,
+    "no-dynamic-class-fragment": noDynamicClassFragment,
   },
 };
 

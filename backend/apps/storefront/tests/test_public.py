@@ -105,3 +105,22 @@ def test_c03_the_cart_reads_exactly_its_own_items(world: World) -> None:
     rows = client.get(f"/api/v1/public/products/?slugs={listing.slug},missing-item").json()
     assert [r["slug"] for r in rows] == [listing.slug]
     assert client.get("/api/v1/public/products/?slugs=missing-item").json() == []
+
+
+@pytest.mark.django_db(transaction=True)
+def test_two_screens_opening_the_catalog_at_once_make_one_listing(world: World) -> None:
+    from apps.inventory.tests.test_concurrency import race
+    from apps.storefront.models import Listing
+    from apps.storefront.services.listings import listing_for
+
+    with org_context(world.org.id):
+        item = stocked(world, code="RACE-1", boxes=1)
+
+    def open_catalog(_: int) -> object:
+        with org_context(world.org.id):
+            return listing_for(Item.objects.get(pk=item.pk)).pk
+
+    results = race(open_catalog, n=4)
+    assert all(not isinstance(r, Exception) for r in results), results
+    with org_context(world.org.id):
+        assert Listing.objects.filter(item=item).count() == 1

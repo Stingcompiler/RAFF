@@ -2099,6 +2099,8 @@ export interface components {
       reorder_level_base?: number;
       readonly units: components["schemas"]["Unit"][];
       readonly prices: components["schemas"]["Price"][];
+      /** @description Whether the item is on the public store now (the drawer's store tab; review E-02). */
+      readonly published: boolean;
       /** Format: date-time */
       readonly updated_at: string;
     };
@@ -3513,6 +3515,10 @@ export interface components {
       id: string;
       verification: string;
     };
+    Error: {
+      /** @description A stable error code */
+      detail: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -4331,6 +4337,24 @@ export interface operations {
           "application/json": components["schemas"]["PartyPaymentResult"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   health: {
@@ -4741,6 +4765,24 @@ export interface operations {
           "application/json": components["schemas"]["StaffOrder"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   orders_summary: {
@@ -4870,6 +4912,33 @@ export interface operations {
           "application/json": components["schemas"]["InquirySent"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Too many requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   public_order_place: {
@@ -4893,6 +4962,33 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Placed"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description Too many requests */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };
@@ -5193,6 +5289,24 @@ export interface operations {
           "application/json": components["schemas"]["PostResult"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   quarantine_list: {
@@ -5241,6 +5355,24 @@ export interface operations {
           "application/json": components["schemas"]["QuarantineEntry"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   quarantine_recall: {
@@ -5264,6 +5396,24 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["QuarantineEntry"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };
@@ -5338,6 +5488,24 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ReturnResult"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };
@@ -5426,6 +5594,24 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SaleResult"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };
@@ -5648,6 +5834,24 @@ export interface operations {
           "application/json": components["schemas"]["CloseResult"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   shifts_settle: {
@@ -5816,6 +6020,24 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StocktakeApproveResult"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };
@@ -6066,6 +6288,24 @@ export interface operations {
           "application/json": components["schemas"]["TransferDetail"];
         };
       };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
     };
   };
   transfers_send: {
@@ -6087,6 +6327,24 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TransferDetail"];
+        };
+      };
+      /** @description Refused: nothing was recorded */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
+        };
+      };
+      /** @description This Idempotency-Key was used for another request */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"];
         };
       };
     };

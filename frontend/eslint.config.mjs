@@ -23,6 +23,8 @@ const config = [
       "raff/no-physical-properties": "error",
       "raff/no-legacy-token": "error",
       "raff/no-raw-font": "error",
+      "raff/no-literal-attributes": "error",
+      "raff/no-dynamic-class-fragment": "error",
       // CLAUDE.md rule 13: every visible string comes from messages/*.json.
       "react/jsx-no-literals": ["error", { noStrings: true, ignoreProps: true }],
     },

@@ -81,7 +81,7 @@ export function BarChart({ bars, tick, ariaLabel, className }: Props) {
               <span
                 aria-hidden="true"
                 dir="auto"
-                className="pointer-events-none absolute start-1/2 z-10 hidden -translate-x-1/2 rounded-control border border-border bg-surface-raised px-[8px] py-[4px] text-caption whitespace-nowrap shadow-[0_4px_12px_rgb(0_0_0/.12)] group-focus-within:block group-hover:block rtl:translate-x-1/2"
+                className="pointer-events-none absolute start-1/2 z-10 hidden -translate-x-1/2 rounded-control border border-border bg-surface-raised px-[8px] py-[4px] text-caption whitespace-nowrap shadow-2 group-focus-within:block group-hover:block rtl:translate-x-1/2"
                 style={{ bottom: Math.round((b.value / max) * HEIGHT) + 30 }}
               >
                 {b.label} {SEP}{" "}

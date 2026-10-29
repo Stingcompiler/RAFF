@@ -791,6 +791,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/PartyPaymentResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/health/:
     get:
       operationId: health
@@ -1245,6 +1257,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/StaffOrder'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/orders/summary/:
     get:
       operationId: orders_summary
@@ -1369,6 +1393,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/InquirySent'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/public/orders/:
     post:
       operationId: public_order_place
@@ -1397,6 +1439,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/Placed'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/public/orders/{token}/:
     get:
       operationId: public_order
@@ -1719,6 +1779,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/PostResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/quarantine/:
     get:
       operationId: quarantine_list
@@ -1777,6 +1849,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/QuarantineEntry'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/quarantine/recall/:
     post:
       operationId: quarantine_recall
@@ -1804,6 +1888,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/QuarantineEntry'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/reports/{name}/:
     get:
       operationId: reports_run
@@ -1897,6 +1993,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReturnResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/returns/lookup/:
     get:
       operationId: returns_lookup
@@ -1983,6 +2091,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/SaleResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/sales/{id}/:
     get:
       operationId: sales_retrieve
@@ -2199,6 +2319,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/CloseResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/shifts/{id}/settle/:
     post:
       operationId: shifts_settle
@@ -2357,6 +2489,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/StocktakeApproveResult'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/storefront/listings/:
     get:
       operationId: storefront_listings
@@ -2589,6 +2733,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransferDetail'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/transfers/{id}/send/:
     post:
       operationId: transfers_send
@@ -2615,6 +2771,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransferDetail'
           description: ''
+        '400':
+          description: 'Refused: nothing was recorded'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: This Idempotency-Key was used for another request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/v1/users/:
     get:
       operationId: users_list
@@ -3589,6 +3757,11 @@ components:
           items:
             $ref: '#/components/schemas/Price'
           readOnly: true
+        published:
+          type: boolean
+          description: Whether the item is on the public store now (the drawer's store
+            tab; review E-02).
+          readOnly: true
         updated_at:
           type: string
           format: date-time
@@ -3601,6 +3774,7 @@ components:
       - name_en
       - price
       - prices
+      - published
       - sale_unit
       - units
       - updated_at
@@ -7151,6 +7325,14 @@ components:
       required:
       - id
       - verification
+    Error:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: A stable error code
+      required:
+      - detail
   securitySchemes:
     cookieAuth:
       type: apiKey
