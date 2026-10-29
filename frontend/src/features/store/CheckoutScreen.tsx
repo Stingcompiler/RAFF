@@ -4,7 +4,7 @@ import { Home, Landmark, MapPin, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { type ComponentType, type FormEvent, useState } from "react";
+import { type ComponentType, type FormEvent, useEffect, useState } from "react";
 
 import { StoreIcon } from "@/components/ui/icons";
 import { Spinner } from "@/components/ui/Spinner";
@@ -19,7 +19,10 @@ import { PHONE, productName, type Store } from "./types";
 import { useProducts } from "./useProducts";
 
 type Placed = { number: string; token: string; status: string };
-type Phase = "idle" | "sending" | "verifying" | "failed";
+type Phase = "idle" | "sending" | "verifying" | "unknown" | "failed";
+/** While an order's outcome is unknown, its key and form survive a reload (review C-02). */
+const PENDING = "raff.checkout.pending";
+type Pending = { key: string; name: string; phone: string; address: string; note: string };
 const TIMEOUT_MS = 15000;
 const TIMES = "×";
 const MIN_ADDRESS = 3;
@@ -34,7 +37,6 @@ export function CheckoutScreen({ store }: { store: Store }) {
   const router = useRouter();
   const rx = useSearchParams().get("rx");
   const lines = useCart();
-  const { bySlug, ready } = useProducts();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
@@ -53,6 +55,14 @@ export function CheckoutScreen({ store }: { store: Store }) {
   const [key, setKey] = useState<string | null>(null);
 
   const wanted = rx && !lines.some((l) => l.slug === rx) ? [...lines, { slug: rx, qty: 1 }] : lines;
+  const {
+    bySlug,
+    ready,
+    failed: unreadable,
+    retry: reread,
+  } = useProducts(wanted.map((l) => l.slug));
+  // An item the shop no longer offers is named, never dropped from the order in silence.
+  const missing = ready && !unreadable ? wanted.filter((l) => !bySlug.has(l.slug)) : [];
   const rows = wanted
     .map((l) => ({ line: l, product: bySlug.get(l.slug) }))
     .filter((r) => r.product);
@@ -71,10 +81,27 @@ export function CheckoutScreen({ store }: { store: Store }) {
   const refOk = reference.replace(/\s/g, "").length >= MIN_REFERENCE;
   const amountOk = Number(amountValue) > 0;
   const payOk = !sendsTransfer || (refOk && amountOk && (receipt === null || receiptOk(receipt)));
-  const valid = name.trim().length > 1 && phoneOk && addressOk && payOk && agree && rows.length > 0;
-  const busy = phase === "sending" || phase === "verifying";
+  const valid =
+    name.trim().length > 1 &&
+    phoneOk &&
+    addressOk &&
+    payOk &&
+    agree &&
+    rows.length > 0 &&
+    missing.length === 0 &&
+    !unreadable;
+  const busy = phase === "sending" || phase === "verifying" || phase === "unknown";
+
+  const forget = () => {
+    try {
+      sessionStorage.removeItem(PENDING);
+    } catch {
+      // Storage blocked: nothing to forget.
+    }
+  };
 
   const done = async (placed: Placed) => {
+    forget();
     // The photo is optional: if it cannot be sent the order still stands, and the order page
     // offers to attach it again.
     let failed = false;
@@ -88,13 +115,40 @@ export function CheckoutScreen({ store }: { store: Store }) {
   };
 
   const verify = async (k: string) => {
+    setPhase("verifying");
     const res = await apiGet<Placed>(`/public/orders/by-key/${k}/`);
     if (res.ok) return done(res.data);
     if (res.status === 404) {
+      // The order never arrived: sending again with the same key creates it once.
       setPhase("failed");
       setError(t("failMsg"));
+      return;
     }
+    // No answer, or the server is busy: the outcome is still unknown. Never a new key.
+    setPhase("unknown");
   };
+
+  useEffect(() => {
+    let saved: Pending | null = null;
+    try {
+      const raw = sessionStorage.getItem(PENDING);
+      saved = raw ? (JSON.parse(raw) as Pending) : null;
+    } catch {
+      saved = null;
+    }
+    if (!saved) return;
+    const timer = setTimeout(() => {
+      setName(saved.name);
+      setPhone(saved.phone);
+      setAddress(saved.address);
+      setNote(saved.note);
+      setKey(saved.key);
+      void verify(saved.key);
+    }, 0);
+    return () => clearTimeout(timer);
+    // Once, on arrival: a reload during an unknown outcome resumes checking that key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const locate = () => {
     if (!("geolocation" in navigator)) return setLocating("denied");
@@ -119,6 +173,14 @@ export function CheckoutScreen({ store }: { store: Store }) {
     setKey(k);
     setPhase("sending");
     setError(null);
+    try {
+      sessionStorage.setItem(
+        PENDING,
+        JSON.stringify({ key: k, name, phone, address, note } satisfies Pending),
+      );
+    } catch {
+      // Storage blocked: the key still protects this page's retries.
+    }
     const res = await apiSend<Placed>(
       "POST",
       "/public/orders/",
@@ -139,10 +201,8 @@ export function CheckoutScreen({ store }: { store: Store }) {
       { idempotencyKey: k, timeoutMs: TIMEOUT_MS },
     );
     if (res.ok) return done(res.data);
-    if (res.status === 0) {
-      setPhase("verifying");
-      return void verify(k);
-    }
+    if (res.status === 0) return void verify(k);
+    forget();
     setPhase("failed");
     setKey(null);
     const code = typeof res.error?.detail === "string" ? res.error.detail : "";
@@ -204,6 +264,29 @@ export function CheckoutScreen({ store }: { store: Store }) {
     <section className="grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] items-start gap-[24px] px-[20px] pt-[24px] pb-[40px]">
       <form onSubmit={submit} className="grid grid-cols-[minmax(0,1fr)] gap-[14px]" noValidate>
         <h1 className="m-0 text-land-section font-semibold">{t("send")}</h1>
+        {unreadable && (
+          <div
+            role="alert"
+            className="grid gap-[8px] rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
+          >
+            {t("itemsUnreadable")}
+            <button
+              type="button"
+              onClick={reread}
+              className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-surface font-medium text-text"
+            >
+              {t("checkAgain")}
+            </button>
+          </div>
+        )}
+        {missing.length > 0 && (
+          <div
+            role="alert"
+            className="rounded-control bg-warning-bg px-[14px] py-[12px] font-medium text-warning-text"
+          >
+            {t("itemsGone", { count: missing.length })}
+          </div>
+        )}
         <label className="grid gap-[4px] text-body font-semibold text-text-muted">
           {t("nameL")}
           <input
@@ -434,6 +517,21 @@ export function CheckoutScreen({ store }: { store: Store }) {
             className="rounded-control bg-danger-bg px-[14px] py-[12px] font-medium text-danger-text"
           >
             {error}
+          </div>
+        )}
+        {phase === "unknown" && key && (
+          <div
+            role="status"
+            className="grid gap-[8px] rounded-control bg-warning-bg px-[14px] py-[12px] font-medium text-warning-text"
+          >
+            <span>{t("unknownMsg")}</span>
+            <button
+              type="button"
+              onClick={() => void verify(key)}
+              className="min-h-[44px] cursor-pointer rounded-control border border-border-strong bg-surface font-medium text-text"
+            >
+              {t("checkAgain")}
+            </button>
           </div>
         )}
         {phase === "verifying" && key && (

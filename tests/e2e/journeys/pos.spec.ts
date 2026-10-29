@@ -92,6 +92,63 @@ test.describe("point of sale", () => {
     expect(await salesCount(page)).toBe(before + 1);
   });
 
+  test("after a reload the same request goes again with the same key, never a new one", async ({
+    page,
+  }) => {
+    await atCounter(page);
+    await search(page).fill("ORS");
+    await search(page).press("Enter");
+    await expect(total(page)).toHaveText("300 ج.س");
+
+    // The first attempt never reaches the server; the counter cannot know that.
+    const keys: string[] = [];
+    await page.route("**/api/v1/sales/", async (route) => {
+      if (route.request().method() !== "POST") return route.continue();
+      keys.push(route.request().headers()["idempotency-key"] ?? "");
+      if (keys.length === 1) return route.abort("timedout");
+      return route.continue();
+    });
+    const before = await salesCount(page);
+    await search(page).press("Enter");
+    await page
+      .getByRole("dialog", { name: "الدفع" })
+      .getByRole("button", { name: "اعتماد البيع" })
+      .click();
+    await expect(page.getByText(/نتيجة العملية قيد التحقق/)).toBeVisible();
+
+    await page.reload();
+    await page.getByRole("button", { name: "استعلام النتيجة" }).click();
+    await expect(page.getByText(/تعذّر اعتماد البيع/)).toBeVisible(); // not found: nothing recorded
+    await page.getByRole("button", { name: "إعادة المحاولة" }).click();
+    await expect(page.getByRole("dialog", { name: "اعتُمد البيع" })).toBeVisible();
+    await page.unroute("**/api/v1/sales/");
+    expect(keys).toHaveLength(2);
+    expect(keys[1]).toBe(keys[0]);
+    expect(await salesCount(page)).toBe(before + 1);
+    await page.keyboard.press("Enter");
+  });
+
+  test("a sale is shown as approved even when its receipt cannot be loaded", async ({ page }) => {
+    await atCounter(page);
+    await search(page).fill("ORS");
+    await search(page).press("Enter");
+    await expect(total(page)).toHaveText("300 ج.س");
+    await page.route("**/api/v1/sales/*/receipt/", (route) => route.abort("failed"));
+    await search(page).press("Enter");
+    await page
+      .getByRole("dialog", { name: "الدفع" })
+      .getByRole("button", { name: "اعتماد البيع" })
+      .click();
+    const approved = page.getByRole("dialog", { name: "اعتُمد البيع" });
+    await expect(approved).toBeVisible();
+    await expect(approved).toContainText(/INV-\d+/);
+    await expect(approved.getByText("تم البيع، لكن تعذّر تحميل الإيصال.")).toBeVisible();
+    await page.unroute("**/api/v1/sales/*/receipt/");
+    await approved.getByRole("button", { name: "إعادة تحميل الإيصال" }).click();
+    await expect(approved.getByText("تم البيع، لكن تعذّر تحميل الإيصال.")).toHaveCount(0);
+    await page.keyboard.press("Enter");
+  });
+
   test("hold a sale and resume it later", async ({ page }) => {
     await atCounter(page);
     await search(page).fill("Paracetamol");

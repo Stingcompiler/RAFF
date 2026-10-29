@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { PageHeader } from "@/components/shell/PageHeader";
+import { StaleNote } from "@/components/ui/StaleNote";
+
 import { Chip, Panel } from "@/components/ui/Panel";
 import { SearchIcon } from "@/components/ui/icons";
 import {
@@ -45,6 +47,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<OrderStatus | "">("");
   const [period, setPeriod] = useState<Period>("all");
+  const [stale, setStale] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -53,7 +56,9 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
       if (q.trim()) params.set("q", q.trim());
       if (status) params.set("status", status);
       const res = await apiGet<OrderRow[]>(`/orders/?${params}`);
-      if (live && res.ok) setRows(res.data);
+      if (!live) return;
+      setStale(!res.ok);
+      if (res.ok) setRows(res.data);
     }, 200);
     return () => {
       live = false;
@@ -73,6 +78,7 @@ function OrdersDesktop({ initial }: { initial: OrderRow[] }) {
   return (
     <>
       <PageHeader title={t("title")} actions={<InquiriesLink />} />
+      <StaleNote show={stale} />
       <Panel
         title={t("count", { count: rows.length })}
         chips={
