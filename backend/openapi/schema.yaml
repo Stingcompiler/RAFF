@@ -1217,6 +1217,11 @@ paths:
     post:
       operationId: orders_transition
       parameters:
+      - in: header
+        name: Idempotency-Key
+        schema:
+          type: string
+        required: true
       - in: path
         name: id
         schema:

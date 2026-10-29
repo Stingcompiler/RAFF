@@ -8,6 +8,7 @@ from decimal import Decimal
 from typing import Any
 
 from django.db import transaction
+from django.utils import timezone
 
 from apps.accounts.models import User
 from apps.audit.services.log import record
@@ -15,6 +16,7 @@ from apps.finance.money import money
 from apps.notifications.services.notify import mark_read
 from apps.orders.models import Order, OrderEvent
 from apps.orders.services import payments
+from apps.sync.services.idempotency import run_once
 
 S = Order.Status
 TRANSITIONS: dict[str, set[str]] = {
@@ -50,6 +52,26 @@ def _hooks() -> Any:
         return None
 
 
+def transition_payload(order_id: uuid.UUID, to: str, reason: str) -> dict[str, Any]:
+    return {"order": str(order_id), "to": to, "reason": reason.strip()}
+
+
+@transaction.atomic
+def transition_once(
+    order_id: uuid.UUID, to: str, reason: str, user: User, idempotency_key: str | None
+) -> dict[str, Any]:
+    """A staff move with an Idempotency-Key (rule 6: confirming reserves stock). The same key
+    again returns the first result; the same key for another move is a conflict."""
+
+    def act() -> dict[str, Any]:
+        order = transition(order_id, to, reason, user)
+        return {"id": str(order.pk), "status": order.status}
+
+    return run_once(
+        "order_transition", idempotency_key, transition_payload(order_id, to, reason), act
+    )
+
+
 @transaction.atomic
 def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
     order: Order = Order.objects.select_for_update().get(pk=order_id)
@@ -77,7 +99,11 @@ def transition(order_id: uuid.UUID, to: str, reason: str, user: User) -> Order:
         order.reason = reason.strip()[:300]
     if order.assigned_to_id is None:
         order.assigned_to = user
-    order.save(update_fields=["status", "reason", "assigned_to", "updated_at"])
+    fields = ["status", "reason", "assigned_to", "updated_at"]
+    if to == S.CANCELLED:
+        order.closed_at = timezone.now()
+        fields.append("closed_at")
+    order.save(update_fields=fields)
     OrderEvent.objects.create(order=order, status=to, actor=user, note=reason.strip()[:300])
     if to == S.PREPARING and prepaid_unverified:
         payments.override_note(order, user, reason)

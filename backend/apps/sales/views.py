@@ -233,9 +233,12 @@ class SaleByKeyView(APIView):
         )
 
 
-def _sale(pk: str) -> Sale:
+def _sale(request: Request, pk: str) -> Sale:
+    """A sale of the session's branch only: a role in one branch never reaches another's."""
     sale: Sale | None = (
-        Sale.objects.select_related("branch__organization", "device").filter(pk=pk).first()
+        Sale.objects.select_related("branch__organization", "device")
+        .filter(pk=pk, branch=current_branch(request))
+        .first()
     )
     if sale is None:
         raise NotFound
@@ -247,7 +250,7 @@ class SaleDetailView(APIView):
 
     @extend_schema(operation_id="sales_retrieve", responses=SaleSerializer)
     def get(self, request: Request, pk: str) -> Response:
-        return Response(SaleSerializer(_sale(pk)).data)
+        return Response(SaleSerializer(_sale(request, pk)).data)
 
 
 class SaleReceiptView(APIView):
@@ -255,7 +258,7 @@ class SaleReceiptView(APIView):
 
     @extend_schema(operation_id="sales_receipt", responses=SaleReceiptSerializer)
     def get(self, request: Request, pk: str) -> Response:
-        return Response(SaleReceiptSerializer(receipt(_sale(pk))).data)
+        return Response(SaleReceiptSerializer(receipt(_sale(request, pk))).data)
 
 
 class SalePrintView(APIView):
@@ -265,7 +268,7 @@ class SalePrintView(APIView):
 
     @extend_schema(operation_id="sales_print", request=None, responses=SaleReceiptSerializer)
     def post(self, request: Request, pk: str) -> Response:
-        sale = _sale(pk)
+        sale = _sale(request, pk)
         with transaction.atomic():
             locked = Sale.objects.select_for_update().get(pk=sale.pk)
             reprint = request.query_params.get("reprint") == "1"
@@ -376,7 +379,7 @@ class ShiftCloseView(APIView):
         responses=CloseResultSerializer,
     )
     def post(self, request: Request, pk: str) -> Response:
-        if not Shift.objects.filter(pk=pk).exists():
+        if not Shift.objects.filter(pk=pk, branch=current_branch(request)).exists():
             raise NotFound
         data = CloseShiftSerializer(data=request.data)
         data.is_valid(raise_exception=True)
@@ -387,6 +390,7 @@ class ShiftCloseView(APIView):
                 data.validated_data["counted_cash"],
                 idempotency_key=idempotency_key(request),
                 user=request.user,
+                branch=current_branch(request),
             )
         except shifts.ShiftError as exc:
             raise _bad(exc.code) from None

@@ -39,7 +39,7 @@ async function readyAndOpen(page: Page, phone: string) {
   for (const to of ["confirmed", "preparing", "ready"]) {
     const res = await page.request.post(`/api/v1/orders/${order.id}/transition/`, {
       data: { to, reason: "" },
-      headers: { "x-csrftoken": await csrf(page) },
+      headers: { "x-csrftoken": await csrf(page), "idempotency-key": crypto.randomUUID() },
     });
     expect(res.ok(), await res.text()).toBe(true);
   }

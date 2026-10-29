@@ -115,7 +115,13 @@ class PaymentView(APIView):
                         "party_payment",
                         key,
                         payment_payload(
-                            v["party_type"], v["party_id"], v["method"], v["amount"], v["reference"]
+                            v["party_type"],
+                            v["party_id"],
+                            v["method"],
+                            v["amount"],
+                            v["reference"],
+                            current_branch(request).pk,
+                            v["note"],
                         ),
                     )
             except KeyConflict:

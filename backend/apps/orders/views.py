@@ -70,6 +70,12 @@ from apps.tenancy import clock
 KEY = OpenApiParameter("Idempotency-Key", str, location=OpenApiParameter.HEADER, required=True)
 
 
+def _by_token(token: str) -> Order | None:
+    """The order behind a customer's link, while the link is still open (rule 19)."""
+    order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+    return order if order is not None and order.link_open() else None
+
+
 class _Public(APIView):
     authentication_classes: list[Any] = []
     permission_classes = [AllowAny]
@@ -144,7 +150,7 @@ class OrderByKeyView(_Public):
     @extend_schema(operation_id="public_order_by_key", responses=PlacedSerializer)
     def get(self, request: Request, key: str) -> Response:
         order = Order.objects.filter(idempotency_key=key).first()
-        if order is None:
+        if order is None or not order.link_open():
             raise NotFound
         return Response(
             PlacedSerializer(
@@ -158,7 +164,7 @@ class PublicOrderView(_Public):
 
     @extend_schema(operation_id="public_order", responses=PublicOrderSerializer)
     def get(self, request: Request, token: str) -> Response:
-        order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+        order = _by_token(token)
         if order is None:
             raise NotFound
         return Response(PublicOrderSerializer(public_order(order)).data)
@@ -179,7 +185,7 @@ class TrackOrderView(_Public):
         phone = normalize_phone(data.validated_data["phone"])
         number = data.validated_data["number"].strip().upper()
         order = Order.objects.filter(number=number, phone=phone).first() if phone else None
-        if order is None:
+        if order is None or not order.link_open():
             raise NotFound
         return Response(TokenSerializer({"token": order.token}).data)
 
@@ -295,6 +301,7 @@ class TransitionView(APIView):
     @extend_schema(
         operation_id="orders_transition",
         request=TransitionSerializer,
+        parameters=[KEY],
         responses=StaffOrderSerializer,
     )
     def post(self, request: Request, pk: uuid.UUID) -> Response:
@@ -302,12 +309,25 @@ class TransitionView(APIView):
         data = TransitionSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         assert isinstance(request.user, User)
+        key = idempotency_key(request)
+        to, reason = data.validated_data["to"], data.validated_data["reason"]
         try:
-            order = workflow.transition(
-                order.pk, data.validated_data["to"], data.validated_data["reason"], request.user
-            )
+            workflow.transition_once(order.pk, to, reason, request.user, key)
+        except KeyRace:
+            try:
+                with transaction.atomic():
+                    replay(
+                        "order_transition", key, workflow.transition_payload(order.pk, to, reason)
+                    )
+            except KeyConflict:
+                return Response(
+                    {"detail": "idempotency_key_reused"}, status=status.HTTP_409_CONFLICT
+                )
+        except KeyConflict:
+            return Response({"detail": "idempotency_key_reused"}, status=status.HTTP_409_CONFLICT)
         except workflow.WorkflowError as exc:
             raise ValidationError({"detail": exc.code}) from None
+        order.refresh_from_db()
         return Response(StaffOrderSerializer(staff_order(order)).data)
 
 
@@ -532,7 +552,7 @@ class SubmitPaymentView(_Public):
     def post(self, request: Request, token: str) -> Response:
         data = SubmitPaymentSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+        order = _by_token(token)
         if order is None:
             raise NotFound
         try:
@@ -598,7 +618,7 @@ class SubmitReceiptView(_Public):
         responses=PublicOrderSerializer,
     )
     def post(self, request: Request, token: str) -> Response:
-        order = Order.objects.filter(token=token).first() if len(token) >= 32 else None
+        order = _by_token(token)
         if order is None:
             raise NotFound
         upload = request.FILES.get("image")

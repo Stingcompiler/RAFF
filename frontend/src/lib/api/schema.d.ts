@@ -4716,7 +4716,9 @@ export interface operations {
   orders_transition: {
     parameters: {
       query?: never;
-      header?: never;
+      header: {
+        "Idempotency-Key": string;
+      };
       path: {
         id: string;
       };

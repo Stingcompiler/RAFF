@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 
 import { Badge, type Tone } from "@/components/ui/Badge";
 import { Button, buttonClasses } from "@/components/ui/Button";
@@ -64,6 +64,7 @@ export function OrderDetailScreen({
   const [order, setOrder] = useState(initial);
   const [moving, setMoving] = useState<OrderStatus | null>(null);
   const [reason, setReason] = useState("");
+  const moveKey = useRef<string | null>(null);
   const [payAct, setPayAct] = useState<PayAction | null>(null);
   const [payNote, setPayNote] = useState("");
   const [couriers, setCouriers] = useState<Courier[]>([]);
@@ -95,12 +96,21 @@ export function OrderDetailScreen({
     e.preventDefault();
     if (!moving) return;
     setBusy(true);
-    const res = await apiSend<OrderDetail>("POST", `/orders/${order.id}/transition/`, {
-      to: moving,
-      reason,
-    });
+    // One key per move, kept across retries so a lost reply never moves the order twice.
+    const key = moveKey.current ?? crypto.randomUUID();
+    moveKey.current = key;
+    const res = await apiSend<OrderDetail>(
+      "POST",
+      `/orders/${order.id}/transition/`,
+      { to: moving, reason },
+      { idempotencyKey: key },
+    );
     setBusy(false);
-    if (!res.ok) return fail(res.error);
+    if (!res.ok) {
+      if (res.status !== 0) moveKey.current = null;
+      return fail(res.error);
+    }
+    moveKey.current = null;
     setOrder(res.data);
     setMoving(null);
     setReason("");
@@ -230,7 +240,10 @@ export function OrderDetailScreen({
               variant={
                 to === "cancelled" ? "outline" : to === "needs_contact" ? "outline" : "primary"
               }
-              onClick={() => setMoving(to)}
+              onClick={() => {
+                moveKey.current = null;
+                setMoving(to);
+              }}
             >
               {to === "ready" && order.status === "delivery_failed"
                 ? t("toReadyAgain")
