@@ -36,11 +36,13 @@ export function SystemTiles({ backup }: { backup: Schemas["BackupStatus"] | null
         note={
           backup?.failing && backup.last_failed
             ? t("backupFailed", { detail: backup.last_failed.detail || DASH })
-            : ok
-              ? ok.offsite
-                ? t("offsite")
-                : t("localOnly")
-              : t("notConfigured")
+            : backup?.offsite_failing && backup.last_offsite_failed
+              ? t("offsiteFailed", { detail: backup.last_offsite_failed.detail || DASH })
+              : ok
+                ? ok.offsite
+                  ? t("offsite")
+                  : t("localOnly")
+                : t("notConfigured")
         }
       />
       <StatTile label={t("pendingSync")} value="0" note={t("noErrors")} />

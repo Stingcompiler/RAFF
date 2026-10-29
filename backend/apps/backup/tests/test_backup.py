@@ -37,3 +37,32 @@ def test_create_branch_is_idempotent(world: World) -> None:
         call_command("create_branch", *args, stdout=out)
     lines = out.getvalue().split("\n")
     assert lines[0].endswith("created") and lines[1].endswith("exists")
+
+
+def test_d03_a_missing_off_site_copy_is_a_failure_of_its_own(world: World) -> None:
+    from apps.notifications.models import Notification
+    from apps.tenancy.context import org_context
+
+    with override_settings(SINGLE_ORG_ID=str(world.org.id)):
+        call_command("record_backup", "ok", "--file", "raff-2.tar.enc", stdout=StringIO())
+        call_command(
+            "record_backup",
+            "failed",
+            "--kind",
+            "offsite",
+            "--detail",
+            "no off-site destination is configured (RAFF_BACKUP_REMOTE)",
+            stdout=StringIO(),
+        )
+    client, _ = owner_at(world, world.khartoum.pk)
+    status = client.get("/api/v1/backup/status/").json()
+    assert status["failing"] is False  # the local backup is good
+    assert status["offsite_failing"] is True
+    assert "RAFF_BACKUP_REMOTE" in status["last_offsite_failed"]["detail"]
+    with org_context(world.org.id):
+        assert Notification.objects.filter(kind="backup_failed").exists()  # the alert fired
+    with override_settings(SINGLE_ORG_ID=str(world.org.id)):
+        call_command(
+            "record_backup", "ok", "--offsite", "--file", "raff-3.tar.enc", stdout=StringIO()
+        )
+    assert client.get("/api/v1/backup/status/").json()["offsite_failing"] is False

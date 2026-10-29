@@ -13,6 +13,7 @@ class BackupRun(OrgScopedModel):
     class Kind(models.TextChoices):
         BACKUP = "backup", "Backup"
         RESTORE_TEST = "restore_test", "Restore test"
+        OFFSITE = "offsite", "Off-site copy"
 
     class Status(models.TextChoices):
         OK = "ok", "Succeeded"

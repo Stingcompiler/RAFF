@@ -38,6 +38,12 @@ class BackupStatusView(APIView):
         drill = BackupRun.objects.filter(
             kind=BackupRun.Kind.RESTORE_TEST, status=BackupRun.Status.OK
         ).first()
+        # The off-site copy is judged on its own (review D-03): a good local backup does not
+        # hide days without a copy away from this server.
+        off_ok = backups.filter(status=BackupRun.Status.OK, offsite=True).first()
+        off_failed = BackupRun.objects.filter(
+            kind=BackupRun.Kind.OFFSITE, status=BackupRun.Status.FAILED
+        ).first()
         return Response(
             BackupStatusSerializer(
                 {
@@ -45,6 +51,11 @@ class BackupStatusView(APIView):
                     "last_failed": _run(failed),
                     "last_restore_test": _run(drill),
                     "failing": bool(failed and (ok is None or failed.created_at > ok.created_at)),
+                    "last_offsite_ok": _run(off_ok),
+                    "last_offsite_failed": _run(off_failed),
+                    "offsite_failing": bool(
+                        off_failed and (off_ok is None or off_failed.created_at > off_ok.created_at)
+                    ),
                 }
             ).data
         )
