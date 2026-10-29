@@ -15,7 +15,7 @@ export async function serverGet<T>(path: string): Promise<T | null> {
   const res = await fetch(`${apiOrigin}/api/v1${path}`, {
     headers: { cookie, accept: "application/json" },
     cache: "no-store",
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(10000),
   }).catch(() => null);
   if (!res) throw new Error(`API ${path} could not be reached`);
   if (res.status === 401 || res.status === 403 || res.status === 404) return null;
