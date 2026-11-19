@@ -44,8 +44,18 @@ test.describe("workspace shell", () => {
     await page.setViewportSize({ width: 1100, height: 800 });
     await page.goto("/dashboard");
     const nav = page.getByRole("navigation");
-    expect((await nav.boundingBox())?.width).toBe(65);
+    expect((await nav.boundingBox())?.width).toBe(69);
     await expect(nav.getByText("المتابعة")).toBeHidden();
+  });
+
+  test("a table keeps its flexible column at tablet width and scrolls instead", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 768, height: 900 });
+    await page.goto("/inventory");
+    const head = page.getByRole("columnheader", { name: "الصنف", exact: true });
+    await expect(head).toBeVisible();
+    expect((await head.boundingBox())?.width).toBeGreaterThan(100);
   });
 
   test("sidebar becomes a drawer at 760px", async ({ page }) => {

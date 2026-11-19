@@ -19,7 +19,7 @@ type Props = {
   activePath?: string;
 };
 
-/** 232px sidebar; 64px icon rail at ≤1180px; slide-in drawer at ≤760px. */
+/** 232px sidebar; 44px-wide icon rail (69px with its padding) at ≤1180px; slide-in drawer at ≤760px. */
 export function Sidebar({ context, open, onNavigate, activePath }: Props) {
   const t = useTranslations();
   const pathname = usePathname();
@@ -29,7 +29,7 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
       aria-label={t("shell.navigation")}
       className={cn(
         "z-[6] flex w-[232px] flex-none flex-col gap-[4px] border-e border-border bg-surface-subtle px-[12px] py-[16px]",
-        "max-[1180px]:w-[40px]",
+        "max-[1180px]:w-[44px]",
         "max-[760px]:fixed max-[760px]:inset-y-0 max-[760px]:start-0 max-[760px]:w-[232px] max-[760px]:shadow-drawer",
         "max-[760px]:transition-transform max-[760px]:duration-(--motion-panel-in)",
         open
@@ -53,7 +53,7 @@ export function Sidebar({ context, open, onNavigate, activePath }: Props) {
             aria-current={active ? "page" : undefined}
             title={t(`nav.${item.key}`)}
             className={cn(
-              "flex min-h-[40px] items-center gap-[12px] overflow-hidden rounded-control px-[12px] font-medium text-ellipsis whitespace-nowrap text-text no-underline",
+              "flex min-h-[44px] items-center gap-[12px] overflow-hidden rounded-control px-[12px] font-medium text-ellipsis whitespace-nowrap text-text no-underline",
               "transition-[background,color,transform,filter] duration-(--motion-feedback) hover:brightness-95",
               "max-[1180px]:justify-center max-[1180px]:px-0 max-[760px]:justify-start max-[760px]:px-[12px]",
               active && "bg-brand-subtle font-semibold",
