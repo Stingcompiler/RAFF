@@ -69,19 +69,20 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
         </span>
       </div>
       <div className="mt-[16px] flex flex-wrap items-center gap-[8px]">
-        <Link href={href({ category: "" })} className={chip(!filters.category)}>
-          {t("allCategories")}
-        </Link>
-        {(categories ?? []).map((c) => (
-          <Link
-            key={c.code}
-            href={href({ category: c.code })}
-            className={chip(filters.category === c.code)}
-          >
-            {ar ? c.name_ar : c.name_en}
+        <div className="-mx-[20px] flex min-w-0 basis-full gap-[8px] overflow-x-auto px-[20px] pb-[4px] min-[761px]:mx-0 min-[761px]:flex-wrap min-[761px]:overflow-visible min-[761px]:px-0 min-[761px]:pb-0">
+          <Link href={href({ category: "" })} className={cn(chip(!filters.category), "flex-none")}>
+            {t("allCategories")}
           </Link>
-        ))}
-        <span className="h-0 basis-full" />
+          {(categories ?? []).map((c) => (
+            <Link
+              key={c.code}
+              href={href({ category: c.code })}
+              className={cn(chip(filters.category === c.code), "flex-none")}
+            >
+              {ar ? c.name_ar : c.name_en}
+            </Link>
+          ))}
+        </div>
         <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
           <span className="text-label font-medium text-text-muted">{t("availability")}</span>
           <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">

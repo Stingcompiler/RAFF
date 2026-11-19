@@ -46,12 +46,14 @@
     color: var(--color-text);
   }
 
-  /* On phones, grid rows keep a minimum width (components/ui/Table.tsx) and the table scrolls. */
+  /* Up to the icon-rail width, grid rows keep a minimum width (components/ui/Table.tsx) and the
+     table scrolls inside its card, so a flexible column never collapses to nothing between phone
+     and desktop widths. */
   [role="table"] {
     overflow-x: auto;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 1180px) {
     [role="table"] [role="row"] {
       min-width: var(--row-min, 0);
     }

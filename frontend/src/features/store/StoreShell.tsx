@@ -238,7 +238,7 @@ function SearchBox() {
     <form
       role="search"
       onSubmit={submit}
-      className="flex h-[40px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:min-w-0 max-[760px]:max-w-none"
+      className="flex h-[44px] min-w-[180px] max-w-[380px] flex-1 items-center gap-[8px] rounded-control border border-border-strong bg-surface px-[12px] max-[760px]:min-w-0 max-[760px]:max-w-none"
     >
       <SearchIcon className="text-text-muted" />
       <input
