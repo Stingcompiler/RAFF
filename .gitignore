@@ -43,3 +43,6 @@ infra/prod/license/*.json
 # Visual baselines: only the Linux ones from CI are committed
 tests/e2e/__screenshots__/**/*-darwin.png
 tests/e2e/__screenshots__/**/*-win32.png
+# Server-local compose settings and the demo password file (never committed)
+infra/prod/compose.override.yaml
+infra/prod/demo-password.txt

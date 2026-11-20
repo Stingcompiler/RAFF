@@ -18,6 +18,10 @@ sudo infra/update.sh origin/main     # أو وسم إصدار: sudo infra/update
 
 الإصدار العامل يظهر في `https://pharmacy.example.com/api/v1/health/` (حقل `version`).
 
+## إعدادات خاصة بخادم واحد
+
+لا تعدّل `infra/prod/compose.yaml` على الخادم: `update.sh` يرفض العمل إذا كانت النسخة فيها تعديلات. ضع ما يخصّ الخادم وحده (حدود الموارد، تحميلات إضافية، متغيرات) في `infra/prod/compose.override.yaml`؛ يقرؤه `infra/lib.sh` تلقائياً إن وُجد، وهو خارج git. بعد إنشائه أو تعديله شغّل `docker compose -p raff -f infra/prod/compose.yaml -f infra/prod/compose.override.yaml --env-file infra/prod/.env up -d`.
+
 ## إذا فشل الرجوع نفسه
 
 نادر. الخطوات:
