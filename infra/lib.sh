@@ -11,7 +11,13 @@ log() { printf '\033[1;32m[raff]\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m[raff]\033[0m %s\n' "$*" >&2; }
 die() { printf '\033[1;31m[raff]\033[0m %s\n' "$*" >&2; exit 1; }
 
-compose() { docker compose -p raff -f "$PROD/compose.yaml" --env-file "$ENV_FILE" "$@"; }
+# Settings that belong to one server only (resource slices, extra mounts) go in the untracked
+# infra/prod/compose.override.yaml, so the checkout stays clean and update.sh can run.
+compose() {
+  local files=(-f "$PROD/compose.yaml")
+  [ ! -f "$PROD/compose.override.yaml" ] || files+=(-f "$PROD/compose.override.yaml")
+  docker compose -p raff "${files[@]}" --env-file "$ENV_FILE" "$@"
+}
 
 require_docker() {
   command -v docker >/dev/null || die "Docker is not installed. See docs/runbooks/install.md (step 1)."
