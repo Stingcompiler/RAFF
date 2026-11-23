@@ -2,13 +2,20 @@
 
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { MouseEventHandler } from "react";
 
 import { ConnectionIndicator } from "@/components/ui/ConnectionIndicator";
 
 import type { ShellContext } from "./types";
 import { UserMenu } from "./UserMenu";
 
-export function TopBar({ context, onMenu }: { context: ShellContext; onMenu: () => void }) {
+export function TopBar({
+  context,
+  onMenu,
+}: {
+  context: ShellContext;
+  onMenu: MouseEventHandler<HTMLButtonElement>;
+}) {
   const t = useTranslations("shell");
   return (
     <header className="flex h-[52px] flex-none items-center gap-[16px] border-b border-border bg-surface-subtle px-[24px]">

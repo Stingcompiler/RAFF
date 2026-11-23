@@ -83,9 +83,9 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
             </Link>
           ))}
         </div>
-        <span className="flex flex-none items-center gap-[8px] whitespace-nowrap">
+        <span className="flex min-w-0 max-w-full flex-wrap items-center gap-[8px]">
           <span className="text-label font-medium text-text-muted">{t("availability")}</span>
-          <span className="flex gap-[2px] rounded-control bg-surface-subtle p-[3px]">
+          <span className="flex min-w-0 flex-wrap gap-[2px] rounded-control bg-surface-subtle p-[3px]">
             <Link href={href({ availability: "" })} className={seg(!filters.availability)}>
               {t("all")}
             </Link>
@@ -129,7 +129,7 @@ export async function StoreGrid({ filters, base }: { filters: Filters; base: str
           )}
         </div>
       )}
-      <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[360px]:grid-cols-1">
+      <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[420px]:grid-cols-1">
         {products.map((p) => (
           <ProductTile key={p.slug} product={p} />
         ))}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import type { RefObject } from "react";
 
 import { BrandMark } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
@@ -15,26 +16,28 @@ type Props = {
   /** Drawer state at ≤760px. */
   open: boolean;
   onNavigate: () => void;
+  navRef: RefObject<HTMLElement | null>;
   /** Force an active item (design previews). */
   activePath?: string;
 };
 
 /** 232px sidebar; 44px-wide icon rail (69px with its padding) at ≤1180px; slide-in drawer at ≤760px. */
-export function Sidebar({ context, open, onNavigate, activePath }: Props) {
+export function Sidebar({ context, open, onNavigate, navRef, activePath }: Props) {
   const t = useTranslations();
   const pathname = usePathname();
   const current = activePath ?? pathname;
   return (
     <nav
+      ref={navRef}
       aria-label={t("shell.navigation")}
       className={cn(
         "z-[6] flex w-[232px] flex-none flex-col gap-[4px] border-e border-border bg-surface-subtle px-[12px] py-[16px]",
         "max-[1180px]:w-[44px]",
-        "max-[760px]:fixed max-[760px]:inset-y-0 max-[760px]:start-0 max-[760px]:w-[232px] max-[760px]:shadow-drawer",
+        "max-[760px]:fixed max-[760px]:inset-y-0 max-[760px]:start-0 max-[760px]:w-[232px] max-[760px]:overflow-y-auto max-[760px]:overscroll-contain max-[760px]:shadow-drawer",
         "max-[760px]:transition-transform max-[760px]:duration-(--motion-panel-in)",
         open
           ? "max-[760px]:translate-x-0"
-          : "max-[760px]:ltr:-translate-x-[110%] max-[760px]:rtl:translate-x-[110%]",
+          : "max-[760px]:invisible max-[760px]:ltr:-translate-x-[110%] max-[760px]:rtl:translate-x-[110%]",
       )}
     >
       <div className="flex items-center gap-[8px] px-[8px] pt-[4px] pb-[16px] text-lead font-bold text-brand">

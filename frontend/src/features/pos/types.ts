@@ -14,6 +14,8 @@ export type LineIn = Schemas["LineIn"];
 export type PaymentIn = Schemas["PaymentIn"];
 export type Method = "cash" | "bank" | "credit" | "split";
 
+export const MAX_QTY = 999;
+
 export type CartLine = {
   key: string;
   item: PosItem;

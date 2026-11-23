@@ -61,7 +61,10 @@ export default async function MarketingPage({ params }: PageProps<"/[locale]">) 
   );
 
   return (
-    <div id="top" className="min-h-dvh bg-canvas pb-[8px] text-body leading-body text-text">
+    <div
+      id="top"
+      className="min-h-dvh bg-canvas pb-[8px] max-[760px]:pb-[calc(80px+env(safe-area-inset-bottom))] text-body leading-body text-text"
+    >
       <MarketingNav
         labels={{
           brand: t("brand"),

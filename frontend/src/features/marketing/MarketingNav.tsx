@@ -2,7 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BrandMark } from "@/components/ui/icons";
 
@@ -25,10 +25,15 @@ type Labels = {
  */
 export function MarketingNav({ labels }: { labels: Labels }) {
   const [open, setOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      menuButton.current?.focus();
+    };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
@@ -37,8 +42,8 @@ export function MarketingNav({ labels }: { labels: Labels }) {
     "inline-flex min-h-[44px] items-center rounded-control px-[12px] text-body font-medium text-text no-underline hover:bg-surface-subtle";
 
   return (
-    <header className="sticky top-0 z-[10] border-b border-border bg-surface/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1200px] items-center gap-[16px] px-[20px] py-[10px]">
+    <header className="sticky top-0 z-[10] border-b border-border bg-surface/95 backdrop-blur max-[760px]:flex max-[760px]:max-h-dvh max-[760px]:flex-col">
+      <div className="box-border mx-auto flex w-full max-w-[1200px] flex-none items-center gap-[16px] px-[20px] py-[10px]">
         <Link
           href="#top"
           className="hit-44 flex items-center gap-[8px] text-section font-bold text-brand no-underline"
@@ -61,6 +66,7 @@ export function MarketingNav({ labels }: { labels: Labels }) {
             {labels.open}
           </Link>
           <button
+            ref={menuButton}
             type="button"
             aria-expanded={open}
             aria-controls="marketing-menu"
@@ -76,7 +82,7 @@ export function MarketingNav({ labels }: { labels: Labels }) {
         <nav
           id="marketing-menu"
           aria-label={labels.label}
-          className="hidden gap-[4px] border-t border-border bg-surface px-[20px] py-[12px] max-[760px]:grid"
+          className="hidden min-h-0 content-start gap-[4px] overflow-y-auto overscroll-contain border-t border-border bg-surface px-[20px] py-[12px] max-[760px]:grid"
         >
           {labels.links.map((l) => (
             <a key={l.href} href={l.href} onClick={() => setOpen(false)} className={link}>
