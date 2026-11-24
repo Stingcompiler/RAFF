@@ -31,6 +31,7 @@ import {
   errorKey,
   type HeldSale,
   type LineIn,
+  MAX_QTY,
   type PosItem,
   type Receipt,
   requestRef,
@@ -192,7 +193,7 @@ export function PosScreen(props: PosScreenProps) {
         const same = prev.find((l) => l.item.id === item.id && l.unit.id === unit.id && !l.batch);
         if (same) {
           return prev.map((l) =>
-            l === same ? { ...l, quantity: Math.min(999, l.quantity + quantity) } : l,
+            l === same ? { ...l, quantity: Math.min(MAX_QTY, l.quantity + quantity) } : l,
           );
         }
         return [
@@ -555,39 +556,50 @@ export function PosScreen(props: PosScreenProps) {
     </>
   );
 
-  if (phone) {
-    return (
-      <PhoneSell
-        connection={{
-          status: chipStatus,
-          text: !deviceOnline
-            ? tSync("offline")
-            : conn === "online"
-              ? tConn("chipOnline")
-              : conn === "unavailable"
-                ? tConn("chipUnavailable")
-                : connText,
-        }}
-        banners={banners}
-        dialogs={dialogs}
-        rows={rows}
-        catalogueSize={props.initialItems.length}
-        query={query}
-        onQuery={setQuery}
-        lines={cart.lines}
-        quoted={cart.quoted}
-        locked={order !== null}
-        payDisabled={payDisabled}
-        onAdd={(row) => addItem(row, row.unit)}
-        onPay={() => {
-          setPayError(null);
-          setDialog("pay");
-        }}
-      />
+  const changeLine = (key: string, patch: Partial<CartLine>) => {
+    if (order) return;
+    cart.setLines((prev) =>
+      prev.map((line) => (line.key === key && !line.locked ? { ...line, ...patch } : line)),
     );
-  }
+  };
+  const removeLine = (key: string) => {
+    if (order) return;
+    cart.setLines((prev) => prev.filter((line) => line.key !== key || line.locked));
+  };
+  const openPayment = () => {
+    setPayError(null);
+    setDialog("pay");
+  };
 
-  return (
+  const mobile = phone ? (
+    <PhoneSell
+      connection={{
+        status: chipStatus,
+        text: !deviceOnline
+          ? tSync("offline")
+          : conn === "online"
+            ? tConn("chipOnline")
+            : conn === "unavailable"
+              ? tConn("chipUnavailable")
+              : connText,
+      }}
+      banners={banners}
+      rows={rows}
+      catalogueSize={props.initialItems.length}
+      query={query}
+      onQuery={setQuery}
+      lines={cart.lines}
+      quoted={cart.quoted}
+      locked={order !== null}
+      payDisabled={payDisabled}
+      onAdd={(row) => addItem(row, row.unit)}
+      onChange={changeLine}
+      onRemove={removeLine}
+      onPay={openPayment}
+    />
+  ) : null;
+
+  const desktop = phone ? null : (
     <div className="overflow-x-auto">
       <div
         data-density="compact"
@@ -682,18 +694,13 @@ export function PosScreen(props: PosScreenProps) {
             canDiscount={props.canDiscount}
             payDisabled={payDisabled}
             payBlockedReason={offline ? tSync("approveNeedsServer") : null}
-            onChange={(key, patch) =>
-              cart.setLines((prev) => prev.map((l) => (l.key === key ? { ...l, ...patch } : l)))
-            }
-            onRemove={(key) => cart.setLines((prev) => prev.filter((l) => l.key !== key))}
+            onChange={changeLine}
+            onRemove={removeLine}
             onBatch={(key) => {
               setBatchFor(key);
               setDialog("batch");
             }}
-            onPay={() => {
-              setPayError(null);
-              setDialog("pay");
-            }}
+            onPay={openPayment}
             onHold={() => void hold()}
             onDiscount={() => setDiscountSignal((n) => n + 1)}
             onResume={() => setDialog("held")}
@@ -715,9 +722,16 @@ export function PosScreen(props: PosScreenProps) {
             </span>
           ))}
         </footer>
-
-        {dialogs}
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {mobile}
+      {desktop}
+      {/* Keep the dialogs mounted while either layout changes on rotation. */}
+      <div data-density={phone ? undefined : "compact"}>{dialogs}</div>
+    </>
   );
 }

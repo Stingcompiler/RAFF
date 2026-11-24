@@ -65,6 +65,30 @@ test.describe("point of sale", () => {
     await expect(page.getByText("السلة فارغة")).toBeVisible();
   });
 
+  test("keeps the cash amount and change when the cashier rotates the phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await atCounter(page);
+    await page.getByRole("searchbox", { name: "اسم أو باركود" }).fill("باراسيتامول");
+    await page.getByRole("button", { name: "إضافة باراسيتامول" }).click();
+    await expect(page.getByTestId("phone-cart-total")).toHaveText("800 ج.س");
+    await page.getByRole("button", { name: "الدفع", exact: true }).click();
+
+    const pay = page.getByRole("dialog", { name: "الدفع" });
+    const tendered = pay.getByLabel("المدفوع");
+    await tendered.fill("1000");
+    await expect(pay.getByTestId("change")).toHaveText("200 ج.س");
+
+    await page.setViewportSize({ width: 844, height: 390 });
+    await expect(page.locator("main").getByRole("textbox", { name: /باركود/ })).toBeVisible();
+    await expect(tendered).toHaveValue("1000");
+    await expect(pay.getByTestId("change")).toHaveText("200 ج.س");
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.getByRole("searchbox", { name: "اسم أو باركود" })).toBeVisible();
+    await expect(tendered).toHaveValue("1000");
+    await expect(pay.getByTestId("change")).toHaveText("200 ج.س");
+  });
+
   test("a lost response is checked by its key before any second approval", async ({ page }) => {
     await atCounter(page);
     await search(page).fill("ORS");

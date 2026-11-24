@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, type ReactNode } from "react";
+import { type MouseEvent, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { ToastProvider } from "@/components/ui/Toast";
 import { cn } from "@/lib/cn";
@@ -33,19 +33,41 @@ export function AppShell({
   const phone = usePhone();
   const pathname = usePathname();
   const phoneScreen = phone && isPhoneScreen(activePath ?? pathname);
+  const menuTrigger = useRef<HTMLElement | null>(null);
+  const sidebar = useRef<HTMLElement | null>(null);
+  const openDrawer = (event: MouseEvent<HTMLButtonElement>) => {
+    menuTrigger.current = event.currentTarget;
+    setDrawer(true);
+  };
+  const closeDrawer = useCallback(() => {
+    setDrawer(false);
+    menuTrigger.current?.focus();
+    menuTrigger.current = null;
+  }, []);
+  useEffect(() => {
+    if (!drawer || !phone) return;
+    sidebar.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !event.defaultPrevented) closeDrawer();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [closeDrawer, drawer, phone]);
+
   return (
     <ToastProvider dismissLabel={t("dismiss")}>
       <div className="relative flex h-dvh overflow-hidden bg-canvas text-text">
         <Sidebar
           context={context}
           open={drawer}
-          onNavigate={() => setDrawer(false)}
+          navRef={sidebar}
+          onNavigate={closeDrawer}
           activePath={activePath}
         />
         {drawer && (
           <div
             aria-hidden="true"
-            onClick={() => setDrawer(false)}
+            onClick={closeDrawer}
             className="fixed inset-0 z-[5] hidden bg-veil max-[760px]:block"
           />
         )}
@@ -54,10 +76,10 @@ export function AppShell({
             <PhoneStatus
               status={context.connection.status}
               text={context.connection.text}
-              onMenu={() => setDrawer(true)}
+              onMenu={openDrawer}
             />
           ) : (
-            <TopBar context={context} onMenu={() => setDrawer(true)} />
+            <TopBar context={context} onMenu={openDrawer} />
           )}
           <main
             className={cn(

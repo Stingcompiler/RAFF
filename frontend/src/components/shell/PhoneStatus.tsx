@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { type MouseEventHandler, useEffect, useState } from "react";
 
 import type { ConnectionStatus } from "@/components/ui/ConnectionIndicator";
 import { cn } from "@/lib/cn";
@@ -19,7 +19,7 @@ type Props = {
   status: ConnectionStatus;
   text: string;
   /** Opens the navigation drawer (the only way to the other modules from a phone screen). */
-  onMenu?: () => void;
+  onMenu?: MouseEventHandler<HTMLButtonElement>;
   /** Fixed time for previews. */
   time?: string;
 };

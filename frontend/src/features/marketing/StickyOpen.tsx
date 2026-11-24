@@ -20,9 +20,9 @@ export function StickyOpen({ label }: { label: string }) {
   return (
     <div
       data-testid="sticky-open"
-      className="fixed inset-x-0 bottom-0 z-[9] hidden border-t border-border bg-surface px-[20px] py-[10px] max-[760px]:block"
+      className="fixed inset-x-0 bottom-0 z-[9] hidden border-t border-border bg-surface px-[20px] pt-[10px] pb-[calc(10px+env(safe-area-inset-bottom))] max-[760px]:block"
     >
-      <Link href={APP_HREF} className={`${BUTTON} w-full`}>
+      <Link href={APP_HREF} className={`${BUTTON} box-border w-full`}>
         {label}
       </Link>
     </div>

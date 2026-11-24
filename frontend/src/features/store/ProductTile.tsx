@@ -60,13 +60,15 @@ export function ProductTile({ product }: { product: Product }) {
   const off = product.availability === "unavailable";
   const href = `/products/${product.slug}`;
   return (
-    <article className="grid grid-rows-[auto_1fr] overflow-hidden rounded-card border border-border bg-surface transition-[box-shadow,transform] duration-(--motion-feedback) hover:-translate-y-[2px] hover:shadow-tile">
+    <article className="grid min-w-0 grid-rows-[auto_1fr] overflow-hidden rounded-card border border-border bg-surface transition-[box-shadow,transform] duration-(--motion-feedback) hover:-translate-y-[2px] hover:shadow-tile">
       <Link href={href} tabIndex={-1} aria-hidden="true">
         <ProductImage product={product} height="h-[120px]" label={t("noImg")} />
       </Link>
-      <div className="grid content-start gap-[8px] p-[14px]">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-[8px] p-[14px]">
         <Link href={href} className="text-text no-underline">
-          <div className="text-lead leading-tight font-semibold">{productName(ar, product)}</div>
+          <div className="text-lead leading-tight font-semibold wrap-anywhere">
+            {productName(ar, product)}
+          </div>
           {ar && (
             <bdi dir="ltr" className="text-caption text-text-muted num">
               {product.name_en}
@@ -96,7 +98,7 @@ export function ProductTile({ product }: { product: Product }) {
             {product.availability && (
               <span
                 className={cn(
-                  "justify-self-start rounded-full px-[10px] py-[3px] text-label font-semibold whitespace-nowrap",
+                  "box-border max-w-full justify-self-start rounded-full px-[10px] py-[3px] text-label font-semibold wrap-anywhere",
                   AVAIL_TONE[product.availability],
                 )}
               >

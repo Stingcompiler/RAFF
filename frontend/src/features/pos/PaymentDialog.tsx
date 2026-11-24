@@ -33,8 +33,9 @@ type Props = {
 const whole = (value: string) => value.replace(/\.0+$/, "");
 
 const FIELD =
-  "h-[44px] w-full rounded-control border-2 border-brand bg-canvas px-[12px] text-lead font-medium text-text outline-none";
-const LABEL = "grid gap-[4px] type-label text-text-secondary";
+  "box-border h-[44px] w-full min-w-0 rounded-control border-2 border-brand bg-canvas px-[12px] text-lead font-medium text-text outline-none";
+const LABEL = "grid min-w-0 gap-[4px] type-label text-text-secondary";
+const FIELD_GRID = "grid grid-cols-2 gap-[12px] max-[420px]:grid-cols-1";
 
 export function PaymentDialog({
   open,
@@ -156,7 +157,7 @@ export function PaymentDialog({
   };
 
   const bankFields = (
-    <div className="grid grid-cols-2 gap-[12px]">
+    <div className={FIELD_GRID}>
       <label className={LABEL}>
         {t("ref")}
         <input
@@ -173,7 +174,7 @@ export function PaymentDialog({
           value={account}
           placeholder={t("bankA")}
           onChange={(e) => setAccount(e.target.value)}
-          className="h-[44px] w-full rounded-control border border-border-strong bg-canvas px-[12px] text-body text-text outline-none num"
+          className="box-border h-[44px] w-full min-w-0 rounded-control border border-border-strong bg-canvas px-[12px] text-body text-text outline-none num"
         />
       </label>
     </div>
@@ -258,7 +259,7 @@ export function PaymentDialog({
             </div>
 
             {method === "cash" && (
-              <div className="grid grid-cols-2 gap-[12px]">
+              <div className={FIELD_GRID}>
                 <label className={LABEL}>
                   {t("tendered")}
                   <input
@@ -361,7 +362,7 @@ export function PaymentDialog({
 
             {method === "split" && (
               <div className="grid gap-[10px]">
-                <div className="grid grid-cols-2 gap-[12px]">
+                <div className={FIELD_GRID}>
                   <label className={LABEL}>
                     {t("cashPart")}
                     <input

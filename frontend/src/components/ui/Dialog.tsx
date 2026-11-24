@@ -80,7 +80,7 @@ export function Dialog({
   return (
     <div
       className={cn(
-        "inset-0 z-[8] grid place-items-center bg-veil animate-[raff-fade_var(--motion-scene)_ease_both]",
+        "inset-0 z-[8] grid grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)] place-items-center bg-veil p-[12px] animate-[raff-fade_var(--motion-scene)_ease_both]",
         contained ? "absolute" : "fixed",
       )}
       onMouseDown={(e) => {
@@ -94,9 +94,8 @@ export function Dialog({
         aria-labelledby={labelledBy}
         tabIndex={-1}
         className={cn(
-          "grid w-[460px] max-w-[calc(100vw-80px)] gap-[14px] rounded-panel border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
-          // Phones: nearly full width, scrolling inside when the content is taller than the screen.
-          "max-[760px]:box-border max-[760px]:max-h-[calc(100dvh-24px)] max-[760px]:max-w-[calc(100vw-24px)] max-[760px]:overflow-y-auto max-[760px]:p-[16px]",
+          "box-border grid max-h-full w-[460px] max-w-[min(100%,calc(100vw-80px))] gap-[14px] overflow-y-auto overscroll-contain rounded-panel border border-border bg-surface-raised p-[24px] shadow-dialog outline-none",
+          "max-[760px]:max-w-full max-[760px]:p-[16px]",
           "animate-[raff-fade_var(--motion-scene)_cubic-bezier(.2,.8,.2,1)_both]",
           className,
         )}

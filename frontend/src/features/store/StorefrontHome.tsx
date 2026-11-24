@@ -67,7 +67,7 @@ export async function StorefrontHome() {
 
       <section className="px-[20px] pt-[24px] pb-[8px]">
         <h2 className="m-0 text-land-section font-semibold">{t("featured")}</h2>
-        <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[360px]:grid-cols-1">
+        <div className="mt-[20px] grid grid-cols-4 gap-[16px] max-[1000px]:grid-cols-2 max-[420px]:grid-cols-1">
           {(products ?? []).map((p) => (
             <ProductTile key={p.slug} product={p} />
           ))}

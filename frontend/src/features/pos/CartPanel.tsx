@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn";
 import { money } from "@/lib/format";
 
 import type { QuoteState } from "./usePosCart";
-import { type CartLine, errorKey, inUnit, pick } from "./types";
+import { type CartLine, errorKey, inUnit, MAX_QTY, pick } from "./types";
 
 const REMOVE = "✕";
 const MINUS = "−";
@@ -23,7 +23,6 @@ const GRID_KEYS = {
   resume: "F9",
   return: "F10",
 } as const;
-const MAX_QTY = 999;
 
 type Props = {
   fromOrder?: { number: string; customer_name: string } | null;

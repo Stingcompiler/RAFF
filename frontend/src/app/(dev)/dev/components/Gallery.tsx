@@ -134,37 +134,37 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
   return (
     <section
       data-theme={theme}
-      className="grid min-w-0 content-start gap-[24px] rounded-card border border-border bg-canvas p-[24px] text-text"
+      className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-[24px] rounded-card border border-border bg-canvas p-[24px] text-text"
     >
-      <div className="flex items-baseline justify-between">
+      <div className="flex flex-wrap items-baseline justify-between gap-[8px]">
         <h2 className="m-0 text-lead font-medium">
           {theme === "light" ? t("themeLight") : t("themeDark")}
         </h2>
         <span className="text-caption text-text-muted">{t("hint")}</span>
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.button}</div>
-        <div className="grid grid-cols-[70px_repeat(5,minmax(0,1fr))] items-center gap-[8px] text-caption text-text-muted">
-          <span />
-          {STATES.map((s) => (
-            <span key={s}>{s}</span>
-          ))}
-          {VARIANTS.map((v) => (
-            <div key={v} className="contents">
-              <span className="font-medium text-text">{v}</span>
-              {STATES.map((s) => (
-                <Button
-                  key={s}
-                  variant={v}
-                  forceState={s === "hover" || s === "focus" ? s : undefined}
-                  disabled={s === "disabled"}
-                  loading={s === "loading"}
-                  className="min-w-0 px-[8px] text-label font-semibold"
-                >
-                  {s === "loading" ? t("saving") : t("btn")}
-                </Button>
-              ))}
+        <div className="grid min-w-0 gap-[12px] text-caption text-text-muted">
+          {VARIANTS.map((variant) => (
+            <div key={variant} className="grid min-w-0 gap-[6px]">
+              <div className="font-medium text-text">{variant}</div>
+              <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(90px,100%),1fr))] gap-[8px]">
+                {STATES.map((state) => (
+                  <div key={state} className="grid min-w-0 gap-[4px]">
+                    <span>{state}</span>
+                    <Button
+                      variant={variant}
+                      forceState={state === "hover" || state === "focus" ? state : undefined}
+                      disabled={state === "disabled"}
+                      loading={state === "loading"}
+                      className="h-auto min-h-[44px] min-w-0 px-[8px] py-[4px] text-label font-semibold whitespace-normal"
+                    >
+                      {state === "loading" ? t("saving") : t("btn")}
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
@@ -182,9 +182,9 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         </div>
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.inputs}</div>
-        <div className="grid grid-cols-2 gap-[12px]">
+        <div className="grid grid-cols-2 gap-[12px] max-[480px]:grid-cols-1">
           <label className="grid gap-[4px] type-label text-text-secondary">
             {t("name")}
             <span className={cn(inputBox, "border border-border")}>{t("nameV")}</span>
@@ -220,7 +220,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         <SearchField label={t("search")} placeholder={t("ph")} shortcut="F2" readOnly />
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.status}</div>
         <div className="flex flex-wrap gap-[8px]">
           <Badge tone="success">{t("bValid")}</Badge>
@@ -283,9 +283,9 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         <StaleStamp at="2026-10-22T05:30:00Z" onRefresh={() => undefined} />
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.chart}</div>
-        <div className="grid gap-[12px]">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
           {CHART_STATES.map((state) => (
             <ChartCard
               key={state}
@@ -305,9 +305,10 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         </div>
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.table}</div>
         <Tabs
+          className="flex-wrap gap-[8px]"
           label={CAPTION.table}
           value={tab}
           onChange={setTab}
@@ -367,13 +368,13 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
         </div>
       </div>
 
-      <div className="grid gap-[12px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[12px]">
         <div className={caption}>{CAPTION.dialog}</div>
-        <div className="grid place-items-center rounded-control bg-veil p-[20px]">
+        <div className="grid grid-cols-[minmax(0,1fr)] place-items-center rounded-control bg-veil p-[20px] max-[480px]:p-[12px]">
           <div
             role="dialog"
             aria-label={t("dTitle")}
-            className="grid w-full max-w-[380px] gap-[12px] rounded-card border border-border bg-surface p-[20px] shadow-dialog"
+            className="box-border grid w-full max-w-[380px] grid-cols-[minmax(0,1fr)] gap-[12px] rounded-card border border-border bg-surface p-[20px] shadow-dialog max-[480px]:p-[12px]"
           >
             <div className="text-lead font-medium">{t("dTitle")}</div>
             <div className="text-text-muted">{t("dBody")}</div>
@@ -383,7 +384,7 @@ function ThemeSection({ theme }: { theme: "light" | "dark" }) {
                 {CAPTION.amount}
               </span>
             </div>
-            <div className="flex justify-end gap-[8px]">
+            <div className="flex flex-wrap justify-end gap-[8px]">
               <Button variant="outline">{t("cancel")}</Button>
               <Button>{t("approve")}</Button>
             </div>
@@ -564,8 +565,8 @@ export function Gallery({ receipts }: { receipts: readonly ReceiptData[] }) {
         <ThemeSection theme="dark" />
       </div>
       <StorefrontSection />
-      <div className="grid gap-[16px] px-[24px] pt-[8px] pb-[48px]">
-        <div className="flex items-center gap-[16px]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-[16px] px-[24px] pt-[8px] pb-[48px]">
+        <div className="flex flex-wrap items-center gap-[16px]">
           <h2 className="m-0 text-lead font-medium text-text">
             {CAPTION.receipt}
             {t("always")}
@@ -576,7 +577,7 @@ export function Gallery({ receipts }: { receipts: readonly ReceiptData[] }) {
         </div>
         <div className="flex flex-wrap items-start gap-[32px]">
           {receipts.map((r) => (
-            <ReceiptPreview key={r.locale} data={r} />
+            <ReceiptPreview key={r.locale} data={r} className="box-border w-[min(334px,100%)]" />
           ))}
         </div>
       </div>
